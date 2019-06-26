@@ -53,7 +53,7 @@ void loop() {
 
   for (int i=0; i < 360; i++) {
     sprintf (buff,"%03d",i);
-    messageAt(2,String("  Anglely: ") + buff);
+    messageAt(2,String("  Angle: ") + buff);
     delay(100);    
   }
   
