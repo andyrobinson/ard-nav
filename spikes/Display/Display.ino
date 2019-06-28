@@ -38,12 +38,13 @@ void setup() {
 
   // Clear the buffer
   display.clearDisplay();
+  Wire.begin();
 
 }
 
 void loop() {
 
-  char buff[3]; 
+  char buff[10]; 
 
   display.clearDisplay();
   display.setTextSize(1);      // Normal 1:1 pixel scale
@@ -51,12 +52,41 @@ void loop() {
 
   messageAt(1,"Starting ...");
 
-  for (int i=0; i < 360; i++) {
-    sprintf (buff,"%03d",i);
-    messageAt(2,String("  Angle: ") + buff);
-    delay(100);    
-  }
+  uint16_t angle = getAngle();
+  sprintf (buff,"%d",angle);
+  messageAt(2,String("  Angle: ") + buff);
+  delay(1000);    
   
+}
+
+uint16_t getAngle() {
+  byte endTransResult;
+  uint16_t result = 0;
+  const uint8_t registerAddress = 0xFE;
+  const uint8_t deviceAddress = 0x40;
+
+  Wire.beginTransmission(deviceAddress);
+  Wire.write(registerAddress);
+
+  endTransResult = Wire.endTransmission(false);
+
+  if (endTransResult){
+    Serial.println("I2C error: " + String(endTransResult));
+  }
+
+
+  Wire.requestFrom(deviceAddress, (uint8_t) 2);
+  byte upper8bits = Wire.read();
+  byte lower6bits = Wire.read();
+
+  result = (((uint16_t) upper8bits) << 6) + (lower6bits & 0x3F);
+
+  
+  Serial.println(upper8bits);
+  Serial.println(lower6bits);
+  Serial.println(result);
+  return result;
+
 }
 
 String displaybuff[4]={"","","",""};
