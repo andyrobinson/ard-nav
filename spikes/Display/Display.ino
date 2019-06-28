@@ -52,16 +52,17 @@ void loop() {
 
   messageAt(1,"Starting ...");
 
-  uint16_t angle = getAngle();
+  int angle = getAngle();
   sprintf (buff,"%d",angle);
   messageAt(2,String("  Angle: ") + buff);
   delay(1000);    
   
 }
 
-uint16_t getAngle() {
+int getAngle() {
   byte endTransResult;
-  uint16_t result = 0;
+  int result = 0;
+  uint16_t raw_result = 0;
   const uint8_t registerAddress = 0xFE;
   const uint8_t deviceAddress = 0x40;
 
@@ -74,17 +75,17 @@ uint16_t getAngle() {
     Serial.println("I2C error: " + String(endTransResult));
   }
 
-
   Wire.requestFrom(deviceAddress, (uint8_t) 2);
   byte upper8bits = Wire.read();
   byte lower6bits = Wire.read();
 
-  result = (((uint16_t) upper8bits) << 6) + (lower6bits & 0x3F);
+  raw_result = (((uint16_t) upper8bits) << 6) + (lower6bits & 0x3F);
+  result = 360 - round((((float) raw_result)/16383.0) * 360.0);
 
-  
   Serial.println(upper8bits);
   Serial.println(lower6bits);
   Serial.println(result);
+
   return result;
 
 }
