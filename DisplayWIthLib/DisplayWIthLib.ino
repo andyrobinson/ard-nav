@@ -47,7 +47,7 @@ void setup() {
 
 void loop() {
 
-  char buff[10]; 
+  char buff[4]; 
 
   display.clearDisplay();
   display.setTextSize(1);      // Normal 1:1 pixel scale
@@ -57,7 +57,7 @@ void loop() {
 
   int angle = windsensor.angle();
   sprintf (buff,"%d",angle);
-  messageAt(2,String("  Angle: ") + buff);
+  messageAt(2,String("Angle: ") + buff);
   delay(100);    
   
 }
