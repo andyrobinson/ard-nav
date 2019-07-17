@@ -1,4 +1,4 @@
-// Adafruit SSD1306 - Version: Latest 
+// Adafruit SSD1306 - Version: Latest
 #include <Adafruit_SSD1306.h>
 #include <splash.h>
 
@@ -7,6 +7,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <WindSensor.h>
+#include <Compass.h>
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
@@ -29,6 +30,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
 */
 
 WindSensor windsensor;
+Compass compass;
 
 void setup() {
   Serial.begin(9600);
@@ -42,37 +44,49 @@ void setup() {
   // Clear the buffer
   display.clearDisplay();
   windsensor.begin();
-
+  compass.begin();
 }
 
 void loop() {
 
-  char buff[4]; 
+  char anglebuff[4];
+
+  char bearingbuff[4];
+  char accelbuff[15];
 
   display.clearDisplay();
   display.setTextSize(1);      // Normal 1:1 pixel scale
   display.setTextColor(WHITE); // Draw white text
 
-  messageAt(1,"Starting ...");
-
   int angle = windsensor.angle();
-  sprintf (buff,"%d",angle);
-  messageAt(2,String("Angle: ") + buff);
-  delay(100);    
-  
+  int bearing = compass.bearing();
+  int xa = compass.accel_x();
+  int ya = compass.accel_y();
+  int za = compass.accel_z();
+
+  sprintf (anglebuff,"%d",angle);
+  sprintf (bearingbuff,"%d",bearing);
+  sprintf (accelbuff,"%d %d %d",xa,ya,za);
+
+  messageAt(1,String("Wind: ") + anglebuff);
+  messageAt(2,String("Comp: ") + bearingbuff);
+  messageAt(3,accelbuff);
+
+  delay(100);
+
 }
 
 
 String displaybuff[4]={"","","",""};
 
 void messageAt(int y, String msg) {
-  
+
   displaybuff[y] = msg;
   display.clearDisplay();
 
   for (int j = 0; j < 4; j++) {
-    display.setCursor(0,8*j);           
-    display.println(displaybuff[j]); 
+    display.setCursor(0,8*j);
+    display.println(displaybuff[j]);
   }
   display.display();
 }

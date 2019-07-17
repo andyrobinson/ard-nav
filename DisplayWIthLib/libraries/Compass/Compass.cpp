@@ -1,18 +1,26 @@
 #include "Arduino.h"
 #include "Wire.h"
-#include "WindSensor.h"
+#include "Compass.h"
 
 Compass::Compass() {
 
 }
 
-
 void Compass::begin() {
   Wire.begin();
+
+  write8(COMPASS_COMPASS_I2C_ADDRESS,0, 0b01110000); // Set to 8 samples @ 15Hz
+  write8(COMPASS_COMPASS_I2C_ADDRESS,1, 0b00100000); // 1.3 gain LSb / Gauss 1090 (default)
+  write8(COMPASS_COMPASS_I2C_ADDRESS,2, 0b00000000); // Continuous sampling
 }
 
 int Compass::bearing() {
-  return -2;
+  int result;
+  byte xhi = read8(COMPASS_COMPASS_I2C_ADDRESS,0x03);
+  byte xlo = read8(COMPASS_COMPASS_I2C_ADDRESS,0x04);
+
+  result = (int16_t)((uint16_t)xlo | ((uint16_t)xhi << 8));
+  return result;
 }
 
 int Compass::accel_x() {
@@ -27,26 +35,25 @@ int Compass::accel_z() {
   return -5;
 }
 
-/*
-  byte endTransResult;
-  int result = 0;
-  uint16_t raw_result = 0;
-
-  Wire.beginTransmission(WINDSENSOR_AS5048B_I2C_ADDRESS);
-  Wire.write(WINDSENSOR_AS5048B_I2C_REGISTER);
-
-  endTransResult = Wire.endTransmission(false);
-
-  if (endTransResult) {
-    return -1;
-  } else {
-    Wire.requestFrom(WINDSENSOR_AS5048B_I2C_ADDRESS, (uint8_t) 2);
-    byte upper8bits = Wire.read();
-    byte lower6bits = Wire.read();
-
-    raw_result = (((uint16_t) upper8bits) << 6) + (lower6bits & 0x3F);
-    result = (360 - round((((float) raw_result)/16383.0) * 360.0)) % 360;
-    return 187;
-  }
+void Compass::write8(byte address, byte reg, byte value)
+{
+  Wire.beginTransmission(address);
+    Wire.write((uint8_t)reg);
+    Wire.write((uint8_t)value);
+  Wire.endTransmission();
 }
-*/
+
+byte Compass::read8(byte address, byte reg)
+{
+  byte value;
+
+  Wire.beginTransmission(address);
+  Wire.write(reg);
+  Wire.endTransmission();
+
+  Wire.requestFrom(address, (byte)1);
+  value = Wire.read();
+  Wire.endTransmission();
+
+  return value;
+}
