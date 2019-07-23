@@ -7,17 +7,29 @@ Compass::Compass() {
 }
 
 void Compass::begin() {
-  Wire.begin();
-
-  write8(COMPASS_COMPASS_I2C_ADDRESS,0, 0b01110000); // Set to 8 samples @ 15Hz
-  write8(COMPASS_COMPASS_I2C_ADDRESS,1, 0b00100000); // 1.3 gain LSb / Gauss 1090 (default)
-  write8(COMPASS_COMPASS_I2C_ADDRESS,2, 0b00000000); // Continuous sampling
+  //Wire.begin();
+  Serial.println("initialising compass");
+  // Enable the compass
+   write8(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
 }
 
 int Compass::bearing() {
+
   int result;
-  byte xhi = read8(COMPASS_COMPASS_I2C_ADDRESS,0x03);
-  byte xlo = read8(COMPASS_COMPASS_I2C_ADDRESS,0x04);
+
+  Wire.beginTransmission((byte)COMPASS_COMPASS_I2C_ADDRESS);
+  Wire.write(COMPASS_REGISTER_X_HIGH);
+  Wire.endTransmission();
+  Wire.requestFrom((byte)COMPASS_COMPASS_I2C_ADDRESS, (byte)6);
+
+  while (Wire.available() < 6);
+
+  byte xhi = Wire.read();
+  byte xlo = Wire.read();
+  byte zhi = Wire.read();
+  byte zlo = Wire.read();
+  byte yhi = Wire.read();
+  byte ylo = Wire.read();
 
   result = (int16_t)((uint16_t)xlo | ((uint16_t)xhi << 8));
   return result;
@@ -37,10 +49,15 @@ int Compass::accel_z() {
 
 void Compass::write8(byte address, byte reg, byte value)
 {
+  byte endTransResult;
   Wire.beginTransmission(address);
-    Wire.write((uint8_t)reg);
-    Wire.write((uint8_t)value);
-  Wire.endTransmission();
+  Wire.write((uint8_t)reg);
+  Wire.write((uint8_t)value);
+  endTransResult = Wire.endTransmission(false);
+  if (endTransResult) {
+    Serial.println("ERROR: Write failed " + String(address) + " " + String(reg) + " " + String(value));
+  }
+
 }
 
 byte Compass::read8(byte address, byte reg)
@@ -52,6 +69,9 @@ byte Compass::read8(byte address, byte reg)
   Wire.endTransmission();
 
   Wire.requestFrom(address, (byte)1);
+
+  while (Wire.available() < 1);
+
   value = Wire.read();
   Wire.endTransmission();
 
