@@ -59,14 +59,12 @@ void loop() {
   display.setTextColor(WHITE); // Draw white text
 
   int angle = windsensor.angle();
-  int bearing = compass.bearing();
-  int xa = compass.accel_x();
-  int ya = compass.accel_y();
-  int za = compass.accel_z();
+  MagResult bearing = compass.bearing();
+  MagResult accel = compass.accel();
 
   sprintf (anglebuff,"%d",angle);
-  sprintf (bearingbuff,"%d",bearing);
-  sprintf (accelbuff,"%d %d %d",xa,ya,za);
+  sprintf (bearingbuff,"%d %d %d",bearing.x, bearing.y, bearing.z);
+  sprintf (accelbuff,"%d %d %d",accel.x,accel.y, accel.z);
 
   messageAt(1,String("Wind: ") + anglebuff);
   messageAt(2,String("Comp: ") + bearingbuff);

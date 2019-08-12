@@ -13,14 +13,14 @@ void Compass::begin() {
    write8(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
 }
 
-int Compass::bearing() {
+MagResult Compass::bearing() {
 
   int result;
 
-  Wire.beginTransmission((byte)COMPASS_COMPASS_I2C_ADDRESS);
+  Wire.beginTransmission((byte) COMPASS_COMPASS_I2C_ADDRESS);
   Wire.write(COMPASS_REGISTER_X_HIGH);
   Wire.endTransmission();
-  Wire.requestFrom((byte)COMPASS_COMPASS_I2C_ADDRESS, (byte)6);
+  Wire.requestFrom((byte) COMPASS_COMPASS_I2C_ADDRESS, (byte) 6);
 
   while (Wire.available() < 6);
 
@@ -31,20 +31,11 @@ int Compass::bearing() {
   byte yhi = Wire.read();
   byte ylo = Wire.read();
 
-  result = (int16_t)((uint16_t)xlo | ((uint16_t)xhi << 8));
-  return result;
+  return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
 }
 
-int Compass::accel_x() {
-  return -3;
-}
-
-int Compass::accel_y() {
-  return -4;
-}
-
-int Compass::accel_z() {
-  return -5;
+MagResult Compass::accel() {
+  return {100,200,300};
 }
 
 void Compass::write8(byte address, byte reg, byte value)
@@ -60,6 +51,10 @@ void Compass::write8(byte address, byte reg, byte value)
 
 }
 
+int Compass::hilow_toint(byte high, byte low) {
+  return (int16_t)((uint16_t) low | ((uint16_t) high << 8));
+}
+
 byte Compass::read8(byte address, byte reg)
 {
   byte value;
@@ -68,7 +63,7 @@ byte Compass::read8(byte address, byte reg)
   Wire.write(reg);
   Wire.endTransmission();
 
-  Wire.requestFrom(address, (byte)1);
+  Wire.requestFrom(address, (byte) 1);
 
   while (Wire.available() < 1);
 
