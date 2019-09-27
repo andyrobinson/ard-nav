@@ -7,6 +7,8 @@
 
 #define COMPASS_REGISTER_ENABLE        0x02
 #define COMPASS_REGISTER_X_HIGH        0x03
+#define ACCEL_REGISTER_OUT_X_L_A       0x28
+#define COMPASS_ACCEL_CTRL_REG1_A      0x20
 
 struct MagResult {
   int x;

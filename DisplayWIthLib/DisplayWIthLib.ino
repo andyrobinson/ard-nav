@@ -8,6 +8,7 @@
 #include <Adafruit_SSD1306.h>
 #include <WindSensor.h>
 #include <Compass.h>
+#include <math.h>
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
@@ -49,10 +50,10 @@ void setup() {
 
 void loop() {
 
-  char anglebuff[4];
+  char anglebuff[20];
 
-  char bearingbuff[4];
-  char accelbuff[15];
+  char bearingbuff[20];
+  char accelbuff[20];
 
   display.clearDisplay();
   display.setTextSize(1);      // Normal 1:1 pixel scale
@@ -62,12 +63,25 @@ void loop() {
   MagResult bearing = compass.bearing();
   MagResult accel = compass.accel();
 
-  sprintf (anglebuff,"%d",angle);
-  sprintf (bearingbuff,"%d %d %d",bearing.x, bearing.y, bearing.z);
-  sprintf (accelbuff,"%d %d %d",accel.x,accel.y, accel.z);
+  int heading = (360 + round(57.2958 * atan2((double) bearing.y, (double) bearing.x))) % 360;
 
-  messageAt(1,String("Wind: ") + anglebuff);
-  messageAt(2,String("Comp: ") + bearingbuff);
+  double roll = atan2((double)accel.y, (double)accel.z);
+  double pitch = atan2((double) -accel.x, (double) accel.z); // reversing x accel makes it work 
+  double sin_roll = sin(roll);
+  double cos_roll = cos(roll);
+  double cos_pitch = cos(pitch);
+  double sin_pitch = sin(pitch);
+
+  double x_final = ((double) bearing.x) * cos_pitch + ((double) bearing.y)*sin_roll*sin_pitch+((double) bearing.z)*cos_roll*sin_pitch;
+  double y_final = ((double) bearing.y)*cos_roll-((double) bearing.z) * sin_roll;
+  int tiltadjust = (360 + round(57.2958 * (atan2(y_final,x_final)))) % 360;
+  
+  sprintf (anglebuff,"Wind: %d",angle);
+  sprintf (bearingbuff,"Comp: %d Tilt: %d",heading,tiltadjust);
+  sprintf (accelbuff,"Accel: %d %d %d",accel.x,accel.y, accel.z);
+
+  messageAt(1,anglebuff);
+  messageAt(2,bearingbuff);
   messageAt(3,accelbuff);
 
   delay(100);
