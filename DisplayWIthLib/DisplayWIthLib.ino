@@ -9,6 +9,7 @@
 #include <WindSensor.h>
 #include <Compass.h>
 #include <math.h>
+#include <Servo.h>
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
@@ -32,6 +33,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
 
 WindSensor windsensor;
 Compass compass;
+Servo servo;  
+int servoposition = 0; 
+int servoinc = 1;
 
 void setup() {
   Serial.begin(9600);
@@ -46,6 +50,9 @@ void setup() {
   display.clearDisplay();
   windsensor.begin();
   compass.begin();
+
+  servo.attach(4);
+
 }
 
 void loop() {
@@ -84,6 +91,16 @@ void loop() {
   messageAt(2,bearingbuff);
   messageAt(3,accelbuff);
 
+  servoposition = servoposition + servoinc;
+
+  if (servoposition % 5==0) {
+    servo.write(servoposition);
+  }
+
+  if (servoposition <= 0 || servoposition >= 180) {
+    servoinc = -servoinc;
+  }
+  
   delay(100);
 
 }
