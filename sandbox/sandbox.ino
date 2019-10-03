@@ -1,13 +1,10 @@
 // Adafruit SSD1306 - Version: Latest
-#include <Adafruit_SSD1306.h>
-#include <splash.h>
-
 #include <SPI.h>
 #include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
 #include <WindSensor.h>
 #include <Compass.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 #include <math.h>
 #include <Servo.h>
 
