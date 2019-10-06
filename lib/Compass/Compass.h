@@ -25,8 +25,6 @@ class Compass
     void begin();
 
   private:
-    void write8(byte address, byte reg, byte value);
-    byte read8(byte address, byte reg);
     int hilow_toint(byte high, byte low);
 };
 
