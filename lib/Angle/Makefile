@@ -3,23 +3,23 @@ include ../detectos
 .DEFAULT_GOAL = test
 
 BUILD_DIR = ./build
-TEST_RUNNER = $(BUILD_DIR)/TestRunner.exe
+SRCS := $(shell find . -name "*.cpp")
 
 ifeq ($(UNAME), Darwin)
-  GCC = g++-4.9
+  GCC = g++-9
 	GTEST_DIR = /usr/local/lib
 	GTEST_INCLUDE = /usr/local/include
+	TEST_RUNNER = $(BUILD_DIR)/TestRunner
 else
 	GCC = g++
 	GTEST_DIR = /home/Andy/googletest-1.10.x/googletest
 	GTEST_INCLUDE = /home/Andy/googletest-1.10.x/googletest
+	TEST_RUNNER = $(BUILD_DIR)/TestRunner.exe
 endif
-
-SRCS := $(shell find . -name "*.cpp")
 
 $(TEST_RUNNER): $(SRCS)
 	$(MKDIR_P) $(dir $@)
-	g++ -isystem ${GTEST_INCLUDE}/include -pthread $(SRCS) $(GTEST_DIR)/libgtest.a -o $(TEST_RUNNER)
+	$(GCC) -std=c++11 -I${GTEST_INCLUDE}/include -pthread $(SRCS) $(GTEST_DIR)/libgtest.a -o $(TEST_RUNNER)
 
 test: $(TEST_RUNNER)
 	$(TEST_RUNNER)

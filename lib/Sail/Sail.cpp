@@ -1,6 +1,8 @@
 #include "Sail.h"
 #include "Angle.h"
 
+using namespace Angle;
+
 Sail::Sail() {
 
 }

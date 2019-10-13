@@ -47,11 +47,11 @@ class AngleTest : public ::testing::Test {
   TEST_F(AngleTest, Should_convert_to_unsigned_angle) {
     EXPECT_EQ(to_uangle(0),0);
     EXPECT_EQ(to_uangle(-40),320);
-    EXPECT_EQ(add(-170),190);
-    EXPECT_EQ(add(-180),180);
-    EXPECT_EQ(add(180),180);
-    EXPECT_EQ(add(100),100);
-    EXPECT_EQ(add(30),30);
+    EXPECT_EQ(to_uangle(-170),190);
+    EXPECT_EQ(to_uangle(-180),180);
+    EXPECT_EQ(to_uangle(180),180);
+    EXPECT_EQ(to_uangle(100),100);
+    EXPECT_EQ(to_uangle(30),30);
   }
 
   // uangle -unsigned angle 0 - 359
@@ -84,16 +84,16 @@ class AngleTest : public ::testing::Test {
 
   // conversion
   TEST_F(AngleTest, Should_convert_to_signed_angle) {
-    EXPECT_EQ(to_uangle(0),0);
-    EXPECT_EQ(to_uangle(40),50);
-    EXPECT_EQ(add(170),170);
-    EXPECT_EQ(add(179),179);
-    EXPECT_EQ(add(180),180);
-    EXPECT_EQ(add(181),-179);
-    EXPECT_EQ(add(260),-100);
-    EXPECT_EQ(add(330),-30);
+    EXPECT_EQ(to_angle(0),0);
+    EXPECT_EQ(to_angle(40),40);
+    EXPECT_EQ(to_angle(170),170);
+    EXPECT_EQ(to_angle(179),179);
+    EXPECT_EQ(to_angle(180),180);
+    EXPECT_EQ(to_angle(181),-179);
+    EXPECT_EQ(to_angle(260),-100);
+    EXPECT_EQ(to_angle(330),-30);
   }
-  
+
 } // namespace
 
 int main(int argc, char **argv) {

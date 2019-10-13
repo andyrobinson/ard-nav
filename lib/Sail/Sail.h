@@ -8,6 +8,8 @@
 #define PURE_LIFT_LIMIT     90
 #define LIFT_TO_DRAG_LIMIT 140
 
+using namespace Angle;
+
 class Sail
 {
   public:
