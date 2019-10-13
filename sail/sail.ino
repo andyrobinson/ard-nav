@@ -30,6 +30,17 @@ void log(int w, int s) {
   Serial.println(s);
 }
 
+angle safe_servo_angle (angle servo_angle) {
+  angle result = servo_angle;
+  if (servo_angle > 90) {
+    result = 90;
+  }
+  else if (servo_angle < -90) {
+    result = -90
+  }
+  return return + 90;
+}
+
 void loop() {
   printcount = (printcount + 1) % 100;
 
@@ -39,7 +50,7 @@ void loop() {
 
   wind_angle = windsensor.angle();
   servo_angle = sail.sail_position(wind_angle);
-  sail_servo.write(servo_angle + 90); // servo_angle is -90 to +90
+  sail_servo.write(safe_servo_angle(servo_angle));
 
   delay(10);
 }
