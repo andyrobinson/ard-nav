@@ -8,7 +8,7 @@ Sail::Sail() {
 }
 
 angle Sail::sail_position(angle relative_wind) {
-  angle wind_magnitude = abs(relative_wind);
+  angle wind_magnitude = abs1(relative_wind);
   angle position_magnitude = 0;
   if (wind_magnitude <= NO_GO_LIMIT) {
     position_magnitude = 0;
@@ -29,6 +29,6 @@ short Sail::sign(short n) {
   return (n > 0) ? 1 : ((n < 0) ? -1 : 0);
 }
 
-short Sail::abs(short n) {
-  return (n >= 0) ? n : -n;
+short Sail::abs1(short n) {
+  return (n > 0) ? n : -n;
 }

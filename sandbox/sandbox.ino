@@ -3,10 +3,11 @@
 #include <Wire.h>
 #include <WindSensor.h>
 #include <Compass.h>
-#include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <Adafruit_GFX.h>
 #include <math.h>
 #include <Servo.h>
+#include <Angle.h>
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
@@ -27,6 +28,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
   &SPI, OLED_DC, OLED_RESET, OLED_CS);
 */
+using namespace Angle;
 
 WindSensor windsensor;
 Compass compass;
@@ -63,7 +65,7 @@ void loop() {
   display.setTextSize(1);      // Normal 1:1 pixel scale
   display.setTextColor(WHITE); // Draw white text
 
-  int angle = windsensor.angle();
+  angle wind = windsensor.relative();
   MagResult bearing = compass.bearing();
   MagResult accel = compass.accel();
 
@@ -80,7 +82,7 @@ void loop() {
   double y_final = ((double) bearing.y)*cos_roll-((double) bearing.z) * sin_roll;
   int tiltadjust = (360 + round(57.2958 * (atan2(y_final,x_final)))) % 360;
   
-  sprintf (anglebuff,"Wind: %d",angle);
+  sprintf (anglebuff,"Wind: %d",wind);
   sprintf (bearingbuff,"Comp: %d Tilt: %d",heading,tiltadjust);
   sprintf (accelbuff,"Accel: %d %d %d",accel.x,accel.y, accel.z);
 

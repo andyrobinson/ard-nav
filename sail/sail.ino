@@ -18,9 +18,9 @@ void setup() {
   Serial.begin(9600);
   Serial.println(F("Initialising"));
 
-  sail = new Sail();
+  sail = Sail();
   windsensor.begin();
-  servo.attach(4);
+  sail_servo.attach(4);
 }
 
 void log(int w, int s) {
@@ -36,9 +36,9 @@ angle safe_servo_angle (angle servo_angle) {
     result = 90;
   }
   else if (servo_angle < -90) {
-    result = -90
+    result = -90;
   }
-  return return + 90;
+  return result + 90;
 }
 
 void loop() {
@@ -48,7 +48,7 @@ void loop() {
     log(wind_angle, servo_angle);
   }
 
-  wind_angle = windsensor.angle();
+  wind_angle = windsensor.relative();
   servo_angle = sail.sail_position(wind_angle);
   sail_servo.write(safe_servo_angle(servo_angle));
 

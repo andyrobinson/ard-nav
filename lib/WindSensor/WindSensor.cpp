@@ -12,7 +12,7 @@ void WindSensor::begin() {
   Wire.begin();
 }
 
-angle WindSensor::angle() {
+angle WindSensor::relative() {
   byte endTransResult;
   angle result = 0;
   uint16_t raw_result = 0;
@@ -30,7 +30,7 @@ angle WindSensor::angle() {
     byte lower6bits = Wire.read();
 
     raw_result = (((uint16_t) upper8bits) << 6) + (lower6bits & 0x3F);
-    result = to_angle(360 - round((((float) raw_result)/16383.0) * 360.0)) % 360);
+    result = to_angle(360 - round((((float) raw_result)/16383.0) * 360.0) % 360);
 
     return result;
   }

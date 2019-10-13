@@ -18,7 +18,7 @@ class Sail
 
   private:
     short sign(short n);
-    short abs(short n);
+    short abs1(short n);
 };
 
 #endif
