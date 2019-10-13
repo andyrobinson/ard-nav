@@ -8,7 +8,7 @@ SRCS := $(shell find . -name "*.cpp") ../Angle/Angle.cpp
 INCLUDES = ../Angle/
 
 ifeq ($(UNAME), Darwin)
-  GCC = g++-9
+  GCC = g++-9 -std=c++11 
 	GTEST_DIR = /usr/local/lib
 	GTEST_INCLUDE = /usr/local/include
 else
@@ -19,7 +19,7 @@ endif
 
 $(TEST_RUNNER): $(SRCS)
 	$(MKDIR_P) $(dir $@)
-	$(GCC) -std=c++11 -isystem ${GTEST_DIR}/include -I$(INCLUDES) -pthread $(SRCS) $(GTEST_DIR)/libgtest.a -o $(TEST_RUNNER)
+	$(GCC) -isystem ${GTEST_DIR}/include -I$(INCLUDES) -pthread $(SRCS) $(GTEST_DIR)/libgtest.a -o $(TEST_RUNNER)
 
 test: $(TEST_RUNNER)
 	$(TEST_RUNNER)

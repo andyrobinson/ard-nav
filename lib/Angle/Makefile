@@ -6,7 +6,7 @@ BUILD_DIR = ./build
 SRCS := $(shell find . -name "*.cpp")
 
 ifeq ($(UNAME), Darwin)
-  GCC = g++-9
+  GCC = g++-9 -std=c++11
 	GTEST_DIR = /usr/local/lib
 	GTEST_INCLUDE = /usr/local/include
 	TEST_RUNNER = $(BUILD_DIR)/TestRunner
@@ -19,7 +19,7 @@ endif
 
 $(TEST_RUNNER): $(SRCS)
 	$(MKDIR_P) $(dir $@)
-	$(GCC) -std=c++11 -I${GTEST_INCLUDE}/include -pthread $(SRCS) $(GTEST_DIR)/libgtest.a -o $(TEST_RUNNER)
+	$(GCC) -I${GTEST_INCLUDE}/include -pthread $(SRCS) $(GTEST_DIR)/libgtest.a -o $(TEST_RUNNER)
 
 test: $(TEST_RUNNER)
 	$(TEST_RUNNER)
