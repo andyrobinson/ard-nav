@@ -1,6 +1,6 @@
 .DEFAULT_GOAL = copylibs
 
-LIBS = Windsensor
+LIBS = Windsensor Sail Angle
 # For libs that require all files, not just the standard .cpp and .h
 LIBS_ALL =
 DEST_DIR = ./libraries

@@ -1,15 +1,22 @@
 #ifndef Sail_h
 #define Sail_h
 
+#include "Angle.h"
+
+#define NO_GO_LIMIT         40
+#define ANGLE_OF_ATTACK     20
+#define PURE_LIFT_LIMIT     90
+#define LIFT_TO_DRAG_LIMIT 140
+
 class Sail
 {
   public:
     Sail();
-    int sail_position(int relative_wind);
+    angle sail_position(angle relative_wind);
 
   private:
-    int sign(int n);
-    int abs(int n);
+    short sign(short n);
+    short abs(short n);
 };
 
 #endif

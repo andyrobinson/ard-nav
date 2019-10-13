@@ -36,20 +36,22 @@ class AngleTest : public ::testing::Test {
     EXPECT_EQ(anticlock(-170,60),130);
   }
 
-  TEST_F(AngleTest, AShould_work_with_both_signs_and_wrap_around) {
-    EXPECT_EQ(uadd(40,40),80);
+  TEST_F(AngleTest, Should_work_with_both_signs_and_wrap_around) {
+    EXPECT_EQ(add(40,40),80);
+    EXPECT_EQ(add(-160,200),40);
+    EXPECT_EQ(add(40,-180),-140);
+    EXPECT_EQ(add(-90,-40),-130);
   }
 
-  TEST_F(AngleTest, BShould_work_with_both_signs_and_wrap_around) {
-    EXPECT_EQ(uadd(-160,200),40);
-  }
-
-  TEST_F(AngleTest, CShould_work_with_both_signs_and_wrap_around) {
-    EXPECT_EQ(uadd(40,-180),-140);
-  }
-
-  TEST_F(AngleTest, DShould_work_with_both_signs_and_wrap_around) {
-    EXPECT_EQ(uadd(-90,-40),-130);
+  // conversion
+  TEST_F(AngleTest, Should_convert_to_unsigned_angle) {
+    EXPECT_EQ(to_uangle(0),0);
+    EXPECT_EQ(to_uangle(-40),320);
+    EXPECT_EQ(add(-170),190);
+    EXPECT_EQ(add(-180),180);
+    EXPECT_EQ(add(180),180);
+    EXPECT_EQ(add(100),100);
+    EXPECT_EQ(add(30),30);
   }
 
   // uangle -unsigned angle 0 - 359
@@ -80,6 +82,18 @@ class AngleTest : public ::testing::Test {
     EXPECT_EQ(uadd(270,-40),230);
   }
 
+  // conversion
+  TEST_F(AngleTest, Should_convert_to_signed_angle) {
+    EXPECT_EQ(to_uangle(0),0);
+    EXPECT_EQ(to_uangle(40),50);
+    EXPECT_EQ(add(170),170);
+    EXPECT_EQ(add(179),179);
+    EXPECT_EQ(add(180),180);
+    EXPECT_EQ(add(181),-179);
+    EXPECT_EQ(add(260),-100);
+    EXPECT_EQ(add(330),-30);
+  }
+  
 } // namespace
 
 int main(int argc, char **argv) {

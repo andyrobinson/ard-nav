@@ -1,19 +1,20 @@
 #include "Sail.h"
+#include "Angle.h"
 
 Sail::Sail() {
 
 }
 
-int Sail::sail_position(int relative_wind) {
-  int wind_magnitude = abs(relative_wind);
-  int position_magnitude = 0;
-  if (wind_magnitude <=40) {
+angle Sail::sail_position(angle relative_wind) {
+  angle wind_magnitude = abs(relative_wind);
+  angle position_magnitude = 0;
+  if (wind_magnitude <= NO_GO_LIMIT) {
     position_magnitude = 0;
   }
-  else if (wind_magnitude <= 90) {
-      position_magnitude = wind_magnitude - 20;
+  else if (wind_magnitude <= PURE_LIFT_LIMIT) {
+      position_magnitude = wind_magnitude - ANGLE_OF_ATTACK;
   }
-  else if (wind_magnitude <= 140) {
+  else if (wind_magnitude <= LIFT_TO_DRAG_LIMIT) {
     position_magnitude = 70;
   }
   else {
@@ -22,10 +23,10 @@ int Sail::sail_position(int relative_wind) {
   return sign(relative_wind) * position_magnitude;
 }
 
-int Sail::sign(int n) {
+short Sail::sign(short n) {
   return (n > 0) ? 1 : ((n < 0) ? -1 : 0);
 }
 
-int Sail::abs(int n) {
+short Sail::abs(short n) {
   return (n >= 0) ? n : -n;
 }

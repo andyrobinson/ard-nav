@@ -14,6 +14,10 @@ namespace Angle {
       return (angle) result;
     }
 
+    uangle to_uangle(angle a) {
+      return (a >= 0) ? a : (360 + a);
+    }
+
     uangle uclockwise(uangle start, uangle delta) {
       return (start + delta) % 360;
     }
@@ -24,5 +28,9 @@ namespace Angle {
 
     uangle uadd(uangle start, angle delta) {
     return (start + 360 + delta) % 360;    }
+
+    angle to_angle(uangle ua) {
+      return (ua <= 180) ? ua : (ua - 360);
+    }
 
 }

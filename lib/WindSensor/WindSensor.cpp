@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "Wire.h"
 #include "WindSensor.h"
+#include "Angle.h"
 
 WindSensor::WindSensor() {
 
@@ -11,9 +12,9 @@ void WindSensor::begin() {
   Wire.begin();
 }
 
-int WindSensor::angle() {
+angle WindSensor::angle() {
   byte endTransResult;
-  int result = 0;
+  angle result = 0;
   uint16_t raw_result = 0;
 
   Wire.beginTransmission(WINDSENSOR_AS5048B_I2C_ADDRESS);
@@ -29,7 +30,7 @@ int WindSensor::angle() {
     byte lower6bits = Wire.read();
 
     raw_result = (((uint16_t) upper8bits) << 6) + (lower6bits & 0x3F);
-    result = (360 - round((((float) raw_result)/16383.0) * 360.0)) % 360;
+    result = to_angle(360 - round((((float) raw_result)/16383.0) * 360.0)) % 360);
 
     return result;
   }

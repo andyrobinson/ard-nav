@@ -3,31 +3,43 @@
 #include <WindSensor.h>
 #include <math.h>
 #include <Servo.h>
+#include <Angle.h>
+#include <Sail.h>
 
 WindSensor windsensor;
-Servo servo;  
+Servo sail_servo;
+Sail sail;
 
-int servoposition = 0; 
 int printcount = 0;
-int angle = 0;
+angle wind_angle = 0;
+angle servo_angle = 0;
 
 void setup() {
   Serial.begin(9600);
-
   Serial.println(F("Initialising"));
 
+  sail = new Sail();
   windsensor.begin();
   servo.attach(4);
 }
 
+void log(int w, int s) {
+  Serial.print("wind: ");
+  Serial.print(w);
+  Serial.print(" sail angle:");
+  Serial.println(s);
+}
+
 void loop() {
   printcount = (printcount + 1) % 100;
+
   if (printcount == 0) {
-    Serial.print("reading: ");
-    Serial.println(angle);
+    log(wind_angle, servo_angle);
   }
-  angle = windsensor.angle();
-  servoposition = angle/2;
-  servo.write(servoposition); 
+
+  wind_angle = windsensor.angle();
+  servo_angle = sail.sail_position(wind_angle);
+  sail_servo.write(servo_angle + 90); // servo_angle is -90 to +90
+
   delay(10);
 }
