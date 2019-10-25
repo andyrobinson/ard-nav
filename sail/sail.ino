@@ -38,7 +38,7 @@ angle safe_servo_angle (angle servo_angle) {
   else if (servo_angle < -90) {
     result = -90;
   }
-  return result + 90;
+  return 90 - result;
 }
 
 void loop() {

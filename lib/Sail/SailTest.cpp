@@ -34,25 +34,25 @@ TEST_F(SailTest, Should_Put_Sail_Straight_When_In_Irons) {
   EXPECT_EQ(sail.sail_position(0),0);
 }
 
-TEST_F(SailTest, Should_Put_Sail_Straight_Up_to_40_Starboard) {
+TEST_F(SailTest, Should_Put_Sail_Straight_Up_to_No_go_limit_Starboard) {
   Sail sail;
-  EXPECT_EQ(sail.sail_position(40),0);
+  EXPECT_EQ(sail.sail_position(NO_GO_LIMIT),0);
 }
 
-TEST_F(SailTest, Should_Put_Sail_Straight_Up_to_40_Port) {
+TEST_F(SailTest, Should_Put_Sail_Straight_Up_to_No_go_limit_Port) {
   Sail sail;
-  EXPECT_EQ(sail.sail_position(-40),0);
+  EXPECT_EQ(sail.sail_position(-NO_GO_LIMIT),0);
 }
 
 TEST_F(SailTest, Should_Put_Sail_Angle_of_attack_at_20_on_Tack) {
   Sail sail;
-  EXPECT_EQ(sail.sail_position(45),25);
-  EXPECT_EQ(sail.sail_position(55),35);
-  EXPECT_EQ(sail.sail_position(65),45);
-  EXPECT_EQ(sail.sail_position(75),55);
-  EXPECT_EQ(sail.sail_position(90),70);
+  EXPECT_EQ(sail.sail_position(45),45 - ANGLE_OF_ATTACK);
+  EXPECT_EQ(sail.sail_position(55),55 - ANGLE_OF_ATTACK);
+  EXPECT_EQ(sail.sail_position(65),65 - ANGLE_OF_ATTACK);
+  EXPECT_EQ(sail.sail_position(75),75 - ANGLE_OF_ATTACK);
+  EXPECT_EQ(sail.sail_position(90),90 - ANGLE_OF_ATTACK);
 
-  EXPECT_EQ(sail.sail_position(-65),-45);
+  EXPECT_EQ(sail.sail_position(-65),-65 + ANGLE_OF_ATTACK);
 }
 
 TEST_F(SailTest, Should_Allow_Wind_to_increase_angle_of_attack_between_90_145) {
