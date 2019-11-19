@@ -1,5 +1,6 @@
 #include "Sail.h"
 #include "gtest/gtest.h"
+#include "Servo.h"
 
 namespace {
 
@@ -28,6 +29,12 @@ class SailTest : public ::testing::Test {
 
   // Objects declared here can be used by all tests in the test suite for Foo.
 };
+
+TEST_F(SailTest, Stub_servo_should_record_last_position) {
+  Servo servo;
+  servo.write(88);
+  EXPECT_EQ(servo.write_last_called(), 88);
+}
 
 TEST_F(SailTest, Should_Put_Sail_Straight_When_In_Irons) {
   Sail sail;
