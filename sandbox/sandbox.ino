@@ -3,31 +3,29 @@
 #include <Wire.h>
 #include <WindSensor.h>
 #include <Compass.h>
-#include <Adafruit_SSD1306.h>
-#include <Adafruit_GFX.h>
 #include <math.h>
 #include <Servo.h>
 #include <Angle.h>
 
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 32 // OLED display height, in pixels
+// to replace with real serial port
+SoftwareSerial mySerial(3, 2);
 
-// Declaration for SSD1306 display connected using software SPI (default case):
-#define OLED_MOSI   9
-#define OLED_CLK   10
-#define OLED_DC    11
-#define OLED_CS    12
-#define OLED_RESET 13
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
-  OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
+#define PMTK_SET_NMEA_UPDATE_1HZ  "$PMTK220,1000*1F"
+#define PMTK_SET_NMEA_UPDATE_5HZ  "$PMTK220,200*2C"
+#define PMTK_SET_NMEA_UPDATE_10HZ "$PMTK220,100*2F"
 
-/* Comment out above, uncomment this block to use hardware SPI
-#define OLED_DC     6
-#define OLED_CS     7
-#define OLED_RESET  8
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
-  &SPI, OLED_DC, OLED_RESET, OLED_CS);
-*/
+// turn on only the second sentence (GPRMC)
+#define PMTK_SET_NMEA_OUTPUT_RMCONLY "$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29"
+// turn on GPRMC and GGA
+#define PMTK_SET_NMEA_OUTPUT_RMCGGA "$PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28"
+// turn on ALL THE DATA
+#define PMTK_SET_NMEA_OUTPUT_ALLDATA "$PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28"
+// turn off output
+#define PMTK_SET_NMEA_OUTPUT_OFF "$PMTK314,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28"
+
+#define PMTK_Q_RELEASE "$PMTK605*31"
+
+
 using namespace Angle;
 
 WindSensor windsensor;
@@ -36,35 +34,39 @@ Servo servo;
 int servoposition = 0; 
 int servoinc = 1;
 
+
 void setup() {
+  while (!Serial); // wait for Serial to be ready
+
+  Serial.begin(57600); // this baud rate doesn't actually matter!
+  mySerial.begin(9600);
+  delay(2000);
+  Serial.println("Get version!");
+  mySerial.println(PMTK_Q_RELEASE);
+
+  // you can send various commands to get it started
+  //mySerial.println(PMTK_SET_NMEA_OUTPUT_RMCGGA);
+  mySerial.println(PMTK_SET_NMEA_OUTPUT_ALLDATA);
+
+  mySerial.println(PMTK_SET_NMEA_UPDATE_1HZ);
   Serial.begin(9600);
-
-  // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-  if(!display.begin(SSD1306_SWITCHCAPVCC)) {
-    Serial.println(F("SSD1306 allocation failed"));
-    for(;;); // Don't proceed, loop forever
-  }
-
-  // Clear the buffer
-  display.clearDisplay();
   windsensor.begin();
   compass.begin();
-
-  servo.attach(4);
-
+  servo.attach(5);
 }
 
 void loop() {
+  if (Serial.available()) {
+   char c = Serial.read();
+   Serial.write(c);
+   mySerial.write(c);
+  }
+  if (mySerial.available()) {
+    char c = mySerial.read();
+    Serial.write(c);
+  }
 
-  char anglebuff[20];
-
-  char bearingbuff[20];
-  char accelbuff[20];
-
-  display.clearDisplay();
-  display.setTextSize(1);      // Normal 1:1 pixel scale
-  display.setTextColor(WHITE); // Draw white text
-
+  char buf[20];
   angle wind = windsensor.relative();
   MagResult bearing = compass.bearing();
   MagResult accel = compass.accel();
@@ -82,13 +84,12 @@ void loop() {
   double y_final = ((double) bearing.y)*cos_roll-((double) bearing.z) * sin_roll;
   int tiltadjust = (360 + round(57.2958 * (atan2(y_final,x_final)))) % 360;
   
-  sprintf (anglebuff,"Wind: %d",wind);
-  sprintf (bearingbuff,"Comp: %d Tilt: %d",heading,tiltadjust);
-  sprintf (accelbuff,"Accel: %d %d %d",accel.x,accel.y, accel.z);
-
-  messageAt(1,anglebuff);
-  messageAt(2,bearingbuff);
-  messageAt(3,accelbuff);
+  sprintf(buf, "Wind: %d",wind);
+  Serial.println(buf);
+  sprintf(buf, "Comp: %d Tilt: %d",heading,tiltadjust);
+  Serial.println(buf);
+  sprintf(buf, "Accel: %d %d %d",accel.x,accel.y, accel.z);
+  Serial.println(buf);
 
   servoposition = servoposition + servoinc;
 
@@ -100,72 +101,6 @@ void loop() {
     servoinc = -servoinc;
   }
   
-  delay(100);
+  delay(1000);
 
-}
-
-
-String displaybuff[4]={"","","",""};
-
-void messageAt(int y, String msg) {
-
-  displaybuff[y] = msg;
-  display.clearDisplay();
-
-  for (int j = 0; j < 4; j++) {
-    display.setCursor(0,8*j);
-    display.println(displaybuff[j]);
-  }
-  display.display();
-}
-
-void displayMessage(String msg) {
-  display.clearDisplay();
-
-  display.setTextSize(1);             // Normal 1:1 pixel scale
-  display.setTextColor(WHITE);        // Draw white text
-  display.setCursor(0,0);             // Start at top-left corner
-  display.println(msg);
-
-  display.display();
-  delay(2000);
-
-}
-
-void testdrawchar(void) {
-  display.clearDisplay();
-
-  display.setTextSize(1);      // Normal 1:1 pixel scale
-  display.setTextColor(WHITE); // Draw white text
-  display.setCursor(0, 0);     // Start at top-left corner
-  display.cp437(true);         // Use full 256 char 'Code Page 437' font
-
-  // Not all the characters will fit on the display. This is normal.
-  // Library will draw what it can and the rest will be clipped.
-  for(int16_t i=0; i<256; i++) {
-    if(i == '\n') display.write(' ');
-    else          display.write(i);
-  }
-
-  display.display();
-  delay(2000);
-}
-
-void testdrawstyles(void) {
-  display.clearDisplay();
-
-  display.setTextSize(1);             // Normal 1:1 pixel scale
-  display.setTextColor(WHITE);        // Draw white text
-  display.setCursor(0,0);             // Start at top-left corner
-  display.println(F("Hello, world!"));
-
-  display.setTextColor(BLACK, WHITE); // Draw 'inverse' text
-  display.println(3.141592);
-
-  display.setTextSize(2);             // Draw 2X-scale text
-  display.setTextColor(WHITE);
-  display.print(F("0x")); display.println(0xDEADBEEF, HEX);
-
-  display.display();
-  delay(2000);
 }
