@@ -2,7 +2,7 @@
 
 Servo::Servo() {};
 
-int last_called;
+int last_called(-2);
 
 void Servo::write(int value) {
   last_called = value;

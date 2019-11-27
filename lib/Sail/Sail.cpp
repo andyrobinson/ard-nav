@@ -3,8 +3,23 @@
 
 using namespace Angle;
 
-Sail::Sail() {
+Servo *sail_servo;
 
+Sail::Sail() {}
+
+Sail::Sail(Servo *servo) {
+  sail_servo = servo;
+}
+
+void Sail::set_position(angle relative_wind) {
+  angle servo_angle = sail_position(relative_wind);
+  if (servo_angle > 90) {
+    servo_angle = 90;
+  }
+  else if (servo_angle < -90) {
+    servo_angle = -90;
+  }
+  sail_servo->write((int) (90 - servo_angle));
 }
 
 angle Sail::sail_position(angle relative_wind) {
