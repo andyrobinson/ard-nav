@@ -3,8 +3,6 @@
 
 using namespace Angle;
 
-Servo *sail_servo;
-
 Sail::Sail() {}
 
 Sail::Sail(Servo *servo) {
@@ -12,14 +10,33 @@ Sail::Sail(Servo *servo) {
 }
 
 void Sail::set_position(angle relative_wind) {
-  angle servo_angle = sail_position(relative_wind);
-  if (servo_angle > 90) {
-    servo_angle = 90;
+  static angle last_position;
+  angle servo_0_to_180_angle;
+  last_position = gybe_check(last_position, sail_position(relative_wind));
+  if (last_position > SERVO_MAX_DISPLACEMENT) {
+    last_position = SERVO_MAX_DISPLACEMENT;
   }
-  else if (servo_angle < -90) {
-    servo_angle = -90;
+  else if (last_position < -SERVO_MAX_DISPLACEMENT) {
+    last_position = -SERVO_MAX_DISPLACEMENT;
   }
-  sail_servo->write((int) (90 - servo_angle));
+  servo_0_to_180_angle = SERVO_MAX_DISPLACEMENT - last_position;
+  sail_servo->write((int) servo_0_to_180_angle);
+}
+
+angle Sail::gybe_check(angle old_position, angle new_position) {
+  if(abs1(old_position) < GYBE_CHECK_LIMIT) {
+    return new_position; // not running
+  }
+
+  if(sign(old_position) == sign(new_position)) {
+    return new_position; // no potential gybe
+  }
+
+  if(abs1(abs1(old_position) - abs1(clockwise(new_position, 180))) > GYBE_CHECK_MAX_DIFF) {
+    return new_position; // too big a diff, so gybe
+  }
+
+  return sign(old_position) * FULL_RUN;
 }
 
 angle Sail::sail_position(angle relative_wind) {

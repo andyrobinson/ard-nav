@@ -6,21 +6,19 @@
 #include <Angle.h>
 #include <Sail.h>
 
+#define SAIL_SERVO_PIN 6
+#define RUDDER_SERVO_PIN 5
+
 WindSensor windsensor;
 Servo sail_servo;
-Sail sail;
-
-int printcount = 0;
-angle wind_angle = 0;
-angle servo_angle = 0;
+Sail sail(&sail_servo);
 
 void setup() {
   Serial.begin(9600);
   Serial.println(F("Initialising"));
 
-  sail = Sail();
   windsensor.begin();
-  sail_servo.attach(4);
+  sail_servo.attach(SAIL_SERVO_PIN);
 }
 
 void log(int w, int s) {
@@ -30,18 +28,11 @@ void log(int w, int s) {
   Serial.println(s);
 }
 
-angle safe_servo_angle (angle servo_angle) {
-  angle result = servo_angle;
-  if (servo_angle > 90) {
-    result = 90;
-  }
-  else if (servo_angle < -90) {
-    result = -90;
-  }
-  return 90 - result;
-}
-
 void loop() {
+  int printcount = 0;
+  angle wind_angle = 0;
+  angle servo_angle = 0;
+  
   printcount = (printcount + 1) % 100;
 
   if (printcount == 0) {
@@ -49,8 +40,8 @@ void loop() {
   }
 
   wind_angle = windsensor.relative();
-  servo_angle = sail.sail_position(wind_angle);
-  sail_servo.write(safe_servo_angle(servo_angle));
+  sail.set_position(wind_angle);
+  servo_angle = sail_servo.read();
 
   delay(10);
 }
