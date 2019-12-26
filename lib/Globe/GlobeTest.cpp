@@ -34,7 +34,7 @@ class GlobeTest : public ::testing::Test {
 };
 
 TEST_F(GlobeTest, Globe_should_do_something) {
-  Position test_pos = globe.new_position({2.0,2.0}, 56, 2.6);
+  position test_pos = globe.new_position({2.0,2.0}, 56, 2.6);
   EXPECT_EQ(test_pos.latitude, 99.0);
 }
 

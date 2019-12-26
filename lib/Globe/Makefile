@@ -1,9 +1,11 @@
+include ../detectos
+
 .DEFAULT_GOAL = test
 
 BUILD_DIR = ./build
 TEST_RUNNER = $(BUILD_DIR)/TestRunner.exe
 
-SRCS := $(shell find . -name "*.cpp") ../Angle/Angle.cpp ../Position/Position.cpp
+SRCS := $(shell find . -name "*.cpp") ../Angle/Angle.cpp
 INCLUDES = ../Angle/ ../Position/
 INC_PARAMS=$(foreach d, $(INCLUDES), -I$d)
 

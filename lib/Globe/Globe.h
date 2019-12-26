@@ -13,12 +13,12 @@ class Globe
 {
   public:
     Globe();
-    double distance_between(Position *start, Position *finish);
-    Angle bearing(Position *start, Position *finish);
-    Position new_position(Position *start, angle bearing, double distance);
+    double distance_between(position *start, position *finish);
+    angle bearing(position *start, position *finish);
+    position new_position(position *start, angle bearing, double distance);
 
   private:
-    double to_radians(Angle angle);
+    double to_radians(angle angle);
 
 };
 
