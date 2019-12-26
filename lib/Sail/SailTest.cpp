@@ -32,9 +32,14 @@ class SailTest : public ::testing::Test {
   }
 
   // Objects declared here can be used by all tests in the test suite for Foo.
+<<<<<<< Updated upstream
   int servo_position(int pos_90_each_side_of_zero) {
     int servo_0_to_180 = 90 - pos_90_each_side_of_zero;
     return servo_0_to_180;
+=======
+  int servo_position(int pos) {
+    return 90 - pos; // 180 is far left, 0 is far right, or maybe the other way round
+>>>>>>> Stashed changes
   }
 
 };
