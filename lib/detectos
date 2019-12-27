@@ -4,6 +4,7 @@ else
 ifneq (,$(findstring WINDOWS,$(PATH)))
     UNAME := Windows
 else
-    UNAME := $(shell uname -s)
+    UNAME := $(shell sh -c 'uname 2>/dev/null || echo Unknown')
 endif
 endif
+$(info Operating system is [$(UNAME)])

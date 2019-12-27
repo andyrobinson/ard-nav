@@ -3,12 +3,12 @@
 
 namespace Position {
 
-  typedef struct Position {
+  typedef struct {
      double latitude;
      double longitude;
-     double latError = 0.0;
-     double longError = 0.0;
-  };
+     double latError;
+     double longError;
+  } position;
 
 }
 
