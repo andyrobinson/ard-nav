@@ -3,10 +3,7 @@
 #include "WindSensor.h"
 #include "Angle.h"
 
-WindSensor::WindSensor() {
-
-}
-
+WindSensor::WindSensor() {}
 
 void WindSensor::begin() {
   Wire.begin();
