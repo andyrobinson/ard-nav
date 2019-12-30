@@ -2,6 +2,8 @@
 #define Compass_h
 
 #include "Arduino.h"
+#include "Angle.h"
+
 #define COMPASS_COMPASS_I2C_ADDRESS 0x1E
 #define COMPASS_ACCEL_I2C_ADDRESS 0x19
 
@@ -20,11 +22,12 @@ class Compass
 {
   public:
     Compass();
-    MagResult bearing();
-    MagResult accel();
+    uangle bearing();
     void begin();
 
   private:
+    MagResult raw_bearing();
+    MagResult raw_accel();
     int hilow_toint(byte high, byte low);
     void write8(byte address, byte reg, byte value);
 };

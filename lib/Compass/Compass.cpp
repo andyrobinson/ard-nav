@@ -1,10 +1,7 @@
-#include "Arduino.h"
 #include "Wire.h"
 #include "Compass.h"
 
-Compass::Compass() {
-
-}
+Compass::Compass() {}
 
 void Compass::begin() {
   Wire.begin();
@@ -16,7 +13,27 @@ void Compass::begin() {
   write8(COMPASS_ACCEL_I2C_ADDRESS, COMPASS_ACCEL_CTRL_REG1_A, 0x27);
 }
 
-MagResult Compass::bearing() {
+uangle Compass::bearing() {
+   MagResult bearing = raw_bearing();
+   MagResult accel = raw_accel();
+
+   int heading = (360 + round(57.2958 * atan2((double) bearing.y, (double) bearing.x))) % 360;
+
+   double roll = atan2((double)accel.y, (double)accel.z);
+   double pitch = atan2((double) -accel.x, (double) accel.z); // reversing x accel makes it work
+   double sin_roll = sin(roll);
+   double cos_roll = cos(roll);
+   double cos_pitch = cos(pitch);
+   double sin_pitch = sin(pitch);
+
+   double x_final = ((double) bearing.x) * cos_pitch + ((double) bearing.y)*sin_roll*sin_pitch+((double) bearing.z)*cos_roll*sin_pitch;
+   double y_final = ((double) bearing.y) * cos_roll-((double) bearing.z) * sin_roll;
+   uangle tiltadjust = (360 + round(57.2958 * (atan2(y_final,x_final)))) % 360;
+
+   return uangle;
+}
+
+MagResult Compass::raw_bearing() {
   Wire.beginTransmission((byte) COMPASS_COMPASS_I2C_ADDRESS);
   Wire.write(COMPASS_REGISTER_X_HIGH);
   Wire.endTransmission();
@@ -34,7 +51,7 @@ MagResult Compass::bearing() {
   return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
 }
 
-MagResult Compass::accel() {
+MagResult Compass::raw_accel() {
 
   Wire.beginTransmission((byte) COMPASS_ACCEL_I2C_ADDRESS);
   Wire.write(ACCEL_REGISTER_OUT_X_L_A | 0x80);
