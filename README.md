@@ -18,7 +18,7 @@ The other folders represent Arduino applications.  Again each folder has a makef
 ## Current libraries
 
 * Angle - utilities for dealing with angles and signed -180 to +180 (angle) and unsigned 0 - 359 (uangle) types.
-* Compass - wrapper for the Adafruit LSM303DLHC compass module
+* Compass - wrapper for the Adafruit LSM303DLHC compass module, with tilt adjustment
 * Globe - lat/long calculations  
 * Position - lat/long struct with error values
 * Sail - sailing logic; set sail angle according to relative wind, only gybe when necessary
