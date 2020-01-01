@@ -15,6 +15,13 @@ The other folders represent Arduino applications.  Again each folder has a makef
   1. Run make to copy the latest library source files
   2. Run the Arduino IDE, set the library folder to the correct one for the project, then build the application and upload it on to the board.
 
+## Standards
+
+* All rotary measurements are in degrees, either as integers (default) or doubles (only where needed)
+* For calculations other than latitude/longitude to the nearest whole degree is sufficient
+* All linear measurements are in metres (GPS speed should be converted to metres/sec)
+* All time measurements are in milliseconds
+
 ## Current libraries
 
 * Angle - utilities for dealing with angles and signed -180 to +180 (angle) and unsigned 0 - 359 (uangle) types.
@@ -28,7 +35,7 @@ The other folders represent Arduino applications.  Again each folder has a makef
 ## Planned development
 
 1. Use the Arduino command line compiler to save having to use the IDE
-2. Extend the compass library so that it does the tilt adjustment calculations.  This is very hard to test, so probably just create a test application (See the sandbox)
+2. Create a wrapper around the GPS library to make it easy to use
 3. Create a Waypoint follower that follows a set of waypoints, optionally repeating them
 4. Create a Navigator that will navigate to a single position by asking the Helm to steer a course
 5. Create a Helm that will steer a course, either directly, or by executing a left/right tack
