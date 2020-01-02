@@ -12,6 +12,8 @@
 #define ACCEL_REGISTER_OUT_X_L_A       0x28
 #define COMPASS_ACCEL_CTRL_REG1_A      0x20
 
+using namespace Angle;
+
 struct MagResult {
   int x;
   int y;
