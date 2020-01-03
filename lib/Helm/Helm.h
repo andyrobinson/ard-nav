@@ -8,12 +8,12 @@ class Helm
 {
   public:
     Helm();
-    Helm(Rudder *rudder, Compass *compass);
+    Helm(Rudder *rudderp, Compass *compassp);
     void steer(uangle direction);
 
   private:
-    Rudder *rudder;
-    Compass *compass;
+    Rudder rudder;
+    Compass compass;
     angle rudder_position;
 
 };

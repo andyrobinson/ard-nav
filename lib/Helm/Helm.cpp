@@ -7,12 +7,12 @@ Helm::Helm() {
   rudder_position = 0;
 }
 
-Helm::Helm(Rudder *rudder, Compass *compass) {
-  rudder = rudder;
-  compass = compass;
+Helm::Helm(Rudder *rudderp, Compass *compassp) {
+  rudder = *rudderp;
+  compass = *compassp;
 }
 
 void Helm::steer(uangle direction) {
-    angle delta = udiff(compass->bearing(), direction);
-    rudder->set_position(delta/2);
+    angle delta = udiff(direction, compass.bearing());
+    rudder.set_position(delta/2);
 }
