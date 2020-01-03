@@ -99,6 +99,8 @@ class AngleTest : public ::testing::Test {
     EXPECT_EQ(udiff(10,20),10);
     EXPECT_EQ(udiff(50,23),-27);
     EXPECT_EQ(udiff(333,211),-122);
+    EXPECT_EQ(udiff(190,170),-20);
+    EXPECT_EQ(udiff(170,190),20);
   }
 
   TEST_F(AngleTest, UShould_never_exceed_180_in_either_direction) {
