@@ -1,5 +1,4 @@
 #include "Angle.h"
-#include "Util.h"
 #include "gtest/gtest.h"
 
 using namespace Angle;

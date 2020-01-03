@@ -1,7 +1,9 @@
 #include "Sail.h"
 #include "Angle.h"
+#include "Utility.h"
 
 using namespace Angle;
+using namespace Utility;
 
 Sail::Sail() {}
 
@@ -55,12 +57,4 @@ angle Sail::sail_position(angle relative_wind) {
     position_magnitude = (wind_magnitude / 2);
   }
   return sign(relative_wind) * position_magnitude;
-}
-
-short Sail::sign(short n) {
-  return (n > 0) ? 1 : ((n < 0) ? -1 : 0);
-}
-
-short Sail::abs1(short n) {
-  return (n > 0) ? n : -n;
 }

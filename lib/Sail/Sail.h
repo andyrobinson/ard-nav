@@ -25,8 +25,6 @@ class Sail
   private:
     angle sail_position(angle relative_wind);
     angle gybe_check(angle old_position, angle new_position);
-    short sign(short n);
-    short abs1(short n);
     Servo *sail_servo;
 
 };

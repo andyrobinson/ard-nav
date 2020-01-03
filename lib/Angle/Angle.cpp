@@ -1,4 +1,7 @@
 #include "Angle.h"
+#include "Utility.h"
+
+using namespace Utility;
 
 namespace Angle {
     angle clockwise(angle start, uangle delta) {
@@ -31,9 +34,8 @@ namespace Angle {
 
     angle udiff(uangle a, uangle b) {
       angle result = b - a;
-      if (result > 180) result = result - 360;
-      if (result < -180) result = result + 360;
-      return result;
+      if (abs1(result) < 180) return result;
+      return result - (sign(result) * 360);
     }
 
     angle to_angle(uangle ua) {

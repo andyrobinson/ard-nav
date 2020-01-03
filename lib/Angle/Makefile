@@ -4,6 +4,8 @@ include ../detectos
 
 BUILD_DIR = ./build
 SRCS := $(shell find . -name "*.cpp")
+INCLUDES = ../Utility/
+INC_PARAMS=$(foreach d, $(INCLUDES), -I$d)
 
 ifeq ($(UNAME), Darwin)
   GCC = g++-9 -std=c++11
@@ -19,7 +21,7 @@ endif
 
 $(TEST_RUNNER): $(SRCS)
 	$(MKDIR_P) $(dir $@)
-	$(GCC) -I${GTEST_INCLUDE}/include -pthread $(SRCS) $(GTEST_DIR)/libgtest.a -o $(TEST_RUNNER)
+	$(GCC) -I${GTEST_INCLUDE}/include $(INC_PARAMS) -pthread $(SRCS) $(GTEST_DIR)/libgtest.a -o $(TEST_RUNNER)
 
 test: $(TEST_RUNNER)
 	$(TEST_RUNNER)
