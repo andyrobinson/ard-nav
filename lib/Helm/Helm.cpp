@@ -13,6 +13,6 @@ Helm::Helm(Rudder *rudder, Compass *compass) {
 }
 
 void Helm::steer(uangle direction) {
-    angle delta = diff(compass->bearing(), direction);
+    angle delta = udiff(compass->bearing(), direction);
     rudder->set_position(delta/2);
 }

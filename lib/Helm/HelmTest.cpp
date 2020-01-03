@@ -19,12 +19,20 @@ TEST_F(HelmTest, Stub_rudder_should_record_last_position) {
 }
 
 // steer towards the requested heading
-TEST_F(HelmTest, Stub_steer_towards_the_requested_heading_using_half_the_difference) {
+TEST_F(HelmTest, Stub_steer_right_towards_the_requested_heading_using_half_the_difference) {
   stub_compass.set_bearing(0);
   stub_rudder.set_position(0);
   helm.steer(30);
   EXPECT_EQ(stub_rudder.get_position(), -15);
 }
+
+TEST_F(HelmTest, Stub_steer_left_towards_the_requested_heading_using_half_the_difference) {
+  stub_compass.set_bearing(190);
+  stub_rudder.set_position(0);
+  helm.steer(170);
+  EXPECT_EQ(stub_rudder.get_position(), 10);
+}
+
 
 // steer repeatedly over the specified period
 
