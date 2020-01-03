@@ -1,4 +1,5 @@
 #include "Angle.h"
+#include "Util.h"
 #include "gtest/gtest.h"
 
 using namespace Angle;
@@ -94,6 +95,22 @@ class AngleTest : public ::testing::Test {
     EXPECT_EQ(to_angle(330),-30);
   }
 
+  TEST_F(AngleTest, UShould_find_udiff_expressed_as_signed_angle_from_a_to_b) {
+    EXPECT_EQ(udiff(0,0),0);
+    EXPECT_EQ(udiff(10,20),10);
+    EXPECT_EQ(udiff(50,23),-27);
+    EXPECT_EQ(udiff(333,211),-122);
+  }
+
+  TEST_F(AngleTest, UShould_never_exceed_180_in_either_direction) {
+    EXPECT_EQ(udiff(200,10),170);
+    EXPECT_EQ(udiff(15,225),-150);
+  }
+
+  TEST_F(AngleTest, UShould_correct_find_differences_across_zero) {
+    EXPECT_EQ(udiff(350,5),15);
+    EXPECT_EQ(udiff(10,345),-25);
+  }
 } // namespace
 
 int main(int argc, char **argv) {

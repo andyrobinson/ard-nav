@@ -29,6 +29,13 @@ namespace Angle {
     uangle uadd(uangle start, angle delta) {
     return (start + 360 + delta) % 360;    }
 
+    angle udiff(uangle a, uangle b) {
+      angle result = b - a;
+      if (result > 180) result = result - 360;
+      if (result < -180) result = result + 360;
+      return result;
+    }
+
     angle to_angle(uangle ua) {
       return (ua <= 180) ? ua : (ua - 360);
     }

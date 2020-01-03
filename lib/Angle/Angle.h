@@ -13,6 +13,7 @@ namespace Angle {
     uangle uclockwise(uangle start, uangle delta);
     uangle uanticlock(uangle start, uangle delta);
     uangle uadd(uangle start, angle delta);
+    angle udiff(uangle a, uangle b);
     angle to_angle(uangle ua);
 }
 
