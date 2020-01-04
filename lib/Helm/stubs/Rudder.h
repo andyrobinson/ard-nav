@@ -13,8 +13,11 @@ class Rudder
     Rudder();
     void set_position(angle);
     angle get_position();
+    angle *get_positions();
+    void reset();
   private:
-    angle rudder_position;
+    angle rudder_positions[100];
+    int current_position;
 };
 
 #endif

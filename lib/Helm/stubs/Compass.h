@@ -10,9 +10,11 @@ class Compass
   public:
     Compass();
     uangle bearing();
-    void set_bearing(uangle new_bearing);
+    void set_bearings(uangle *bearings, int size);
   private:
-    uangle current_bearing;
+    int list_size;
+    int current_position;
+    uangle *response_list;
 };
 
 #endif
