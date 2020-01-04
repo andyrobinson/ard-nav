@@ -1,8 +1,6 @@
 #include "Compass.h"
 
-Compass::Compass() {
-  current_bearing = 0;
-}
+Compass::Compass():current_bearing(0) {}
 
 uangle Compass::bearing() {
    return current_bearing;

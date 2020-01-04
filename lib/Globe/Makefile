@@ -6,7 +6,7 @@ BUILD_DIR = ./build
 TEST_RUNNER = $(BUILD_DIR)/TestRunner.exe
 
 SRCS := $(shell find . -name "*.cpp") ../Angle/Angle.cpp
-INCLUDES = ../Angle/ ../Position/
+INCLUDES = ../Angle/ ../Position/ ../Utility/
 INC_PARAMS=$(foreach d, $(INCLUDES), -I$d)
 
 ifeq ($(UNAME), Darwin)

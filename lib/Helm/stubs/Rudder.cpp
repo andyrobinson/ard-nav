@@ -3,9 +3,7 @@
 
 using namespace Angle;
 
-Rudder::Rudder() {}
-
-angle rudder_position = 0;
+Rudder::Rudder():rudder_position(0) {}
 
 void Rudder::set_position(angle position) {
   rudder_position = position;

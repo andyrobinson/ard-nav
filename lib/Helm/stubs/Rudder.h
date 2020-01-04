@@ -13,6 +13,8 @@ class Rudder
     Rudder();
     void set_position(angle);
     angle get_position();
+  private:
+    angle rudder_position;
 };
 
 #endif

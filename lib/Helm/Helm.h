@@ -12,8 +12,8 @@ class Helm
     void steer(uangle direction);
 
   private:
-    Rudder rudder;
-    Compass compass;
+    Rudder *rudder;
+    Compass *compass;
     angle rudder_position;
 
 };
