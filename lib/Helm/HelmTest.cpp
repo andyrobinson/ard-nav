@@ -51,7 +51,6 @@ TEST_F(HelmTest, Should_not_exceed_maximum_rudder_displacement_right) {
   EXPECT_EQ(stub_rudder.get_position(), 45);
 }
 
-
 // steer repeatedly over the specified period
 
 // correct the course if the current rudder is too ineffective
