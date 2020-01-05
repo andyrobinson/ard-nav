@@ -14,7 +14,7 @@ Servo sail_servo;
 Sail sail(&sail_servo);
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(19200);
   Serial.println(F("Initialising"));
 
   windsensor.begin();
@@ -32,7 +32,7 @@ void loop() {
   int printcount = 0;
   angle wind_angle = 0;
   angle servo_angle = 0;
-  
+
   printcount = (printcount + 1) % 100;
 
   if (printcount == 0) {

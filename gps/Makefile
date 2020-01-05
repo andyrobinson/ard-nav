@@ -26,7 +26,8 @@ compile: $(notdir $(CURDIR)).ino $(DST_FILES)
 	cp -rpv $(DEST_DIR)/* $(ARDUINO_LIB_DIR)
 	arduino-cli compile --fqbn arduino:samd:arduino_zero_edbg ../$(notdir $(CURDIR))
 
-$(notdir $(CURDIR)).*.bin: compile
+$(notdir $(CURDIR)).*.bin: $(notdir $(CURDIR)).ino $(DST_FILES)
+	$(MAKE) compile
 
 upload: $(notdir $(CURDIR)).*.bin
 	 arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:samd:arduino_zero_edbg ../$(notdir $(CURDIR))

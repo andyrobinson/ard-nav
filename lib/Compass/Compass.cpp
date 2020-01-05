@@ -30,7 +30,7 @@ uangle Compass::bearing() {
    double y_final = ((double) bearing.y) * cos_roll-((double) bearing.z) * sin_roll;
    uangle tiltadjust = (360 + round(57.2958 * (atan2(y_final,x_final)))) % 360;
 
-   return uangle;
+   return tiltadjust;
 }
 
 MagResult Compass::raw_bearing() {

@@ -10,7 +10,7 @@ char buf[20];
 
 void setup() {
   while (!Serial); // wait for Serial to be ready
-  Serial.begin(9600);
+  Serial.begin(19200);
   compass.begin();
 }
 
