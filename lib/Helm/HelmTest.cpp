@@ -73,6 +73,19 @@ TEST_F(HelmTest, Should_steer_repeatedly_given_overall_time_and_wait_time) {
   EXPECT_EQ(positions[2],0);
 }
 
+TEST_F(HelmTest, Should_steer_further_if_rudder_is_ineffective) {
+  uangle bearings[] = {190,190,190};
+  stub_compass.set_bearings(bearings, 3);
+
+  helm.steer(230, 3, 1);
+
+  angle *positions = stub_rudder.get_positions();
+  EXPECT_EQ(positions[0],-20);
+  EXPECT_EQ(positions[1],-40);
+  EXPECT_EQ(positions[2],-45);
+}
+
+
 // correct the course if the current rudder is too ineffective
 
 // (introduce the absolute wind direction)
