@@ -12,7 +12,6 @@ class Rudder
   public:
     Rudder();
     void set_position(angle);
-    angle get_position();
     angle *get_positions();
     void reset();
   private:

@@ -9,10 +9,6 @@ void Rudder::set_position(angle position) {
   rudder_positions[current_position++] = position;
 }
 
-angle Rudder::get_position() {
-  return rudder_positions[current_position-1];
-}
-
 angle *Rudder::get_positions() {
   return rudder_positions;
 }

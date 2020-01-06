@@ -12,11 +12,19 @@ Helm helm(&stub_rudder, &stub_compass, &stub_timer);
 class HelmTest : public ::testing::Test {
  protected:
   HelmTest() {}
+
+  void SetUp() override {
+    stub_rudder.reset();
+  }
+
+  angle rudder_position() {
+    return *stub_rudder.get_positions();
+  }
 };
 
 TEST_F(HelmTest, Stub_rudder_should_record_last_position) {
   stub_rudder.set_position(27);
-  EXPECT_EQ(stub_rudder.get_position(), 27);
+  EXPECT_EQ(rudder_position(), 27);
 }
 
 TEST_F(HelmTest, Stub_compass_should_return_bearing_set) {
@@ -28,50 +36,42 @@ TEST_F(HelmTest, Stub_compass_should_return_bearing_set) {
 TEST_F(HelmTest, Should_steer_right_towards_the_requested_heading_using_half_the_difference) {
   uangle bearing = 0;
   stub_compass.set_bearings(&bearing,1);
-  stub_rudder.set_position(0);
   helm.steer(30, 1, 1);
-  EXPECT_EQ(stub_rudder.get_position(), -15);
+  EXPECT_EQ(rudder_position(), -15);
 }
 
 TEST_F(HelmTest, Should_steer_left_towards_the_requested_heading_using_half_the_difference) {
   uangle bearing = 190;
   stub_compass.set_bearings(&bearing,1);
-  stub_rudder.set_position(0);
   helm.steer(170, 1, 1);
-  EXPECT_EQ(stub_rudder.get_position(), 10);
+  EXPECT_EQ(rudder_position(), 10);
 }
 
 TEST_F(HelmTest, Should_not_exceed_maximum_rudder_displacement_left) {
   uangle bearing = 0;
   stub_compass.set_bearings(&bearing,1);
-  stub_rudder.set_position(0);
   helm.steer(170, 1, 1);
-  EXPECT_EQ(stub_rudder.get_position(), -45);
+  EXPECT_EQ(rudder_position(), -45);
 }
 
 TEST_F(HelmTest, Should_not_exceed_maximum_rudder_displacement_right) {
   uangle bearing = 180;
   stub_compass.set_bearings(&bearing,1);
-  stub_rudder.set_position(0);
   helm.steer(10, 1, 1);
-  EXPECT_EQ(stub_rudder.get_position(), 45);
+  EXPECT_EQ(rudder_position(), 45);
 }
 
 TEST_F(HelmTest, Should_steer_repeatedly_given_overall_time_and_wait_time) {
   uangle bearings[] = {0, 15, 30};
   stub_compass.set_bearings(bearings, 3);
-  stub_rudder.reset();
 
   helm.steer(30, 3, 1);
 
   angle *positions = stub_rudder.get_positions();
   EXPECT_EQ(positions[0],-15);
   EXPECT_EQ(positions[1],-7);
-  EXPECT_EQ(positions[2],-0);
+  EXPECT_EQ(positions[2],0);
 }
-
-
-// steer repeatedly over the specified period
 
 // correct the course if the current rudder is too ineffective
 
