@@ -10,7 +10,7 @@ class Helm
   public:
     Helm();
     Helm(Rudder *rudderp, Compass *compassp, Timer *timerp);
-    void steer(uangle direction, unsigned long millis, unsigned long waittime);
+    void steer(uangle direction, unsigned long steer_time, unsigned long steer_interval);
 
   private:
     Rudder *rudder;
