@@ -48,7 +48,7 @@ MagResult Compass::raw_bearing() {
   byte yhi = Wire.read();
   byte ylo = Wire.read();
 
-  return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
+  return {hilow_toint(xhi,xlo) + COMPASS_X_CORRECTION, hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
 }
 
 MagResult Compass::raw_accel() {

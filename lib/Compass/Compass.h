@@ -11,6 +11,7 @@
 #define COMPASS_REGISTER_X_HIGH        0x03
 #define ACCEL_REGISTER_OUT_X_L_A       0x28
 #define COMPASS_ACCEL_CTRL_REG1_A      0x20
+#define COMPASS_X_CORRECTION           -100
 
 using namespace Angle;
 
@@ -26,10 +27,10 @@ class Compass
     Compass();
     uangle bearing();
     void begin();
-
-  private:
     MagResult raw_bearing();
     MagResult raw_accel();
+
+  private:
     int hilow_toint(byte high, byte low);
     void write8(byte address, byte reg, byte value);
 };
