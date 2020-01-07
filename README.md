@@ -36,9 +36,9 @@ The other folders represent Arduino applications.  Again each folder has a makef
 * Utility - templates for common functions
 * WindSensor - wrapper around the AS5048B 14 bit rotary position sensor, to return a relative wind angle between -180 and +180
 
-## In Progress or by executing a left/right tack
-* Create a Helm that will steer a course, either directly
-** Fix testing using arrays
+## In Progress
+** Create a Helm that will steer a course, either directly or by executing a left/right tack
+** Add OLED display again if possible (do we need special digital pins?) so that we can check the compass bias without USB power
 ** Adjust rudder if current deflection is not sufficient to turn or maintain course
 ** tacking
 
