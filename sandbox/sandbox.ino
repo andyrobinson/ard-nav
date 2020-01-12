@@ -1,11 +1,29 @@
 // Adafruit SSD1306 - Version: Latest
 #include <SPI.h>
 #include <Wire.h>
-//#include <WindSensor.h>
+#include <WindSensor.h>
 #include <Compass.h>
 #include <math.h>
-//#include <Servo.h>
 #include <Angle.h>
+#include <Adafruit_SSD1306.h>
+
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 32 // OLED display height, in pixels
+
+// Declaration for SSD1306 display connected using software SPI (default case):
+// #define OLED_MOSI   9
+// #define OLED_CLK   10
+// #define OLED_DC    11
+// #define OLED_CS    12
+// #define OLED_RESET 13
+
+#define OLED_MOSI  7
+#define OLED_CLK   8
+#define OLED_DC    9
+#define OLED_CS    13
+#define OLED_RESET 11
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
+  OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
 // Serial2 pin and pad definitions (in Arduino files Variant.h & Variant.cpp)
 #define PIN_SERIAL2_RX       (34ul)               // Pin description number for PIO_SERCOM on D12
@@ -36,19 +54,20 @@ void SERCOM1_Handler()    // Interrupt handler for SERCOM1
 
 #define PMTK_Q_RELEASE "$PMTK605*31"
 
-
 using namespace Angle;
-//WindSensor windsensor;
+WindSensor windsensor;
 Compass compass;
-//Servo servo;
-//int servoposition = 0;
-//int servoinc = 1;
-
 
 void setup() {
   while (!Serial); // wait for Serial to be ready
 
-  Serial.begin(9600);
+  Serial.begin(19200);
+
+  if(!display.begin(SSD1306_SWITCHCAPVCC)) {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;); // Don't proceed, loop forever
+  }
+  
   // Serial2.begin(9600);
   // delay(2000);
 
@@ -60,10 +79,28 @@ void setup() {
   // Serial2.println(PMTK_SET_NMEA_OUTPUT_ALLDATA);
 
   // Serial2.println(PMTK_SET_NMEA_UPDATE_1HZ);
-  //  windsensor.begin();
+   windsensor.begin();
    compass.begin();
-  //  servo.attach(5);
+
+  // init display
+  display.clearDisplay();
+  display.setTextSize(1);      // Normal 1:1 pixel scale
+  display.setTextColor(WHITE); // Draw white text
 }
+
+void messageAt(int y, String msg) {
+  static String displaybuff[4]={"","","",""};
+
+  displaybuff[y] = msg;
+  display.clearDisplay();
+
+  for (int j = 0; j < 4; j++) {
+    display.setCursor(0,8*j);
+    display.println(displaybuff[j]);
+  }
+  display.display();
+}
+
 
 void loop() {
 
@@ -74,44 +111,15 @@ void loop() {
   // }
 
   char buf[20];
-  //  angle wind = windsensor.relative();
-  MagResult bearing = compass.bearing();
-  MagResult accel = compass.accel();
-  int heading = (360 + round(57.2958 * atan2((double) bearing.y, (double) (bearing.x-100)))) % 360;
 
-  double roll = atan2((double)accel.y, (double)accel.z);
-  double pitch = atan2((double) - accel.x, (double) accel.z); // reversing x accel makes it work
-  double sin_roll = sin(roll);
-  double cos_roll = cos(roll);
-  double cos_pitch = cos(pitch);
-  double sin_pitch = sin(pitch);
+  angle wind = windsensor.relative();
+  uangle heading = compass.bearing();
 
-  double x_final = ((double) (bearing.x-100)) * cos_pitch + ((double) bearing.y) * sin_roll * sin_pitch + ((double) bearing.z) * cos_roll * sin_pitch;
-  double y_final = ((double) bearing.y) * cos_roll - ((double) bearing.z) * sin_roll;
-  int tiltadjust = (360 + round(57.2958 * (atan2(y_final, x_final)))) % 360;
+  sprintf(buf, "W%4d C%4d", wind, heading);
+  Serial.println(buf);
 
-  //
-  //  sprintf(buf, "Wind: %d",wind);
-  //  Serial.println(buf);
-  sprintf(buf, "Comp: %d Tilt: %d", heading, tiltadjust);
-  Serial.println(buf);
-  sprintf(buf, "Accel: %d %d %d", accel.x, accel.y, accel.z);
-  Serial.println(buf);
-  sprintf(buf, "Bearing: %d %d %d", bearing.x, bearing.y, bearing.z);
-  Serial.println(buf);
-//  sprintf(buf, "%d %d %d", bearing.x, bearing.y, bearing.z);
-//  Serial.println(buf);
-  //
-  //  servoposition = servoposition + servoinc;
-  //
-  //  if (servoposition % 5==0) {
-  //    servo.write(servoposition);
-  //  }
-  //
-  //  if (servoposition <= 0 || servoposition >= 180) {
-  //    servoinc = -servoinc;
-  //  }
-  //
+  messageAt(0,buf);
+
   delay(1000);
 
 }

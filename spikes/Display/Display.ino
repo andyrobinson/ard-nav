@@ -1,4 +1,4 @@
-// Adafruit SSD1306 - Version: Latest 
+// Adafruit SSD1306 - Version: Latest
 #include <Adafruit_SSD1306.h>
 #include <splash.h>
 
@@ -11,11 +11,17 @@
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
 
 // Declaration for SSD1306 display connected using software SPI (default case):
-#define OLED_MOSI   9
-#define OLED_CLK   10
-#define OLED_DC    11
-#define OLED_CS    12
-#define OLED_RESET 13
+// #define OLED_MOSI   9
+// #define OLED_CLK   10
+// #define OLED_DC    11
+// #define OLED_CS    12
+// #define OLED_RESET 13
+
+#define OLED_MOSI  7
+#define OLED_CLK   8
+#define OLED_DC    9
+#define OLED_CS    13
+#define OLED_RESET 11
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
   OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
@@ -44,19 +50,19 @@ void setup() {
 
 void loop() {
 
-  char buff[10]; 
+  char buff[10];
 
   display.clearDisplay();
   display.setTextSize(1);      // Normal 1:1 pixel scale
   display.setTextColor(WHITE); // Draw white text
 
-  messageAt(1,"Starting ...");
+  messageAt(0,"0123456789ABCDEFGHIJ0");
+  messageAt(1,"Line 11111 ...");
+  messageAt(2,"Line 22222 ...");
+  messageAt(3,"Line 33333 ...");
 
-  int angle = getAngle();
-  sprintf (buff,"%d",angle);
-  messageAt(2,String("  Angle: ") + buff);
-  delay(1000);    
-  
+  delay(1000);
+
 }
 
 int getAngle() {
@@ -93,13 +99,13 @@ int getAngle() {
 String displaybuff[4]={"","","",""};
 
 void messageAt(int y, String msg) {
-  
+
   displaybuff[y] = msg;
   display.clearDisplay();
 
   for (int j = 0; j < 4; j++) {
-    display.setCursor(0,8*j);           
-    display.println(displaybuff[j]); 
+    display.setCursor(0,8*j);
+    display.println(displaybuff[j]);
   }
   display.display();
 }
