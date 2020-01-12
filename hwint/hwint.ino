@@ -1,4 +1,3 @@
-// Adafruit SSD1306 - Version: Latest
 #include <SPI.h>
 #include <Wire.h>
 #include <WindSensor.h>
@@ -10,18 +9,12 @@
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
 
-// Declaration for SSD1306 display connected using software SPI (default case):
-// #define OLED_MOSI   9
-// #define OLED_CLK   10
-// #define OLED_DC    11
-// #define OLED_CS    12
-// #define OLED_RESET 13
-
 #define OLED_MOSI  7
 #define OLED_CLK   8
 #define OLED_DC    9
 #define OLED_CS    13
 #define OLED_RESET 11
+
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
   OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
@@ -39,21 +32,6 @@ void SERCOM1_Handler()    // Interrupt handler for SERCOM1
   Serial2.IrqHandler();
 }
 
-#define PMTK_SET_NMEA_UPDATE_1HZ  "$PMTK220,1000*1F"
-#define PMTK_SET_NMEA_UPDATE_5HZ  "$PMTK220,200*2C"
-#define PMTK_SET_NMEA_UPDATE_10HZ "$PMTK220,100*2F"
-
-// turn on only the second sentence (GPRMC)
-#define PMTK_SET_NMEA_OUTPUT_RMCONLY "$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29"
-// turn on GPRMC and GGA
-#define PMTK_SET_NMEA_OUTPUT_RMCGGA "$PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28"
-// turn on ALL THE DATA
-#define PMTK_SET_NMEA_OUTPUT_ALLDATA "$PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28"
-// turn off output
-#define PMTK_SET_NMEA_OUTPUT_OFF "$PMTK314,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28"
-
-#define PMTK_Q_RELEASE "$PMTK605*31"
-
 using namespace Angle;
 WindSensor windsensor;
 Compass compass;
@@ -67,7 +45,7 @@ void setup() {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
-  
+
   // Serial2.begin(9600);
   // delay(2000);
 
