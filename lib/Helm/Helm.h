@@ -17,6 +17,9 @@ class Helm
     Compass *compass;
     Timer *timer;
     angle rudder_position;
+    angle old_heading;
+
+    bool turning(uangle direction, uangle old_heading, uangle new_heading);
 
 };
 

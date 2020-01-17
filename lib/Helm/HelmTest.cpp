@@ -85,8 +85,17 @@ TEST_F(HelmTest, Should_steer_further_if_rudder_is_ineffective) {
   EXPECT_EQ(positions[2],-45);
 }
 
+TEST_F(HelmTest, Should_steer_further_only_when_not_turning) {
+  uangle bearings[] = {10,8,8};
+  stub_compass.set_bearings(bearings, 3);
 
-// correct the course if the current rudder is too ineffective
+  helm.steer(350, 3, 1);
+
+  angle *positions = stub_rudder.get_positions();
+  EXPECT_EQ(positions[0],10);
+  EXPECT_EQ(positions[1],9);
+  EXPECT_EQ(positions[2],18);
+}
 
 // (introduce the absolute wind direction)
 // tack if the requested course is in the no-go zone
