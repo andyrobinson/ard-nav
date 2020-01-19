@@ -2,7 +2,7 @@
 
 .DEFAULT_GOAL = copylibs
 
-LIBS = Utility Angle Windsensor Compass SerialLogger
+LIBS = Utility Angle Windsensor Compass SerialLogger DisplayLogger
 # For libs that require non-standard lib files, not just the standard .cpp and .h
 LIBS_ALL = Adafruit_GPS_Library Adafruit_SSD1306 Logger Position
 DEST_DIR = ./libraries

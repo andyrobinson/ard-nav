@@ -1,5 +1,5 @@
 #include "Arduino.h"
-#include "Logger.h"
+#include "DisplayLogger.h"
 #include "Adafruit_SSD1306.h"
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -41,7 +41,8 @@ void Logger::begin() {
 }
 
 void Logger::info(position *current_position, angle wind, uangle bearing, String message) {
-  static char buf[21];
+  display.clearDisplay();
+  static char buf[41];
 
   sprintf(buf, "%10.5d %10.5d", current_position->latitude, current_position->longitude);
   messageAt(0, buf);
@@ -49,8 +50,12 @@ void Logger::info(position *current_position, angle wind, uangle bearing, String
   sprintf(buf, "W%4d C%4d         ", wind, bearing);
   messageAt(1, buf);
 
-  for (int i = 0; i <= 20; i++) {
-    buf[i] = message[i]
+  if (message.length() < 40) {
+    sprintf(buf,"%-s", message.c_str());
+    messageAt(2, buf);
+  } else {
+    sprintf(buf,"%s","** MSG OVERFLOW **");
+    messageAt(2, buf);
   }
-  messageAt(2, buf);
+
 }
