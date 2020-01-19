@@ -4,6 +4,9 @@
 #include "Position.h"
 #include "Angle.h"
 
+using namespace Angle;
+using namespace Position;
+
 class Logger
 {
   public:
