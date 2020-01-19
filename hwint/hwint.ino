@@ -1,4 +1,5 @@
 #include <Compass.h>
+#include <WindSensor.h>
 #include <Position.h>
 #include <SerialLogger.h>
 
@@ -18,23 +19,17 @@
 
 using namespace Angle;
 using namespace Position;
-// WindSensor windsensor;
+
+WindSensor windsensor;
 Compass compass;
 Logger logger;
 position current_position;
 
 void setup() {
-  while (!Serial); // wait for Serial to be ready
 
-  Serial.begin(19200);
   logger.begin();
-  // windsensor.begin();
+  windsensor.begin();
   compass.begin();
-
-  // if(!display.begin(SSD1306_SWITCHCAPVCC)) {
-  //   Serial.println(F("SSD1306 allocation failed"));
-  //   for(;;); // Don't proceed, loop forever
-  // }
 
   // Serial2.begin(9600);
   // delay(2000);
@@ -58,9 +53,9 @@ void loop() {
   //   Serial.write(c);
   // }
 
-  // angle wind = windsensor.relative();
-  uangle heading = compass.bearing();
-  logger.info(&current_position, 0, heading, "Testing ...");
+  angle wind = windsensor.relative();
+  uangle bearing = compass.bearing();
+  logger.info(&current_position, wind, bearing,  "Testing wind and bearing");
 
   delay(1000);
 
