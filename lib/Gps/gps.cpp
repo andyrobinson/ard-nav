@@ -46,6 +46,8 @@ gpsResult Gps::position(uint32_t max_millis) {
 }
 
 // still not quite right, we add the leap day at the 1st Jan, then take it off again at 1st March
+// so we will get a discontinuity at 1st Jan, followed by an overlap on 29th Feb.
+// but this is only relevant in leap years, and only if we're sailing in February
 long Gps::unix_time(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t second) {
   long years_since_1970 = year - 1970;
   long leap_years = (years_since_1970 + 2) / 4;
