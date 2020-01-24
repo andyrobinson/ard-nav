@@ -41,7 +41,7 @@ position Globe::new_position(position *start, uangle bearing, double distance) {
   double new_lat = asin(sin(start_lat) * cos(distance_in_rads) + cos(start_lat)*sin(distance_in_rads)*cos(bearing_in_rads));
   double new_long = start_long + atan2(sin(bearing_in_rads)*sin(distance_in_rads)*cos(start_lat),cos(distance_in_rads) - sin(start_lat)*sin(new_lat));
 
-  return {to_degrees(new_lat),to_degrees(new_long),0.0,0.0};
+  return {to_degrees(new_lat),to_degrees(new_long),0.0};
 }
 
 double Globe::to_radians(double degrees) {

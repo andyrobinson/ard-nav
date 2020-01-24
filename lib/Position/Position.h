@@ -6,8 +6,7 @@ namespace Position {
   typedef struct {
      double latitude;
      double longitude;
-     double latError;
-     double longError;
+     double error;
   } position;
 
 }

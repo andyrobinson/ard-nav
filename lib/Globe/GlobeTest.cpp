@@ -6,14 +6,14 @@ namespace {
 
 Globe globe;
 
-position London = {51.5073509,-0.12775823,0.0,0.0};
-position Manchester = {53.479324,-2.2484851,0.0,0.0};
-position Chorlton = {53.4407973,-2.272291,0.0,0.0};
-position NewYork = {40.7127837, -74.0059413,0.0,0.0};
-position Moscow = {55.755826, 37.6173,0.0,0.0};
-position Sydney = {-33.8674869, 151.2069902,0.0,0.0};
-position Capetown = {-33.9248685, 18.4240553,0.0,0.0};
-position Santiago = {-33.4691199,-70.641997,0.0,0.0};
+position London = {51.5073509,-0.12775823,0.0};
+position Manchester = {53.479324,-2.2484851,0.0};
+position Chorlton = {53.4407973,-2.272291,0.0};
+position NewYork = {40.7127837, -74.0059413,0.0};
+position Moscow = {55.755826, 37.6173,0.0};
+position Sydney = {-33.8674869, 151.2069902,0.0};
+position Capetown = {-33.9248685, 18.4240553,0.0};
+position Santiago = {-33.4691199,-70.641997,0.0};
 
 class GlobeTest : public ::testing::Test {
  protected:
