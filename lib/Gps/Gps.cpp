@@ -10,13 +10,15 @@ void SERCOM1_Handler()
 
 Adafruit_GPS AGPS(&Serial2);
 
+Gps::Gps() {}
+
 void Gps::begin() {
   AGPS.begin(9600);
   AGPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCONLY);  // minimum
   AGPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
 }
 
-gpsResult Gps::position(uint32_t max_millis) {
+gpsResult Gps::data(uint32_t max_millis) {
   uint32_t timer = millis();
   gpsResult result;
 
@@ -27,18 +29,18 @@ gpsResult Gps::position(uint32_t max_millis) {
       continue;
     }
 
-    result.unix_time = unixTime(AGPS.year, AGPS.month, AGPS.day, AGPS.hour, AGPS.minute, AGPS.seconds);
+    result.unixTime = unix_time(AGPS.year, AGPS.month, AGPS.day, AGPS.hour, AGPS.minute, AGPS.seconds);
     result.fix = FIX_NONE;
-    result.speed = 0.0;
+    result.knots = 0.0;
 
     if (AGPS.fix) {
-      result.latitude = AGPS.latitudeDegrees;
-      result.longitude = AGPS.longitudeDegress;
-      result.error = AGPS.PDOP;
+      result.pos.latitude = AGPS.latitudeDegrees;
+      result.pos.longitude = AGPS.longitudeDegrees;
+      result.pos.error = AGPS.PDOP;
       result.knots = AGPS.speed;
       result.fix = AGPS.fixquality;
     }
-  } while (!AGPS.fix && ((millis() - timer) < max_millis))
+  } while (!AGPS.fix && ((millis() - timer) < max_millis));
 
   AGPS.standby();
 

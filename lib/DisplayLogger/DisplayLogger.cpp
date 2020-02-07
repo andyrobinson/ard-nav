@@ -40,11 +40,11 @@ void Logger::begin() {
   display.setTextColor(WHITE); // Draw white text
 }
 
-void Logger::info(position *current_position, angle wind, uangle bearing, String message) {
+void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, String message) {
   display.clearDisplay();
   static char buf[41];
 
-  sprintf(buf, "%10.5d %10.5d", current_position->latitude, current_position->longitude);
+  sprintf(buf, "%10.5d %10.5d", gps_result->pos.latitude, gps_result->pos.longitude);
   messageAt(0, buf);
 
   sprintf(buf, "W%4d C%4d         ", wind, bearing);

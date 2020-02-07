@@ -6,7 +6,6 @@ Compass::Compass() {}
 void Compass::begin() {
   Wire.begin();
 
-  Serial.println("initialising compass");
   // Enable the compass
   write8(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
   // Enable the accelerometer

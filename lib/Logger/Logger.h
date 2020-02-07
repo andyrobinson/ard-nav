@@ -2,6 +2,7 @@
 #define Logger_h
 
 #include "Position.h"
+#include "Gps.h"
 #include "Angle.h"
 
 using namespace Angle;
@@ -12,7 +13,7 @@ class Logger
   public:
     Logger();
     void begin();
-    void info(position *current_position, angle wind, uangle bearing, String message);
+    void info(gpsResult *gps_result, angle wind, uangle bearing, String message);
 };
 
 #endif
