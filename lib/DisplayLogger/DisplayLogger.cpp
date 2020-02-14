@@ -50,12 +50,15 @@ void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, String mess
   sprintf(buf, "W%4d C%4d         ", wind, bearing);
   messageAt(1, buf);
 
+  sprintf(buf, "Kn%4.2d Fx%3d        ", gps_result->knots, gps_result->fix);
+  messageAt(2, buf);
+
   if (message.length() < 40) {
     sprintf(buf,"%-s", message.c_str());
-    messageAt(2, buf);
+    messageAt(3, buf);
   } else {
     sprintf(buf,"%s","** MSG OVERFLOW **");
-    messageAt(2, buf);
+    messageAt(3, buf);
   }
 
 }
