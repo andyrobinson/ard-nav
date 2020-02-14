@@ -37,6 +37,18 @@ namespace {
     EXPECT_EQ(abs1(e),98.99);
     EXPECT_EQ(abs1(zero),0);
   }
+
+  TEST_F(UtilityTest, Should_calculate_the_unix_time) {
+    EXPECT_EQ(unix_time(0,1,1,0,0,0),946684800); // 1st Jan 2000, first date available
+    EXPECT_EQ(unix_time(0,1,2,10,10,0),946807800);
+    EXPECT_EQ(unix_time(0,02,15,18,46,0),950640360);
+    EXPECT_EQ(unix_time(0,6,30,8,46,0),962354760);
+    EXPECT_EQ(unix_time(10,11,1,23,59,59),1288655999);
+    EXPECT_EQ(unix_time(20,2,14,22,19,33),1581718773);
+    EXPECT_EQ(unix_time(20,2,29,23,59,59),1583020799);
+    EXPECT_EQ(unix_time(20,3,1,00,00,00),1583020800);
+  }
+
 } // namespace
 
 int main(int argc, char **argv) {

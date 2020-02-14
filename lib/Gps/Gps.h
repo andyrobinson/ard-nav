@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "Position.h"
+#include "Utility.h"
 
 #define PIN_SERIAL2_RX       (34ul)               // Pin description number for PIO_SERCOM on D12
 #define PIN_SERIAL2_TX       (36ul)               // Pin description number for PIO_SERCOM on D10
@@ -29,8 +30,6 @@ class Gps
     Gps();
     void begin();
     gpsResult data(uint32_t max_millis);
-  private:
-    long unix_time(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t second);
 };
 
 #endif
