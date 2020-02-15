@@ -20,7 +20,7 @@ angle WindSensor::relative() {
   endTransResult = Wire.endTransmission(false);
 
   if (endTransResult) {
-    return -1;
+    return NO_WIND_VALUE;
   } else {
     Wire.requestFrom(WINDSENSOR_AS5048B_I2C_ADDRESS, (uint8_t) 2);
     byte upper8bits = Wire.read();

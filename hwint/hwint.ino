@@ -26,6 +26,8 @@ WindSensor windsensor;
 Compass compass;
 Logger logger;
 position current_position;
+int gps_wait = 2000;
+long gps_time_to_read;
 
 void setup() {
   gps.begin();
@@ -52,8 +54,18 @@ void loop() {
   uangle bearing = compass.bearing();
   move_rudder();
   sail.set_position(wind);
-  gpsResult gpsData = gps.data(2000);
-  logger.info(&gpsData, wind, bearing, "All items");
+  gps_time_to_read = millis();
+  gpsResult gpsData = gps.data(gps_wait);
+  gps_time_to_read = millis() - gps_time_to_read;
+  if (gpsData.fix == -1) {
+    gps_wait = gps_wait + 5000;
+  }
+  else if (gps_wait > 2000) {
+    gps_wait = gps_wait - 1000;
+  }
+  String msg = "All items, GPS took (ms): ";
+  msg = msg + gps_time_to_read;
+  logger.info(&gpsData, wind, bearing, msg);
 
-  delay(1000);
+  delay(5000);
 }

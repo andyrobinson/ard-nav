@@ -16,7 +16,7 @@ Gps::Gps() {}
 
 void Gps::begin() {
   AGPS.begin(9600);
-  AGPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCONLY);  // minimum
+  AGPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);  // with fix quality and satellites
   AGPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
 }
 
@@ -27,13 +27,16 @@ gpsResult Gps::data(uint32_t max_millis) {
   AGPS.wakeup();
 
   do {
+    AGPS.read();
+
     if (AGPS.newNMEAreceived() && !AGPS.parse(AGPS.lastNMEA())) {
       continue;
     }
 
-    result.unixTime = unix_time(AGPS.year, AGPS.month, AGPS.day, AGPS.hour, AGPS.minute, AGPS.seconds);
+    result.unixTime = 0;
     result.fix = FIX_NONE;
     result.knots = 0.0;
+    result.unixTime = unix_time(AGPS.year, AGPS.month, AGPS.day, AGPS.hour, AGPS.minute, AGPS.seconds);
 
     if (AGPS.fix) {
       result.pos.latitude = AGPS.latitudeDegrees;
