@@ -19,6 +19,8 @@ class Helm
     angle rudder_position;
     angle old_heading;
 
+    void set_rudder(angle new_position, uangle current_heading);
+    angle new_rudder(uangle direction, uangle current_heading);
     bool turning(uangle direction, uangle old_heading, uangle new_heading);
 
 };

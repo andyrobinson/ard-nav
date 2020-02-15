@@ -14,24 +14,34 @@ void Helm::steer(uangle direction, unsigned long steer_time, unsigned long steer
     unsigned long elapsed = 0;
     while (elapsed < steer_time) {
 
-      angle new_heading = compass->bearing();
-      angle new_rudder_position = udiff(direction, new_heading)/2;
+      angle current_heading = compass->bearing();
+      angle new_rudder_position = new_rudder(direction, current_heading);
 
-      if (!turning(direction, old_heading, new_heading)) {
-        new_rudder_position = rudder_position + new_rudder_position;
-      }
-
-      if (abs1(new_rudder_position) > RUDDER_MAX_DISPLACEMENT) {
-        new_rudder_position = sign(new_rudder_position) * RUDDER_MAX_DISPLACEMENT;
-      }
-
-      rudder->set_position(new_rudder_position);
-      rudder_position = new_rudder_position;
-      old_heading = new_heading;
+      set_rudder(new_rudder_position, current_heading);
 
       timer->wait(steer_interval);
       elapsed = elapsed + steer_interval;
     }
+}
+
+void Helm::set_rudder(angle new_position, uangle current_heading) {
+  rudder->set_position(new_position);
+  rudder_position = new_position;
+  old_heading = current_heading;
+}
+
+angle Helm::new_rudder(uangle direction, uangle current_heading) {
+  angle new_position = udiff(direction, current_heading)/2;
+
+  if (!turning(direction, old_heading, current_heading)) {
+    new_position = rudder_position + new_position;
+  }
+
+  if (abs1(new_position) > RUDDER_MAX_DISPLACEMENT) {
+    new_position = sign(new_position) * RUDDER_MAX_DISPLACEMENT;
+  }
+
+  return new_position;
 }
 
 bool Helm::turning(uangle direction, uangle old_heading, uangle new_heading) {
