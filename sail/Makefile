@@ -1,4 +1,4 @@
-.DEFAULT_GOAL = copylibs
+.DEFAULT_GOAL = compile
 
 LIBS = Utility Angle Windsensor Sail
 # For libs that require all files, not just the standard .cpp and .h

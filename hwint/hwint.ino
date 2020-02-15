@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <Compass.h>
 #include <WindSensor.h>
 #include <Position.h>
