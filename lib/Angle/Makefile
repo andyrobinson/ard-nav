@@ -21,7 +21,7 @@ endif
 
 $(TEST_RUNNER): $(SRCS)
 	$(MKDIR_P) $(dir $@)
-	$(GCC) -I${GTEST_INCLUDE}/include $(INC_PARAMS) -pthread $(SRCS) $(GTEST_DIR)/libgtest.a -o $(TEST_RUNNER)
+	$(GCC) -I${GTEST_INCLUDE}/include $(INC_PARAMS)  -include stdint.h -pthread $(SRCS) $(GTEST_DIR)/libgtest.a -o $(TEST_RUNNER)
 
 test: $(TEST_RUNNER)
 	$(TEST_RUNNER)
