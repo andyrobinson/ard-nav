@@ -7,7 +7,8 @@ namespace {
 Rudder stub_rudder;
 Compass stub_compass;
 Timer stub_timer;
-Helm helm(&stub_rudder, &stub_compass, &stub_timer);
+WindSensor stub_windsensor;
+Helm helm(&stub_rudder, &stub_compass, &stub_timer, &stub_windsensor);
 
 class HelmTest : public ::testing::Test {
  protected:
@@ -96,6 +97,7 @@ TEST_F(HelmTest, Should_steer_further_only_when_not_turning) {
   EXPECT_EQ(positions[1],9);
   EXPECT_EQ(positions[2],18);
 }
+
 
 // (introduce the absolute wind direction)
 // tack if the requested course is in the no-go zone

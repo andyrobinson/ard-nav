@@ -1,12 +1,9 @@
 
-#ifndef WindSensor_h
-#define WindSensor_h
+#ifndef WindSensorStub_h
+#define WindSensorStub_h
 
-#include "Arduino.h"
 #include "Angle.h"
 
-#define WINDSENSOR_AS5048B_I2C_ADDRESS 0x40
-#define WINDSENSOR_AS5048B_I2C_REGISTER 0xFE
 #define NO_WIND_VALUE -999
 
 using namespace Angle;
@@ -17,7 +14,9 @@ class WindSensor
     WindSensor();
     angle relative();
     uangle absolute(uangle bearing);
-    void begin();
+    void set_relative(angle new_angle);
+  private:
+    angle current_angle;
 };
 
 #endif

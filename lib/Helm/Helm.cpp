@@ -7,7 +7,7 @@ using namespace Utility;
 
 Helm::Helm():rudder_position(0) {}
 
-Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp):
+Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensor):
   rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), old_heading(0) {}
 
 void Helm::steer(uangle direction, unsigned long steer_time, unsigned long steer_interval) {
