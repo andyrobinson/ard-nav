@@ -32,3 +32,7 @@ angle WindSensor::relative() {
     return result;
   }
 }
+
+uangle WindSensor::absolute(uangle bearing) {
+  return uadd(bearing, relative());
+}
