@@ -115,6 +115,15 @@ TEST_F(HelmTest, Slightly_strange_testing_of_absolute_wind_direction_using_mock)
 
 }
 
+// Does not work because we have state in Helm, which we don't properly reset between tests (sigh)
+TEST_F(HelmTest, Should_steer_directly_if_out_of_no_go_region) {
+  stub_windsensor.set_relative(90);
+  uangle bearing = 0;
+  stub_compass.set_bearings(&bearing,1);
+  helm.steer(20, 1, 1);
+  EXPECT_EQ(rudder_position(), -10);
+}
+
 
 // (introduce the absolute wind direction)
 // tack if the requested course is in the no-go zone
