@@ -98,6 +98,23 @@ TEST_F(HelmTest, Should_steer_further_only_when_not_turning) {
   EXPECT_EQ(positions[2],18);
 }
 
+TEST_F(HelmTest, Slightly_strange_testing_of_absolute_wind_direction_using_mock) {
+  stub_windsensor.set_relative(40);
+  EXPECT_EQ(stub_windsensor.absolute(40), 80);
+  EXPECT_EQ(stub_windsensor.absolute(10), 50);
+  EXPECT_EQ(stub_windsensor.absolute(100), 140);
+  EXPECT_EQ(stub_windsensor.absolute(245), 285);
+  EXPECT_EQ(stub_windsensor.absolute(330), 10);
+
+  stub_windsensor.set_relative(-170);
+  EXPECT_EQ(stub_windsensor.absolute(40), 230);
+  EXPECT_EQ(stub_windsensor.absolute(10), 200);
+  EXPECT_EQ(stub_windsensor.absolute(100), 290);
+  EXPECT_EQ(stub_windsensor.absolute(245), 75);
+  EXPECT_EQ(stub_windsensor.absolute(330), 160);
+
+}
+
 
 // (introduce the absolute wind direction)
 // tack if the requested course is in the no-go zone
