@@ -7,11 +7,12 @@
 #include <Gps.h>
 
 // pick between loggers here
-//#include <DisplayLogger.h>
-#include <SerialLogger.h>
+#include <DisplayLogger.h>
+//#include <SerialLogger.h>
 
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5
+//#define SKIP_GPS
 
 using namespace Angle;
 using namespace Position;
@@ -26,8 +27,7 @@ WindSensor windsensor;
 Compass compass;
 Logger logger;
 position current_position;
-int gps_wait = 2000;
-long gps_time_to_read;
+gpsResult gpsReading;
 
 void setup() {
   gps.begin();
@@ -49,23 +49,34 @@ void move_rudder() {
   rudder.set_position(rudder_position);
 }
 
-void loop() {
-  angle wind = windsensor.relative();
-  uangle bearing = compass.bearing();
-  move_rudder();
-  sail.set_position(wind);
-  gps_time_to_read = millis();
+gpsResult read_gps() {
+  static int gps_wait = 2000;
   gpsResult gpsData = gps.data(gps_wait);
-  gps_time_to_read = millis() - gps_time_to_read;
   if (gpsData.fix == -1) {
     gps_wait = gps_wait + 5000;
   }
   else if (gps_wait > 2000) {
     gps_wait = gps_wait - 1000;
   }
-  String msg = "All items, GPS took (ms): ";
-  msg = msg + gps_time_to_read;
-  logger.info(&gpsData, wind, bearing, msg);
+  return gpsData;
+}
 
-  delay(5000);
+void loop() {
+  angle wind = windsensor.relative();
+  uangle bearing = compass.bearing();
+  move_rudder();
+  sail.set_position(wind);
+  long gps_time_to_read = 0;
+
+  #ifndef SKIP_GPS
+  gps_time_to_read = millis();
+  gpsReading = read_gps();
+  gps_time_to_read = millis() - gps_time_to_read;
+  #endif
+
+  String msg = "Log, gps (ms): ";
+  msg = msg + gps_time_to_read;
+  logger.info(&gpsReading, wind, bearing, msg);
+
+  delay(500);
 }
