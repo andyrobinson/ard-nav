@@ -6,8 +6,6 @@
 #include "Timer.h"
 #include "WindSensor.h"
 
-#define HELM_NO_GO_LIMIT 45
-
 class Helm
 {
   public:
