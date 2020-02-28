@@ -1,15 +1,19 @@
 #include "WindSensor.h"
 
-WindSensor::WindSensor() {}
+WindSensor::WindSensor():response_list{0},list_size(1),current_position(0) {}
 
 angle WindSensor::relative() {
-  return current_angle;
+  angle result = response_list[current_position];
+  if (current_position + 1 < list_size) current_position++;
+  return result;
 }
 
 uangle WindSensor::absolute(uangle bearing) {
   return uadd(bearing, relative());
 }
 
-void WindSensor::set_relative(angle new_angle) {
-  current_angle = new_angle;
+void WindSensor::set_relative(angle *rel_angles, int size) {
+  response_list = rel_angles;
+  list_size = size;
+  current_position = 0;
 }

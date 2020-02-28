@@ -4,8 +4,6 @@
 
 #include "Angle.h"
 
-#define NO_WIND_VALUE -999
-
 using namespace Angle;
 
 class WindSensor
@@ -14,9 +12,12 @@ class WindSensor
     WindSensor();
     angle relative();
     uangle absolute(uangle bearing);
-    void set_relative(angle new_angle);
+    void set_relative(angle *rel_angles, int size);
+
   private:
-    angle current_angle;
+    int list_size;
+    int current_position;
+    angle *response_list;
 };
 
 #endif

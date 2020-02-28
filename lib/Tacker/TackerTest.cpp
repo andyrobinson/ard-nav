@@ -5,9 +5,8 @@ namespace {
 
 Helm stub_helm;
 Compass stub_compass;
-Timer stub_timer;
 WindSensor stub_windsensor;
-Tacker tacker(&stub_helm, &stub_compass, &stub_timer, &stub_windsensor);
+Tacker tacker(&stub_helm, &stub_compass, &stub_windsensor);
 
 class TackerTest : public ::testing::Test {
  protected:
@@ -18,19 +17,16 @@ class TackerTest : public ::testing::Test {
 
 };
 
-TEST_F(TackerTest, should_do_something) {
-  EXPECT_EQ(1,1);
-}
-
 TEST_F(TackerTest, Slightly_strange_testing_of_absolute_wind_direction_using_mock) {
-  stub_windsensor.set_relative(40);
+  angle wind_direction = 40;
+  stub_windsensor.set_relative(&wind_direction, 1);
   EXPECT_EQ(stub_windsensor.absolute(40), 80);
   EXPECT_EQ(stub_windsensor.absolute(10), 50);
   EXPECT_EQ(stub_windsensor.absolute(100), 140);
   EXPECT_EQ(stub_windsensor.absolute(245), 285);
   EXPECT_EQ(stub_windsensor.absolute(330), 10);
 
-  stub_windsensor.set_relative(-170);
+  wind_direction = -170;
   EXPECT_EQ(stub_windsensor.absolute(40), 230);
   EXPECT_EQ(stub_windsensor.absolute(10), 200);
   EXPECT_EQ(stub_windsensor.absolute(100), 290);
@@ -39,14 +35,17 @@ TEST_F(TackerTest, Slightly_strange_testing_of_absolute_wind_direction_using_moc
 
 }
 
-// Does not work because we have state in Helm, which we don't properly reset between tests (sigh)
-// TEST_F(TackerTest, Should_steer_directly_if_out_of_no_go_region) {
-//   stub_windsensor.set_relative(90);
-//   uangle bearing = 0;
-//   stub_compass.set_bearings(&bearing,1);
-//   helm.steer(20, 1, 1);
-//   EXPECT_EQ(rudder_position(), -10);
-// }
+
+TEST_F(TackerTest, Should_steer_directly_if_out_of_no_go_region) {
+  angle wind_relative = 90; stub_windsensor.set_relative(&wind_relative, 1);
+  uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
+
+  tacker.steer(20, 2000, 100);
+
+  EXPECT_EQ(stub_helm.steering(), 20);
+  EXPECT_EQ(stub_helm.steer_time(), 2000);
+  EXPECT_EQ(stub_helm.interval(), 100);
+}
 
 
 // (introduce the absolute wind direction)
