@@ -14,6 +14,7 @@ void Tacker::steer(uangle direction, unsigned long steer_time, unsigned long ste
   // if we're not in the no go zone just steer
   // else
     // choose to tack closest to the desired course
+    // divide the time up between the two tacks
     // tack one way
     // then tack the other
 
