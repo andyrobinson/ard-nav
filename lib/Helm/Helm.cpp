@@ -7,8 +7,8 @@ using namespace Utility;
 
 Helm::Helm():rudder_position(0) {}
 
-Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensor):
-  rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), old_heading(0) {}
+Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp):
+  rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), windsensor(windsensorp), sail(sailp), old_heading(0) {}
 
 void Helm::steer(uangle direction, unsigned long steer_time, unsigned long steer_interval) {
     unsigned long elapsed = 0;
@@ -18,6 +18,7 @@ void Helm::steer(uangle direction, unsigned long steer_time, unsigned long steer
       angle new_rudder_position = new_rudder(direction, current_heading);
 
       set_rudder(new_rudder_position, current_heading);
+      sail->set_position(windsensor->relative());
 
       timer->wait(steer_interval);
       elapsed = elapsed + steer_interval;

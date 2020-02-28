@@ -8,7 +8,9 @@ Rudder stub_rudder;
 Compass stub_compass;
 Timer stub_timer;
 WindSensor stub_windsensor;
+Sail stub_sail;
 Helm helm;
+angle wind_sample[] = {180};
 
 class HelmTest : public ::testing::Test {
  protected:
@@ -16,7 +18,9 @@ class HelmTest : public ::testing::Test {
 
   void SetUp() override {
     stub_rudder.reset();
-    helm = Helm(&stub_rudder, &stub_compass, &stub_timer, &stub_windsensor);
+    stub_sail.reset();
+    stub_windsensor.set_relative(wind_sample, 1);
+    helm = Helm(&stub_rudder, &stub_compass, &stub_timer, &stub_windsensor, &stub_sail);
   }
 
   angle rudder_position() {
@@ -33,6 +37,14 @@ TEST_F(HelmTest, Stub_compass_should_return_bearing_set) {
   uangle bearing = 99;
   stub_compass.set_bearings(&bearing,1);
   EXPECT_EQ(stub_compass.bearing(), 99);
+}
+
+TEST_F(HelmTest, stub_windsensor_should_return_readings_sticking_on_last) {
+  angle wind_values[] = {4,5};
+  stub_windsensor.set_relative(wind_values,2);
+  EXPECT_EQ(stub_windsensor.relative(),4);
+  EXPECT_EQ(stub_windsensor.relative(),5);
+  EXPECT_EQ(stub_windsensor.relative(),5);
 }
 
 TEST_F(HelmTest, Should_steer_right_towards_the_requested_heading_using_half_the_difference) {
@@ -109,6 +121,24 @@ TEST_F(HelmTest, Should_maintain_rudder_position_if_on_course) {
   EXPECT_EQ(positions[0],5);
   EXPECT_EQ(positions[1],0);
   EXPECT_EQ(positions[2],0);
+}
+
+TEST_F(HelmTest, Should_set_the_sail_every_time_we_steer) {
+  uangle bearings[] = {210,190};
+  angle wind[] = {70, 90};
+  stub_compass.set_bearings(bearings, 2);
+  stub_windsensor.set_relative(wind, 2);
+
+  helm.steer(200, 3, 1);
+
+  angle *positions = stub_rudder.get_positions();
+  angle *sail_calls = stub_sail.get_calls();
+
+  EXPECT_EQ(positions[0],5);
+  EXPECT_EQ(positions[1],-5);
+  EXPECT_EQ(sail_calls[0],wind[0]);
+  EXPECT_EQ(sail_calls[1],wind[1]);
+
 }
 
 

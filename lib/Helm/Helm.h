@@ -5,18 +5,21 @@
 #include "Compass.h"
 #include "Timer.h"
 #include "WindSensor.h"
+#include "Sail.h"
 
 class Helm
 {
   public:
     Helm();
-    Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensor);
+    Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp);
     void steer(uangle direction, unsigned long steer_time, unsigned long steer_interval);
 
   private:
     Rudder *rudder;
     Compass *compass;
     Timer *timer;
+    WindSensor *windsensor;
+    Sail *sail;
     angle rudder_position;
     angle old_heading;
 
