@@ -15,11 +15,8 @@ void Sail::set_position(angle relative_wind) {
   static angle last_position;
   angle servo_0_to_180_angle;
   last_position = gybe_check(last_position, sail_position(relative_wind));
-  if (last_position > SERVO_MAX_DISPLACEMENT) {
-    last_position = SERVO_MAX_DISPLACEMENT;
-  }
-  else if (last_position < -SERVO_MAX_DISPLACEMENT) {
-    last_position = -SERVO_MAX_DISPLACEMENT;
+  if (abs1(last_position) > SERVO_MAX_DISPLACEMENT) {
+    last_position = sign(last_position) * SERVO_MAX_DISPLACEMENT;
   }
   servo_0_to_180_angle = SERVO_MAX_DISPLACEMENT - last_position;
   sail_servo->write((int) servo_0_to_180_angle);
