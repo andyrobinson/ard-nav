@@ -18,7 +18,7 @@ void Tacker::steer(uangle direction, unsigned long steer_time, unsigned long ste
   }
   else {
     short offset = TACKER_NO_GO_LIMIT - abs1(wind_diff);
-    uangle new_direction = to_uangle(udiff(to_uangle(offset), direction));
+    uangle new_direction = uadd(direction, - sign(wind_diff) * offset);
     //unsigned_long tack_time = steer_time * cos(offset);
     helm->steer(new_direction, steer_time, steer_interval);
   }

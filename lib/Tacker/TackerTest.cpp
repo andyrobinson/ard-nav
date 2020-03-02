@@ -56,9 +56,19 @@ TEST_F(TackerTest, Should_tack_left_if_in_nogo_and_closest_to_desired_course) {
   EXPECT_EQ(stub_helm.steer_time(), 2000);
   EXPECT_EQ(stub_helm.interval(), 100);
 }
-// (introduce the absolute wind direction)
-// tack if the requested course is in the no-go zone
-// choose the longer tack first
+
+TEST_F(TackerTest, Should_tack_right_if_in_nogo_and_closest_to_desired_course) {
+  angle wind_relative = -40; stub_windsensor.set_relative(&wind_relative, 1);
+  uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
+
+  tacker.steer(0, 2000, 100);
+
+  EXPECT_EQ(stub_helm.steering(), 5);
+  EXPECT_EQ(stub_helm.steer_time(), 2000);
+  EXPECT_EQ(stub_helm.interval(), 100);
+}
+
+
 
 }  //namespace
 
