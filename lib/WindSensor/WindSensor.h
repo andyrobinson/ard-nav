@@ -2,7 +2,9 @@
 #ifndef WindSensor_h
 #define WindSensor_h
 
+#ifdef ARDUINO
 #include "Arduino.h"
+#endif
 #include "Angle.h"
 
 #define WINDSENSOR_AS5048B_I2C_ADDRESS 0x40

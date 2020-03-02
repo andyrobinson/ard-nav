@@ -5,7 +5,7 @@ include ../detectos
 BUILD_DIR = ./build
 TEST_RUNNER = $(BUILD_DIR)/TestRunner.exe
 SRCS := $(shell find . -name "*.cpp") ../Angle/Angle.cpp
-INCLUDES = ../Angle/ ../Utility/ ./stubs/
+INCLUDES = ../Angle/ ../Utility/ ./stubs/ ../WindSensor
 INC_PARAMS=$(foreach d, $(INCLUDES), -I$d)
 
 ifeq ($(UNAME), Darwin)

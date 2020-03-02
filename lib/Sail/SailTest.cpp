@@ -143,6 +143,10 @@ TEST_F(SailTest, Should_gybe_sail_if_more_than_10_degress_when_running) {
   EXPECT_EQ(stub_servo.write_last_called(),servo_position(-85));
 }
 
+TEST_F(SailTest, Should_set_sail_to_30_degrees_if_windsensor_not_working) {
+  sail.set_position(-999); // see Windsensor.h
+  EXPECT_EQ(stub_servo.write_last_called(),servo_position(30));
+}
 
 }  //namespace
 

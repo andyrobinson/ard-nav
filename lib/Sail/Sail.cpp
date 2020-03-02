@@ -1,6 +1,7 @@
 #include "Sail.h"
 #include "Angle.h"
 #include "Utility.h"
+#include "Windsensor.h"
 
 using namespace Angle;
 using namespace Utility;
@@ -14,7 +15,13 @@ Sail::Sail(Servo *servo) {
 void Sail::set_position(angle relative_wind) {
   static angle last_position;
   angle servo_0_to_180_angle;
-  last_position = gybe_check(last_position, sail_position(relative_wind));
+
+  if (relative_wind == NO_WIND_VALUE) {
+      last_position = 30;
+  }
+  else {
+    last_position = gybe_check(last_position, sail_position(relative_wind));
+  }
   if (abs1(last_position) > SERVO_MAX_DISPLACEMENT) {
     last_position = sign(last_position) * SERVO_MAX_DISPLACEMENT;
   }
