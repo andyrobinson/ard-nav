@@ -43,11 +43,3 @@ position Globe::new_position(position *start, uangle bearing, double distance) {
 
   return {to_degrees(new_lat),to_degrees(new_long),0.0};
 }
-
-double Globe::to_radians(double degrees) {
-    return degrees/DEGREES_IN_RADIAN;
-}
-
-double Globe::to_degrees(double radians) {
-  return radians * DEGREES_IN_RADIAN;
-}

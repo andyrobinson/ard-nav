@@ -42,4 +42,12 @@ namespace Angle {
       return (ua <= 180) ? ua : (ua - 360);
     }
 
+    double to_radians(double degrees) {
+        return degrees/DEGREES_IN_RADIAN;
+    }
+
+    double to_degrees(double radians) {
+      return radians * DEGREES_IN_RADIAN;
+    }
+
 }

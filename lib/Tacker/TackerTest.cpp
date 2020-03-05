@@ -1,5 +1,6 @@
 #include "Tacker.h"
 #include "gtest/gtest.h"
+#include "math.h"
 
 namespace {
 
@@ -53,21 +54,45 @@ TEST_F(TackerTest, Should_tack_left_if_in_nogo_and_closest_to_desired_course) {
   tacker.steer(0, 2000, 100);
 
   EXPECT_EQ(stub_helm.steering(), 355);
-  EXPECT_EQ(stub_helm.steer_time(), 2000);
-  EXPECT_EQ(stub_helm.interval(), 100);
 }
 
 TEST_F(TackerTest, Should_tack_right_if_in_nogo_and_closest_to_desired_course) {
   angle wind_relative = -40; stub_windsensor.set_relative(&wind_relative, 1);
-  uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
+  uangle bearing = 180; stub_compass.set_bearings(&bearing,1);
 
-  tacker.steer(0, 2000, 100);
+  tacker.steer(180, 2000, 100);
 
-  EXPECT_EQ(stub_helm.steering(), 5);
-  EXPECT_EQ(stub_helm.steer_time(), 2000);
-  EXPECT_EQ(stub_helm.interval(), 100);
+  EXPECT_EQ(stub_helm.steering(), 185);
 }
 
+TEST_F(TackerTest, Should_tack_left_if_in_nogo_and_only_just_to_left_of_wind) {
+  angle wind_relative = 2; stub_windsensor.set_relative(&wind_relative, 1);
+  uangle bearing = 270; stub_compass.set_bearings(&bearing,1);
+
+  tacker.steer(270, 2000, 100);
+
+  EXPECT_EQ(stub_helm.steering(), 227);
+}
+
+TEST_F(TackerTest, Should_adjust_tack_time_using_COS_of_angle_for_first_tack) {
+  angle wind_relative = 20; stub_windsensor.set_relative(&wind_relative, 1);
+  uangle bearing = 95; stub_compass.set_bearings(&bearing,1);
+
+  tacker.steer(95, 2000, 100);
+
+  EXPECT_EQ(stub_helm.steering(), 70);
+  EXPECT_EQ(stub_helm.steer_time(), round (2000 * cos(to_radians (TACKER_NO_GO_LIMIT - wind_relative))));
+}
+
+TEST_F(TackerTest, Should_adjust_tack_time_using_SIN_of_angle_for_second_tack) {
+  angle wind_relative = 20; stub_windsensor.set_relative(&wind_relative, 1);
+  uangle bearing = 95; stub_compass.set_bearings(&bearing,1);
+
+  tacker.steer(95, 2000, 100);
+
+  EXPECT_EQ(stub_helm.steering(), 160);
+  EXPECT_EQ(stub_helm.steer_time(), round (2000 * sin(to_radians (TACKER_NO_GO_LIMIT - wind_relative))));
+}
 
 
 }  //namespace

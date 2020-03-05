@@ -4,6 +4,9 @@
 #include "Helm.h"
 #include "Compass.h"
 #include "WindSensor.h"
+#include "Angle.h"
+
+using namespace Angle;
 
 #define TACKER_NO_GO_LIMIT 45
 

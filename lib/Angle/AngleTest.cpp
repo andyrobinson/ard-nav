@@ -112,6 +112,11 @@ class AngleTest : public ::testing::Test {
     EXPECT_EQ(udiff(350,5),15);
     EXPECT_EQ(udiff(10,345),-25);
   }
+
+  TEST_F(AngleTest, radians_to_degrees_and_back) {
+    EXPECT_LT(to_radians(360.0) - 3.1415926 * 2.0, 0.00001); // 2 pi rads in a circle
+    EXPECT_EQ(to_degrees(2.0), 114.5916);
+  }
 } // namespace
 
 int main(int argc, char **argv) {

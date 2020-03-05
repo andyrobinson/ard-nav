@@ -1,6 +1,8 @@
 #ifndef Angle_h
 #define Angle_h
 
+#define DEGREES_IN_RADIAN 57.2958
+
 namespace Angle {
     typedef short angle;
     typedef unsigned short uangle;
@@ -15,6 +17,9 @@ namespace Angle {
     uangle uadd(uangle start, angle delta);
     angle udiff(uangle a, uangle b);
     angle to_angle(uangle ua);
+
+    double to_radians(double degrees);
+    double to_degrees(double radians);
 }
 
 #endif
