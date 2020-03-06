@@ -10,14 +10,16 @@ class Helm
   public:
     Helm();
     void steer(uangle direction, unsigned long steer_time, unsigned long steer_interval);
-    uangle steering();
-    long steer_time();
-    long interval();
+    uangle steering(int index);
+    long steer_time(int index);
+    long interval(int index);
+    void reset();
 
   private:
-    uangle requested_direction;
-    long requested_steer_time;
-    long requested_interval;
+    uangle requested_direction[100];
+    long requested_steer_time[100];
+    long requested_interval[100];
+    int i;
 
 };
 

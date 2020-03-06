@@ -3,15 +3,17 @@
 using namespace Angle;
 using namespace Utility;
 
-Helm::Helm() {}
+Helm::Helm():i(0) {}
 
 void Helm::steer(uangle direction, unsigned long steer_time, unsigned long steer_interval) {
-  requested_direction = direction;
-  requested_steer_time = steer_time;
-  requested_interval = steer_interval;
+  requested_direction[i] = direction;
+  requested_steer_time[i] = steer_time;
+  requested_interval[i] = steer_interval;
+  if (i < 100) i++;
 }
 
-uangle Helm::steering() { return requested_direction; }
+uangle Helm::steering(int index) { return requested_direction[index]; }
+long Helm::steer_time(int index) {return requested_steer_time[index]; }
+long Helm::interval(int index) {return requested_interval[index]; }
 
-long Helm::steer_time() {return requested_steer_time; }
-long Helm::interval() {return requested_interval; }
+void Helm::reset() { i = 0; }
