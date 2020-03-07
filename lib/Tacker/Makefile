@@ -4,9 +4,10 @@ include ../detectos
 
 BUILD_DIR = ./build
 TEST_RUNNER = $(BUILD_DIR)/TestRunner.exe
-SRCS := $(shell find . -name "*.cpp") ../Angle/Angle.cpp
-INCLUDES = ../Angle/ ../Utility/ ./stubs/
-INC_PARAMS=$(foreach d, $(INCLUDES), -I$d)
+STUBS = Compass Helm Windsensor
+SRCS := $(shell find . -name "*.cpp") ../Angle/Angle.cpp $(foreach s, $(STUBS), ../Stubs/$s/$s.cpp)
+INCLUDES = ../Angle/ ../Utility/
+INC_PARAMS = $(foreach d, $(INCLUDES), -I$d) $(foreach s, $(STUBS), -I../Stubs/$s)
 
 ifeq ($(UNAME), Darwin)
   GCC = g++-9 -std=c++11

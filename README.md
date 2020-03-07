@@ -34,6 +34,7 @@ The other folders represent Arduino applications.  Again each folder has a makef
 * Rudder - wrapper around servo to limit deflection
 * Sail - sailing logic; set sail angle according to relative wind, only gybe when necessary
 * SerialLogger - log to the serial port (for Arduino Serial monitor)
+* Stubs - home grown stubs for use in unit testing
 * Tacker - steer directly or do a tack (in progress)
 * TestEg - example of using Gtest (google C++ test library)
 * Timer - wrapper around delay function, for testing and possible multi-tasking
