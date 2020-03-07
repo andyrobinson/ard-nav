@@ -47,10 +47,11 @@ The other folders represent Arduino applications.  Again each folder has a makef
 ## Planned development
 
 1. Investigate why the GPS time reported using serial logger does not vary from initial time
-2. Confirm that the GPS uses negative values for lat/long, so that the E/W, N/S values can be safely ignored
+2. Confirm that the GPS uses negative values for lat/long, so that the E/W, N/S values can be safely ignored - we should have +ve latitude and -ve longitude
 3. Create a Waypoint follower that follows a set of waypoints, optionally repeating them
 4. Create a Navigator that will navigate to a single position by asking the Tacker to steer a course
 5. Logging - requires the introduction of an SSD device
 6. Need some kind of integration testing
 7. Need applications based on Helm then Tacker so that we can field test these parts without
 having to worry about the GPS
+8.  What kind of error values does the GPS give you? Ideally want it in metres.  Unfortunately the device can only give you a value for how the satellite positions may affect the accuracy, not the absolute accuracy.  According to Adafruit the accuracy is no more than 1.8m radius, so we should probably take the PDOP value and multiply it by 2 to give an estimate of the error radius.  However we really need to check that this value is being correctly populated, as it depends on which sentences we are listening to.

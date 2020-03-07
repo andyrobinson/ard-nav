@@ -1,7 +1,7 @@
 .SHELLFLAGS = -ec
 .DEFAULT_GOAL = test
 
-PROJECTS = Angle Globe Helm Rudder Sail Utility
+PROJECTS = Angle Globe Helm Rudder Sail Utility Tacker Navigator
 
 test:
 	for subdir in $(PROJECTS) ; do \

@@ -41,7 +41,7 @@ gpsResult Gps::data(uint32_t max_millis) {
     if (AGPS.fix) {
       result.pos.latitude = AGPS.latitudeDegrees;
       result.pos.longitude = AGPS.longitudeDegrees;
-      result.pos.error = AGPS.PDOP;
+      result.pos.error = AGPS.PDOP * 2;
       result.mps = AGPS.speed * KNOTS_TO_METRES_PER_SEC;
       result.fix = AGPS.fixquality;
     }

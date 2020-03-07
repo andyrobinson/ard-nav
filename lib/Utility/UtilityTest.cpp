@@ -22,7 +22,6 @@ namespace {
     EXPECT_EQ(sign(zero),0);
   }
 
-
   TEST_F(UtilityTest, Should_calculate_the_absolute_value) {
     int a = -33;
     long b = 88;
@@ -37,6 +36,32 @@ namespace {
     EXPECT_EQ(abs1(e),98.99);
     EXPECT_EQ(abs1(zero),0);
   }
+
+  TEST_F(UtilityTest, Should_calculate_the_max_and_min) {
+    int a1 = -33;
+    int a2 = -46;
+    long b1 = 88;
+    long b2 = 89;
+    short c1 = -66;
+    short c2 = -42;
+    float d1 = 85.88;
+    float d2 = -0.23;
+    double e1 = -98.99;
+    double e2 = 12345.99;
+
+    EXPECT_EQ(min1(a1,a2),a2);
+    EXPECT_EQ(min1(b1,b2),b1);
+    EXPECT_EQ(min1(c1,c2),c1);
+    EXPECT_EQ(min1(d1,d2),d2);
+    EXPECT_EQ(min1(e1,e2),e1);
+
+    EXPECT_EQ(max1(a1,a2),a1);
+    EXPECT_EQ(max1(b1,b2),b2);
+    EXPECT_EQ(max1(c1,c2),c2);
+    EXPECT_EQ(max1(d1,d2),d1);
+    EXPECT_EQ(max1(e1,e2),e2);
+  }
+
 
   TEST_F(UtilityTest, Should_calculate_the_unix_time) {
     EXPECT_EQ(unix_time(0,1,1,0,0,0),946684800); // 1st Jan 2000, first date available
