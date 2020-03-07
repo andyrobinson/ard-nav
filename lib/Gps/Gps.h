@@ -15,12 +15,14 @@
 #define FIX_GPS 1
 #define FIX_DGPS 2
 
+#define KNOTS_TO_METRES_PER_SEC 0.514444
+
 using namespace Position;
 
 typedef struct {
   position pos;
   short fix;
-  float knots;
+  float mps;
   long unixTime;
 } gpsResult;
 

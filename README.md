@@ -19,7 +19,7 @@ The other folders represent Arduino applications.  Again each folder has a makef
 
 * All rotary measurements are in degrees, either as integers (default) or doubles (only where needed)
 * For calculations other than latitude/longitude to the nearest whole degree is sufficient
-* All linear measurements are in metres (GPS speed is currently knots)
+* All linear measurements are in metres
 * All time measurements are in milliseconds
 
 ## Current libraries
