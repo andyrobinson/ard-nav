@@ -16,6 +16,7 @@
 #define FIX_DGPS 2
 
 #define KNOTS_TO_METRES_PER_SEC 0.514444
+#define MAX_ACCURACY_METRES 2
 
 using namespace Position;
 

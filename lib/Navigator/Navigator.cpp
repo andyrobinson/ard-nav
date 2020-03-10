@@ -16,7 +16,7 @@ void Navigator::sailto(position destination) {
   if (!arrived(current_fix.pos, destination)) {
     uangle direction = globe->bearing(&current_fix.pos, &destination);
     double estimated_steer_time = ((globe->distance_between(&current_fix.pos, &destination))/current_fix.mps) * 1000;
-    long steer_time = round(min1(estimated_steer_time/2.0, MAX_STEER_TIME));
+    long steer_time = round(max1(MIN_STEER_TIME,min1(estimated_steer_time/2.0, MAX_STEER_TIME)));
     tacker->steer(direction, steer_time, STEER_CHECK_INTERVAL);
     current_fix = gps->data(MAX_GPS_WAIT_FOR_FIX);
   }

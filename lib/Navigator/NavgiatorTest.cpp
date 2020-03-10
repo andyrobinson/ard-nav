@@ -30,6 +30,20 @@ namespace {
     EXPECT_EQ(stub_tacker.never_called(),true);
   }
 
+  TEST_F(NavigatorTest, Should_return_immediately_if_we_have_already_arrived_within_tolerance) {
+    double tolerance = 8.0;
+    position current = {52.0, -2.2, 0.0};
+    position desired = {52.00005, -2.19995, tolerance};
+    gpsResult gps_current = {current, 1, 0.6, 12345675};
+    double dist = globe.distance_between(&gps_current.pos, &desired);
+    stub_gps.set_data(gps_current);
+
+    navigator.sailto(desired);
+
+    EXPECT_LT(dist, tolerance);
+    EXPECT_EQ(stub_tacker.never_called(),true);
+  }
+
   TEST_F(NavigatorTest, Should_steer_towards_destination) {
     gpsResult gps_current = {{-20.0, -10.2, 3.0}, 1, 0.6, 12345675};
     position destination = {-21.0, -10.2, 5.0};
@@ -64,10 +78,20 @@ namespace {
     EXPECT_EQ(stub_tacker.steer_time(0), 3600000);
   }
 
-  // should have a minimum time to steer
+  TEST_F(NavigatorTest, Should_have_a_minimum_steer_time_of_5s) {
+    gpsResult gps_current = {{28.0, -16.0, 3.0}, 2, 2, 12345675};
+    position destination = {27.9999, -15.9999, 5.0};
+    double dist = globe.distance_between(&gps_current.pos, &destination);
+
+    stub_gps.set_data(gps_current);
+    navigator.sailto(destination);
+
+    EXPECT_EQ(stub_tacker.steering(0),139);
+    EXPECT_EQ(stub_tacker.steer_time(0), 5000);
+  }
+
   // should steer repeatedly until the destination is reached
   // should do something if there's no GPS fix (oops)
-  // approximate arrival within tolerance
 
 }  //namespace
 
