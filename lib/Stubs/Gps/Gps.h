@@ -18,10 +18,12 @@ class Gps
     Gps();
     void begin();
     gpsResult data(uint32_t max_millis);
-    void set_data(gpsResult new_data);
+    void set_data(gpsResult *new_data, int size);
 
   private:
-    gpsResult gps_data;
+    gpsResult *gps_data;
+    int list_size;
+    int current_position;
 };
 
 #endif
