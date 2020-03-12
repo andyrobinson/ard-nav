@@ -11,7 +11,7 @@ The other folders represent Arduino applications.  Again each folder has a makef
 ## Build and test
 
 * Libraries should be built using Make in the library folder.
-* Arduino applications should also be built using Make
+* Arduino applications should also be built using Make (currently Windows only)
   1. Make compile just does compile
   2. Make upload does compile and upload to the Arduino
 
@@ -21,6 +21,7 @@ The other folders represent Arduino applications.  Again each folder has a makef
 * For calculations other than latitude/longitude to the nearest whole degree is sufficient
 * All linear measurements are in metres
 * All time measurements are in milliseconds
+* Speed is metres/sec (although this could be millimetres/millisecond!)
 
 ## Current libraries
 
@@ -46,12 +47,12 @@ The other folders represent Arduino applications.  Again each folder has a makef
 
 ## Planned development
 
-# Investigate why the GPS time reported using serial logger does not vary from initial time
-# Confirm that the GPS uses negative values for lat/long, so that the E/W, N/S values can be safely ignored - we should have +ve latitude and -ve longitude
-# Create a Waypoint follower that follows a set of waypoints, optionally repeating them
-# Logging - requires the introduction of an SSD device
-6. Need some kind of integration testing
-7. Need applications based on Helm then Tacker so that we can field test these parts without
+1. Investigate why the GPS time reported using serial logger does not vary from initial time
+2. Confirm that the GPS uses negative values for lat/long, so that the E/W, N/S values can be safely ignored - we should have +ve latitude and -ve longitude - I don't think it does, we need to do this
+3. Create a Waypoint follower that follows a set of waypoints, optionally repeating them
+4. Logging - requires the introduction of an SSD device
+5. Need some kind of integration testing
+6. Need applications based on Helm then Tacker so that we can field test these parts without
 having to worry about the GPS
-8.  What kind of error values does the GPS give you? Ideally want it in metres.  Unfortunately the device can only give you a value for how the satellite positions may affect the accuracy, not the absolute accuracy.  According to Adafruit the accuracy is no more than 1.8m radius, so we should probably take the PDOP value and multiply it by 2 to give an estimate of the error radius.  However we really need to check that this value is being correctly populated, as it depends on which sentences we are listening to, so need to look at actual values
-9
+7.  What kind of error values does the GPS give you? Ideally want it in metres.  Unfortunately the device can only give you a value for how the satellite positions may affect the accuracy, not the absolute accuracy.  According to Adafruit the accuracy is no more than 1.8m radius, so we should probably take the PDOP value and multiply it by 2 to give an estimate of the error radius.  However we really need to check that this value is being correctly populated, as it depends on which sentences we are listening to, so need to look at actual values
+8.  We need follow-on code for failed sensors - wind direction (can we find out by steering?), compass (use GPS), gps (use dead reckoning).  Maybe ultimately we need more than one sensor.
