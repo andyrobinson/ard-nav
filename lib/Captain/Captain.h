@@ -11,7 +11,7 @@ class Captain
   public:
     Captain();
     Captain(Navigator *navigatorp);
-    void voyage(position *route);
+    void voyage(position *route, int length);
 
   private:
     Navigator *navigator;

@@ -4,9 +4,9 @@ include ../detectos
 
 BUILD_DIR = ./build
 TEST_RUNNER = $(BUILD_DIR)/TestRunner.exe
-STUBS = Tacker Gps
-SRCS := $(shell find . -name "*.cpp") ../Angle/Angle.cpp ../Globe/Globe.cpp $(foreach s, $(STUBS), ../Stubs/$s/$s.cpp)
-INCLUDES = ../Angle/ ../Utility/ ../Position/ ../Globe/
+STUBS = Navigator
+SRCS := $(shell find . -name "*.cpp") $(foreach s, $(STUBS), ../Stubs/$s/$s.cpp)
+INCLUDES = ../Utility/ ../Position/
 INC_PARAMS = $(foreach d, $(INCLUDES), -I$d) $(foreach s, $(STUBS), -I../Stubs/$s)
 
 ifeq ($(UNAME), Darwin)

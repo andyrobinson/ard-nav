@@ -9,6 +9,10 @@ namespace Position {
      double error;
   } position;
 
+  inline bool operator==(const position& lhs, const position& rhs) {
+      return (lhs.latitude == rhs.latitude &&
+        lhs.longitude == rhs.longitude &&
+        lhs.error == rhs.error);
+  }
 }
-
 #endif
