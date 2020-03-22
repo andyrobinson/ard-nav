@@ -1,5 +1,5 @@
-#include <WindSensor.h>
 #include <Servo.h>
+#include <Position.h>
 #include <Compass.h>
 #include <Timer.h>
 #include <Gps.h>
@@ -15,7 +15,7 @@
 #define RUDDER_SERVO_PIN 5
 
 // Route
-Position route[] = {{10.0, 10.0, 0.1}};
+position route[] = {{10.0, 10.0, 0.1}};
 
 WindSensor windsensor;
 Servo sail_servo;
