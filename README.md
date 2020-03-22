@@ -47,6 +47,8 @@ The other folders represent Arduino applications.  Again each folder has a makef
 
 ## Planned development
 
+0. Rewrite functions which return structs to using pointer arguments, for efficiency and
+more importantly memory conservation
 1. Investigate why the GPS time reported using serial logger does not vary from initial time
 2. Confirm that the GPS uses negative values for lat/long, so that the E/W, N/S values can be safely ignored - we should have +ve latitude and -ve longitude - I don't think it does, we need to do this
 3. Create a Waypoint follower that follows a set of waypoints, optionally repeating them
