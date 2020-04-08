@@ -2,12 +2,19 @@
 
 .DEFAULT_GOAL = compile
 
+include ../lib/detectos
+
 LIBS = Utility Angle WindSensor Compass SerialLogger DisplayLogger Rudder Sail Gps
 # For libs that require non-standard lib files, not just the standard .cpp and .h
-LIBS_ALL = Adafruit_GPS_Library Adafruit_SSD1306 Logger Position
+LIBS_ALL = Adafruit_GPS_Library Adafruit_SSD1306 Adafruit_GFX Logger Position
 DEST_DIR = ./libraries
 LIB_DIR = ../lib
-ARDUINO_LIB_DIR = ../../../Arduino/libraries
+
+ifeq ($(UNAME), Darwin)
+	ARDUINO_LIB_DIR = ~/Documents/Arduino/libraries
+else
+	ARDUINO_LIB_DIR = ../../../Arduino/libraries
+endif
 
 LIB_FILES = $(foreach lib, $(LIBS), $(LIB_DIR)/$(lib)/$(lib).cpp $(LIB_DIR)/$(lib)/$(lib).h)
 LIB_ALL_FILES = $(foreach lib, $(LIBS_ALL), $(wildcard $(LIB_DIR)/$(lib)/*))
