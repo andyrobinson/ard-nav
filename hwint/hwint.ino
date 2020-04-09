@@ -7,8 +7,8 @@
 #include <Gps.h>
 
 // pick between loggers here
-//#include <DisplayLogger.h>
-#include <SerialLogger.h>
+#include <DisplayLogger.h>
+//#include <SerialLogger.h>
 
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5

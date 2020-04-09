@@ -14,6 +14,7 @@ class Logger
     Logger();
     void begin();
     void info(gpsResult *gps_result, angle wind, uangle bearing, String message);
+    void msg(String message);
 };
 
 #endif

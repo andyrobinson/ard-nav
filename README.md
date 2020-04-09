@@ -51,7 +51,7 @@ The other folders represent Arduino applications.  Again each folder has a makef
 more importantly memory conservation
 1. Investigate why the GPS time reported using serial logger does not vary from initial time
 2. Confirm that the GPS uses negative values for lat/long, so that the E/W, N/S values can be safely ignored - we should have +ve latitude and -ve longitude - I don't think it does, we need to do this
-3. Create a Waypoint follower that follows a set of waypoints, optionally repeating them
+3. Remove all reference to String (object) to conserve memory - mainly logging
 4. Logging - requires the introduction of an SSD device
 5. Need some kind of integration testing
 6. Need applications based on Helm then Tacker so that we can field test these parts without

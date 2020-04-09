@@ -53,6 +53,11 @@ void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, String mess
   sprintf(buf, "mps%4.2d Fx%3d       ", gps_result->mps, gps_result->fix);
   messageAt(2, buf);
 
+  msg(message);
+}
+
+void Logger::msg(String message) {
+  static char buf[41];
   if (message.length() < 40) {
     sprintf(buf,"%-s", message.c_str());
     messageAt(3, buf);
@@ -60,5 +65,4 @@ void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, String mess
     sprintf(buf,"%s","** MSG OVERFLOW **");
     messageAt(3, buf);
   }
-
 }

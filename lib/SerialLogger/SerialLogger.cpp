@@ -20,3 +20,7 @@ void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, String mess
   Serial.print(message);
   Serial.println();
 }
+
+void Logger::msg(String message) {
+  Serial.println(message);
+}
