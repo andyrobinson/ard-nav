@@ -2,9 +2,9 @@
 
 include ../lib/detectos
 
-LIBS = Angle Captain Compass Globe Gps Helm Navigator Rudder Sail SelfTest Tacker Timer Utility WindSensor
+LIBS = Angle Captain Compass DisplayLogger Globe Gps Helm Navigator Rudder Sail SelfTest Tacker Timer Utility WindSensor
 # For libs that require all files, not just the standard .cpp and .h
-LIBS_ALL = Adafruit_GPS_Library Position
+LIBS_ALL = Adafruit_GPS_Library Logger Position
 DEST_DIR = ./libraries
 LIB_DIR = ../lib
 

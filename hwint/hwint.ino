@@ -74,8 +74,10 @@ void loop() {
   gps_time_to_read = millis() - gps_time_to_read;
   #endif
 
-  String msg = "Log, gps (ms): ";
-  msg = msg + gps_time_to_read;
+  char gpstime[16];
+  itoa(gps_time_to_read, gpstime, 10);
+  char msg[40] = "Log, gps (ms): ";
+  strcat(msg, gpstime);
   logger.info(&gpsReading, wind, bearing, msg);
 
   delay(500);

@@ -11,6 +11,7 @@
 #include <Tacker.h>
 #include <Navigator.h>
 #include <Captain.h>
+#include <DisplayLogger.h>
 
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5
@@ -25,6 +26,7 @@ Compass compass;
 Timer timer;
 Gps gps;
 Globe globe;
+Logger logger;
 
 // Dependency injection
 Sail sail(&sail_servo);
@@ -42,6 +44,7 @@ void setup() {
   windsensor.begin();
   compass.begin();
   gps.begin();
+  logger.begin();
 }
 
 void loop() {

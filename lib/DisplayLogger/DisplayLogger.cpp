@@ -40,7 +40,7 @@ void Logger::begin() {
   display.setTextColor(WHITE); // Draw white text
 }
 
-void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, String message) {
+void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, char *message) {
   display.clearDisplay();
   static char buf[41];
 
@@ -56,10 +56,10 @@ void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, String mess
   msg(message);
 }
 
-void Logger::msg(String message) {
+void Logger::msg(char *message) {
   static char buf[41];
-  if (message.length() < 40) {
-    sprintf(buf,"%-s", message.c_str());
+  if (strlen(message) < 40) {
+    sprintf(buf,"%-s", message);
     messageAt(3, buf);
   } else {
     sprintf(buf,"%s","** MSG OVERFLOW **");

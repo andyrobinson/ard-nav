@@ -8,7 +8,7 @@ void Logger::begin() {
   Serial.begin(19200);
 }
 
-void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, String message) {
+void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, char *message) {
   Serial.print(gps_result->unixTime); Serial.print(",");
   Serial.print(gps_result->pos.latitude,5); Serial.print(",");
   Serial.print(gps_result->pos.longitude,5); Serial.print(",");
@@ -21,6 +21,6 @@ void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, String mess
   Serial.println();
 }
 
-void Logger::msg(String message) {
+void Logger::msg(char *message) {
   Serial.println(message);
 }

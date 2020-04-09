@@ -1,5 +1,5 @@
-#ifndef Logger_h
-#define Logger_h
+#ifndef LoggerStub_h
+#define LoggerStub_h
 
 #include "Position.h"
 #include "Gps.h"
@@ -13,8 +13,8 @@ class Logger
   public:
     Logger();
     void begin();
-    void info(gpsResult *gps_result, angle wind, uangle bearing, char *message);
-    void msg(char *message);
+    void info(gpsResult *gps_result, angle wind, uangle bearing, String message);
+    void msg(String message);
 };
 
 #endif
