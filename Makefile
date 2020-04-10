@@ -1,8 +1,7 @@
 .SHELLFLAGS = -ec
 .DEFAULT_GOAL = compileandtest
 
-PROJECTS = lib compass gps hwint sail
-
+PROJECTS = lib compass gps hwint sail nav
 
 compileandtest:
 	for subdir in $(PROJECTS) ; do \
