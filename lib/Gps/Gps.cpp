@@ -40,7 +40,7 @@ void Gps::data(uint32_t max_millis, gpsResult *result) {
       result->pos.latitude = AGPS.latitudeDegrees;
       result->pos.longitude = AGPS.longitudeDegrees;
       result->pos.error = AGPS.PDOP * MAX_ACCURACY_METRES;
-      result->mps = AGPS.speed * KNOTS_TO_METRES_PER_SEC;
+      result->mps = min1(AGPS.speed * KNOTS_TO_METRES_PER_SEC, MAX_POSSIBLE_SPEED);
       result->fix = AGPS.fixquality;
     }
   } while (!AGPS.fix && ((millis() - timer) < max_millis));

@@ -17,6 +17,7 @@
 
 #define KNOTS_TO_METRES_PER_SEC 0.514444
 #define MAX_ACCURACY_METRES 2
+#define MAX_POSSIBLE_SPEED 10.0 // acutally it's more like 1.6 m/s
 
 using namespace Position;
 
