@@ -7,8 +7,8 @@
 #include <Gps.h>
 
 // pick between loggers here
-//#include <DisplayLogger.h>
-#include <SerialLogger.h>
+#include <DisplayLogger.h>
+//#include <SerialLogger.h>
 // include the GPS in the test?
 //#define SKIP_GPS
 
