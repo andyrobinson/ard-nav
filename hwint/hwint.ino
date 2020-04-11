@@ -10,7 +10,7 @@
 #include <DisplayLogger.h>
 //#include <SerialLogger.h>
 // include the GPS in the test?
-#define SKIP_GPS
+//#define SKIP_GPS
 
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5

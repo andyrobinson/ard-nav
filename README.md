@@ -47,10 +47,9 @@ The other folders represent Arduino applications.  Again each folder has a makef
 
 ## Planned development
 
-0. Rewrite functions which return structs to using pointer arguments, for efficiency and
-more importantly memory conservation
 1. Investigate why the GPS time reported using serial logger does not vary from initial time
-2. Confirm that the GPS uses negative values for lat/long, so that the E/W, N/S values can be safely ignored - we should have +ve latitude and -ve longitude - I don't think it does, we need to do this
+2. Rewrite functions which return structs to using pointer arguments, for efficiency and
+more importantly memory conservation
 3. Remove all reference to String (object) to conserve memory - mainly logging
 4. Logging - requires the introduction of an SSD device
 5. Need some kind of integration testing
@@ -58,3 +57,4 @@ more importantly memory conservation
 having to worry about the GPS
 7.  What kind of error values does the GPS give you? Ideally want it in metres.  Unfortunately the device can only give you a value for how the satellite positions may affect the accuracy, not the absolute accuracy.  According to Adafruit the accuracy is no more than 1.8m radius, so we should probably take the PDOP value and multiply it by 2 to give an estimate of the error radius.  However we really need to check that this value is being correctly populated, as it depends on which sentences we are listening to, so need to look at actual values
 8.  We need follow-on code for failed sensors - wind direction (can we find out by steering?), compass (use GPS), gps (use dead reckoning).  Maybe ultimately we need more than one sensor.
+9.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to crash.  We need to ensure that the Arduino power supply is protected, and there is a fall-back reset.  Ideally whe the batteries get low we shut down until they regain some charge (I guess this could be never ...)
