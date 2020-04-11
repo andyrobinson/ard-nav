@@ -17,7 +17,7 @@ class Gps
   public:
     Gps();
     void begin();
-    gpsResult data(uint32_t max_millis);
+    void data(uint32_t max_millis, gpsResult *result);
     void set_data(gpsResult *new_data, int size);
 
   private:

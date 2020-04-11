@@ -50,16 +50,15 @@ void move_rudder() {
   rudder.set_position(rudder_position);
 }
 
-gpsResult read_gps() {
+void read_gps() {
   static int gps_wait = 2000;
-  gpsResult gpsData = gps.data(gps_wait);
-  if (gpsData.fix == -1) {
+  gps.data(gps_wait, &gpsReading);
+  if (gpsReading.fix == -1) {
     gps_wait = gps_wait + 5000;
   }
   else if (gps_wait > 2000) {
     gps_wait = gps_wait - 1000;
   }
-  return gpsData;
 }
 
 void loop() {
@@ -71,7 +70,7 @@ void loop() {
 
   #ifndef SKIP_GPS
   gps_time_to_read = millis();
-  gpsReading = read_gps();
+  read_gps();
   gps_time_to_read = millis() - gps_time_to_read;
   #endif
 

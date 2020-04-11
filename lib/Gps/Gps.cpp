@@ -20,9 +20,8 @@ void Gps::begin() {
   AGPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
 }
 
-gpsResult Gps::data(uint32_t max_millis) {
+void Gps::data(uint32_t max_millis, gpsResult *result) {
   uint32_t timer = millis();
-  gpsResult result;
 
   AGPS.wakeup();
 
@@ -33,21 +32,18 @@ gpsResult Gps::data(uint32_t max_millis) {
       continue;
     }
 
-    result.unixTime = 0;
-    result.fix = FIX_NONE;
-    result.mps = 0.0;
-    result.unixTime = unix_time(AGPS.year, AGPS.month, AGPS.day, AGPS.hour, AGPS.minute, AGPS.seconds);
+    result->fix = FIX_NONE;
+    result->mps = 0.0;
+    result->unixTime = unix_time(AGPS.year, AGPS.month, AGPS.day, AGPS.hour, AGPS.minute, AGPS.seconds);
 
     if (AGPS.fix) {
-      result.pos.latitude = AGPS.latitudeDegrees;
-      result.pos.longitude = AGPS.longitudeDegrees;
-      result.pos.error = AGPS.PDOP * MAX_ACCURACY_METRES;
-      result.mps = AGPS.speed * KNOTS_TO_METRES_PER_SEC;
-      result.fix = AGPS.fixquality;
+      result->pos.latitude = AGPS.latitudeDegrees;
+      result->pos.longitude = AGPS.longitudeDegrees;
+      result->pos.error = AGPS.PDOP * MAX_ACCURACY_METRES;
+      result->mps = AGPS.speed * KNOTS_TO_METRES_PER_SEC;
+      result->fix = AGPS.fixquality;
     }
   } while (!AGPS.fix && ((millis() - timer) < max_millis));
 
   AGPS.standby();
-
-  return result;
 }

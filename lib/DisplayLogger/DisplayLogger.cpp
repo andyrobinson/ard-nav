@@ -14,8 +14,8 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
   OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
-void messageAt(int y, String msg) {
-  static String displaybuff[4]={"","","",""};
+void messageAt(int y, char *msg) {
+  static char *displaybuff[4]={"","","",""};
 
   displaybuff[y] = msg;
   display.clearDisplay();

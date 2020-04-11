@@ -32,7 +32,7 @@ class Gps
   public:
     Gps();
     void begin();
-    gpsResult data(uint32_t max_millis);
+    void data(uint32_t max_millis, gpsResult *result);
 };
 
 #endif
