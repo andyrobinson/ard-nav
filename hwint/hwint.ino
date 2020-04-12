@@ -9,8 +9,8 @@
 
 
 // include the GPS in the test?
-#define SKIP_GPS
-//#define SKIP_SERVO
+//#define SKIP_GPS
+#define SKIP_SERVO
 //#define SKIP_DISPLAY
 
 #ifndef SKIP_DISPLAY
@@ -65,7 +65,9 @@ void move_rudder() {
   if (abs(rudder_position) >= RUDDER_MAX_DISPLACEMENT) {
     rudder_increment = -rudder_increment;
   }
+  #ifndef SKIP_SERVO
   rudder.set_position(rudder_position);
+  #endif
 }
 
 void read_gps() {
@@ -100,6 +102,7 @@ int freeMemory() {
 void loop() {
   angle wind = windsensor.relative();
   uangle bearing = compass.bearing();
+  long gps_time_to_read = 0;
 
   #ifndef SKIP_SERVO
   move_rudder();
@@ -108,7 +111,6 @@ void loop() {
 
 
   #ifndef SKIP_GPS
-  long gps_time_to_read = 0;
   gps_time_to_read = millis();
   read_gps();
   gps_time_to_read = millis() - gps_time_to_read;
