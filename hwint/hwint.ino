@@ -6,11 +6,18 @@
 #include <Sail.h>
 #include <Gps.h>
 
+
+
+// include the GPS in the test?
+#define SKIP_GPS
+//#define SKIP_SERVO
+//#define SKIP_DISPLAY
+
+#ifndef SKIP_DISPLAY
 // pick between loggers here
 #include <DisplayLogger.h>
 //#include <SerialLogger.h>
-// include the GPS in the test?
-//#define SKIP_GPS
+#endif
 
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5
@@ -18,10 +25,12 @@
 using namespace Angle;
 using namespace Position;
 
+#ifndef SKIP_SERVO
 Servo rudder_servo;
 Rudder rudder(&rudder_servo);
 Servo sail_servo;
 Rudder sail(&sail_servo);
+#endif
 
 Gps gps;
 WindSensor windsensor;
@@ -31,12 +40,21 @@ position current_position;
 gpsResult gpsReading;
 
 void setup() {
+  #ifndef SKIP_GPS
   gps.begin();
+  #endif
+
+  #ifndef SKIP_DISPLAY
   logger.begin();
+  #endif
+
   windsensor.begin();
   compass.begin();
+
+  #ifndef SKIP_SERVO
   rudder_servo.attach(RUDDER_SERVO_PIN);
   sail_servo.attach(SAIL_SERVO_PIN);
+  #endif
 }
 
 void move_rudder() {
@@ -82,11 +100,15 @@ int freeMemory() {
 void loop() {
   angle wind = windsensor.relative();
   uangle bearing = compass.bearing();
+
+  #ifndef SKIP_SERVO
   move_rudder();
   sail.set_position(wind);
-  long gps_time_to_read = 0;
+  #endif
+
 
   #ifndef SKIP_GPS
+  long gps_time_to_read = 0;
   gps_time_to_read = millis();
   read_gps();
   gps_time_to_read = millis() - gps_time_to_read;
@@ -103,7 +125,9 @@ void loop() {
   strcat(msg, " gps ");
   strcat(msg, intbuf);
 
+  #ifndef SKIP_DISPLAY
   logger.info(&gpsReading, wind, bearing, msg);
+  #endif
 
-  delay(500);
+  delay(200);
 }
