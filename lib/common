@@ -17,7 +17,7 @@ DST_FILES = $(patsubst $(LIB_DIR)/%, $(DEST_DIR)/%, $(LIB_FILES) $(LIB_ALL_FILES
 
 $(DST_FILES): $(DEST_DIR)/%: $(LIB_DIR)/%
 	mkdir -p $(dir $@)
-	@cp -rpv $< $@
+	@cp -rp $< $@
 
 copylibs: $(DST_FILES)
 
@@ -27,7 +27,7 @@ clean:
 	$(RM) -r *.elf
 
 compile: $(notdir $(CURDIR)).ino $(DST_FILES)
-	cp -rpv $(DEST_DIR)/* $(ARDUINO_LIB_DIR)
+	cp -rp $(DEST_DIR)/* $(ARDUINO_LIB_DIR)
 	arduino-cli compile --fqbn arduino:samd:arduino_zero_edbg ../$(notdir $(CURDIR))
 
 $(notdir $(CURDIR)).*.bin: $(notdir $(CURDIR)).ino $(DST_FILES)
