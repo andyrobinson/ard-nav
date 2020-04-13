@@ -13,7 +13,7 @@ void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, char *messa
   Serial.print(gps_result->pos.latitude,5); Serial.print(",");
   Serial.print(gps_result->pos.longitude,5); Serial.print(",");
   Serial.print("err ");Serial.print(gps_result->pos.error); Serial.print(",");
-  Serial.print(gps_result->fix); Serial.print(",");
+  Serial.print("fix ");Serial.print(gps_result->fix); Serial.print(",");
   Serial.print("m/s ");Serial.print(gps_result->mps); Serial.print(",");
   Serial.print(wind); Serial.print(",");
   Serial.print(bearing); Serial.print(",");

@@ -23,7 +23,7 @@ void Gps::begin() {
 void Gps::data(uint32_t max_millis, gpsResult *result) {
   uint32_t timer = millis();
 
-  AGPS.wakeup();
+  // AGPS.wakeup();
 
   do {
     AGPS.read();
@@ -45,5 +45,5 @@ void Gps::data(uint32_t max_millis, gpsResult *result) {
     }
   } while (!AGPS.fix && ((millis() - timer) < max_millis));
 
-  AGPS.standby();
+  // AGPS.standby();
 }
