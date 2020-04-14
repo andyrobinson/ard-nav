@@ -5,7 +5,7 @@ This sketch illustrates how to set a timer on an SAMD21 based board in Arduino (
 It should generate a 1Hz square wave as it is (thanks richdrich for the suggestion)
 */
 
-uint32_t sampleRate = 2000; //sample rate in milliseconds, determines how often TC5_Handler is called
+uint32_t sampleRate = 2; //sample rate in milliseconds, determines how often TC5_Handler is called
 
 bool state = 0; //just for an example
 
@@ -13,9 +13,13 @@ void setup() {
   pinMode(LED_BUILTIN,OUTPUT); //this configures the LED pin, you can remove this it's just example code
   tcConfigure(sampleRate); //configure the timer to run at <sampleRate>Hertz
   tcStartCounter(); //starts the timer
+  Serial.begin(19200);
 }
 
 void loop() {
+  Serial.print("Core Clock: "); Serial.println(SystemCoreClock);
+  Serial.print("Calculation: "); Serial.println((uint16_t) (SystemCoreClock / sampleRate - 1));
+  delay(5000);
   //tcDisable(); //This function can be used anywhere if you need to stop/pause the timer
   //tcReset(); //This function should be called everytime you stop the timer
 }
