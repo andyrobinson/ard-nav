@@ -5,7 +5,10 @@ This sketch illustrates how to set a timer on an SAMD21 based board in Arduino (
 It should generate a 1Hz square wave as it is (thanks richdrich for the suggestion)
 */
 
-uint32_t sampleRate = 2; //sample rate in milliseconds, determines how often TC5_Handler is called
+// because of arithmetic, this is used to divide clock rate (48MHz) and produce a 16 bit value
+// so result must be less than 65535, and therefore this value must be greater than 734
+// we can adjust the prescaler to get a faster interrupt
+uint32_t sampleRate = 2000; //sample rate in milliseconds, determines how often TC5_Handler is called
 
 bool state = 0; //just for an example
 
