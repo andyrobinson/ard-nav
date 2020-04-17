@@ -10,10 +10,13 @@
 #define PAD_SERIAL2_TX       (UART_TX_PAD_2)      // SERCOM pad 2
 #define PAD_SERIAL2_RX       (SERCOM_RX_PAD_3)    // SERCOM pad 3
 
-#define FIX_NONE -1
-#define FIX_INVALID 0
-#define FIX_GPS 1
-#define FIX_DGPS 2
+#define INTERRUPT_SAMPLE_RATE_MICRO_SECS 800
+
+#define FIX_UNPARSEABLE_DATA   -2
+#define FIX_NONE               -1
+#define FIX_INVALID             0
+#define FIX_GPS                 1
+#define FIX_DGPS                2
 
 #define KNOTS_TO_METRES_PER_SEC 0.514444
 #define MAX_ACCURACY_METRES 2
@@ -34,6 +37,12 @@ class Gps
     Gps();
     void begin();
     void data(uint32_t max_millis, gpsResult *result);
+
+private:
+  void tcConfigure(int sampleRate);
+  bool tcIsSyncing();
+  void tcStartCounter();
+  void tcReset();
 };
 
 #endif

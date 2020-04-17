@@ -3,6 +3,8 @@
 
 using namespace Utility;
 
+// not in the class, must be static
+
 Uart Serial2(&sercom1, PIN_SERIAL2_RX, PIN_SERIAL2_TX, PAD_SERIAL2_RX, PAD_SERIAL2_TX);
 
 void SERCOM1_Handler()
@@ -12,23 +14,35 @@ void SERCOM1_Handler()
 
 Adafruit_GPS AGPS(&Serial2);
 
+void TC5_Handler(void) {
+  AGPS.read();
+  TC5->COUNT16.INTFLAG.bit.MC0 = 1; //reeanble interrupt
+}
+
+// class based stuff
 Gps::Gps() {}
 
 void Gps::begin() {
   AGPS.begin(9600);
   AGPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);  // with fix quality and satellites
   AGPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
+
+  // start the timer based interrupt
+  tcConfigure(INTERRUPT_SAMPLE_RATE_MICRO_SECS);
+  tcStartCounter();
 }
 
 void Gps::data(uint32_t max_millis, gpsResult *result) {
   uint32_t timer = millis();
 
-  // AGPS.wakeup();
-
   do {
-    AGPS.read();
+    //reading is now done by the timer based interrupt
 
+    AGPS.pause(true); // stop reading data, timeout still happens
+
+    result->fix = FIX_UNPARSEABLE_DATA;
     if (AGPS.newNMEAreceived() && !AGPS.parse(AGPS.lastNMEA())) {
+      AGPS.pause(false);
       continue;
     }
 
@@ -43,7 +57,60 @@ void Gps::data(uint32_t max_millis, gpsResult *result) {
       result->mps = min1(AGPS.speed * KNOTS_TO_METRES_PER_SEC, MAX_POSSIBLE_SPEED);
       result->fix = AGPS.fixquality;
     }
+
+    AGPS.pause(false);
+
   } while (!AGPS.fix && ((millis() - timer) < max_millis));
 
-  // AGPS.standby();
 }
+
+//Thanks to https://gist.github.com/nonsintetic/ad13e70f164801325f5f552f84306d6f for interrupt code
+
+ // because of arithmetic, this is used to divide clock rate (48MHz) and produce a 16 bit value
+ // so result must be less than 65535, and therefore this value must be greater than 734
+ // we can adjust the prescaler to get a faster interrupt
+ void Gps::tcConfigure(int sampleRate) {
+   // Enable GCLK for TCC2 and TC5 (timer counter input clock)
+   GCLK->CLKCTRL.reg = (uint16_t) (GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_ID(GCM_TC4_TC5));
+   while (GCLK->STATUS.bit.SYNCBUSY);
+
+   tcReset(); //reset TC5
+
+   // Set Timer counter Mode to 16 bits
+   TC5->COUNT16.CTRLA.reg |= TC_CTRLA_MODE_COUNT16;
+   // Set TC5 mode as match frequency
+   TC5->COUNT16.CTRLA.reg |= TC_CTRLA_WAVEGEN_MFRQ;
+   //set prescaler and enable TC5
+   TC5->COUNT16.CTRLA.reg |= TC_CTRLA_PRESCALER_DIV1 | TC_CTRLA_ENABLE;
+   TC5->COUNT16.CC[0].reg = (uint16_t) (SystemCoreClock / sampleRate - 1);
+   while (tcIsSyncing());
+
+   // Configure interrupt request
+   NVIC_DisableIRQ(TC5_IRQn);
+   NVIC_ClearPendingIRQ(TC5_IRQn);
+   NVIC_SetPriority(TC5_IRQn, 0);
+   NVIC_EnableIRQ(TC5_IRQn);
+
+   // Enable the TC5 interrupt request
+   TC5->COUNT16.INTENSET.bit.MC0 = 1;
+   while (tcIsSyncing());
+}
+
+bool Gps::tcIsSyncing()
+{
+  return TC5->COUNT16.STATUS.reg & TC_STATUS_SYNCBUSY;
+}
+
+void Gps::tcStartCounter()
+{
+  TC5->COUNT16.CTRLA.reg |= TC_CTRLA_ENABLE; //set the CTRLA register
+  while (tcIsSyncing()); //wait until snyc'd
+}
+
+void Gps::tcReset()
+{
+  TC5->COUNT16.CTRLA.reg = TC_CTRLA_SWRST;
+  while (tcIsSyncing());
+  while (TC5->COUNT16.CTRLA.bit.SWRST);
+}
+// disable removed - see original code to reinstate
