@@ -1,6 +1,6 @@
 #include "Logger.h"
 
 Logger::Logger() {}
+Logger::Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp) {}
 void Logger::begin() {}
-void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, char *message) {}
 void Logger::msg(char *message) {}

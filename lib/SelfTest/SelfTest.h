@@ -8,6 +8,7 @@
 #include "Sail.h"
 #include "Rudder.h"
 #include "Timer.h"
+#include "Logger.h"
 
 #define NEXT_TEST   22
 #define IN_TEST     45
@@ -19,7 +20,7 @@ class SelfTest
 {
   public:
     SelfTest();
-    SelfTest(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Sail *sailp, Rudder *rudderp, Timer *timerp);
+    SelfTest(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Sail *sailp, Rudder *rudderp, Timer *timerp, Logger *loggerp);
     void test();
 
   private:
@@ -31,6 +32,7 @@ class SelfTest
     Sail *sail;
     Rudder *rudder;
     Timer *timer;
+    Logger *logger;
 };
 
 #endif

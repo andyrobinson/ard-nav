@@ -5,6 +5,7 @@
 #include "Compass.h"
 #include "WindSensor.h"
 #include "Angle.h"
+#include "Logger.h"
 
 using namespace Angle;
 
@@ -14,13 +15,14 @@ class Tacker
 {
   public:
     Tacker();
-    Tacker(Helm *helmp, Compass *compassp, WindSensor *windsensorp);
+    Tacker(Helm *helmp, Compass *compassp, WindSensor *windsensorp, Logger *loggerp);
     void steer(uangle direction, unsigned long steer_time, unsigned long steer_interval);
 
   private:
     Helm *helm;
     Compass *compass;
     WindSensor *windsensor;
+    Logger *logger;
 };
 
 #endif

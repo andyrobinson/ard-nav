@@ -7,11 +7,16 @@ using namespace Utility;
 
 Helm::Helm():rudder_position(0) {}
 
-Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp):
-  rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), windsensor(windsensorp), sail(sailp), old_heading(0) {}
+Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, Logger *loggerp):
+  rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), windsensor(windsensorp), sail(sailp), logger(loggerp), old_heading(0) {}
 
 void Helm::steer(uangle direction, unsigned long steer_time, unsigned long steer_interval) {
     unsigned long elapsed = 0;
+
+    char logmsg[40];
+    sprintf(logmsg, "Steering %4d for %4dms", direction, steer_time);
+    logger->msg(logmsg);
+
     while (elapsed < steer_time) {
 
       angle current_heading = compass->bearing();
@@ -22,6 +27,9 @@ void Helm::steer(uangle direction, unsigned long steer_time, unsigned long steer
 
       timer->wait(steer_interval);
       elapsed = elapsed + steer_interval;
+
+      char nothing = '-';
+      logger->msg(&nothing);
     }
 }
 

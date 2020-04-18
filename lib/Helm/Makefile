@@ -1,5 +1,5 @@
-STUBS = Compass Rudder Sail Timer WindSensor
-INCLUDES = ../Angle/ ../Utility/
+STUBS = Compass Rudder Sail Timer WindSensor Logger Gps
+INCLUDES = ../Angle/ ../Utility/ ../Position/
 SOURCES = ../Angle/Angle.cpp
 
 include ../libcommon

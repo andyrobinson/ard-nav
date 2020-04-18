@@ -7,7 +7,8 @@ namespace {
 Helm stub_helm;
 Compass stub_compass;
 WindSensor stub_windsensor;
-Tacker tacker(&stub_helm, &stub_compass, &stub_windsensor);
+Logger logger;
+Tacker tacker(&stub_helm, &stub_compass, &stub_windsensor, &logger);
 
 class TackerTest : public ::testing::Test {
  protected:

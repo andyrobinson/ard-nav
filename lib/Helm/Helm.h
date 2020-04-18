@@ -6,12 +6,13 @@
 #include "Timer.h"
 #include "WindSensor.h"
 #include "Sail.h"
+#include "Logger.h"
 
 class Helm
 {
   public:
     Helm();
-    Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp);
+    Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, Logger *loggerp);
     void steer(uangle direction, unsigned long steer_time, unsigned long steer_interval);
 
   private:
@@ -20,6 +21,7 @@ class Helm
     Timer *timer;
     WindSensor *windsensor;
     Sail *sail;
+    Logger *logger;
     angle rudder_position;
     angle old_heading;
 

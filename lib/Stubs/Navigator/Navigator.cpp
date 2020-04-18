@@ -2,12 +2,12 @@
 
 Navigator::Navigator():current_position(0) {}
 
-void Navigator::sailto(position destination) {
-  positions[current_position++] = destination;
+void Navigator::sailto(waypoint destination) {
+  waypoints[current_position++] = destination;
 }
 
-position *Navigator::get_waypoints() {
-    return positions;
+waypoint *Navigator::get_waypoints() {
+    return waypoints;
 }
 
 void Navigator::reset() {

@@ -10,6 +10,7 @@ Timer stub_timer;
 WindSensor stub_windsensor;
 Sail stub_sail;
 Helm helm;
+Logger logger;
 angle wind_sample[] = {180};
 
 class HelmTest : public ::testing::Test {
@@ -20,7 +21,7 @@ class HelmTest : public ::testing::Test {
     stub_rudder.reset();
     stub_sail.reset();
     stub_windsensor.set_relative(wind_sample, 1);
-    helm = Helm(&stub_rudder, &stub_compass, &stub_timer, &stub_windsensor, &stub_sail);
+    helm = Helm(&stub_rudder, &stub_compass, &stub_timer, &stub_windsensor, &stub_sail, &logger);
   }
 
   angle rudder_position() {

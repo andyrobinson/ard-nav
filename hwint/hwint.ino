@@ -7,8 +7,8 @@
 #include <Gps.h>
 
 // pick between loggers here
-#include <DisplayLogger.h>
-//#include <SerialLogger.h>
+//#include <DisplayLogger.h>
+#include <SerialLogger.h>
 
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5
@@ -24,7 +24,7 @@ Rudder sail(&sail_servo);
 Gps gps;
 WindSensor windsensor;
 Compass compass;
-Logger logger;
+Logger logger(&gps, &windsensor, &compass);
 gpsResult gpsReading;
 
 void setup() {
@@ -52,7 +52,7 @@ void move_rudder() {
   rudder.set_position(rudder_position);
 }
 
-void read_gps() {
+void wait_for_gps_fix() {
   static int gps_wait = 2000;
   gps.data(gps_wait, &gpsReading);
   if (gpsReading.fix == -1) {
@@ -78,17 +78,16 @@ void appendFreemem(char *msg) {
 
 void loop() {
   angle wind = windsensor.relative();
-  uangle bearing = compass.bearing();
 
   move_rudder();
   sail.set_position(wind);
 
-  read_gps();
+  wait_for_gps_fix();
 
   char msg[40] = "mem ";
   appendFreemem(msg);
 
-  logger.info(&gpsReading, wind, bearing, msg);
+  logger.msg(msg);
 
   delay(500);
 }

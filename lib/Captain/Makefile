@@ -1,5 +1,5 @@
 STUBS = Navigator
-INCLUDES = ../Utility/ ../Position/
+INCLUDES = ../Utility/ ../Waypoint/ ../Position/
 SOURCES =
 
 include ../libcommon

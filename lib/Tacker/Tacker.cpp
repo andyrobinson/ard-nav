@@ -8,8 +8,8 @@ using namespace Utility;
 
 Tacker::Tacker() {}
 
-Tacker::Tacker(Helm *helmp, Compass *compassp, WindSensor *windsensorp):
-  helm(helmp), compass(compassp), windsensor(windsensorp) {}
+Tacker::Tacker(Helm *helmp, Compass *compassp, WindSensor *windsensorp, Logger *loggerp):
+  helm(helmp), compass(compassp), windsensor(windsensorp), logger(loggerp) {}
 
 void Tacker::steer(uangle direction, unsigned long steer_time, unsigned long steer_interval) {
 
@@ -23,11 +23,15 @@ void Tacker::steer(uangle direction, unsigned long steer_time, unsigned long ste
     short offset = TACKER_NO_GO_LIMIT - abs1(wind_diff);
 
     // first tack
+    char logmsg[6]="Tack1";
+    logger->msg(logmsg);
     uangle tack_direction = uadd(direction, sign(wind_diff) * offset);
     unsigned long tack_time = round(steer_time * cos(to_radians((double) offset)));
     helm->steer(tack_direction, tack_time, steer_interval);
 
     // second tack
+    sprintf(logmsg,"Tack2");
+    logger->msg(logmsg);
     tack_direction = uadd(tack_direction, - sign(wind_diff) * TACKER_NO_GO_LIMIT * 2);
     tack_time = round(steer_time * sin(to_radians((double) offset)));
     helm->steer(tack_direction, tack_time, steer_interval);

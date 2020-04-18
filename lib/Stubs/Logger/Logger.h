@@ -1,20 +1,29 @@
 #ifndef LoggerStub_h
 #define LoggerStub_h
 
-#include "Position.h"
+#include "WindSensor.h"
+#include "Compass.h"
 #include "Gps.h"
-#include "Angle.h"
-
-using namespace Angle;
-using namespace Position;
+#include "cstdio"
 
 class Logger
 {
   public:
     Logger();
+    Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp);
     void begin();
-    void info(gpsResult *gps_result, angle wind, uangle bearing, String message);
-    void msg(String message);
+    void msg(char *message);
+
+  private:
+    Gps *gps;
+    WindSensor *windsensor;
+    Compass *compass;
+    gpsResult gpsReading;
+
 };
+
+template <typename T> T F(T value) {
+ return value;
+}
 
 #endif

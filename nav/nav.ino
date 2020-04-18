@@ -17,7 +17,7 @@
 #define RUDDER_SERVO_PIN 5
 
 // Route - due North
-position route[] = {{80.0, -2.27, 0.1}};
+waypoint route[] = {"Up North", {80.0, -2.27, 0.1}};
 
 WindSensor windsensor;
 Servo sail_servo;
@@ -31,10 +31,10 @@ Logger logger;
 // Dependency injection
 Sail sail(&sail_servo);
 Rudder rudder(&rudder_servo);
-SelfTest selftest(&gps, &windsensor, &compass, &sail, &rudder, &timer);
-Helm helm(&rudder, &compass, &timer, &windsensor, &sail);
-Tacker tacker(&helm, &compass, &windsensor);
-Navigator navigator(&tacker, &gps, &globe);
+SelfTest selftest(&gps, &windsensor, &compass, &sail, &rudder, &timer, &logger);
+Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &logger);
+Tacker tacker(&helm, &compass, &windsensor, &logger);
+Navigator navigator(&tacker, &gps, &globe, &logger);
 Captain captain(&navigator);
 
 void setup() {

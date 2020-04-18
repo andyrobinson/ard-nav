@@ -1,20 +1,18 @@
 #ifndef NavigatorStub_h
 #define NavigatorStub_h
 
-#include "Position.h"
-
-using namespace Position;
+#include "Waypoint.h"
 
 class Navigator
 {
   public:
     Navigator();
-    void sailto(position destination);
-    position *get_waypoints();
+    void sailto(waypoint destination);
+    waypoint *get_waypoints();
     void reset();
 
   private:
-    position positions[100];
+    waypoint waypoints[100];
     int current_position;
 };
 
