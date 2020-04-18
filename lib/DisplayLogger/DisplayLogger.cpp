@@ -63,18 +63,18 @@ void Logger::info(gpsResult *gps_result, angle wind, uangle bearing, char *messa
   display.clearDisplay();
   static char buf[41];
 
-  buf[0]=0; // empty string
-  append_double(buf, gps_result->pos.latitude,5);
-  append_double(buf, gps_result->pos.longitude,5);
-  messageAt(0, buf);
+  // buf[0]=0; // empty string
+  // append_double(buf, gps_result->pos.latitude,5);
+  // append_double(buf, gps_result->pos.longitude,5);
+  // messageAt(0, buf);
 
   sprintf(buf, "W%4d C%4d  T%4d", wind, bearing,gps_result->unixTime %1000);
   messageAt(1, buf);
 
-  buf[0]=0; // empty string
-  strcat(buf, "mps");  append_double(buf, gps_result->mps,1);
-  strcat(buf," Fx ");  append_int(buf, gps_result->fix);
-  messageAt(2, buf);
+  // buf[0]=0; // empty string
+  // strcat(buf, "mps");  append_double(buf, gps_result->mps,1);
+  // strcat(buf," Fx ");  append_int(buf, gps_result->fix);
+  // messageAt(2, buf);
 
   msg(message);
 }

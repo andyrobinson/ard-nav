@@ -1,7 +1,7 @@
 #include <Arduino.h>
-// #include <Compass.h>
-// #include <WindSensor.h>
-// #include <Position.h>
+#include <Compass.h>
+#include <WindSensor.h>
+#include <Position.h>
 // #include <Rudder.h>
 // #include <Sail.h>
 #include <Gps.h>
@@ -14,8 +14,8 @@
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5
 
-// using namespace Angle;
-// using namespace Position;
+using namespace Angle;
+using namespace Position;
 
 // Servo rudder_servo;
 // Rudder rudder(&rudder_servo);
@@ -23,17 +23,21 @@
 // Rudder sail(&sail_servo);
 
 Gps gps;
-// WindSensor windsensor;
-// Compass compass;
+WindSensor windsensor;
+Compass compass;
 Logger logger;
 gpsResult gpsReading;
 
 void setup() {
+  logger.begin();
+  windsensor.begin();
+  compass.begin();
+
+  while (!Serial); // wait for Serial to be ready
+  Serial.begin(19200);
+
   gps.begin();
 
-  logger.begin();
-  // windsensor.begin();
-  // compass.begin();
   // rudder_servo.attach(RUDDER_SERVO_PIN);
   // sail_servo.attach(SAIL_SERVO_PIN);
 }
@@ -67,20 +71,21 @@ int freeMemory() {
 }
 
 void loop() {
-  angle wind = 22; //windsensor.relative();
-  uangle bearing = 99; //compass.bearing();
+  angle wind = windsensor.relative();
+  uangle bearing = compass.bearing();
 
   // move_rudder();
   // sail.set_position(wind);
 
   read_gps();
-  int freemem = freeMemory();
 
+  int freemem = freeMemory();
   char intbuf[16];
   itoa(freemem, intbuf, 10);
   char msg[40] = "mem ";
   strcat(msg, intbuf);
 
   logger.info(&gpsReading, wind, bearing, msg);
+
   delay(500);
 }

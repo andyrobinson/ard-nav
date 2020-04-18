@@ -37,12 +37,13 @@ class Gps
     Gps();
     void begin();
     void data(uint32_t max_millis, gpsResult *result);
+    void tcStartCounter();
+    void tcReset();
+    void tcDisable();
 
 private:
   void tcConfigure(int sampleRate);
   bool tcIsSyncing();
-  void tcStartCounter();
-  void tcReset();
 };
 
 #endif

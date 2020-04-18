@@ -113,4 +113,10 @@ void Gps::tcReset()
   while (tcIsSyncing());
   while (TC5->COUNT16.CTRLA.bit.SWRST);
 }
-// disable removed - see original code to reinstate
+
+//disable TC5
+void Gps::tcDisable()
+{
+  TC5->COUNT16.CTRLA.reg &= ~TC_CTRLA_ENABLE;
+  while (tcIsSyncing());
+}
