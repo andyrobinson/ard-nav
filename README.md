@@ -47,7 +47,7 @@ The other folders represent Arduino applications.  Again each folder has a makef
 
 ## Planned development
 
-1. Investigate why the GPS time reported using serial logger does not vary from initial time
+1. Investigate why the error (PDOP) value is always zero.  Probably means we're asking for the wrong data from the GPS, in which case we may just sack this off.
 2. Rewrite functions which return structs to using pointer arguments, for efficiency and
 more importantly memory conservation
 3. Remove all reference to String (object) to conserve memory - mainly logging
