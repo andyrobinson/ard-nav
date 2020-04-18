@@ -8,11 +8,11 @@
 
 // include the GPS in the test?
 // pick between loggers here
-//#include <DisplayLogger.h>
-#include <SerialLogger.h>
+#include <DisplayLogger.h>
+//#include <SerialLogger.h>
 
-// #define SAIL_SERVO_PIN 6
-// #define RUDDER_SERVO_PIN 5
+#define SAIL_SERVO_PIN 6
+#define RUDDER_SERVO_PIN 5
 
 // using namespace Angle;
 // using namespace Position;
@@ -26,7 +26,6 @@ Gps gps;
 // WindSensor windsensor;
 // Compass compass;
 Logger logger;
-// position current_position;
 gpsResult gpsReading;
 
 void setup() {
@@ -61,36 +60,20 @@ void read_gps() {
   }
 }
 
-#ifdef __arm__
-// should use uinstd.h to define sbrk but Due causes a conflict
 extern "C" char* sbrk(int incr);
-#else  // __ARM__
-extern char *__brkval;
-#endif  // __arm__
-
 int freeMemory() {
   char top;
-#ifdef __arm__
   return &top - reinterpret_cast<char*>(sbrk(0));
-#elif defined(CORE_TEENSY) || (ARDUINO > 103 && ARDUINO != 151)
-  return &top - __brkval;
-#else  // __arm__
-  return __brkval ? &top - __brkval : &top - __malloc_heap_start;
-#endif  // __arm__
 }
 
 void loop() {
-  // angle wind = windsensor.relative();
-  // uangle bearing = compass.bearing();
-  long gps_time_to_read = 0;
+  angle wind = 22; //windsensor.relative();
+  uangle bearing = 99; //compass.bearing();
 
   // move_rudder();
   // sail.set_position(wind);
 
-  gps_time_to_read = millis();
   read_gps();
-  gps_time_to_read = millis() - gps_time_to_read;
-
   int freemem = freeMemory();
 
   char intbuf[16];
@@ -98,12 +81,6 @@ void loop() {
   char msg[40] = "mem ";
   strcat(msg, intbuf);
 
-  itoa(gps_time_to_read, intbuf, 10);
-  strcat(msg, " gps ");
-  strcat(msg, intbuf);
-
-  logger.info(&gpsReading, 0, 0, msg);
-  // logger.info(&gpsReading, wind, bearing, msg);
-
-  delay(2000);
+  logger.info(&gpsReading, wind, bearing, msg);
+  delay(500);
 }
