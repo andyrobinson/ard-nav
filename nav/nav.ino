@@ -39,7 +39,7 @@ Captain captain(&navigator);
 
 void setup() {
   sail_servo.attach(SAIL_SERVO_PIN);
-  sail_servo.attach(RUDDER_SERVO_PIN);
+  rudder_servo.attach(RUDDER_SERVO_PIN);
 
   windsensor.begin();
   compass.begin();

@@ -14,7 +14,7 @@ void Navigator::sailto(waypoint destination) {
   sprintf(logmsg, "** Navigating to %s", destination.label);
   logger->msg(logmsg);
 
-  static gpsResult current_gps;
+  gpsResult current_gps = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0};
   gps->data(MAX_GPS_WAIT_FOR_FIX, &current_gps);
 
   while (!arrived(current_gps.pos, destination.pos)) {
