@@ -14,7 +14,7 @@ void Helm::steer(uangle direction, unsigned long steer_time, unsigned long steer
     unsigned long elapsed = 0;
 
     char logmsg[40];
-    sprintf(logmsg, "Steering %4d for %4dms", direction, steer_time);
+    sprintf(logmsg, "Steer %4d fr %8d", direction, steer_time);
     logger->msg(logmsg);
 
     while (elapsed < steer_time) {
@@ -28,8 +28,8 @@ void Helm::steer(uangle direction, unsigned long steer_time, unsigned long steer
       timer->wait(steer_interval);
       elapsed = elapsed + steer_interval;
 
-      char nothing = '-';
-      logger->msg(&nothing);
+      // char nothing = '-';
+      // logger->msg(&nothing);
     }
 }
 

@@ -14,7 +14,7 @@
 #define IN_TEST     45
 #define FAILED      -45
 #define PASSED      0
-#define SERVO_WAIT  30
+#define SERVO_WAIT  1000
 
 class SelfTest
 {
