@@ -11,8 +11,8 @@
 #include <Tacker.h>
 #include <Navigator.h>
 #include <Captain.h>
-//#include <DisplayLogger.h>
-#include <SerialLogger.h>
+#include <DisplayLogger.h>
+//#include <SerialLogger.h>
 
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5

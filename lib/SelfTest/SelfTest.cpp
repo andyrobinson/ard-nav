@@ -34,21 +34,21 @@ void SelfTest::test() {
   boolean allok = true;
   gpsResult gpsData;
 
-  logger->msg("Test: starting");
+  logger->msg("*Test: starting");
 
   // rudder test
   rudder->set_position(-45);
   timer->wait(SERVO_WAIT);
   rudder->set_position(45);
   timer->wait(SERVO_WAIT);
-  logger->msg("Test: Rudder complete");
+  logger->msg("*Test: Rudder complete");
 
   // WindSensor
   next();
   angle result = windsensor->relative();
   ok = (result != NO_WIND_VALUE);
   allok = (allok && ok);
-  sprintf(logmsg, "Test: Wind %s", ok?pass:fail);
+  sprintf(logmsg, "*Test: Wind %s", ok?pass:fail);
   logger->msg(logmsg);
 
   // Compass
@@ -56,7 +56,7 @@ void SelfTest::test() {
   uangle bearing = compass->bearing();
   ok = (bearing >=0 && bearing <=360);
   allok = (allok && ok);
-  sprintf(logmsg, "Test: Compass %s", ok?pass:fail);
+  sprintf(logmsg, "*Test: Compass %s", ok?pass:fail);
   logger->msg(logmsg);
 
   // Sail
@@ -66,7 +66,7 @@ void SelfTest::test() {
   sail->set_position(120);
   timer->wait(1500);
   sail->set_position(0);
-  logger->msg("Test: Sail complete");
+  logger->msg("*Test: Sail complete");
   // cannot update ok
 
   // Gps
@@ -74,11 +74,11 @@ void SelfTest::test() {
   read_gps(&gpsData);
   ok = (gpsData.fix >= FIX_GPS);
   allok = (allok && ok);
-  sprintf(logmsg, "Test: Gps %s", ok?pass:fail);
+  sprintf(logmsg, "*Test: Gps %s", ok?pass:fail);
   logger->msg(logmsg);
 
   next();
-  logger->msg("Test: Complete");
+  logger->msg("*Test: Complete");
   // rudder right, tests failed
   if (allok) {
     rudder->set_position(PASSED);

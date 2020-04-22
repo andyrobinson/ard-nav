@@ -8,6 +8,8 @@
 #include "Sail.h"
 #include "Logger.h"
 
+#define TURNING_MIN_DIFF  3
+
 class Helm
 {
   public:

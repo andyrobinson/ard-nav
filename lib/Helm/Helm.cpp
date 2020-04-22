@@ -14,8 +14,6 @@ void Helm::steer(uangle direction, unsigned long steer_time, unsigned long steer
     unsigned long elapsed = 0;
 
     char logmsg[40];
-    sprintf(logmsg, "Steer %4d fr %8d", direction, steer_time);
-    logger->msg(logmsg);
 
     while (elapsed < steer_time) {
 
@@ -28,8 +26,8 @@ void Helm::steer(uangle direction, unsigned long steer_time, unsigned long steer
       timer->wait(steer_interval);
       elapsed = elapsed + steer_interval;
 
-      // char nothing = '-';
-      // logger->msg(&nothing);
+      sprintf(logmsg, "Str%4d t%8d", direction, elapsed);
+      logger->msg(logmsg);
     }
 }
 
@@ -56,5 +54,6 @@ angle Helm::new_rudder(uangle direction, uangle current_heading) {
 bool Helm::turning(uangle direction, uangle old_heading, uangle new_heading) {
     angle old_diff = udiff(direction, old_heading);
     angle new_diff = udiff(direction, new_heading);
-    return abs1(new_diff) < abs1(old_diff) || sign(new_diff) != sign(old_diff);
+    angle diff_diff = abs1(udiff(old_diff, new_diff));
+    return ((abs1(new_diff) < abs1(old_diff)) && diff_diff > TURNING_MIN_DIFF) || sign(new_diff) != sign(old_diff);
 }

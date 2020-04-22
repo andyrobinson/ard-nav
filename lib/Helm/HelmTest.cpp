@@ -101,15 +101,27 @@ TEST_F(HelmTest, Should_steer_further_if_rudder_is_ineffective) {
 }
 
 TEST_F(HelmTest, Should_steer_further_only_when_not_turning) {
-  uangle bearings[] = {10,8,8};
+  uangle bearings[] = {20,10,10};
+  stub_compass.set_bearings(bearings, 3);
+
+  helm.steer(350, 3, 1);
+
+  angle *positions = stub_rudder.get_positions();
+  EXPECT_EQ(positions[0],15);
+  EXPECT_EQ(positions[1],10);
+  EXPECT_EQ(positions[2],20);
+}
+
+TEST_F(HelmTest, Should_consider_very_small_changes_as_not_turning) {
+  uangle bearings[] = {10,8,6};
   stub_compass.set_bearings(bearings, 3);
 
   helm.steer(350, 3, 1);
 
   angle *positions = stub_rudder.get_positions();
   EXPECT_EQ(positions[0],10);
-  EXPECT_EQ(positions[1],9);
-  EXPECT_EQ(positions[2],18);
+  EXPECT_EQ(positions[1],19);
+  EXPECT_EQ(positions[2],27);
 }
 
 TEST_F(HelmTest, Should_maintain_rudder_position_if_on_course) {

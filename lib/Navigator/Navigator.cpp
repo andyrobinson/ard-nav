@@ -11,7 +11,7 @@ Navigator::Navigator(Tacker *tackerp, Gps *gpsp, Globe *globep, Logger *loggerp)
 void Navigator::sailto(waypoint destination) {
 
   char logmsg[30];
-  sprintf(logmsg, "** Navigating to %s", destination.label);
+  sprintf(logmsg, "** Nav to %s", destination.label);
   logger->msg(logmsg);
 
   gpsResult current_gps = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0};
@@ -23,9 +23,11 @@ void Navigator::sailto(waypoint destination) {
     long steer_time = round(max1(MIN_STEER_TIME,min1(unlimited_steer_time_ms/2.0, MAX_STEER_TIME)));
     tacker->steer(direction, steer_time, STEER_CHECK_INTERVAL);
     gps->data(MAX_GPS_WAIT_FOR_FIX, &current_gps);
+    sprintf(logmsg, "*Prog to %s", destination.label);
+    logger->msg(logmsg);
   }
 
-  sprintf(logmsg, "** Arrived at ", destination.label);
+  sprintf(logmsg, "** Arrived ", destination.label);
   logger->msg(logmsg);
 }
 

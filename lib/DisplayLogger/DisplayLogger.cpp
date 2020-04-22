@@ -15,6 +15,9 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
   OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
+long last_log_time=0;
+boolean hold_last_message=false;
+
 void messageAt(int y, char *msg) {
   display.setCursor(0,8*y);
   display.println(msg);
@@ -54,27 +57,32 @@ void Logger::msg(char *message) {
   uangle bearing = compass->bearing();
   gps->data(GPS_WAIT_MILLIS, &gpsReading);
 
-  display.clearDisplay();
-  char buf[41]="                                        ";
+  if (gpsReading.unixTime - last_log_time > 10 || message[0] == '*' || !hold_last_message) {
+      last_log_time = gpsReading.unixTime;
+      hold_last_message = (message[0] == '*');
 
-  buf[0]='\0';
-  append_double(buf, gpsReading.pos.latitude,5);
-  append_double(buf, gpsReading.pos.longitude,5);
-  messageAt(0, buf);
+      display.clearDisplay();
+      char buf[41]="                                        ";
 
-  sprintf(buf, "W%4d C%4d  T%4d", wind, bearing, gpsReading.unixTime %1000);
-  messageAt(1, buf);
+      buf[0]='\0';
+      append_double(buf, gpsReading.pos.latitude,5);
+      append_double(buf, gpsReading.pos.longitude,5);
+      messageAt(0, buf);
 
-  buf[0]='\0';
-  strcat(buf, "mps");  append_double(buf, gpsReading.mps,1);
-  strcat(buf," Fx ");  append_int(buf, gpsReading.fix);
-  messageAt(2, buf);
+      sprintf(buf, "W%4d C%4d  T%4d", wind, bearing, gpsReading.unixTime %1000);
+      messageAt(1, buf);
 
-  if (strlen(message) < 40) {
-    sprintf(buf,"%s", message);
-    messageAt(3, buf);
-  } else {
-    sprintf(buf,"%s","** MSG OVERFLOW **");
-    messageAt(3, buf);
+      buf[0]='\0';
+      strcat(buf, "mps");  append_double(buf, gpsReading.mps,1);
+      strcat(buf," Fx ");  append_int(buf, gpsReading.fix);
+      messageAt(2, buf);
+
+      if (strlen(message) < 40) {
+        sprintf(buf,"%s", message);
+        messageAt(3, buf);
+      } else {
+        sprintf(buf,"%s","** MSG OVERFLOW **");
+        messageAt(3, buf);
+      }
   }
 }
