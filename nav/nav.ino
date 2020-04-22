@@ -11,13 +11,14 @@
 #include <Tacker.h>
 #include <Navigator.h>
 #include <Captain.h>
-#include <DisplayLogger.h>
+//#include <DisplayLogger.h>
+#include <SerialLogger.h>
 
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5
 
 // Route - due North
-waypoint route[] = {"Up North", {80.0, -2.27, 0.1}};
+waypoint route[] = {{"Up North", {80.0, -2.27, 0.1}}, {"Dn South", {10.0, -2.27, 0.1}}};
 
 WindSensor windsensor;
 Servo sail_servo;
