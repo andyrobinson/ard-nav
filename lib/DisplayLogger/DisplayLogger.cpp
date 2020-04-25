@@ -73,7 +73,7 @@ void Logger::begin() {
 void Logger::banner(char *message) {
       display.clearDisplay();
       display.setTextSize(1);
-      char stars[]="*********************";
+      char stars[]="********************";
       messageAt(0, stars);
       messageAt(3, stars);
       display.setTextSize(2);
@@ -108,7 +108,7 @@ void Logger::msg(char *message) {
       buf[0]='\0';
       strcat(buf, "ms"); append_double1pl(buf, gpsReading.mps);
       strcat(buf," Fx"); append_digit(buf, gpsReading.fix);
-      strcat(buf," M"); append_int(buf, mem);
+      strcat(buf," Mem "); append_int(buf, mem);
       messageAt(2, buf);
 
       if (strlen(message) < 22) {
