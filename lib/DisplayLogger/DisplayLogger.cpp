@@ -24,16 +24,34 @@ void messageAt(int y, char *msg) {
   display.display();
 }
 
-void append_double(char *buf, double dbl, int places) {
+void append_double5pl(char *buf, double dbl) {
   char stringdbl[10]="         ";
-  dtostrf(dbl,9,places,stringdbl);
+  dtostrf(dbl,9,5,stringdbl);
+  strcat(buf,stringdbl);
+}
+
+void append_double1pl(char *buf, double dbl) {
+  char stringdbl[5]="    ";
+  dtostrf(dbl,4,1,stringdbl);
   strcat(buf,stringdbl);
 }
 
 void append_int(char *buf, int i) {
   char stringint[8]="       ";
-  itoa(i,stringint,7);
+  itoa(i,stringint, BASE10);
   strcat(buf,stringint);
+}
+
+void append_digit(char *buf, int i) {
+  char stringint[4]="   ";
+  itoa(i,stringint,BASE10);
+  strcat(buf,stringint);
+}
+
+extern "C" char* sbrk(int incr);
+int dispFreeMemory() {
+  char top;
+  return &top - reinterpret_cast<char*>(sbrk(0));
 }
 
 Logger::Logger() {}
@@ -52,32 +70,48 @@ void Logger::begin() {
   display.setTextColor(WHITE); // Draw white text
 }
 
+void Logger::banner(char *message) {
+      display.clearDisplay();
+      display.setTextSize(1);
+      char stars[]="*********************";
+      messageAt(0, stars);
+      messageAt(3, stars);
+      display.setTextSize(2);
+      display.setCursor(0,8);
+      display.println(message);
+      display.display();
+      hold_last_message = true;
+}
+
 void Logger::msg(char *message) {
   angle wind = windsensor->relative();
   uangle bearing = compass->bearing();
   gps->data(GPS_WAIT_MILLIS, &gpsReading);
+  int mem;
 
   if (gpsReading.unixTime - last_log_time > 10 || message[0] == '*' || !hold_last_message) {
       last_log_time = gpsReading.unixTime;
       hold_last_message = (message[0] == '*');
 
       display.clearDisplay();
-      char buf[41]="                                        ";
-
+      display.setTextSize(1);
+      char buf[22]="                     ";
       buf[0]='\0';
-      append_double(buf, gpsReading.pos.latitude,5);
-      append_double(buf, gpsReading.pos.longitude,5);
+      append_double5pl(buf, gpsReading.pos.latitude);
+      append_double5pl(buf, gpsReading.pos.longitude);
       messageAt(0, buf);
 
       sprintf(buf, "W%4d C%4d  T%4d", wind, bearing, gpsReading.unixTime %1000);
       messageAt(1, buf);
 
+      mem=dispFreeMemory();
       buf[0]='\0';
-      strcat(buf, "mps");  append_double(buf, gpsReading.mps,1);
-      strcat(buf," Fx ");  append_int(buf, gpsReading.fix);
+      strcat(buf, "ms"); append_double1pl(buf, gpsReading.mps);
+      strcat(buf," Fx"); append_digit(buf, gpsReading.fix);
+      strcat(buf," M"); append_int(buf, mem);
       messageAt(2, buf);
 
-      if (strlen(message) < 40) {
+      if (strlen(message) < 22) {
         sprintf(buf,"%s", message);
         messageAt(3, buf);
       } else {

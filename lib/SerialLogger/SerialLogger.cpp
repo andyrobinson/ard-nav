@@ -11,6 +11,12 @@ void Logger::begin() {
   Serial.begin(19200);
 }
 
+void Logger::banner(char *message) {
+  Serial.println("======================");
+  Serial.println(message);
+  Serial.println("======================");
+}
+
 void Logger::msg(char *message) {
   angle wind = windsensor->relative();
   uangle bearing = compass->bearing();

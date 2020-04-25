@@ -27,8 +27,8 @@ void Navigator::sailto(waypoint destination) {
     logger->msg(logmsg);
   }
 
-  sprintf(logmsg, "** Arrived ", destination.label);
-  logger->msg(logmsg);
+  sprintf(logmsg, "At %s", destination.label);
+  logger->banner(logmsg);
 }
 
 bool Navigator::arrived(position current, position dest_position) {

@@ -18,7 +18,9 @@
 #define RUDDER_SERVO_PIN 5
 
 // Route - due North
-waypoint route[] = {{"Up North", {80.0, -2.27, 0.1}}, {"Dn South", {10.0, -2.27, 0.1}}};
+waypoint route[] = {{"Chorlton"{53.44096, -2.27235, 10.0}},
+                    {"Up North", {80.0, -2.27, 0.1}},
+                    {"Dn South", {10.0, -2.27, 0.1}}};
 
 WindSensor windsensor;
 Servo sail_servo;

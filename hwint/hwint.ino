@@ -39,6 +39,9 @@ void setup() {
 
   rudder_servo.attach(RUDDER_SERVO_PIN);
   sail_servo.attach(SAIL_SERVO_PIN);
+
+  logger.banner(" Init!");
+
 }
 
 void move_rudder() {
