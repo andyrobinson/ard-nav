@@ -15,9 +15,6 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
   OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
-long last_log_time=0;
-boolean hold_last_message=false;
-
 void messageAt(int y, char *msg) {
   display.setCursor(0,8*y);
   display.println(msg);
@@ -46,6 +43,22 @@ void append_digit(char *buf, int i) {
   char stringint[4]="   ";
   itoa(i,stringint,BASE10);
   strcat(buf,stringint);
+}
+
+long last_log_time=0;
+boolean hold_last_message=false;
+
+boolean time_to_change_message(long timestamp, char *message) {
+   long time_since_last = timestamp - last_log_time;
+   boolean time_to_change = (time_since_last > 10 ||
+           (!hold_last_message && time_since_last > 2));
+
+    if (time_to_change) {
+      last_log_time = timestamp;
+      hold_last_message = false;
+    }
+
+    return time_to_change;
 }
 
 extern "C" char* sbrk(int incr);
@@ -84,14 +97,12 @@ void Logger::banner(char *message) {
 }
 
 void Logger::msg(char *message) {
-  angle wind = windsensor->relative();
-  uangle bearing = compass->bearing();
   gps->data(GPS_WAIT_MILLIS, &gpsReading);
-  int mem;
 
-  if (gpsReading.unixTime - last_log_time > 10 || message[0] == '*' || !hold_last_message) {
-      last_log_time = gpsReading.unixTime;
-      hold_last_message = (message[0] == '*');
+  if (time_to_change_message(gpsReading.unixTime, message)) {
+      angle wind = windsensor->relative();
+      uangle bearing = compass->bearing();
+      int mem=dispFreeMemory();
 
       display.clearDisplay();
       display.setTextSize(1);
@@ -104,7 +115,6 @@ void Logger::msg(char *message) {
       sprintf(buf, "W%4d C%4d  T%4d", wind, bearing, gpsReading.unixTime %1000);
       messageAt(1, buf);
 
-      mem=dispFreeMemory();
       buf[0]='\0';
       strcat(buf, "ms"); append_double1pl(buf, gpsReading.mps);
       strcat(buf," Fx"); append_digit(buf, gpsReading.fix);

@@ -43,7 +43,12 @@ The other folders represent Arduino applications.  Again each folder has a makef
 * Utility - templates for common functions, unix time
 * WindSensor - wrapper around the AS5048B 14 bit rotary position sensor, to return a relative wind angle between -180 and +180
 
-## In Progress
+## Current concerns
+
+* Current plan is to increase the level of sampling to produce a smooth and responsive servo response, and at the same
+time reduce the number of times the display is updated to reduce jitter.  We may also need to ignore small disparities between readings
+* There is a lot of jitter - is this a problem with the algorithm, or is it because of the display.  Need to investigate
+* The compass appears to have drifted - needs checking
 
 ## Planned development
 
@@ -53,11 +58,10 @@ more importantly memory conservation
 3. Remove all reference to String (object) to conserve memory - mainly logging
 4. Logging - requires the introduction of an SSD device
 5. Need some kind of integration testing
-6. Need applications based on Helm then Tacker so that we can field test these parts without
-having to worry about the GPS
-7.  What kind of error values does the GPS give you? Ideally want it in metres.  Unfortunately the device can only give you a value for how the satellite positions may affect the accuracy, not the absolute accuracy.  According to Adafruit the accuracy is no more than 1.8m radius, so we should probably take the PDOP value and multiply it by 2 to give an estimate of the error radius.  However we really need to check that this value is being correctly populated, as it depends on which sentences we are listening to, so need to look at actual values
-8.  We need follow-on code for failed sensors - wind direction (can we find out by steering?), compass (use GPS), gps (use dead reckoning).  Maybe ultimately we need more than one sensor.
-9.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to crash.  We need to ensure that the Arduino power supply is protected, and there is a fall-back reset.  Ideally whe the batteries get low we shut down until they regain some charge (I guess this could be never ...)
+6.  What kind of error values does the GPS give you? Ideally want it in metres.  Unfortunately the device can only give you a value for how the satellite positions may affect the accuracy, not the absolute accuracy.  According to Adafruit the accuracy is no more than 1.8m radius, so we should probably take the PDOP value and multiply it by 2 to give an estimate of the error radius.  However we really need to check that this value is being correctly populated, as it depends on which sentences we are listening to, so need to look at actual values
+7.  We need follow-on code for failed sensors - wind direction (can we find out by steering?), compass (use GPS), gps (use dead reckoning).  Maybe ultimately we need more than one sensor.
+8.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to crash.  We need to ensure that the Arduino power supply is protected, and there is a fall-back reset.  Ideally whe the batteries get low we shut down until they regain some charge (I guess this could be never ...)
+9.  Don't forget fallback timer which reboots the arduino after a period of inactivity (aka crash)
 
 ## Notes on how Adafruit GPS Library works
 

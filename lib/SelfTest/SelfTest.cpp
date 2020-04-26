@@ -17,7 +17,7 @@ void SelfTest::read_gps(gpsResult *result) {
   boolean fix = false;
   while (gps_wait < 60000 && !fix) {
     gps->data(gps_wait, result);
-    fix = result->fix < FIX_GPS;
+    fix = result->fix >= FIX_GPS;
     if (!fix) {
       gps_wait = gps_wait + 5000;
     }
