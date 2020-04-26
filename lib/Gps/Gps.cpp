@@ -24,7 +24,7 @@ Gps::Gps() {}
 
 void Gps::begin() {
   AGPS.begin(9600);
-  AGPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);  // with fix quality and satellites
+  AGPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGAGSA);  // with fix quality, satellites, and error values
   AGPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
 
   // start the timer based interrupt

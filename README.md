@@ -52,7 +52,6 @@ time reduce the number of times the display is updated to reduce jitter.  We may
 
 ## Planned development
 
-1. Investigate why the error (PDOP) value is always zero.  Probably means we're asking for the wrong data from the GPS, in which case we may just sack this off.
 2. Rewrite functions which return structs to using pointer arguments, for efficiency and
 more importantly memory conservation
 3. Remove all reference to String (object) to conserve memory - mainly logging
