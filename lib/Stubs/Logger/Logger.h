@@ -13,6 +13,7 @@ class Logger
     Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp);
     void begin();
     void msg(char *message);
+    void banner(char *message);
 
   private:
     Gps *gps;

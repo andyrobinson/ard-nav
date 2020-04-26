@@ -5,6 +5,8 @@
 
 using namespace Position;
 
+#define FIX_NONE               -1
+
 typedef struct {
   position pos;
   short fix;
