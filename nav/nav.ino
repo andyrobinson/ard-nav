@@ -22,6 +22,8 @@ waypoint route[] = {{"Chorlton", {53.44096, -2.27235, 10.0}},
                     {"Up North", {80.0, -2.27, 0.1}},
                     {"Dn South", {10.0, -2.27, 0.1}}};
 
+#define routeLength (sizeof(route)/sizeof(route[0])) //array size
+
 WindSensor windsensor;
 Servo sail_servo;
 Servo rudder_servo;
@@ -52,6 +54,7 @@ void setup() {
 
 void loop() {
   selftest.test();
-  captain.voyage(route,1);
+  captain.voyage(route,routeLength);
+  logger.banner("Done");
   while(true){};
 }

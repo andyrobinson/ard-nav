@@ -51,6 +51,7 @@ boolean hold_last_message=false;
 boolean time_to_change_message(long timestamp, char *message) {
    long time_since_last = timestamp - last_log_time;
    boolean time_to_change = (time_since_last > 10 ||
+           (timestamp == 0) ||
            (!hold_last_message && time_since_last > 2));
 
     if (time_to_change) {
