@@ -36,6 +36,23 @@ void Helm::set_rudder(angle new_position, uangle current_heading) {
   old_heading = current_heading;
 }
 
+/*
+New algorithm
+  rot = rate of turn in degrees/sec, using the steer_interval (max 180)
+
+  if (rot big enough [> 2] and in desired direction) {
+     if (rot too big (more than three times remaining angle)) {
+	[ implies that we don't reduce rudder until we're within 60 degrees ]
+       negative nudge [fixed amount, say 5 degrees, ok to go negative]
+     }
+     do nothing
+  } else {
+    positive nudge [fixed amount]
+  }
+
+
+*/
+
 angle Helm::new_rudder(uangle direction, uangle current_heading) {
   angle new_position = udiff(direction, current_heading)/2;
 
