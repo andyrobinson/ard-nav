@@ -57,7 +57,7 @@ angle Helm::new_rudder(uangle direction, uangle current_heading) {
   angle new_position = udiff(direction, current_heading)/2;
 
   if (!turning(direction, old_heading, current_heading)) {
-    new_position = rudder_position + new_position;
+    new_position = rudder_position + 2;
   }
 
   if (abs1(new_position) > RUDDER_MAX_DISPLACEMENT) {
