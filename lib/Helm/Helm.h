@@ -8,7 +8,8 @@
 #include "Sail.h"
 #include "Logger.h"
 
-#define TURNING_MIN_DIFF  3
+#define MIN_DIFF_DEGREES  3
+#define NOT_TURNING_NUDGE_DEGREES 2
 
 class Helm
 {
@@ -25,11 +26,13 @@ class Helm
     Sail *sail;
     Logger *logger;
     angle rudder_position;
-    angle old_heading;
+    uangle old_heading;
 
     void set_rudder(angle new_position, uangle current_heading);
     angle new_rudder(uangle direction, uangle current_heading);
     bool turning(uangle direction, uangle old_heading, uangle new_heading);
+    bool heading_and_turn_ok(uangle direction, uangle old_heading, uangle current_heading);
+    bool more_steerage(angle new_position);
 
 };
 

@@ -15,13 +15,14 @@ angle wind_sample[] = {180};
 
 class HelmTest : public ::testing::Test {
  protected:
-  HelmTest() {}
-
-  void SetUp() override {
+  HelmTest() {
     stub_rudder.reset();
     stub_sail.reset();
     stub_windsensor.set_relative(wind_sample, 1);
     helm = Helm(&stub_rudder, &stub_compass, &stub_timer, &stub_windsensor, &stub_sail, &logger);
+  }
+
+  void SetUp() override {
   }
 
   angle rudder_position() {
@@ -57,7 +58,7 @@ TEST_F(HelmTest, Should_steer_right_towards_the_requested_heading_using_half_the
 
 TEST_F(HelmTest, Should_steer_left_towards_the_requested_heading_using_half_the_difference) {
   uangle bearing = 190;
-  stub_compass.set_bearings(&bearing,1);
+  stub_compass.set_bearings(&bearing,2);
   helm.steer(170, 1, 1);
   EXPECT_EQ(rudder_position(), 10);
 }
@@ -70,10 +71,10 @@ TEST_F(HelmTest, Should_not_exceed_maximum_rudder_displacement_left) {
 }
 
 TEST_F(HelmTest, Should_not_exceed_maximum_rudder_displacement_right) {
-  uangle bearing = 180;
-  stub_compass.set_bearings(&bearing,1);
-  helm.steer(10, 1, 1);
-  EXPECT_EQ(rudder_position(), 45);
+  uangle bearings[] = {180, 180};
+  stub_compass.set_bearings(bearings,1);
+  helm.steer(10, 2, 1);
+  EXPECT_EQ(stub_rudder.get_positions()[1], 45);
 }
 
 TEST_F(HelmTest, Should_steer_repeatedly_given_overall_time_and_wait_time) {
@@ -96,8 +97,8 @@ TEST_F(HelmTest, Should_steer_further_if_rudder_is_ineffective) {
 
   angle *positions = stub_rudder.get_positions();
   EXPECT_EQ(positions[0],-20);
-  EXPECT_EQ(positions[1],-40);
-  EXPECT_EQ(positions[2],-45);
+  EXPECT_EQ(positions[1],-20 - NOT_TURNING_NUDGE_DEGREES);
+  EXPECT_EQ(positions[2],-20 - 2*NOT_TURNING_NUDGE_DEGREES);
 }
 
 TEST_F(HelmTest, Should_steer_further_only_when_not_turning) {
@@ -109,7 +110,7 @@ TEST_F(HelmTest, Should_steer_further_only_when_not_turning) {
   angle *positions = stub_rudder.get_positions();
   EXPECT_EQ(positions[0],15);
   EXPECT_EQ(positions[1],10);
-  EXPECT_EQ(positions[2],20);
+  EXPECT_EQ(positions[2],10 + NOT_TURNING_NUDGE_DEGREES);
 }
 
 TEST_F(HelmTest, Should_consider_very_small_changes_as_not_turning) {
@@ -120,8 +121,8 @@ TEST_F(HelmTest, Should_consider_very_small_changes_as_not_turning) {
 
   angle *positions = stub_rudder.get_positions();
   EXPECT_EQ(positions[0],10);
-  EXPECT_EQ(positions[1],19);
-  EXPECT_EQ(positions[2],27);
+  EXPECT_EQ(positions[1],10 + NOT_TURNING_NUDGE_DEGREES);
+  EXPECT_EQ(positions[2],10 + NOT_TURNING_NUDGE_DEGREES*2);
 }
 
 TEST_F(HelmTest, Should_maintain_rudder_position_if_on_course) {
@@ -134,6 +135,18 @@ TEST_F(HelmTest, Should_maintain_rudder_position_if_on_course) {
   EXPECT_EQ(positions[0],5);
   EXPECT_EQ(positions[1],0);
   EXPECT_EQ(positions[2],0);
+}
+
+TEST_F(HelmTest, Should_maintain_non_zero_rudder_position_if_approx_on_course) {
+  uangle bearings[] = {130,152,149};
+  stub_compass.set_bearings(bearings, 3);
+
+  helm.steer(150, 3, 1);
+
+  angle *positions = stub_rudder.get_positions();
+  EXPECT_EQ(positions[0],-10);
+  EXPECT_EQ(positions[1],1);
+  EXPECT_EQ(positions[2],1);
 }
 
 TEST_F(HelmTest, Should_set_the_sail_every_time_we_steer) {

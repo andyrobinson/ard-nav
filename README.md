@@ -66,6 +66,7 @@ more importantly memory conservation
 7.  We need follow-on code for failed sensors - wind direction (can we find out by steering?), compass (use GPS), gps (use dead reckoning).  Maybe ultimately we need more than one sensor.
 8.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to crash.  We need to ensure that the Arduino power supply is protected, and there is a fall-back reset.  Ideally whe the batteries get low we shut down until they regain some charge (I guess this could be never ...)
 9.  Don't forget fallback timer which reboots the arduino after a period of inactivity (aka crash)
+10.  Need to review all limits (e.g. max steer time) before attempting longer journeys
 
 ## Notes on how Adafruit GPS Library works
 

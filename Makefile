@@ -5,6 +5,8 @@ PROJECTS = lib compass gps hwint sail nav
 
 compileandtest:
 	for subdir in $(PROJECTS) ; do \
+	  ECHO ____________________________________________________ ; \
+	  ECHO making $$subdir ; \
 		$(MAKE) -C $$subdir ; \
 	done
 

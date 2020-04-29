@@ -36,28 +36,17 @@ void Helm::set_rudder(angle new_position, uangle current_heading) {
   old_heading = current_heading;
 }
 
-/*
-New algorithm
-  rot = rate of turn in degrees/sec, using the steer_interval (max 180)
-
-  if (rot big enough [> 2] and in desired direction) {
-     if (rot too big (more than three times remaining angle)) {
-	[ implies that we don't reduce rudder until we're within 60 degrees ]
-       negative nudge [fixed amount, say 5 degrees, ok to go negative]
-     }
-     do nothing
-  } else {
-    positive nudge [fixed amount]
-  }
-
-
-*/
-
 angle Helm::new_rudder(uangle direction, uangle current_heading) {
-  angle new_position = udiff(direction, current_heading)/2;
 
-  if (!turning(direction, old_heading, current_heading)) {
-    new_position = rudder_position + 2;
+  angle new_position;
+
+  if (heading_and_turn_ok(direction, old_heading, current_heading)) {
+    new_position =  rudder_position; // no change
+  } else {
+    new_position = udiff(direction, current_heading)/2;
+    if (!turning(direction, old_heading, current_heading) && !more_steerage(new_position)) {
+      new_position = rudder_position + sign(new_position) * NOT_TURNING_NUDGE_DEGREES;
+    }
   }
 
   if (abs1(new_position) > RUDDER_MAX_DISPLACEMENT) {
@@ -67,9 +56,19 @@ angle Helm::new_rudder(uangle direction, uangle current_heading) {
   return new_position;
 }
 
+bool Helm::heading_and_turn_ok(uangle direction, uangle old_heading, uangle current_heading) {
+  return (abs1(udiff(direction, current_heading)) <= MIN_DIFF_DEGREES) &&
+  (abs1(udiff(current_heading, old_heading)) <= MIN_DIFF_DEGREES);
+}
+
+bool Helm::more_steerage(angle new_position) {
+  return abs1(rudder_position) < abs1(new_position) || sign(rudder_position) != sign(new_position);
+}
+
 bool Helm::turning(uangle direction, uangle old_heading, uangle new_heading) {
     angle old_diff = udiff(direction, old_heading);
     angle new_diff = udiff(direction, new_heading);
     angle diff_diff = abs1(udiff(old_diff, new_diff));
-    return ((abs1(new_diff) < abs1(old_diff)) && diff_diff > TURNING_MIN_DIFF) || sign(new_diff) != sign(old_diff);
+    return ((abs1(new_diff) < abs1(old_diff)) && diff_diff > MIN_DIFF_DEGREES)
+      || sign(new_diff) != sign(old_diff);
 }
