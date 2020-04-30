@@ -22,27 +22,39 @@ void messageAt(int y, char *msg) {
 }
 
 void append_double5pl(char *buf, double dbl) {
-  char stringdbl[10]="         ";
-  dtostrf(dbl,9,5,stringdbl);
-  strcat(buf,stringdbl);
+  if (dbl > -10.0 && dbl < 10.0) {
+    char stringdbl[11];
+    dtostrf(dbl,10,5,stringdbl);
+    strcat(buf,stringdbl);
+  } else {
+    strcat(buf, "***.*****");
+  }
 }
 
 void append_double1pl(char *buf, double dbl) {
-  char stringdbl[5]="    ";
-  dtostrf(dbl,4,1,stringdbl);
-  strcat(buf,stringdbl);
+  if (dbl > -10.0 && dbl < 10.0) {
+    char stringdbl[5];
+    dtostrf(dbl,4,1,stringdbl);
+    strcat(buf,stringdbl);
+  } else {
+    strcat(buf, "**.*");
+  }
 }
 
 void append_int(char *buf, int i) {
-  char stringint[8]="       ";
+  char stringint[8]; // big enough for any int
   itoa(i,stringint, BASE10);
   strcat(buf,stringint);
 }
 
 void append_digit(char *buf, int i) {
-  char stringint[4]="   ";
-  itoa(i,stringint,BASE10);
-  strcat(buf,stringint);
+  if (i > -10 && i < 10) {
+    char stringint[4];
+    itoa(i,stringint,BASE10);
+    strcat(buf,stringint);
+  } else {
+    strcat(buf, "***");
+  }
 }
 
 long last_log_time=0;
@@ -107,7 +119,7 @@ void Logger::msg(char *message) {
 
       display.clearDisplay();
       display.setTextSize(1);
-      char buf[22]="                     ";
+      char buf[22];
       buf[0]='\0';
       append_double5pl(buf, gpsReading.pos.latitude);
       append_double5pl(buf, gpsReading.pos.longitude);
@@ -119,7 +131,7 @@ void Logger::msg(char *message) {
       buf[0]='\0';
       strcat(buf, "ms"); append_double1pl(buf, gpsReading.mps);
       strcat(buf," Fx"); append_digit(buf, gpsReading.fix);
-      strcat(buf," Mem "); append_int(buf, mem);
+      strcat(buf," M"); append_int(buf, mem);
       messageAt(2, buf);
 
       if (strlen(message) < 22) {

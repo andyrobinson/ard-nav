@@ -14,7 +14,7 @@ Tacker::Tacker(Helm *helmp, Compass *compassp, WindSensor *windsensorp, Logger *
 void Tacker::steer(uangle direction, unsigned long steer_time, unsigned long steer_interval) {
 
   angle wind_diff = udiff(windsensor->absolute(compass->bearing()), direction);
-  char logmsg[9]="Straight";
+  char logmsg[10]="Straight";
 
   if (abs1(wind_diff) >= TACKER_NO_GO_LIMIT) {
     // no tack

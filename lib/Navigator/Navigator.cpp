@@ -10,7 +10,7 @@ Navigator::Navigator(Tacker *tackerp, Gps *gpsp, Globe *globep, Logger *loggerp)
 
 void Navigator::sailto(waypoint destination) {
 
-  char logmsg[30];
+  char logmsg[22];
   sprintf(logmsg, "Nav %s", destination.label); logger->banner(logmsg);
 
   gpsResult current_gps = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0};

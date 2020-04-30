@@ -13,7 +13,7 @@ Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windse
 void Helm::steer(uangle direction, unsigned long steer_time, unsigned long steer_interval) {
     unsigned long elapsed = 0;
 
-    char logmsg[40];
+    char logmsg[20];
 
     while (elapsed < steer_time) {
 
