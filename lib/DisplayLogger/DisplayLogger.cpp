@@ -22,12 +22,12 @@ void messageAt(int y, char *msg) {
 }
 
 void append_double5pl(char *buf, double dbl) {
-  if (dbl > -10.0 && dbl < 10.0) {
+  if (dbl > -1000.0 && dbl < 1000.0) {
     char stringdbl[11];
     dtostrf(dbl,10,5,stringdbl);
     strcat(buf,stringdbl);
   } else {
-    strcat(buf, "***.*****");
+    strcat(buf, "****.*****");
   }
 }
 
@@ -57,17 +57,16 @@ void append_digit(char *buf, int i) {
   }
 }
 
-long last_log_time=0;
+unsigned long last_log_time=millis();
 boolean hold_last_message=false;
 
-boolean time_to_change_message(long timestamp, char *message) {
-   long time_since_last = timestamp - last_log_time;
-   boolean time_to_change = (time_since_last > 10 ||
-           (timestamp == 0) ||
-           (!hold_last_message && time_since_last > 2));
+boolean time_to_change_message() {
+   unsigned long time_since_last = millis() - last_log_time;
+   boolean time_to_change = (time_since_last > 10000 ||
+           (!hold_last_message && time_since_last > 2000));
 
     if (time_to_change) {
-      last_log_time = timestamp;
+      last_log_time = millis();
       hold_last_message = false;
     }
 
@@ -110,9 +109,9 @@ void Logger::banner(char *message) {
 }
 
 void Logger::msg(char *message) {
-  gps->data(GPS_WAIT_MILLIS, &gpsReading);
 
-  if (time_to_change_message(gpsReading.unixTime, message)) {
+  if (time_to_change_message()) {
+      gps->data(GPS_WAIT_MILLIS, &gpsReading);
       angle wind = windsensor->relative();
       uangle bearing = compass->bearing();
       int mem=dispFreeMemory();
