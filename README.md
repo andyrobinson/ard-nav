@@ -55,9 +55,10 @@ in a progressive way.
 
 * The compass appears to have drifted - needs checking
 
+* System becomes unreliable at voltages below 5v - maybe need to log battery voltage.
+
 ## Planned development
 
-0. Trying to increase reliability - appears to be related to being on battery or spikes caused by other devices (servos).  Current works for at least 20 mins off USB power when servos are not connected.  Could add a capacitor if happens on full charge; also votage on current battery pack is not large.
 1. Should introduce a deliberate memory leak to check that the memory measure works
 2. Compass is highly influence by electric motors - need to check in-situ and potentially isolate
 3. Rewrite functions which return structs to using pointer arguments, for efficiency and
