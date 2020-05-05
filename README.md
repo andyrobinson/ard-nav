@@ -57,17 +57,19 @@ in a progressive way.
 
 ## Planned development
 
-1. Compass is highly influence by electric motors - need to check in-situ and potentially isolate
-2. Rewrite functions which return structs to using pointer arguments, for efficiency and
+0. Trying to increase reliability - appears to be related to being on battery or spikes caused by other devices (servos).  Current works for at least 20 mins off USB power when servos are not connected.  Could add a capacitor if happens on full charge; also votage on current battery pack is not large.
+1. Should introduce a deliberate memory leak to check that the memory measure works
+2. Compass is highly influence by electric motors - need to check in-situ and potentially isolate
+3. Rewrite functions which return structs to using pointer arguments, for efficiency and
 more importantly memory conservation
-3. Remove all reference to String (object) to conserve memory - mainly logging
-4. Logging - requires the introduction of an SSD device
-5. Need some kind of integration testing
-6.  What kind of error values does the GPS give you? Ideally want it in metres.  Unfortunately the device can only give you a value for how the satellite positions may affect the accuracy, not the absolute accuracy.  According to Adafruit the accuracy is no more than 1.8m radius, so we should probably take the PDOP value and multiply it by 2 to give an estimate of the error radius.  However we really need to check that this value is being correctly populated, as it depends on which sentences we are listening to, so need to look at actual values
-7.  We need follow-on code for failed sensors - wind direction (can we find out by steering?), compass (use GPS), gps (use dead reckoning).  Maybe ultimately we need more than one sensor.
-8.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to crash.  We need to ensure that the Arduino power supply is protected, and there is a fall-back reset.  Ideally whe the batteries get low we shut down until they regain some charge (I guess this could be never ...)
-9.  Don't forget fallback timer which reboots the arduino after a period of inactivity (aka crash)
-10.  Need to review all limits (e.g. max steer time) before attempting longer journeys
+4. Remove all reference to String (object) to conserve memory - mainly logging
+5. Logging - requires the introduction of an SSD device
+6. Need some kind of integration testing
+7. TBC
+8.  We need follow-on code for failed sensors - wind direction (can we find out by steering?), compass (use GPS), gps (use dead reckoning).  Maybe ultimately we need more than one sensor.
+9.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to crash.  We need to ensure that the Arduino power supply is protected, and there is a fall-back reset.  Ideally whe the batteries get low we shut down until they regain some charge (I guess this could be never ...)
+10.  Don't forget fallback timer which reboots the arduino after a period of inactivity (aka crash)
+11.  Need to review all limits (e.g. max steer time) before attempting longer journeys
 
 ## Notes on how Adafruit GPS Library works
 
