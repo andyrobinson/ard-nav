@@ -57,6 +57,7 @@ in a progressive way.
 
 ## Planned development
 
+1. Compass is highly influence by electric motors - need to check in-situ and potentially isolate
 2. Rewrite functions which return structs to using pointer arguments, for efficiency and
 more importantly memory conservation
 3. Remove all reference to String (object) to conserve memory - mainly logging
