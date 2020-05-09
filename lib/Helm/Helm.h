@@ -9,7 +9,7 @@
 #include "Logger.h"
 
 #define MIN_DIFF_DEGREES  3
-#define NOT_TURNING_NUDGE_DEGREES 2
+#define NUDGE_DEGREES 4
 
 class Helm
 {
@@ -17,6 +17,7 @@ class Helm
     Helm();
     Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, Logger *loggerp);
     void steer(uangle direction, unsigned long steer_time, unsigned long steer_interval);
+    long rot(uangle direction, uangle current_heading, unsigned long steer_interval);
 
   private:
     Rudder *rudder;

@@ -43,10 +43,18 @@ angle Helm::new_rudder(uangle direction, uangle current_heading) {
   if (heading_and_turn_ok(direction, old_heading, current_heading)) {
     new_position =  rudder_position; // no change
   } else {
-    new_position = udiff(direction, current_heading)/2;
-    if (!turning(direction, old_heading, current_heading) && !more_steerage(new_position)) {
-      new_position = rudder_position + sign(new_position) * NOT_TURNING_NUDGE_DEGREES;
-    }
+    long desired_rot = udiff(current_heading, direction);
+    new_position = new_position - sign(desired_rot) * NUDGE_DEGREES; // increase deflection
+
+    // long actual_rot = rot(old_heading, current_heading, steer_interval);
+    //
+    // if ((sign(desired_rot) != sign(desired_rot)) || (abs1(desired_rot) - abs1(actual_rot)) > MIN_DIFF_DEGREES) {
+    //     new_position = new_position - sign(desired_rot) * NUDGE_DEGREES; // increase deflection
+    // } else if ((abs1(desired_rot) - abs1(actual_rot)) < MIN_DIFF_DEGREES) {
+    //     new_position = new_position - sign(desired_rot) * NUDGE_DEGREES; // decrease deflection
+    // } else {
+    //   new_position = rudder_position; // no change
+    // }
   }
 
   if (abs1(new_position) > RUDDER_MAX_DISPLACEMENT) {
@@ -71,4 +79,8 @@ bool Helm::turning(uangle direction, uangle old_heading, uangle new_heading) {
     angle diff_diff = abs1(udiff(old_diff, new_diff));
     return ((abs1(new_diff) < abs1(old_diff)) && diff_diff > MIN_DIFF_DEGREES)
       || sign(new_diff) != sign(old_diff);
+}
+
+long Helm::rot(uangle old_heading, uangle current_heading, unsigned long steer_interval) {
+  return (((long) udiff(old_heading, current_heading)) * 1000) / (long) steer_interval;
 }
