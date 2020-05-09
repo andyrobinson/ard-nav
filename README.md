@@ -46,10 +46,11 @@ The other folders represent Arduino applications.  Again each folder has a makef
 ## Current concerns
 
 * System is much improved by recent changes but steering needs sorting out:
-** System does occasionally reset to neutral position then go back to maximum deflection
-** It does not wait long enough before increasing the deflection, but this could be sorted by slower refresh
-** When turning the rudder skips back to central position, rather than tracking the distance from the desired allocation
-in a progressive way.
+** Idea:
+1. Calculate the desired rate of turn based on the difference between actual and desired heading, with a suitable maximum (say 90 degrees/sec)
+2. Calculate the actual rate of turn (base value of zero)
+3. Nudge the rudder more or less based on the outcome
+
 ** we probably need a turning mode and a steady state mode, and move between the modes based on deflection from course
 ** display refresh causes jitter, but we can live with that for the moment (won't be an issue OTW unless SD card writing has the same problem)
 

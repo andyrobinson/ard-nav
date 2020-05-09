@@ -17,10 +17,19 @@
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5
 
-// Route - due North
-waypoint route[] = {{"Chorlton", {53.44096, -2.27235, 100.0}},
-                    {"Up North", {80.0, -2.27, 0.1}},
-                    {"Dn South", {10.0, -2.27, 0.1}}};
+// test
+// waypoint route[] = {{"Chorlton", {53.44096, -2.27235, 100.0}},
+//                     {"Up North", {80.0, -2.27, 0.1}},
+//                     {"Dn South", {10.0, -2.27, 0.1}}};
+
+// Chorlton Park
+waypoint route[] = {{"CP Beg", {53.43485, -2.26893, 5}},
+                    {"A",   {53.43553, -2.27068, 5}},
+                    {"B",   {53.43519, -2.27118, 5}},
+                    {"C",   {53.43452, -2.26970, 5}},
+                    {"D",   {53.43518, -2.26972, 5}},
+                    {"E",   {53.43476, -2.27023, 5}},
+                    {"CP End", {53.43485, -2.26893, 5}}}
 
 #define routeLength (sizeof(route)/sizeof(route[0])) //array size
 
