@@ -45,26 +45,26 @@ The other folders represent Arduino applications.  Again each folder has a makef
 
 ## Current concerns
 
-* System is much improved by recent changes but steering needs sorting out:
-** Idea:
-1. Calculate the desired rate of turn based on the difference between actual and desired heading, with a suitable maximum (say 90 degrees/sec)
-2. Calculate the actual rate of turn (base value of zero)
-3. Nudge the rudder more or less based on the outcome
+we probably need a turning mode and a steady state mode, and move between the modes based on deflection from course
+display refresh causes jitter, but we can live with that for the moment (won't be an issue OTW unless SD card writing has the same problem)
 
-** we probably need a turning mode and a steady state mode, and move between the modes based on deflection from course
-** display refresh causes jitter, but we can live with that for the moment (won't be an issue OTW unless SD card writing has the same problem)
+## Observations from field tests
 
-* The compass appears to have drifted - needs checking
+### 13 May, Land based
+* The rudder seems to make for weaving navigation - in part due to the unresponsiveness of a human vessel
+* We need a better estimate of speed (and therefore time to destination).  If we underestimate the speed then we will overshoot the target.  Points towards moving averages for both speed and absolute wind direction (and therefore a regular update to both, probably via the GPS interrupt timer)
+* the logging could be better - where are we heading, how long before next review, are we tacking, and is it tack1 or tack2?
+* compass is much better outside
+* broadly speaking the software appears to work(!)
 
-* System becomes unreliable at voltages below 5v - maybe need to log battery voltage.
 
 ## Planned development
 
 1. Should introduce a deliberate memory leak to check that the memory measure works
-2. Compass is highly influence by electric motors - need to check in-situ and potentially isolate
+2. Compass is highly influence by electric motors - need to check in-situ and potentially isolate - much better outdoors, still perhaps 5 degrees out in the box, so we need to check in the boat
 3. Rewrite functions which return structs to using pointer arguments, for efficiency and
 more importantly memory conservation
-4. Remove all reference to String (object) to conserve memory - mainly logging
+4. 
 5. Logging - requires the introduction of an SSD device
 6. Need some kind of integration testing
 7. TBC
