@@ -14,6 +14,8 @@ class Logger
     void begin();
     void msg(char *message);
     void banner(char *message);
+    void setdest(char destletter);
+    void settack(char tackletter);
 
   private:
     Gps *gps;

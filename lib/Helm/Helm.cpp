@@ -10,12 +10,12 @@ Helm::Helm():rudder_position(0) {}
 Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, Logger *loggerp):
   rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), windsensor(windsensorp), sail(sailp), logger(loggerp), old_heading(0) {}
 
-void Helm::steer(uangle direction, unsigned long steer_time, long steer_interval) {
-    unsigned long elapsed = 0;
+void Helm::steer(uangle direction, long steer_time, long steer_interval) {
+    long remaining = steer_time;
 
     char logmsg[20];
 
-    while (elapsed < steer_time) {
+    while (remaining > 0) {
 
       angle current_heading = compass->bearing();
       angle new_rudder_position = new_rudder(direction, current_heading, steer_interval);
@@ -24,9 +24,9 @@ void Helm::steer(uangle direction, unsigned long steer_time, long steer_interval
       sail->set_position(windsensor->relative());
 
       timer->wait(steer_interval);
-      elapsed = elapsed + steer_interval;
+      remaining = remaining - steer_interval;
 
-      sprintf(logmsg, "Steer %4d %8d", direction, elapsed); logger->msg(logmsg);
+      sprintf(logmsg, "Steer %4d %8d", direction, remaining); logger->msg(logmsg);
     }
 }
 

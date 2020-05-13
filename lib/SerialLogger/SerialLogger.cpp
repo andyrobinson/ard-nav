@@ -9,6 +9,16 @@ Logger::Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp):
 void Logger::begin() {
   while (!Serial); // wait for Serial to be ready
   Serial.begin(19200);
+  destination = ' ';
+  tack = '0';
+}
+
+void Logger::setdest(char destletter) {
+  destination = destletter;
+}
+
+void Logger::settack(char tackletter) {
+  tack = tackletter;
 }
 
 void Logger::banner(char *message) {
@@ -30,6 +40,8 @@ void Logger::msg(char *message) {
   Serial.print("m/s ");Serial.print(gpsReading.mps); Serial.print(",");
   Serial.print(wind); Serial.print(",");
   Serial.print(bearing); Serial.print(",");
+  Serial.print(destination); Serial.print(",");
+  Serial.print(tack); Serial.print(",");
   Serial.print(message);
   Serial.println();
 }

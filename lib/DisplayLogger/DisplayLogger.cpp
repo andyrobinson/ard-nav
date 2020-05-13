@@ -93,6 +93,17 @@ void Logger::begin() {
   display.clearDisplay();
   display.setTextSize(1);      // Normal 1:1 pixel scale
   display.setTextColor(WHITE); // Draw white text
+
+  destination = ' ';
+  tack = '0';
+}
+
+void Logger::setdest(char destletter) {
+  destination = destletter;
+}
+
+void Logger::settack(char tackletter) {
+  tack = tackletter;
 }
 
 void Logger::banner(char *message) {
@@ -124,7 +135,7 @@ void Logger::msg(char *message) {
       append_double5pl(buf, gpsReading.pos.longitude);
       messageAt(0, buf);
 
-      sprintf(buf, "W%4d C%4d  T%4d", wind, bearing, gpsReading.unixTime %1000);
+      sprintf(buf, "%c%c W%4d C%4d  T%4d", wind, bearing, gpsReading.unixTime %1000, destination, tack);
       messageAt(1, buf);
 
       buf[0]='\0';

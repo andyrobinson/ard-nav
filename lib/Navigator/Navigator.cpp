@@ -12,6 +12,7 @@ void Navigator::sailto(waypoint destination) {
 
   char logmsg[22];
   sprintf(logmsg, "Nav %s", destination.label); logger->banner(logmsg);
+  logger->setdest(destination.label[0]);
 
   gpsResult current_gps = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0};
   gps->data(MAX_GPS_WAIT_FOR_FIX, &current_gps);
