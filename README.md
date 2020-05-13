@@ -73,6 +73,17 @@ more importantly memory conservation
 10.  Don't forget fallback timer which reboots the arduino after a period of inactivity (aka crash)
 11.  Need to review all limits (e.g. max steer time) before attempting longer journeys
 
+## Hot tips
+
+Looking at the serial output on a Mac (from https://stackoverflow.com/questions/12254378/how-to-find-the-serial-port-number-on-mac-os-x)
+
+ls /dev/tty.*
+
+then you can read that serial port using the screen command: 
+
+screen /dev/tty.[yourSerialPortName] [yourBaudRate]
+
+
 ## Notes on how Adafruit GPS Library works
 
 The read() method just reads a single character.  It has two buffers, which it fills alternately.  When read() gets an end of line from the GPS, then it closes the current buffer with a null, sets a flag to say that there's data available and switches processing to the other buffer.   Note that there's no requirement to pick up the data, it just carries on alternating buffers.
