@@ -135,7 +135,7 @@ void Logger::msg(char *message) {
       append_double5pl(buf, gpsReading.pos.longitude);
       messageAt(0, buf);
 
-      sprintf(buf, "%c%c W%4d C%4d  T%4d", wind, bearing, gpsReading.unixTime %1000, destination, tack);
+      sprintf(buf, "%c%c W%4d C%4d  T%4d", destination, tack, wind, bearing, gpsReading.unixTime %1000);
       messageAt(1, buf);
 
       buf[0]='\0';
