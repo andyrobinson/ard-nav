@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include "math.h"
 #include "Utility.h"
+#include "StubLogger.h"
 
 using namespace Utility;
 
@@ -10,7 +11,7 @@ namespace {
   Tacker stub_tacker;
   Gps stub_gps;
   Globe globe;
-  Logger logger;
+  StubLogger logger;
   Navigator navigator(&stub_tacker, &stub_gps, &globe, &logger);
 
   class NavigatorTest : public ::testing::Test {
