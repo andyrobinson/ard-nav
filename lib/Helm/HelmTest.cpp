@@ -1,6 +1,6 @@
+#include "StubLogger.h"
 #include "Helm.h"
 #include "Rudder.h"
-#include "StubLogger.h"
 #include "gtest/gtest.h"
 
 namespace {
