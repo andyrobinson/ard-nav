@@ -1,5 +1,6 @@
 #include "Helm.h"
 #include "Rudder.h"
+#include "StubLogger.h"
 #include "gtest/gtest.h"
 
 namespace {
@@ -10,7 +11,7 @@ Timer stub_timer;
 WindSensor stub_windsensor;
 Sail stub_sail;
 Helm helm;
-Logger logger;
+StubLogger logger;
 angle wind_sample[] = {180};
 
 class HelmTest : public ::testing::Test {

@@ -3,7 +3,7 @@
 
 #include "Logger.h"
 
-class SDLogger : public Logger {
+class StubLogger : public Logger {
     public:
       StubLogger();
       virtual void begin();
