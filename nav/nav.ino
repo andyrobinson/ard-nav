@@ -40,9 +40,10 @@ Compass compass;
 Timer timer;
 Gps gps;
 Globe globe;
-Logger logger;
+Logger noLoggers[]={};
 
 // Dependency injection
+Logger logger(&gps, &windsensor, &compass, noLoggers, 0);
 Sail sail(&sail_servo);
 Rudder rudder(&rudder_servo);
 SelfTest selftest(&gps, &windsensor, &compass, &sail, &rudder, &timer, &logger);

@@ -24,7 +24,8 @@ Rudder sail(&sail_servo);
 Gps gps;
 WindSensor windsensor;
 Compass compass;
-Logger logger(&gps, &windsensor, &compass);
+Logger noLoggers[] = {};
+Logger logger(&gps, &windsensor, &compass, noLoggers, 0);
 gpsResult gpsReading;
 
 void setup() {
