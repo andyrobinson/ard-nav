@@ -11,7 +11,7 @@
 class SerialLogger : public Logger {
     public:
       SerialLogger();
-      SerialLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Logger *loggersp, int num);
+      SerialLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp);
       virtual void begin();
       virtual void msg(char *message);
       virtual void banner(char *message);

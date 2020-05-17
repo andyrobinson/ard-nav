@@ -3,7 +3,7 @@
 
 SerialLogger::SerialLogger() {}
 
-SerialLogger::SerialLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Logger *loggersp, int num):
+SerialLogger::SerialLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp):
   gps(gpsp), compass(compassp), windsensor(windsensorp) {}
 
 void SerialLogger::begin() {

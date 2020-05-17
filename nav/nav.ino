@@ -42,10 +42,9 @@ Compass compass;
 Timer timer;
 Gps gps;
 Globe globe;
-SerialLogger noLoggers[]={};
 
 // Dependency injection
-SerialLogger logger(&gps, &windsensor, &compass, noLoggers, 0);
+SerialLogger logger(&gps, &windsensor, &compass);
 Sail sail(&sail_servo);
 Rudder rudder(&rudder_servo);
 SelfTest selftest(&gps, &windsensor, &compass, &sail, &rudder, &timer, &logger);
