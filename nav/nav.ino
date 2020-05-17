@@ -11,10 +11,10 @@
 #include <Tacker.h>
 #include <Navigator.h>
 #include <Captain.h>
-// #include <DisplayLogger.h>
+#include <DisplayLogger.h>
 #include <SerialLogger.h>
-// #include <SDLogger.h>
-// #include <MultiLogger.h>
+#include <SDLogger.h>
+#include <MultiLogger.h>
 
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5
@@ -44,7 +44,12 @@ Gps gps;
 Globe globe;
 
 // Dependency injection
-SerialLogger logger(&gps, &windsensor, &compass);
+SDLogger sdlogger(&gps, &windsensor, &compass);
+DisplayLogger displaylogger(&gps, &windsensor, &compass);
+SerialLogger seriallogger(&gps, &windsensor, &compass);
+Logger* loggers[] = {&seriallogger};
+MultiLogger logger(&gps, &windsensor, &compass, loggers, 1);
+
 Sail sail(&sail_servo);
 Rudder rudder(&rudder_servo);
 SelfTest selftest(&gps, &windsensor, &compass, &sail, &rudder, &timer, &logger);

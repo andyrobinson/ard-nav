@@ -1,37 +1,37 @@
 #include "Arduino.h"
 #include "MultiLogger.h"
 
-Logger::Logger() {}
+MultiLogger::MultiLogger() {}
 
-Logger::Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Logger *loggersp, int num):
+MultiLogger::MultiLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Logger **loggersp, int num):
   gps(gpsp), compass(compassp), windsensor(windsensorp), loggers(loggersp), numLoggers(num) {}
 
-void Logger::begin() {
+void MultiLogger::begin() {
   for (int i; i < numLoggers; i++) {
-    loggers[i].begin();
+    loggers[i]->begin();
   }
 }
 
-void Logger::setdest(char destletter) {
+void MultiLogger::setdest(char destletter) {
   for (int i; i < numLoggers; i++) {
-    loggers[i].setdest(destletter);
+    loggers[i]->setdest(destletter);
   }
 }
 
-void Logger::settack(char tackletter) {
+void MultiLogger::settack(char tackletter) {
   for (int i; i < numLoggers; i++) {
-    loggers[i].settack(tackletter);
+    loggers[i]->settack(tackletter);
   }
 }
 
-void Logger::banner(char *message) {
+void MultiLogger::banner(char *message) {
   for (int i; i < numLoggers; i++) {
-    loggers[i].banner(message);
+    loggers[i]->banner(message);
   }
 }
 
-void Logger::msg(char *message) {
+void MultiLogger::msg(char *message) {
   for (int i; i < numLoggers; i++) {
-    loggers[i].msg(message);
+    loggers[i]->msg(message);
   }
 }

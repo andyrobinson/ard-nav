@@ -6,16 +6,18 @@
 
 using namespace Utility;
 
-char logfile[13] = "blank000.csv";
-unsigned long sd_last_log_time = 0;
+SDLogger::SDLogger() {}
 
-void calculate_filename(char *filename, long unix_ts) {
+SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp):
+  gps(gpsp), compass(compassp), windsensor(windsensorp) {}
+
+void SDLogger::calculate_filename(char *filename, long unix_ts) {
     long filenameint = max1(unix_ts / 100000, JAN1_2000_TS);
     itoa(filenameint, filename, BASE10);
     strcat(filename,".csv");
 }
 
-boolean sd_time_to_log() {
+boolean SDLogger::sd_time_to_log() {
   boolean its_time = (millis() - sd_last_log_time) > LOG_INTERVAL;
   if (its_time) {
     sd_last_log_time = millis();
@@ -23,29 +25,26 @@ boolean sd_time_to_log() {
   return its_time;
 }
 
-Logger::Logger() {}
-
-Logger::Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Logger *loggersp, int num):
-  gps(gpsp), compass(compassp), windsensor(windsensorp) {}
-
-void Logger::begin() {
+void SDLogger::begin() {
   if (!SD.begin(CHIP_SELECT)) {
     // need to do something else?
     Serial.println("Card failed, or not present");
   }
+  logfile[0] = '\0';
+  unsigned long sd_last_log_time = 0;
   destination = ' ';
   tack = '0';
 }
 
-void Logger::setdest(char destletter) {
+void SDLogger::setdest(char destletter) {
   destination = destletter;
 }
 
-void Logger::settack(char tackletter) {
+void SDLogger::settack(char tackletter) {
   tack = tackletter;
 }
 
-void Logger::banner(char *message) {
+void SDLogger::banner(char *message) {
   File dataFile = SD.open(logfile, FILE_WRITE);
 
   if (dataFile) {
@@ -56,7 +55,7 @@ void Logger::banner(char *message) {
   }
 }
 
-void Logger::msg(char *message) {
+void SDLogger::msg(char *message) {
   if (sd_time_to_log()) {
     gps->data(GPS_WAIT_MILLIS, &gpsReading);
     calculate_filename(logfile, gpsReading.unixTime);
