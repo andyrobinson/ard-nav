@@ -72,6 +72,7 @@ namespace {
     EXPECT_EQ(unix_time(20,2,14,22,19,33),1581718773);
     EXPECT_EQ(unix_time(20,2,29,23,59,59),1583020799);
     EXPECT_EQ(unix_time(20,3,1,00,00,00),1583020800);
+    EXPECT_EQ(unix_time(20,1,1,00,00,00),1577836800);
   }
 
 } // namespace

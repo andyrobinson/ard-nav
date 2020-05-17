@@ -81,7 +81,7 @@ int dispFreeMemory() {
 
 Logger::Logger() {}
 
-Logger::Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp):
+Logger::Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Logger *loggersp, int num):
   gps(gpsp), compass(compassp), windsensor(windsensorp) {}
 
 void Logger::begin() {

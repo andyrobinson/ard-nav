@@ -1,7 +1,7 @@
 #include "Logger.h"
 
 Logger::Logger() {}
-Logger::Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp) {}
+Logger::Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Logger *loggersp, int num) {}
 void Logger::begin() {}
 void Logger::msg(char *message) {}
 void Logger::banner(char *message) {}

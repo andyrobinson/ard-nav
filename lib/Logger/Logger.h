@@ -17,7 +17,7 @@ class Logger
 {
   public:
     Logger();
-    Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp);
+    Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Logger *loggersp, int num);
     void begin();
     void msg(char *message);
     void banner(char *message);
@@ -29,8 +29,10 @@ class Logger
     WindSensor *windsensor;
     Compass *compass;
     gpsResult gpsReading;
+    Logger *loggers;
     char destination;
     char tack;
+    int numLoggers;
 };
 
 #endif

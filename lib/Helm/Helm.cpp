@@ -13,7 +13,7 @@ Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windse
 void Helm::steer(uangle direction, long steer_time, long steer_interval) {
     long remaining = steer_time;
 
-    char logmsg[20];
+    char logmsg[22];
 
     while (remaining > 0) {
 
@@ -26,7 +26,7 @@ void Helm::steer(uangle direction, long steer_time, long steer_interval) {
       timer->wait(steer_interval);
       remaining = remaining - steer_interval;
 
-      sprintf(logmsg, "Steer %4d %8d", direction, remaining); logger->msg(logmsg);
+      sprintf(logmsg, "Hm %4d %4d %8d", new_rudder_position, direction, remaining); logger->msg(logmsg);
     }
 }
 
