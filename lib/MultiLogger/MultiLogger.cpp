@@ -3,7 +3,7 @@
 
 Logger::Logger() {}
 
-Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Logger *loggersp, int num):
+Logger::Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Logger *loggersp, int num):
   gps(gpsp), compass(compassp), windsensor(windsensorp), loggers(loggersp), numLoggers(num) {}
 
 void Logger::begin() {
@@ -26,7 +26,7 @@ void Logger::settack(char tackletter) {
 
 void Logger::banner(char *message) {
   for (int i; i < numLoggers; i++) {
-    loggers[i].banner(char);
+    loggers[i].banner(message);
   }
 }
 

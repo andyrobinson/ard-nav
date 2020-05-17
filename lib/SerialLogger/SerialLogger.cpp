@@ -1,33 +1,33 @@
 #include "Arduino.h"
 #include "SerialLogger.h"
 
-Logger::Logger() {}
+SerialLogger::SerialLogger() {}
 
-Logger::Logger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Logger *loggersp, int num):
+SerialLogger::SerialLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Logger *loggersp, int num):
   gps(gpsp), compass(compassp), windsensor(windsensorp) {}
 
-void Logger::begin() {
+void SerialLogger::begin() {
   while (!Serial); // wait for Serial to be ready
   Serial.begin(19200);
   destination = ' ';
   tack = '0';
 }
 
-void Logger::setdest(char destletter) {
+void SerialLogger::setdest(char destletter) {
   destination = destletter;
 }
 
-void Logger::settack(char tackletter) {
+void SerialLogger::settack(char tackletter) {
   tack = tackletter;
 }
 
-void Logger::banner(char *message) {
+void SerialLogger::banner(char *message) {
   Serial.println("======================");
   Serial.println(message);
   Serial.println("======================");
 }
 
-void Logger::msg(char *message) {
+void SerialLogger::msg(char *message) {
   angle wind = windsensor->relative();
   uangle bearing = compass->bearing();
   gps->data(GPS_WAIT_MILLIS, &gpsReading);

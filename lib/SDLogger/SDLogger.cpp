@@ -4,17 +4,19 @@
 #include "SPI.h"
 #include "SD.h"
 
+using namespace Utility;
+
 char logfile[13] = "blank000.csv";
 unsigned long sd_last_log_time = 0;
 
-calculate_filename(char *filename, long unix_ts) {
+void calculate_filename(char *filename, long unix_ts) {
     long filenameint = max1(unix_ts / 100000, JAN1_2000_TS);
     itoa(filenameint, filename, BASE10);
     strcat(filename,".csv");
 }
 
 boolean sd_time_to_log() {
-  boolean its_time = (millis() - sd_last_log_time) > LOG_INTERVAL
+  boolean its_time = (millis() - sd_last_log_time) > LOG_INTERVAL;
   if (its_time) {
     sd_last_log_time = millis();
   }
@@ -48,7 +50,7 @@ void Logger::banner(char *message) {
 
   if (dataFile) {
     dataFile.print("****,");
-    dataFile.print("message);
+    dataFile.print(message);
     dataFile.println(",****");
     dataFile.close();
   }
