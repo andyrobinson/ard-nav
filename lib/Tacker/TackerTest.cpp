@@ -1,13 +1,14 @@
 #include "Tacker.h"
 #include "gtest/gtest.h"
 #include "math.h"
+#include "StubLogger.h"
 
 namespace {
 
 Helm stub_helm;
 Compass stub_compass;
 WindSensor stub_windsensor;
-Logger logger;
+StubLogger logger;
 Tacker tacker(&stub_helm, &stub_compass, &stub_windsensor, &logger);
 
 class TackerTest : public ::testing::Test {

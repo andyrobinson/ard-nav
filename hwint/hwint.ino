@@ -5,10 +5,9 @@
 #include <Rudder.h>
 #include <Sail.h>
 #include <Gps.h>
-
-// pick between loggers here
 #include <DisplayLogger.h>
-//#include <SerialLogger.h>
+#include <SerialLogger.h>
+#include <MultiLogger.h>
 
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5
@@ -24,8 +23,12 @@ Rudder sail(&sail_servo);
 Gps gps;
 WindSensor windsensor;
 Compass compass;
-Logger noLoggers[] = {};
-Logger logger(&gps, &windsensor, &compass, noLoggers, 0);
+SerialLogger seriallogger(&gps, &windsensor, &compass);
+DisplayLogger displaylogger(&gps, &windsensor, &compass);
+// choose loggers here
+Logger *loggers[] = {&displaylogger};
+MultiLogger logger(&gps, &windsensor, &compass, loggers , 1);
+
 gpsResult gpsReading;
 
 void setup() {

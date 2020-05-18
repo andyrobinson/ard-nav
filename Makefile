@@ -4,9 +4,9 @@
 PROJECTS = lib compass gps hwint sail nav
 
 compileandtest:
-	for subdir in $(PROJECTS) ; do \
-	  ECHO ____________________________________________________ ; \
-	  ECHO making $$subdir ; \
+	@for subdir in $(PROJECTS) ; do \
+	  echo "\n____________________________________________________" ; \
+	  echo Making $$subdir ; \
 		$(MAKE) -C $$subdir ; \
 	done
 

@@ -1,10 +1,11 @@
 .SHELLFLAGS = -ec
 .DEFAULT_GOAL = test
 
-PROJECTS = Angle Globe Helm Rudder Sail Utility Tacker Navigator
+PROJECTS = Angle Captain Helm Globe Navigator Rudder Sail Tacker Utility 
 
 test:
-	for subdir in $(PROJECTS) ; do \
+	@for subdir in $(PROJECTS) ; do \
+  	echo "\nMaking lib $$subdir" ; \
 		$(MAKE) -C $$subdir ; \
 	done
 
