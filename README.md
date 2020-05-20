@@ -26,27 +26,36 @@ The other folders represent Arduino applications.  Again each folder has a makef
 ## Current libraries
 
 * Angle - utilities for dealing with angles and signed -180 to +180 (angle) and unsigned 0 - 359 (uangle) types.
+* Captain - follows a route consisting of a number of waypoints, using Navigator
 * Compass - wrapper for the Adafruit LSM303DLHC compass module, with tilt adjustment
 * DisplayLogger - logs to the OLED display
 * Globe - lat/long calculations  
 * Gps - wrapper for the Adafruit GPS Library which enables/disables the GPS, and gets a reading within a specified time (if possible)
 * Helm - Steer a direct course and adjust the sail
+* Logger - Abstract class for logging (implemented by specific loggers)
+* MultiLogger - logs simultaneously to the given list of loggers
 * Navigator - Navigate to a destination lat/long by repeatedly steering
 * Position - lat/long struct with error values
 * Rudder - wrapper around servo to limit deflection
 * Sail - sailing logic; set sail angle according to relative wind, only gybe when necessary
+* SDLogger - logs to an SD card
+* SelfTest - power-on self test routines
 * SerialLogger - log to the serial port (for Arduino Serial monitor)
 * Stubs - home grown stubs for use in unit testing
 * Tacker - steer directly or do a tack, using Helm
 * TestEg - example of using Gtest (google C++ test library)
 * Timer - wrapper around delay function, for testing and possible multi-tasking
 * Utility - templates for common functions, unix time
+* Waypoint - waypoint definition
 * WindSensor - wrapper around the AS5048B 14 bit rotary position sensor, to return a relative wind angle between -180 and +180
 
 ## Current concerns
 
-we probably need a turning mode and a steady state mode, and move between the modes based on deflection from course
-display refresh causes jitter, but we can live with that for the moment (won't be an issue OTW unless SD card writing has the same problem)
+We probably need a turning mode and a steady state mode, and move between the modes based on deflection from course.
+
+Display refresh causes jitter, but we can live with that for the moment (won't be an issue OTW unless SD card writing has the same problem).
+
+The steering is jittery at the moment.  The sample rate of 1/10th of a second means that quite large rates of turn can be calculated (minimum is 10 degrees/sec), many just due to the inaccuracy of the compass.  It may be better to reduce the sample rate or do a low pass filter (i.e. average over 2 or 3 readings), but this will make it less responsive.
 
 ## Observations from field tests
 
@@ -64,7 +73,7 @@ display refresh causes jitter, but we can live with that for the moment (won't b
 2. Compass is highly influence by electric motors - need to check in-situ and potentially isolate - much better outdoors, still perhaps 5 degrees out in the box, so we need to check in the boat
 3. Rewrite functions which return structs to using pointer arguments, for efficiency and
 more importantly memory conservation
-4. 
+4.
 5. Logging - requires the introduction of an SSD device
 6. Need some kind of integration testing
 7. TBC
@@ -79,7 +88,7 @@ Looking at the serial output on a Mac (from https://stackoverflow.com/questions/
 
 ls /dev/tty.*
 
-then you can read that serial port using the screen command: 
+then you can read that serial port using the screen command:
 
 screen /dev/tty.[yourSerialPortName] [yourBaudRate]
 
