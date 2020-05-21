@@ -42,7 +42,7 @@ angle Helm::new_rudder(uangle direction, uangle current_heading, long steer_inte
 
   angle new_position;
 
-  if (heading_and_turn_ok(direction, old_heading, current_heading)) {
+  if (heading_and_turn_ok(direction, old_heading, current_heading, steer_interval)) {
     new_position =  rudder_position; // no change
   } else {
     long desired_rot = udiff(current_heading, direction);
@@ -68,16 +68,16 @@ angle Helm::new_rudder(uangle direction, uangle current_heading, long steer_inte
 
 bool Helm::not_enough_turn(angle desired_rotation, angle actual_rotation) {
   return (sign(desired_rotation) != sign(actual_rotation)) ||
-  (abs1(desired_rotation) - abs1(actual_rotation) > MIN_DIFF_DEGREES);
+  (abs1(desired_rotation) - abs1(actual_rotation) > MIN_ROTATION);
 }
 
 bool Helm::too_much_turn(angle desired_rotation, angle actual_rotation) {
-  return (abs1(actual_rotation) - abs1(desired_rotation)) > MIN_DIFF_DEGREES;
+  return (abs1(actual_rotation) - abs1(desired_rotation)) > MIN_ROTATION;
 }
 
-bool Helm::heading_and_turn_ok(uangle direction, uangle old_heading, uangle current_heading) {
-  return (abs1(udiff(direction, current_heading)) <= MIN_DIFF_DEGREES) &&
-  (abs1(udiff(current_heading, old_heading)) <= MIN_DIFF_DEGREES);
+bool Helm::heading_and_turn_ok(uangle direction, uangle old_heading, uangle current_heading, long steer_interval) {
+  return (abs1(udiff(direction, current_heading)) <= MIN_HEADING_DIFF) &&
+  (abs1(rot(old_heading, current_heading, steer_interval)) <= MIN_ROTATION);
 }
 
 // rotation speed in degrees per second

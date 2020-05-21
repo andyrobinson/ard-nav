@@ -135,6 +135,18 @@ TEST_F(HelmTest, Should_not_exceed_maximum_rudder_displacement_left) {
    EXPECT_EQ(positions[2],3*NUDGE_DEGREES);
  }
 
+ TEST_F(HelmTest, Should_ignore_single_compass_point_changes) {
+   uangle bearings[] = {200,201,200};
+   stub_compass.set_bearings(bearings, 3);
+
+   helm.steer(200, 300, 100);
+
+   angle *positions = stub_rudder.get_positions();
+   EXPECT_EQ(positions[0],0);
+   EXPECT_EQ(positions[1],0);
+   EXPECT_EQ(positions[2],0);
+ }
+
  TEST_F(HelmTest, Should_maintain_rudder_position_if_on_course) {
    uangle bearings[] = {210,200,200};
    stub_compass.set_bearings(bearings, 3);
