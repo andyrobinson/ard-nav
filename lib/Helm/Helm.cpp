@@ -10,7 +10,7 @@ Helm::Helm():rudder_position(0) {}
 Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, Logger *loggerp):
   rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), windsensor(windsensorp), sail(sailp), logger(loggerp), old_heading(0) {}
 
-void Helm::steer(uangle direction, long steer_time, long steer_interval) {
+void Helm::steer(uangle direction, long steer_time) {
     long remaining = steer_time;
 
     char logmsg[22];
@@ -19,14 +19,14 @@ void Helm::steer(uangle direction, long steer_time, long steer_interval) {
     while (remaining > 0) {
 
       angle current_heading = compass->bearing();
-      angle new_rudder_position = new_rudder(direction, current_heading, steer_interval);
-      long turnrate = rot(old_heading, current_heading, steer_interval);
+      angle new_rudder_position = new_rudder(direction, current_heading, STEER_INTERVAL);
+      long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
 
       set_rudder(new_rudder_position, current_heading);
       sail->set_position(windsensor->relative());
 
-      timer->wait(steer_interval);
-      remaining = remaining - steer_interval;
+      timer->wait(STEER_INTERVAL);
+      remaining = remaining - STEER_INTERVAL;
 
       sprintf(logmsg, "%8d %3d %8d", turnrate, new_rudder_position, remaining); logger->msg(logmsg);
     }
@@ -68,16 +68,16 @@ angle Helm::new_rudder(uangle direction, uangle current_heading, long steer_inte
 
 bool Helm::not_enough_turn(angle desired_rotation, angle actual_rotation) {
   return (sign(desired_rotation) != sign(actual_rotation)) ||
-  (abs1(desired_rotation) - abs1(actual_rotation) > MIN_ROTATION);
+  (abs1(desired_rotation) - abs1(actual_rotation) > MIN_HEADING_AND_ROT);
 }
 
 bool Helm::too_much_turn(angle desired_rotation, angle actual_rotation) {
-  return (abs1(actual_rotation) - abs1(desired_rotation)) > MIN_ROTATION;
+  return (abs1(actual_rotation) - abs1(desired_rotation)) > MIN_HEADING_AND_ROT;
 }
 
 bool Helm::heading_and_turn_ok(uangle direction, uangle old_heading, uangle current_heading, long steer_interval) {
-  return (abs1(udiff(direction, current_heading)) <= MIN_HEADING_DIFF) &&
-  (abs1(rot(old_heading, current_heading, steer_interval)) <= MIN_ROTATION);
+  return (abs1(udiff(direction, current_heading)) <= MIN_HEADING_AND_ROT) &&
+  (abs1(rot(old_heading, current_heading, steer_interval)) <= MIN_HEADING_AND_ROT);
 }
 
 // rotation speed in degrees per second

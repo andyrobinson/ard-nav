@@ -8,16 +8,16 @@
 #include "Sail.h"
 #include "Logger.h"
 
-#define MIN_HEADING_DIFF 3
-#define MIN_ROTATION 10
+#define MIN_HEADING_AND_ROT 5
 #define NUDGE_DEGREES 4
+#define STEER_INTERVAL 250
 
 class Helm
 {
   public:
     Helm();
     Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, Logger *loggerp);
-    void steer(uangle direction, long steer_time, long steer_interval);
+    void steer(uangle direction, long steer_time);
 
   private:
     Rudder *rudder;
