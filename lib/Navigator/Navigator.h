@@ -10,7 +10,6 @@
 #include "Angle.h"
 
 #define MAX_GPS_WAIT_FOR_FIX 60000
-#define STEER_CHECK_INTERVAL 200
 #define MAX_STEER_TIME  60000.0 //3600000.0
 #define MIN_STEER_TIME 5000.0
 

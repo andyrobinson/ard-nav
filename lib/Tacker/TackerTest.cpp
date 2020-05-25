@@ -43,18 +43,17 @@ TEST_F(TackerTest, Should_steer_directly_if_out_of_no_go_region) {
   angle wind_relative = 90; stub_windsensor.set_relative(&wind_relative, 1);
   uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
 
-  tacker.steer(20, 2000, 100);
+  tacker.steer(20, 2000);
 
   EXPECT_EQ(stub_helm.steering(0), 20);
   EXPECT_EQ(stub_helm.steer_time(0), 2000);
-  EXPECT_EQ(stub_helm.interval(0), 100);
 }
 
 TEST_F(TackerTest, Should_tack_left_if_in_nogo_and_closest_to_desired_course) {
   angle wind_relative = 40; stub_windsensor.set_relative(&wind_relative, 1);
   uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
 
-  tacker.steer(0, 2000, 100);
+  tacker.steer(0, 2000);
 
   EXPECT_EQ(stub_helm.steering(0), 355);
 }
@@ -63,7 +62,7 @@ TEST_F(TackerTest, Should_tack_right_if_in_nogo_and_closest_to_desired_course) {
   angle wind_relative = -40; stub_windsensor.set_relative(&wind_relative, 1);
   uangle bearing = 180; stub_compass.set_bearings(&bearing,1);
 
-  tacker.steer(180, 2000, 100);
+  tacker.steer(180, 2000);
 
   EXPECT_EQ(stub_helm.steering(0), 185);
 }
@@ -72,7 +71,7 @@ TEST_F(TackerTest, Should_tack_left_if_in_nogo_and_only_just_to_left_of_wind) {
   angle wind_relative = 2; stub_windsensor.set_relative(&wind_relative, 1);
   uangle bearing = 270; stub_compass.set_bearings(&bearing,1);
 
-  tacker.steer(270, 2000, 100);
+  tacker.steer(270, 2000);
 
   EXPECT_EQ(stub_helm.steering(0), 227);
 }
@@ -81,7 +80,7 @@ TEST_F(TackerTest, Should_adjust_tack_time_using_COS_of_angle_for_first_tack) {
   angle wind_relative = 20; stub_windsensor.set_relative(&wind_relative, 1);
   uangle bearing = 95; stub_compass.set_bearings(&bearing,1);
 
-  tacker.steer(95, 2000, 100);
+  tacker.steer(95, 2000);
 
   EXPECT_EQ(stub_helm.steering(0), 70);
   EXPECT_EQ(stub_helm.steer_time(0), round (2000 * cos(to_radians (TACKER_NO_GO_LIMIT - wind_relative))));
@@ -91,7 +90,7 @@ TEST_F(TackerTest, Should_adjust_tack_time_using_SIN_of_angle_for_second_tack) {
   angle wind_relative = 20; stub_windsensor.set_relative(&wind_relative, 1);
   uangle bearing = 95; stub_compass.set_bearings(&bearing,1);
 
-  tacker.steer(95, 2000, 100);
+  tacker.steer(95, 2000);
 
   EXPECT_EQ(stub_helm.steering(1), 160);
   EXPECT_EQ(stub_helm.steer_time(1), round (2000 * sin(to_radians (TACKER_NO_GO_LIMIT - wind_relative))));

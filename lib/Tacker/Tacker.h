@@ -16,7 +16,7 @@ class Tacker
   public:
     Tacker();
     Tacker(Helm *helmp, Compass *compassp, WindSensor *windsensorp, Logger *loggerp);
-    void steer(uangle direction, long steer_time, long steer_interval);
+    void steer(uangle direction, long steer_time);
 
   private:
     Helm *helm;
