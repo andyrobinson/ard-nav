@@ -1,7 +1,4 @@
-#include "Arduino.h"
 #include "DisplayLogger.h"
-#include "Adafruit_SSD1306.h"
-#include "avr/dtostrf.h"
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
@@ -14,12 +11,6 @@
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
   OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
-
-extern "C" char* sbrk(int incr);
-int dispFreeMemory() {
-  char top;
-  return &top - reinterpret_cast<char*>(sbrk(0));
-}
 
 void DisplayLogger::messageAt(int y, char *msg) {
   display.setCursor(0,8*y);
@@ -124,7 +115,7 @@ void DisplayLogger::msg(char *message) {
       gps->data(GPS_WAIT_MILLIS, &gpsReading);
       angle wind = windsensor->relative();
       uangle bearing = compass->bearing();
-      int mem=dispFreeMemory();
+      int mem=Utility::dispFreeMemory();
 
       display.clearDisplay();
       display.setTextSize(1);

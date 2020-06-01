@@ -82,10 +82,18 @@ void SelfTest::test() {
   // rudder right, tests failed
   if (allok) {
     rudder->set_position(PASSED);
+    timer->wait(SERVO_WAIT);
+    rudder->set_position(IN_TEST);
+    timer->wait(SERVO_WAIT);
+    rudder->set_position(PASSED);
+    timer->wait(SERVO_WAIT);
+    rudder->set_position(IN_TEST);
+    timer->wait(SERVO_WAIT);
+    rudder->set_position(PASSED);
   }
   else {
     rudder->set_position(FAILED);
+    timer->wait(SERVO_WAIT * 5);
   }
   timer->wait(SERVO_WAIT);
-
 }

@@ -25,4 +25,10 @@ namespace Utility {
     // have to subtract1 because we're not zero based
     return ((year_days + month_days + day - 1) * 86400) + (hour * 3600) + (min * 60) + second;
   }
+
+  extern "C" char* sbrk(int incr);
+  int dispFreeMemory() {
+    char top;
+    return &top - reinterpret_cast<char*>(sbrk(0));
+  }
 }

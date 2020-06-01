@@ -5,6 +5,7 @@
 #include "WindSensor.h"
 #include "Compass.h"
 #include "Gps.h"
+#include "Utility.h"
 
 #define JAN1_2000_TS 15778l
 #define CHIP_SELECT 4

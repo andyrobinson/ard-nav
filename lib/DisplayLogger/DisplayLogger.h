@@ -1,6 +1,10 @@
 #ifndef DisplayLogger_h
 #define DisplayLogger_h
 
+#include "Arduino.h"
+#include "Adafruit_SSD1306.h"
+#include "avr/dtostrf.h"
+#include "Utility.h"
 #include "Logger.h"
 #include "WindSensor.h"
 #include "Compass.h"

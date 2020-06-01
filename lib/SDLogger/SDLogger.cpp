@@ -63,6 +63,7 @@ void SDLogger::msg(char *message) {
     if (dataFile) {
       angle wind = windsensor->relative();
       uangle bearing = compass->bearing();
+      int mem=dispFreeMemory();
 
       dataFile.print(gpsReading.unixTime); dataFile.print(",");
       dataFile.print(gpsReading.pos.latitude,5); dataFile.print(",");
@@ -70,6 +71,7 @@ void SDLogger::msg(char *message) {
       dataFile.print(gpsReading.pos.error); dataFile.print(",");
       dataFile.print(gpsReading.fix); dataFile.print(",");
       dataFile.print(gpsReading.mps); dataFile.print(",");
+      dataFile.print(mem); dataFile.print(",");
       dataFile.print(wind); dataFile.print(",");
       dataFile.print(bearing); dataFile.print(",");
       dataFile.print(destination); dataFile.print(",");

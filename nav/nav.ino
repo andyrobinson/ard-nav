@@ -54,8 +54,8 @@ Globe globe;
 SDLogger sdlogger(&gps, &windsensor, &compass);
 DisplayLogger displaylogger(&gps, &windsensor, &compass);
 SerialLogger seriallogger(&gps, &windsensor, &compass);
-Logger* loggers[] = {&displaylogger, &sdlogger};
-MultiLogger logger(&gps, &windsensor, &compass, loggers, 2);
+Logger* loggers[] = {&sdlogger};
+MultiLogger logger(&gps, &windsensor, &compass, loggers, 1);
 
 Sail sail(&sail_servo);
 Rudder rudder(&rudder_servo);
