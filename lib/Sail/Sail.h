@@ -4,14 +4,12 @@
 #include "Angle.h"
 #include "Servo.h"
 
-#define NO_GO_LIMIT            30
 #define ANGLE_OF_ATTACK        30
 #define PURE_LIFT_LIMIT        90
-#define LIFT_TO_DRAG_LIMIT    140
+#define LIFT_TO_DRAG_LIMIT     140
 #define GYBE_CHECK_LIMIT       80
 #define GYBE_CHECK_MAX_DIFF    10
 #define SERVO_MAX_DISPLACEMENT 90
-#define FULL_RUN               180
 
 using namespace Angle;
 

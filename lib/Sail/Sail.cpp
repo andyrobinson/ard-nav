@@ -42,22 +42,29 @@ angle Sail::gybe_check(angle old_position, angle new_position) {
     return new_position; // too big a diff, so gybe
   }
 
-  return sign(old_position) * FULL_RUN;
+  return sign(old_position) * SERVO_MAX_DISPLACEMENT;
 }
 
 angle Sail::sail_position(angle relative_wind) {
   angle wind_magnitude = abs1(relative_wind);
   angle position_magnitude = 0;
-  if (wind_magnitude <= NO_GO_LIMIT) {
+  uangle no_go_limit = ANGLE_OF_ATTACK;
+
+  if (wind_magnitude <= no_go_limit) {
     position_magnitude = 0;
   }
   else if (wind_magnitude <= PURE_LIFT_LIMIT) {
       position_magnitude = wind_magnitude - ANGLE_OF_ATTACK;
   }
   else if (wind_magnitude <= LIFT_TO_DRAG_LIMIT) {
-    position_magnitude = 70;
+    position_magnitude = PURE_LIFT_LIMIT - ANGLE_OF_ATTACK;
   }
   else {
+    // assuming just drag
+    // starting point = PURE_LIFT_LIMIT-ANGLE_OF_ATTACK
+    // ending point = 180
+    // width of scale = 180 - (PURE_LIFT_LIMIT - ANGLE_OF_ATTACK)
+    // where are we = wind_magnitude - starting point
     position_magnitude = (wind_magnitude / 2);
   }
   return sign(relative_wind) * position_magnitude;
