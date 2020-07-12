@@ -8,6 +8,7 @@ namespace {
 
 Servo stub_servo;
 Sail sail(&stub_servo);
+uangle NO_GO_LIMIT = ANGLE_OF_ATTACK;
 
 class SailTest : public ::testing::Test {
  protected:
