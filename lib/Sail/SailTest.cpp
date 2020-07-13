@@ -151,16 +151,16 @@ TEST_F(SailTest, Should_set_sail_to_30_degrees_if_windsensor_not_working) {
   EXPECT_EQ(stub_servo.write_last_called(),servo_position(30));
 }
 
-TEST_F(SailTest, Print_out_wind_and_sail_values_not_arduino) {
-  for (int i=-180; i<=180; i++) {
-    sail.set_position(i);
-    int s = stub_servo.write_last_called(); // see Windsensor.h
-    std::cout << i;
-    std::cout << ' ';
-    std::cout << s;
-    std::cout << '\n';
-  }
-}
+// TEST_F(SailTest, Print_out_wind_and_sail_values_not_arduino) {
+//   for (int i=-180; i<=180; i++) {
+//     sail.set_position(i);
+//     int s = stub_servo.write_last_called(); // see Windsensor.h
+//     std::cout << i;
+//     std::cout << ' ';
+//     std::cout << s;
+//     std::cout << '\n';
+//   }
+// }
 }  //namespace
 
 int main(int argc, char **argv) {
