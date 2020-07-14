@@ -63,54 +63,41 @@ TEST_F(SailTest, Should_Put_Sail_Straight_Up_to_No_go_limit_Port) {
   EXPECT_EQ(stub_servo.write_last_called(), servo_position(0));
 }
 
-TEST_F(SailTest, Should_Put_Sail_Angle_of_attack_at_20_on_Tack) {
-  sail.set_position(45);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(45 - ANGLE_OF_ATTACK));
-  sail.set_position(55);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(55 - ANGLE_OF_ATTACK));
-  sail.set_position(65);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(65 - ANGLE_OF_ATTACK));
-  sail.set_position(75);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(75 - ANGLE_OF_ATTACK));
-  sail.set_position(90);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(90 - ANGLE_OF_ATTACK));
+TEST_F(SailTest, Should_maintain_angle_of_attack_when_close_hauled) {
 
-  sail.set_position(-65);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(-65 + ANGLE_OF_ATTACK));
+  for (short i = NO_GO_LIMIT; i <= PURE_LIFT_LIMIT; i++) {
+    sail.set_position(i);
+    EXPECT_EQ(stub_servo.write_last_called(),servo_position(i - ANGLE_OF_ATTACK));
+
+    sail.set_position(-i);
+    EXPECT_EQ(stub_servo.write_last_called(),servo_position(-i + ANGLE_OF_ATTACK));
+  }
+
 }
 
-TEST_F(SailTest, Should_Allow_Wind_to_increase_angle_of_attack_between_90_145) {
-  sail.set_position(100);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(70));
+TEST_F(SailTest, Should_fix_sail_allowing_Wind_to_increase_angle_of_attack_moving_from_lift_to_drag) {
 
-  sail.set_position(110);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(70));
-  sail.set_position(120);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(70));
-  sail.set_position(130);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(70));
-  sail.set_position(140);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(70));
+  short fixed_sail = PURE_LIFT_LIMIT - ANGLE_OF_ATTACK;
+  for (short i = PURE_LIFT_LIMIT; i <= LIFT_TO_DRAG_LIMIT; i++) {
+    sail.set_position(i);
+    EXPECT_EQ(stub_servo.write_last_called(),servo_position(fixed_sail));
 
-  sail.set_position(-110);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(-70));
+    sail.set_position(-i);
+    EXPECT_EQ(stub_servo.write_last_called(),servo_position(-fixed_sail));
+  }
 }
 
 TEST_F(SailTest, Should_increase_drag_after_lift_to_drag_limit) {
-  sail.set_position(170);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(85));
+  short fixed_sail = PURE_LIFT_LIMIT - ANGLE_OF_ATTACK;
+  for (short i = LIFT_TO_DRAG_LIMIT; i <= 180 - GYBE_CHECK_MAX_DIFF; i++) {
+    short expected_position = ((i - LIFT_TO_DRAG_LIMIT) * (90 - fixed_sail))/(180 - LIFT_TO_DRAG_LIMIT) + fixed_sail;
+    sail.set_position(i);
+    EXPECT_EQ(stub_servo.write_last_called(),servo_position(expected_position));
 
-  sail.set_position(-150);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(-75));
+    sail.set_position(-i);
+    EXPECT_EQ(stub_servo.write_last_called(),servo_position(-expected_position));
+  }
 
-  sail.set_position(-160);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(-80));
-
-  sail.set_position(-170);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(-85));
-
-  sail.set_position(-180);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(-90));
 }
 
 TEST_F(SailTest, Should_not_increase_sail_angle_beyond_90) {
@@ -122,18 +109,18 @@ TEST_F(SailTest, Should_not_increase_sail_angle_beyond_90) {
   EXPECT_EQ(stub_servo.write_last_called(),servo_position(90));
 }
 
-TEST_F(SailTest, Should_not_gybe_but_set_to_max_for_10_degress_when_running) {
+TEST_F(SailTest, Should_not_gybe_but_set_to_max_for_10_degrees_when_running) {
   sail.set_position(0); // to foil anti-gybe
   sail.set_position(170);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(85));
-  sail.set_position(-170);
+  EXPECT_EQ(stub_servo.write_last_called(),servo_position(82));
+  sail.set_position(-178);
   EXPECT_EQ(stub_servo.write_last_called(),servo_position(90));
 }
 
 TEST_F(SailTest, Should_not_gybe_if_still_on_same_side) {
   sail.set_position(0); // to foil anti-gybe
   sail.set_position(-170);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(-85));
+  EXPECT_EQ(stub_servo.write_last_called(),servo_position(-82));
   sail.set_position(-179);
   EXPECT_EQ(stub_servo.write_last_called(),servo_position(-89));
 }
@@ -141,9 +128,9 @@ TEST_F(SailTest, Should_not_gybe_if_still_on_same_side) {
 TEST_F(SailTest, Should_gybe_sail_if_more_than_10_degress_when_running) {
   sail.set_position(0); // to foil anti-gybe
   sail.set_position(168);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(84));
-  sail.set_position(-170);
-  EXPECT_EQ(stub_servo.write_last_called(),servo_position(-85));
+  EXPECT_EQ(stub_servo.write_last_called(),servo_position(81));
+  sail.set_position(-168);
+  EXPECT_EQ(stub_servo.write_last_called(),servo_position(-81));
 }
 
 TEST_F(SailTest, Should_set_sail_to_30_degrees_if_windsensor_not_working) {

@@ -61,15 +61,10 @@ angle Sail::sail_position(angle relative_wind) {
     position_magnitude = static_lift_to_drag_position;
   }
   else {
-    short increment = ((90 - static_lift_to_drag_position) * (wind_magnitude - LIFT_TO_DRAG_LIMIT))/(180 - LIFT_TO_DRAG_LIMIT);
-    // assuming just drag
-    // wind
-    // width of scale = 180 - LIFT_TO_DRAG_LIMIT
-    // where are we fraction = (wind_magnitude - LIFT_TO_DRAG_LIMIT)/width_of_scale
-    // convert to sail position
-    // baseline sail = PURE_LIFT_LIMIT - ANGLE_OF_ATTACK
-    // width of scale = 90 - baseline sail
-    // (where are we fraction * widthofsailscale) + baseline sail
+    short servo_range = 90 - static_lift_to_drag_position;
+    short wind_past_limit = wind_magnitude - LIFT_TO_DRAG_LIMIT;
+    short wind_range = 180 - LIFT_TO_DRAG_LIMIT;
+    short increment = (servo_range * wind_past_limit)/wind_range;
     position_magnitude = static_lift_to_drag_position + increment;
   }
   return sign(relative_wind) * position_magnitude;
