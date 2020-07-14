@@ -14,6 +14,7 @@
 
 WindSensor windsensor;
 Servo sail_servo;
+Servo rudder_servo;
 Sail sail(&sail_servo);
 Compass compass;
 Gps gps;
@@ -26,6 +27,7 @@ void setup() {
   logger.begin();
 
   sail_servo.attach(SAIL_SERVO_PIN);
+  rudder_servo.attach(RUDDER_SERVO_PIN); //stops jitter
 }
 
 char logmsg[22];
