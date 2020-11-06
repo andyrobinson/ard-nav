@@ -70,7 +70,6 @@ The steering is jittery at the moment.  The sample rate of 1/10th of a second me
 ## Planned development
 
 1. Should introduce a deliberate memory leak to check that the memory measure works
-1a.  Should log the memory usage
 2. Need better indication from selftest that everything is well, so that we can be sure that nav has started when we no longer have the display
 3. It would be good to use the analog inputs to measure the battery voltage.  Note that once we have a proper power supply this will require a connection directly from the battery
 4. In the final attempt we need to disable self test (probably completely), to take account of the fact that the system may restart during navigation.  Also the navigation needs to identify the nearest waypoint when it starts, and determine if it has passed this waypoint before selecting a waypoint to navigate towards.
@@ -82,6 +81,10 @@ more importantly memory conservation
 9.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to crash.  We need to ensure that the Arduino power supply is protected, and there is a fall-back reset.  Ideally when the batteries get low we shut down until they regain some charge (I guess this could be never ...).  There are voltage regulators that will ensure a stable voltage for as long as possible.
 10.  Don't forget fallback timer which reboots the arduino after a period of inactivity (aka crash)
 11.  Need to review all limits (e.g. max steer time) before attempting longer journeys
+
+## Done (for reference)
+
+- Logging now includes memory
 
 ## Hot tips
 
