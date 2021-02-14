@@ -6,6 +6,9 @@
 #include <math.h>
 #include <Angle.h>
 #include <Adafruit_SSD1306.h>
+#include <Servo.h>
+#include <Rudder.h>
+#include <Switches.h>
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
@@ -54,20 +57,26 @@ void SERCOM1_Handler()    // Interrupt handler for SERCOM1
 
 #define PMTK_Q_RELEASE "$PMTK605*31"
 
+#define RUDDER_SERVO_PIN 5
+
 using namespace Angle;
 WindSensor windsensor;
 Compass compass;
+Switches switches;
+Servo rudder_servo;
+Rudder rudder(&rudder_servo);
 
 void setup() {
   while (!Serial); // wait for Serial to be ready
-
   Serial.begin(19200);
+  rudder_servo.attach(RUDDER_SERVO_PIN);
+  switches.begin();
 
-  if(!display.begin(SSD1306_SWITCHCAPVCC)) {
-    Serial.println(F("SSD1306 allocation failed"));
-    for(;;); // Don't proceed, loop forever
-  }
-  
+  // if(!display.begin(SSD1306_SWITCHCAPVCC)) {
+  //   Serial.println(F("SSD1306 allocation failed"));
+  //   for(;;); // Don't proceed, loop forever
+  // }
+
   // Serial2.begin(9600);
   // delay(2000);
 
@@ -79,13 +88,13 @@ void setup() {
   // Serial2.println(PMTK_SET_NMEA_OUTPUT_ALLDATA);
 
   // Serial2.println(PMTK_SET_NMEA_UPDATE_1HZ);
-   windsensor.begin();
-   compass.begin();
+   // windsensor.begin();
+   // compass.begin();
 
   // init display
-  display.clearDisplay();
-  display.setTextSize(1);      // Normal 1:1 pixel scale
-  display.setTextColor(WHITE); // Draw white text
+  // display.clearDisplay();
+  // display.setTextSize(1);      // Normal 1:1 pixel scale
+  // display.setTextColor(WHITE); // Draw white text
 }
 
 void messageAt(int y, String msg) {
@@ -110,16 +119,21 @@ void loop() {
   //   Serial.write(c);
   // }
 
-  char buf[20];
+  // char buf[20];
+  //
+  // angle wind = windsensor.relative();
+  // uangle heading = compass.bearing();
+  //
+  // sprintf(buf, "W%4d C%4d", wind, heading);
+  // Serial.println(buf);
+  //
+  // messageAt(0,buf);
 
-  angle wind = windsensor.relative();
-  uangle heading = compass.bearing();
+  byte sw = switches.value();
+  short rudder_pos = (12 * sw) - 45;
+  Serial.print("Reading: ");
+  Serial.println(sw);
 
-  sprintf(buf, "W%4d C%4d", wind, heading);
-  Serial.println(buf);
-
-  messageAt(0,buf);
-
+  rudder.set_position(rudder_pos);
   delay(1000);
-
 }
