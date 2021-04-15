@@ -11,10 +11,8 @@
 #include <Tacker.h>
 #include <Navigator.h>
 #include <Captain.h>
-#include <DisplayLogger.h>
-#include <SerialLogger.h>
 #include <SDLogger.h>
-#include <MultiLogger.h>
+#include <SerialLogger.h>
 #include <Utility.h>
 #include <Routes.h>
 #include <Switches.h>
@@ -29,13 +27,10 @@ Compass compass;
 Timer timer;
 Gps gps;
 Globe globe;
+Switches switches;
 
 // Dependency injection
-SDLogger sdlogger(&gps, &windsensor, &compass);
-DisplayLogger displaylogger(&gps, &windsensor, &compass);
-SerialLogger seriallogger(&gps, &windsensor, &compass);
-Logger* loggers[] = {&sdlogger};
-MultiLogger logger(&gps, &windsensor, &compass, loggers, 1);
+SerialLogger logger(&gps, &windsensor, &compass);
 
 Sail sail(&sail_servo);
 Rudder rudder(&rudder_servo);
@@ -46,10 +41,10 @@ Navigator navigator(&tacker, &gps, &globe, &logger);
 Captain captain(&navigator);
 
 void setup() {
-  sail_servo.attach(SAIL_SERVO_PIN);
-  rudder_servo.attach(RUDDER_SERVO_PIN);
+//  sail_servo.attach(SAIL_SERVO_PIN);
+//  rudder_servo.attach(RUDDER_SERVO_PIN);
 
-  windsensor.begin();
+//  windsensor.begin();
   compass.begin();
   gps.begin();
   logger.begin();
@@ -57,16 +52,24 @@ void setup() {
 }
 
 void loop() {
-  selftest.test();
+  // selftest.test();
+  logger.banner("Starting");
 
   byte sw = switches.value() & 3; // only four routes at present
-  waypoint route[] = plattfields[sw];
-
   char logmsg[22];
-  sprintf(logmsg, "Route %2d", sw); logger->banner(logmsg);
+  sprintf(logmsg, "Route %2d", sw); logger.banner(logmsg);
 
-  captain.voyage(route,ARRAY_SIZE(route));
-  logger.banner("Done");
+  waypoint *route = plattfields[sw];
+  int routesize = ARRAY_SIZE(route);
+  sprintf(logmsg, "Size %2d", routesize); logger.banner(logmsg);
+  sprintf(logmsg, "point %s", route[0].label); logger.banner(logmsg);
+
+  for (int i=0; i < routesize; i++) {
+    sprintf(logmsg, "point %s", route[i].label); logger.banner(logmsg);
+  }
+
+//  captain.voyage(route,ARRAY_SIZE(route));
+//  logger.banner("Done");
 
   while(true){};
 }
