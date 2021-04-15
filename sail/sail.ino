@@ -39,7 +39,7 @@ void loop() {
   wind_angle = windsensor.relative();
   sail.set_position(wind_angle);
 
-  sprintf(logmsg, "Sail %4dW,%4dS", wind_angle, sail_servo.read()); logger.msg(logmsg);
+  sprintf(logmsg, "Sail servo: %4d", sail_servo.read()); logger.msg(logmsg);
 
   delay(100);
 }

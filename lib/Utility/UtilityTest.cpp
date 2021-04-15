@@ -75,6 +75,13 @@ namespace {
     EXPECT_EQ(unix_time(20,1,1,00,00,00),1577836800);
   }
 
+  TEST_F(UtilityTest, Should_calculate_array_size) {
+    int arr[] = {1, 2, 3, 4, 5};
+    double darr[] = {345.87, 54.77, 33.2345};
+    EXPECT_EQ(ARRAY_SIZE(arr),5);
+    EXPECT_EQ(ARRAY_SIZE(darr),3);
+  }
+
 } // namespace
 
 int main(int argc, char **argv) {

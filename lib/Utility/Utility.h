@@ -5,6 +5,8 @@
 #include "Arduino.h"
 #endif
 
+#define ARRAY_SIZE(array) ((sizeof(array))/(sizeof(array[0])))
+
 namespace Utility {
   template <typename T> T sign(T value) {
    return T((value>0)-(value<0));

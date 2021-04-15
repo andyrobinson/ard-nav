@@ -10,7 +10,7 @@
 #include "Angle.h"
 
 #define MAX_GPS_WAIT_FOR_FIX 60000
-#define MAX_STEER_TIME  60000.0 //3600000.0
+#define MAX_STEER_TIME  30000.0 // beware maximum tack time in small ponds!
 #define MIN_STEER_TIME 5000.0
 
 using namespace Angle;
