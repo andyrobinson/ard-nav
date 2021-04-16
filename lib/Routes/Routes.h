@@ -26,22 +26,28 @@
 
 typedef struct {
    int length;
-   waypoint waypoints[];
+   waypoint *waypoints;
 } route;
 
 
 // Platt fields
-waypoint pfA = {"A",{53.44580,-2.22515, 1.0}};
-waypoint pfB = {"B",{53.44530,-2.22550, 1.0}};
-waypoint pfC = {"C",{53.44552,-2.22630, 1.0}};
-waypoint pfD = {"D",{53.44550,-2.22570, 1.0}};
-waypoint pfE = {"E",{53.44525,-2.22600, 1.0}};
-waypoint pfF = {"F",{53.44546,-2.22508, 1.0}};
+waypoint pfA = {"A", {53.44580, -2.22515, 1.0}};
+waypoint pfB = {"B", {53.44530, -2.22550, 1.0}};
+waypoint pfC = {"C", {53.44552, -2.22630, 1.0}};
+waypoint pfD = {"D", {53.44550, -2.22570, 1.0}};
+waypoint pfE = {"E", {53.44525, -2.22600, 1.0}};
+waypoint pfF = {"F", {53.44546, -2.22508, 1.0}};
 
-route pf1 = {5,{pfA,pfB,pfA,pfB,pfF}};
-route pf2 = {5,{pfB,pfC,pfB,pfC,pfF}};
-route pf3 = {9, {pfB,pfC,pfD,pfE,pfB,pfC,pfD,pfE,pfF}};
-route pf4 = {6, {pfA,pfB,pfC,pfB,pfA,pfF}};
+waypoint pf1route[] = {pfA,pfB,pfA,pfB,pfF};
+waypoint pf2route[] = {pfB,pfC,pfB,pfC,pfF};
+waypoint pf3route[] = {pfB,pfC,pfD,pfE,pfB,pfC,pfD,pfE,pfF};
+waypoint pf4route[] = {pfA,pfB,pfC,pfB,pfA,pfF};
+
+route pf1 = {5, pf1route};
+route pf2 = {5, pf2route};
+route pf3 = {9, pf3route};
+route pf4 = {6, pf4route};
+
 route plattfields[] = {pf1,pf2,pf3,pf4};
 
 #endif
