@@ -16,6 +16,7 @@
 #include <Utility.h>
 #include <Routes.h>
 #include <Switches.h>
+#include "avr/dtostrf.h" // remove me after the hacking about
 
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5
@@ -57,18 +58,19 @@ void loop() {
 
   byte sw = switches.value() & 3; // only four routes at present
   char logmsg[22];
+  char buff[11];
   sprintf(logmsg, "Route %2d", sw); logger.banner(logmsg);
 
-  waypoint *route = plattfields[sw];
-  int routesize = ARRAY_SIZE(route);
-  sprintf(logmsg, "Size %2d", routesize); logger.banner(logmsg);
-  sprintf(logmsg, "point %s", route[0].label); logger.banner(logmsg);
+  route journey = plattfields[sw];
+  sprintf(logmsg, "Size %2d", journey.length); logger.banner(logmsg);
 
-  for (int i=0; i < routesize; i++) {
-    sprintf(logmsg, "point %s", route[i].label); logger.banner(logmsg);
+  for (int i=0; i < journey.length; i++) {
+    waypoint wp = journey.waypoints[i];
+    dtostrf(wp.pos.latitude, 10, 5, buff);
+    sprintf(logmsg, "point %s %s", wp.label, buff); logger.banner(logmsg);
   }
 
-//  captain.voyage(route,ARRAY_SIZE(route));
+//  captain.voyage(journey.waypoints, journey.length);
 //  logger.banner("Done");
 
   while(true){};
