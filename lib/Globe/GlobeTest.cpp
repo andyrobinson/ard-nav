@@ -9,6 +9,7 @@ Globe globe;
 position London = {51.5073509,-0.12775823,0.0};
 position Manchester = {53.479324,-2.2484851,0.0};
 position Chorlton = {53.4407973,-2.272291,0.0};
+position PlattFields = {53.44580, -2.22515,0.0};
 position NewYork = {40.7127837, -74.0059413,0.0};
 position Moscow = {55.755826, 37.6173,0.0};
 position Sydney = {-33.8674869, 151.2069902,0.0};
@@ -62,6 +63,8 @@ TEST_F(GlobeTest, should_calculate_bearing_between_points) {
   EXPECT_EQ(288,globe.bearing(&London,&NewYork));
   EXPECT_EQ(64,globe.bearing(&London,&Moscow));
   EXPECT_EQ(357,globe.bearing(&Santiago,&NewYork));
+  EXPECT_EQ(80,globe.bearing(&Chorlton,&PlattFields));
+  EXPECT_EQ(260,globe.bearing(&PlattFields,&Chorlton));
 }
 
 TEST_F(GlobeTest, should_calculate_new_position_from_bearing_and_distance) {

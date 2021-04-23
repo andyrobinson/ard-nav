@@ -57,7 +57,7 @@ namespace {
 
   TEST_F(NavigatorTest, Should_steer_for_time_based_on_an_estimated_half_remaining_distance) {
     gpsResult gps_current = {{10.0, 10.0, 3.0}, 1, 1.0, 12345675};
-    waypoint destination = {"dest", {10.0007, 10.0007, 5.0}};
+    waypoint destination = {"dest", {10.0003, 10.0003, 5.0}};
     gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6,1}};
     double dist = globe.distance_between(&gps_current.pos, &destination.pos);
     long expected_time = round((dist * 1000)/2.0);
@@ -69,7 +69,7 @@ namespace {
     EXPECT_EQ(stub_tacker.steer_time(0), expected_time);
   }
 
-  TEST_F(NavigatorTest, Should_have_a_limit_of_one_minute_on_steer_time) {
+  TEST_F(NavigatorTest, Should_have_a_limit_of_thirty_seconds_on_steer_time) {
     gpsResult gps_current = {{10.0, 10.0, 3.0}, 1, 0.1, 12345675};
     waypoint destination = {"dst", {30.0, -10.0, 5.0}};
     gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6,1}};
@@ -78,7 +78,7 @@ namespace {
     navigator.sailto(destination);
 
     EXPECT_EQ(stub_tacker.steering(0),320);
-    EXPECT_EQ(stub_tacker.steer_time(0), 60000);
+    EXPECT_EQ(stub_tacker.steer_time(0), 30000);
   }
 
   TEST_F(NavigatorTest, Should_have_a_minimum_steer_time_of_5s) {
@@ -94,7 +94,7 @@ namespace {
   }
 
   TEST_F(NavigatorTest, Should_steer_repeatedly_until_reached_destination) {
-    gpsResult gps_current = {{30.0, 30.0, 3.0}, 2, 2000.0, 12345675};
+    gpsResult gps_current = {{30.0, 30.0, 3.0}, 2, 3000.0, 12345675};
     gpsResult gps_midpoint = {{29.5, 29.5, 3.0}, 2, 2000.0, 12345675};
     waypoint destination = {"dest", {29.0, 29.0, 5.0}};
     gpsResult gpsData[] = {gps_current, gps_midpoint, {destination.pos,1,0.6,1}};
@@ -103,7 +103,7 @@ namespace {
     navigator.sailto(destination);
 
     EXPECT_EQ(stub_tacker.steering(0),221);
-    EXPECT_EQ(stub_tacker.steer_time(0), 36853);
+    EXPECT_EQ(stub_tacker.steer_time(0), 24568);
     EXPECT_EQ(stub_tacker.steering(1),221);
     EXPECT_EQ(stub_tacker.steer_time(1), 18446);
   }

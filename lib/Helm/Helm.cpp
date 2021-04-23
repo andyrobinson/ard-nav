@@ -14,7 +14,7 @@ void Helm::steer(uangle direction, long steer_time) {
     long remaining = steer_time;
 
     char logmsg[22];
-    sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->msg(logmsg);
+    sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
 
     while (remaining > 0) {
 

@@ -12,13 +12,17 @@ void Navigator::sailto(waypoint destination) {
 
   char logmsg[22];
   sprintf(logmsg, "Nav %s", destination.label); logger->banner(logmsg);
+  sprintf(logmsg, "L %8d %8d", (long) round(destination.pos.latitude * 1000), (long) round(destination.pos.longitude * 1000)); logger->banner(logmsg);
+
   logger->setdest(destination.label[0]);
 
   gpsResult current_gps = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0};
   gps->data(MAX_GPS_WAIT_FOR_FIX, &current_gps);
+  sprintf(logmsg, "C %8d %8d", (long) round(current_gps.pos.latitude * 1000), (long) round(current_gps.pos.longitude * 1000)); logger->banner(logmsg);
 
   while (!arrived(current_gps.pos, destination.pos)) {
     uangle direction = globe->bearing(&current_gps.pos, &destination.pos);
+    sprintf(logmsg, "Dir %8d", direction); logger->banner(logmsg);
     double unlimited_steer_time_ms = ((globe->distance_between(&current_gps.pos, &destination.pos))/current_gps.mps) * 1000;
     long steer_time = round(max1(MIN_STEER_TIME,min1(unlimited_steer_time_ms/2.0, MAX_STEER_TIME)));
     tacker->steer(direction, steer_time);
