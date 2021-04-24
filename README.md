@@ -18,6 +18,7 @@ The other folders represent Arduino applications.  Again each folder has a makef
 ## Standards
 
 * All rotary measurements are in degrees, either as integers (default) or doubles (only where needed)
+* Clockwise increments are always positive, Anticlockwise are negative (sail, rudder, wind direction)
 * For calculations other than latitude/longitude to the nearest whole degree is sufficient
 * All linear measurements are in metres
 * All time measurements are in milliseconds
