@@ -2,6 +2,9 @@
 #include "Helm.h"
 #include "Rudder.h"
 #include "gtest/gtest.h"
+#include "Utility.h"
+
+using namespace Utility;
 
 namespace {
 
@@ -214,6 +217,25 @@ TEST_F(HelmTest, Should_set_the_sail_every_time_we_steer) {
   EXPECT_EQ(sail_calls[0],wind[0]);
   EXPECT_EQ(sail_calls[1],wind[1]);
 }
+
+TEST_F(HelmTest, Should_converge_on_the_desired_heading) {
+  uangle current_heading = 30;
+  uangle desired_heading = 80;
+  uangle tolerance = 5;
+  int i=0;
+
+  stub_compass.set_bearings(&current_heading, 1);
+
+  while (i < 30 && abs1(current_heading - desired_heading) > tolerance) {
+    helm.steer(desired_heading, STEER_INTERVAL - 10); // steer once if less than STEER_INTERVAL
+    current_heading = current_heading  - (stub_rudder.get_positions()[i]/2);
+    stub_compass.set_bearings(&current_heading, 1);
+    i++;
+  }
+
+  EXPECT_LT(abs1(current_heading - desired_heading), tolerance);
+}
+
 }  //namespace
 
 int main(int argc, char **argv) {

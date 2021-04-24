@@ -25,22 +25,22 @@ TEST_F(RudderTest, Should_move_rudder_to_centre_at_90_degrees) {
 
 TEST_F(RudderTest, Should_move_rudder_to_left) {
   rudder.set_position(40);
-  EXPECT_EQ(stub_servo.write_last_called(), 90 + 40);
+  EXPECT_EQ(stub_servo.write_last_called(), 90 - 40);
 }
 
 TEST_F(RudderTest, Should_move_rudder_to_right) {
   rudder.set_position(-20);
-  EXPECT_EQ(stub_servo.write_last_called(), 90 -20);
+  EXPECT_EQ(stub_servo.write_last_called(), 90 + 20);
 }
 
 TEST_F(RudderTest, Should_not_move_rudder_to_right_beyond_limits) {
   rudder.set_position(-50);
-  EXPECT_EQ(stub_servo.write_last_called(), 90 - RUDDER_MAX_DISPLACEMENT);
+  EXPECT_EQ(stub_servo.write_last_called(), 90 + RUDDER_MAX_DISPLACEMENT);
 }
 
 TEST_F(RudderTest, Should_not_move_rudder_to_left_beyond_limits) {
   rudder.set_position(60);
-  EXPECT_EQ(stub_servo.write_last_called(), 90 + RUDDER_MAX_DISPLACEMENT);
+  EXPECT_EQ(stub_servo.write_last_called(), 90 - RUDDER_MAX_DISPLACEMENT);
 }
 
 }  //namespace
