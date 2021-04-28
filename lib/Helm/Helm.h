@@ -10,7 +10,7 @@
 
 #define MIN_HEADING_AND_ROT 5
 #define NUDGE_DEGREES 4
-#define STEER_INTERVAL 250
+#define STEER_INTERVAL 370
 
 class Helm
 {

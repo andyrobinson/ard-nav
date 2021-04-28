@@ -71,7 +71,7 @@ TEST_F(HelmTest, Should_steer_left_towards_the_requested_heading_using_the_nudge
 TEST_F(HelmTest, Should_not_exceed_maximum_rudder_displacement_left) {
   uangle bearing = 0;
   stub_compass.set_bearings(&bearing,1);
-  helm.steer(170, 5000);
+  helm.steer(170, 8000);
   angle *positions = stub_rudder.get_positions();
   EXPECT_EQ(positions[0],- NUDGE_DEGREES);
   EXPECT_EQ(positions[1],- 2 * NUDGE_DEGREES);
@@ -82,7 +82,7 @@ TEST_F(HelmTest, Should_not_exceed_maximum_rudder_displacement_left) {
  TEST_F(HelmTest, Should_not_exceed_maximum_rudder_displacement_right) {
   uangle bearing = 180;
   stub_compass.set_bearings(&bearing,1);
-  helm.steer(10, 5000);
+  helm.steer(10, 7000);
   angle *positions = stub_rudder.get_positions();
   EXPECT_EQ(positions[1], 0);
   EXPECT_EQ(positions[2], NUDGE_DEGREES);
@@ -94,12 +94,12 @@ TEST_F(HelmTest, Should_not_exceed_maximum_rudder_displacement_left) {
    uangle bearings[] = {0, 3, 8};
    stub_compass.set_bearings(bearings, 3);
 
-   helm.steer(30, 1000);
+   helm.steer(30, 1500);
 
    angle *positions = stub_rudder.get_positions();
    EXPECT_EQ(positions[0],-NUDGE_DEGREES);
    EXPECT_EQ(positions[1],-2*NUDGE_DEGREES);
-   EXPECT_EQ(positions[2],-2*NUDGE_DEGREES);
+   EXPECT_EQ(positions[2],-3*NUDGE_DEGREES);
  }
 
  TEST_F(HelmTest, Should_steer_further_if_rudder_is_ineffective) {
@@ -122,8 +122,8 @@ TEST_F(HelmTest, Should_not_exceed_maximum_rudder_displacement_left) {
 
    angle *positions = stub_rudder.get_positions();
    EXPECT_EQ(positions[0],NUDGE_DEGREES);
-   EXPECT_EQ(positions[1],NUDGE_DEGREES);
-   EXPECT_EQ(positions[2],2 * NUDGE_DEGREES);
+   EXPECT_EQ(positions[1],2 * NUDGE_DEGREES);
+   EXPECT_EQ(positions[2],3 * NUDGE_DEGREES);
  }
 
  TEST_F(HelmTest, Should_consider_very_small_changes_as_not_turning) {
@@ -181,7 +181,7 @@ TEST_F(HelmTest, Rudder_deflection_should_be_progressive_through_turn) {
    uangle bearings[] = {200, 200, 210, 220, 230, 240, 255, 260, 275, 280, 285, 290, 300, 305, 310};
    stub_compass.set_bearings(bearings, 15);
 
-   helm.steer(300, 5000);
+   helm.steer(300, 7000);
    angle *positions = stub_rudder.get_positions();
 
    EXPECT_EQ(positions[1],-8);
@@ -189,16 +189,17 @@ TEST_F(HelmTest, Rudder_deflection_should_be_progressive_through_turn) {
    EXPECT_EQ(positions[3],-16);
    EXPECT_EQ(positions[4],-20);
    EXPECT_EQ(positions[5],-24);
-   EXPECT_EQ(positions[6],-20);
-   EXPECT_EQ(positions[7],-24);
-   EXPECT_EQ(positions[8],-20);
-   EXPECT_EQ(positions[9],-20);
-   EXPECT_EQ(positions[10],-20);
-   EXPECT_EQ(positions[11],-16);
-   EXPECT_EQ(positions[12],-16);
-   EXPECT_EQ(positions[13],-12);
-   EXPECT_EQ(positions[14],-8);
-   EXPECT_EQ(positions[15],-4);
+   EXPECT_EQ(positions[6],-24);
+   EXPECT_EQ(positions[7],-28);
+   EXPECT_EQ(positions[8],-24);
+   EXPECT_EQ(positions[9],-28);
+   EXPECT_EQ(positions[10],-28);
+   EXPECT_EQ(positions[11],-28);
+   EXPECT_EQ(positions[12],-28);
+   EXPECT_EQ(positions[13],-24);
+   EXPECT_EQ(positions[14],-20);
+   EXPECT_EQ(positions[15],-16);
+   EXPECT_EQ(positions[16],-12);
 }
 
 TEST_F(HelmTest, Should_set_the_sail_every_time_we_steer) {

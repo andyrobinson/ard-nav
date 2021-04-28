@@ -9,7 +9,7 @@
 
 using namespace Angle;
 
-#define TACKER_NO_GO_LIMIT 45
+#define TACKER_NO_GO_LIMIT 40
 
 class Tacker
 {

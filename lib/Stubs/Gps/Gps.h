@@ -11,6 +11,7 @@ typedef struct {
   position pos;
   short fix;
   float mps;
+  float avg_mps;
   long unixTime;
 } gpsResult;
 
