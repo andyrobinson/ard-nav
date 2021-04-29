@@ -7,6 +7,7 @@
 #include "WindSensor.h"
 #include "Sail.h"
 #include "Logger.h"
+#include "Switches.h"
 
 #define MIN_HEADING_AND_ROT 5
 #define NUDGE_DEGREES 4
@@ -16,7 +17,7 @@ class Helm
 {
   public:
     Helm();
-    Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, Logger *loggerp);
+    Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, Switches *switchesp, Logger *loggerp);
     void steer(uangle direction, long steer_time);
 
   private:
@@ -25,6 +26,7 @@ class Helm
     Timer *timer;
     WindSensor *windsensor;
     Sail *sail;
+    Switches *switches;
     Logger *logger;
     angle rudder_position;
     uangle old_heading;

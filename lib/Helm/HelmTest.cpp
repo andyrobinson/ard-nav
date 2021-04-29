@@ -3,6 +3,7 @@
 #include "Rudder.h"
 #include "gtest/gtest.h"
 #include "Utility.h"
+#include "Switches.h"
 
 using namespace Utility;
 
@@ -15,6 +16,7 @@ WindSensor stub_windsensor;
 Sail stub_sail;
 Helm helm;
 StubLogger logger;
+Switches stub_switches;
 angle wind_sample[] = {180};
 
 class HelmTest : public ::testing::Test {
@@ -23,7 +25,8 @@ class HelmTest : public ::testing::Test {
     stub_rudder.reset();
     stub_sail.reset();
     stub_windsensor.set_relative(wind_sample, 1);
-    helm = Helm(&stub_rudder, &stub_compass, &stub_timer, &stub_windsensor, &stub_sail, &logger);
+    stub_switches.set(0);
+    helm = Helm(&stub_rudder, &stub_compass, &stub_timer, &stub_windsensor, &stub_sail, &stub_switches, &logger);
   }
 
   void SetUp() override {

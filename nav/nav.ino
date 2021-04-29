@@ -35,7 +35,7 @@ SDLogger logger(&gps, &windsensor, &compass);
 Sail sail(&sail_servo);
 Rudder rudder(&rudder_servo);
 SelfTest selftest(&gps, &windsensor, &compass, &sail, &rudder, &timer, &logger);
-Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &logger);
+Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &switches, &logger);
 Tacker tacker(&helm, &compass, &windsensor, &logger);
 Navigator navigator(&tacker, &gps, &globe, &logger);
 Captain captain(&navigator);
