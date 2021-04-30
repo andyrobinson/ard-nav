@@ -55,7 +55,7 @@ void loop() {
   selftest.test();
   logger.banner("Starting");
 
-  byte sw = switches.value() & 3; // only four routes at present
+  byte sw = switches.value() & 1; // only two routes configurable
   route journey = plattfields[sw];
 
   captain.voyage(journey.waypoints, journey.length);
