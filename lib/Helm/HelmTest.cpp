@@ -22,14 +22,14 @@ angle wind_sample[] = {180};
 class HelmTest : public ::testing::Test {
  protected:
   HelmTest() {
-    stub_rudder.reset();
-    stub_sail.reset();
-    stub_windsensor.set_relative(wind_sample, 1);
-    stub_switches.set(0);
-    helm = Helm(&stub_rudder, &stub_compass, &stub_timer, &stub_windsensor, &stub_sail, &stub_switches, &logger);
   }
 
   void SetUp() override {
+    stub_rudder.reset();
+    stub_sail.reset();
+    stub_windsensor.set_relative(wind_sample, 1);
+    stub_switches.set(2);
+    helm = Helm(&stub_rudder, &stub_compass, &stub_timer, &stub_windsensor, &stub_sail, &stub_switches, &logger);
   }
 
   angle rudder_position() {
@@ -63,13 +63,29 @@ TEST_F(HelmTest, Should_steer_right_towards_the_requested_heading_using_nudge_va
   EXPECT_EQ(rudder_position(), -NUDGE_DEGREES);
 }
 
-TEST_F(HelmTest, Should_steer_left_towards_the_requested_heading_using_the_nudge_value) {
-  uangle bearings[] = {190, 190, 190};
+TEST_F(HelmTest, Should_steer_left_towards_the_requested_heading_using_the_nudge_value_over_180) {
+  // tricky because we start pointing due North, i.e. 0
+  uangle bearings[] = {220, 220, 220, 220};
   stub_compass.set_bearings(bearings, 3);
-  helm.steer(170, 3000);
+  helm.steer(200, 1600);
   angle *positions = stub_rudder.get_positions();
+  EXPECT_EQ(positions[1], 0);
   EXPECT_EQ(positions[2], NUDGE_DEGREES);
+  EXPECT_EQ(positions[3], 2 * NUDGE_DEGREES);
 }
+
+
+TEST_F(HelmTest, Should_steer_left_towards_the_requested_heading_using_the_nudge_value) {
+  uangle bearings[] = {70, 70, 70};
+  stub_compass.set_bearings(bearings, 3);
+  helm.steer(50, 1200);
+  angle *positions = stub_rudder.get_positions();
+  EXPECT_EQ(positions[0], NUDGE_DEGREES);
+  EXPECT_EQ(positions[1], 2 * NUDGE_DEGREES);
+  EXPECT_EQ(positions[2], 3 * NUDGE_DEGREES);
+}
+
+
 
 TEST_F(HelmTest, Should_not_exceed_maximum_rudder_displacement_left) {
   uangle bearing = 0;
@@ -231,13 +247,46 @@ TEST_F(HelmTest, Should_converge_on_the_desired_heading) {
   stub_compass.set_bearings(&current_heading, 1);
 
   while (i < 30 && abs1(current_heading - desired_heading) > tolerance) {
-    helm.steer(desired_heading, STEER_INTERVAL - 10); // steer once if less than STEER_INTERVAL
-    current_heading = current_heading  - (stub_rudder.get_positions()[i]/2);
+    helm.steer(desired_heading, STEER_INTERVAL - 10); // it will only steer once if less than STEER_INTERVAL
+    current_heading = current_heading  - (stub_rudder.get_positions()[i]/2); // cod boat physics
     stub_compass.set_bearings(&current_heading, 1);
     i++;
   }
 
   EXPECT_LT(abs1(current_heading - desired_heading), tolerance);
+}
+
+TEST_F(HelmTest, Should_use_top_two_bits_of_switch_to_determine_rotation_weight_in_steering_no_change) {
+  uangle bearings[] = {5, 15, 22};
+  stub_compass.set_bearings(bearings, 3);
+  stub_switches.set(2);
+  helm.steer(40, 800);
+  angle *positions = stub_rudder.get_positions();
+  EXPECT_EQ(positions[0], -NUDGE_DEGREES);
+  EXPECT_EQ(positions[1], -NUDGE_DEGREES);
+  EXPECT_EQ(positions[2], -NUDGE_DEGREES);
+}
+
+TEST_F(HelmTest, Should_use_top_two_bits_of_switch_to_determine_rotation_weight_in_steering_reduction) {
+  uangle bearings[] = {5, 15, 22};
+  stub_compass.set_bearings(bearings, 3);
+  stub_switches.set(0);
+  helm.steer(40, 800);
+  angle *positions = stub_rudder.get_positions();
+  EXPECT_EQ(positions[0], -NUDGE_DEGREES);
+  EXPECT_EQ(positions[1], -NUDGE_DEGREES * 2);
+  EXPECT_EQ(positions[2], -NUDGE_DEGREES * 3);
+}
+
+TEST_F(HelmTest, Should_use_top_two_bits_of_switch_to_determine_rotation_weight_in_steering_increase) {
+  uangle bearings[] = {5, 15, 22};
+  stub_compass.set_bearings(bearings, 3);
+  stub_switches.set(6);
+  helm.steer(40, 800);
+  angle *positions = stub_rudder.get_positions();
+  EXPECT_EQ(positions[0], -NUDGE_DEGREES);
+  EXPECT_EQ(positions[1], 0);
+  EXPECT_EQ(positions[2], NUDGE_DEGREES);
 }
 
 }  //namespace

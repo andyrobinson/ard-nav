@@ -1,7 +1,6 @@
 #include "Helm.h"
 #include "Angle.h"
 #include "Utility.h"
-
 using namespace Angle;
 using namespace Utility;
 
@@ -80,7 +79,12 @@ bool Helm::heading_and_turn_ok(uangle direction, uangle old_heading, uangle curr
   (abs1(rot(old_heading, current_heading, steer_interval)) <= MIN_HEADING_AND_ROT);
 }
 
-// rotation speed in degrees per second
+// rotation speed in degrees per second, with fudge factor
 long Helm::rot(uangle old_heading, uangle current_heading, long steer_interval) {
-  return (((long) udiff(old_heading, current_heading)) * 1000) / steer_interval;
+  return (((long) udiff(old_heading, current_heading)) * (500 + rot_factor())) / steer_interval;
+}
+
+long Helm::rot_factor() {
+  uint8_t relevant_bits = switches->value() >> 1;
+  return ((long) relevant_bits) * 500;
 }

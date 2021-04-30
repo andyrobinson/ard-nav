@@ -12,7 +12,7 @@ class Switches
   public:
     Switches();
     void begin();
-    byte value();
+    uint8_t value();
 };
 
 #endif

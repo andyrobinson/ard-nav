@@ -8,7 +8,7 @@ void Switches::begin() {
   pinMode(SWITCH4, INPUT);
 }
 
-byte Switches::value() {
-  byte result = (4 * digitalRead(SWITCH4)) + (2 * digitalRead(SWITCH2)) + digitalRead(SWITCH1);
+uint8_t Switches::value() {
+  uint8_t result = (4 * digitalRead(SWITCH4)) + (2 * digitalRead(SWITCH2)) + digitalRead(SWITCH1);
   return result;
 }

@@ -15,4 +15,5 @@ angle *Rudder::get_positions() {
 
 void Rudder::reset() {
   current_position=0;
+  for (int i=0; i < 100; i++) {rudder_positions[i] = 0;}
 }
