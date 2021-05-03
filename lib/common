@@ -31,8 +31,8 @@ $(BUILD_NUMBER_FILE): $(notdir $(CURDIR)).ino $(DST_FILES)
 	@echo "Updating build number"
 	@if ! test -f $(BUILD_NUMBER_FILE).h; then echo '#define MINOR_VERSION 0' > $(BUILD_NUMBER_FILE).h; fi
 	@echo $$(awk '{print $$1,$$2,$$3+1}' $(BUILD_NUMBER_FILE).h) > $(BUILD_NUMBER_FILE).h
-	mkdir -p $(DEST_DIR)/$(BUILD_NUMBER_FILE)
-	cp $(BUILD_NUMBER_FILE).h $(DEST_DIR)/$(BUILD_NUMBER_FILE)
+	@mkdir -p $(DEST_DIR)/$(BUILD_NUMBER_FILE)
+	@cp $(BUILD_NUMBER_FILE).h $(DEST_DIR)/$(BUILD_NUMBER_FILE)
 
 compile: $(notdir $(CURDIR)).ino $(DST_FILES) $(BUILD_NUMBER_FILE)
 	cp -rp $(DEST_DIR)/* $(ARDUINO_LIB_DIR)
