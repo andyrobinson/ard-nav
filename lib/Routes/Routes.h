@@ -30,7 +30,7 @@ typedef struct {
 } route;
 
 
-// Platt fields
+// Platt fields pond
 waypoint pfA = {"A", {53.44580, -2.22515, 3.0}};
 waypoint pfB = {"B", {53.44530, -2.22550, 3.0}};
 waypoint pfC = {"C", {53.44552, -2.22630, 3.0}};
