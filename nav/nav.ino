@@ -16,7 +16,9 @@
 #include <Utility.h>
 #include <Routes.h>
 #include <Switches.h>
+#include <version.h>
 
+#define MAJOR_VERSION 1
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5
 
@@ -28,6 +30,7 @@ Timer timer;
 Gps gps;
 Globe globe;
 Switches switches;
+char logmsg[22];
 
 // Dependency injection
 SDLogger logger(&gps, &windsensor, &compass);
@@ -53,7 +56,7 @@ void setup() {
 
 void loop() {
   selftest.test();
-  logger.banner("Starting");
+  sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
 
   byte sw = switches.value() & 1; // only two routes configurable
   route journey = plattfields[sw];
