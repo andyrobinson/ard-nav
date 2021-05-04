@@ -45,18 +45,10 @@ void SDLogger::settack(char tackletter) {
 }
 
 void SDLogger::banner(char *message) {
-  File dataFile = SD.open(logfile, FILE_WRITE);
-
-  if (dataFile) {
-    dataFile.print("****,");
-    dataFile.print(message);
-    dataFile.println(",****");
-    dataFile.close();
-  }
+    print_line(message, "*** ");
 }
 
-void SDLogger::msg(char *message) {
-  if (sd_time_to_log()) {
+void SDLogger::print_line(char *message, char *msgprefix) {
     gps->data(GPS_WAIT_MILLIS, &gpsReading);
     calculate_filename(logfile, gpsReading.unixTime);
     File dataFile = SD.open(logfile, FILE_WRITE);
@@ -76,8 +68,13 @@ void SDLogger::msg(char *message) {
       dataFile.print(bearing); dataFile.print(",");
       dataFile.print(destination); dataFile.print(",");
       dataFile.print(tack); dataFile.print(",");
-      dataFile.println(message);
+      dataFile.print(msgprefix);dataFile.println(message);
       dataFile.close();
     }
+}
+
+void SDLogger::msg(char *message) {
+  if (sd_time_to_log()) {
+    print_line(message, "");
   }
 }
