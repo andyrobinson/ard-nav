@@ -34,11 +34,11 @@ $(BUILD_NUMBER_FILE): $(notdir $(CURDIR)).ino $(DST_FILES)
 	@mkdir -p $(DEST_DIR)/$(BUILD_NUMBER_FILE)
 	@cp $(BUILD_NUMBER_FILE).h $(DEST_DIR)/$(BUILD_NUMBER_FILE)
 
-compile: $(notdir $(CURDIR)).ino $(DST_FILES) $(BUILD_NUMBER_FILE)
+compile: $(notdir $(CURDIR)).ino $(DST_FILES)
 	cp -rp $(DEST_DIR)/* $(ARDUINO_LIB_DIR)
 	arduino-cli compile --fqbn arduino:samd:arduino_zero_edbg ../$(notdir $(CURDIR))
 
-$(notdir $(CURDIR)).*.bin: $(notdir $(CURDIR)).ino $(DST_FILES)
+$(notdir $(CURDIR)).*.bin: $(notdir $(CURDIR)).ino $(DST_FILES) $(BUILD_NUMBER_FILE)
 	$(MAKE) compile
 
 upload: $(notdir $(CURDIR)).*.bin
