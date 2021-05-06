@@ -17,7 +17,7 @@ The other folders represent Arduino applications.  Again each folder has a makef
 
 ## Standards
 
-* All rotary measurements are in degrees, either as integers (default) or doubles (only where needed)
+* All rotary measurements are in degrees, either as integers (default) or doubles (only where needed) - see the uangle and angle types below
 * Clockwise increments are always positive, Anticlockwise are negative (sail, rudder, wind direction)
 * For calculations other than latitude/longitude to the nearest whole degree is sufficient
 * All linear measurements are in metres
@@ -43,6 +43,7 @@ The other folders represent Arduino applications.  Again each folder has a makef
 * SelfTest - power-on self test routines
 * SerialLogger - log to the serial port (for Arduino Serial monitor)
 * Stubs - home grown stubs for use in unit testing
+* Switches - reads three switches for in-the-field configuration changes
 * Tacker - steer directly or do a tack, using Helm
 * TestEg - example of using Gtest (google C++ test library)
 * Timer - wrapper around delay function, for testing and possible multi-tasking
@@ -52,11 +53,11 @@ The other folders represent Arduino applications.  Again each folder has a makef
 
 ## Current concerns
 
-We probably need a turning mode and a steady state mode, and move between the modes based on deflection from course.
+We probably need a turning mode and a steady state mode - it's likely for power management reasons that we will have short bursts of steering followed by longer periods of sleep, although given the fairly instant nature of the transition, the periods of sleep could potentially be quite short.
 
-Display refresh causes jitter, but we can live with that for the moment (won't be an issue OTW unless SD card writing has the same problem).
+Display refresh causes jitter, but we can live with that for the moment (this is not an issue OTW).
 
-The steering is jittery at the moment.  The sample rate of 1/10th of a second means that quite large rates of turn can be calculated (minimum is 10 degrees/sec), many just due to the inaccuracy of the compass.  It may be better to reduce the sample rate or do a low pass filter (i.e. average over 2 or 3 readings), but this will make it less responsive.
+The steering makes the boat fish tail.  Currently adjusting the influence of rate of turn.
 
 ## Observations from field tests
 
@@ -67,25 +68,37 @@ The steering is jittery at the moment.  The sample rate of 1/10th of a second me
 * compass is much better outside
 * broadly speaking the software appears to work(!)
 
+### 25 April 2021, on the water
+* Seems very keen to tack
+* Steering makes the boat weave
+* Logging stopped after 10 mins of second run - will add capacitor to try and remove spikes, but need to monitor
 
 ## Planned development
 
 1. Should introduce a deliberate memory leak to check that the memory measure works
-2. Need better indication from selftest that everything is well, so that we can be sure that nav has started when we no longer have the display
-3. It would be good to use the analog inputs to measure the battery voltage.  Note that once we have a proper power supply this will require a connection directly from the battery
-4. In the final attempt we need to disable self test (probably completely), to take account of the fact that the system may restart during navigation.  Also the navigation needs to identify the nearest waypoint when it starts, and determine if it has passed this waypoint before selecting a waypoint to navigate towards.
-5. Compass is highly influenced by electric motors - need to check in-situ and potentially isolate - much better outdoors, still perhaps 5 degrees out in the box, so we need to check in the boat
-6. Rewrite functions which return structs to using pointer arguments, for efficiency and
-more importantly memory conservation
-7. Need some kind of integration testing
-8.  We need follow-on code for failed sensors - wind direction (can we find out by steering?), compass (use GPS), gps (use dead reckoning).  Maybe ultimately we need more than one sensor.
-9.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to crash.  We need to ensure that the Arduino power supply is protected, and there is a fall-back reset.  Ideally when the batteries get low we shut down until they regain some charge (I guess this could be never ...).  There are voltage regulators that will ensure a stable voltage for as long as possible.
-10.  Don't forget fallback timer which reboots the arduino after a period of inactivity (aka crash)
-11.  Need to review all limits (e.g. max steer time) before attempting longer journeys
+2. It would be good to use the analog inputs to measure the battery voltage.  Note that once we have a proper power supply this will require a connection directly from the battery
+3. In the final attempt we need to disable self test (probably completely), to take account of the fact that the system may restart during navigation.  Also the navigation needs to identify the nearest waypoint when it starts, and determine if it has passed this waypoint before selecting a waypoint to navigate towards.
+4. Compass is highly influenced by electric motors - need to check in-situ and potentially isolate - much better outdoors, still perhaps 5 degrees out in the box, so we need to check in the boat
+5. Need some kind of integration testing
+6.  We need follow-on code for failed sensors - wind direction (can we find out by steering?), compass (use GPS), gps (use dead reckoning).  Maybe ultimately we need more than one sensor.
+7.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to crash - this may have happened during recent OTW testing.  We need to ensure that the Arduino power supply is protected, and there is a fall-back reset.  Ideally when the batteries get low we shut down until they regain some charge (I guess this could be never ...).  There are voltage regulators that will ensure a stable voltage for as long as possible.
+8.  Don't forget fallback (watchdog) timer which reboots the arduino after a period of inactivity (aka crash)
+9.  Need to review all limits (e.g. max steer time) before attempting longer journeys
+10. Consider between navigation checks:
+- To abandon a tack, or start tacking if wind requires it
+11. Other checks to Consider
+- in irons
+- becalmed (ensure preservation of battery)
+- in a storm (ditto)
 
 ## Done (for reference)
 
 - Logging now includes memory
+- Need better indication from selftest that everything is well, so that we can be sure that nav has started when we no longer have the display
+- Rewrite functions which return structs to using pointer arguments, for efficiency and
+more importantly memory conservation
+- software versioning
+- average speed
 
 ## Hot tips
 
