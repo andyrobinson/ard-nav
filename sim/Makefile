@@ -1,5 +1,6 @@
 SRCS := $(shell find . -name "*.cpp") $(SOURCES)
 OBJS =  $(shell find . -name "*.o")
+EXE := sim.o
 
 .DEFAULT_GOAL = run
 
@@ -11,11 +12,11 @@ else
 	GCC = g++
 endif
 
-sim.o: $(SRCS)
-	$(GCC) $(SRCS) -lstdc++ -o sim.o
+$(EXE): $(SRCS)
+	$(GCC) $(SRCS) -lstdc++ -o $(EXE)
 
-run: sim.o
-	./sim.o
+run: $(EXE)
+	./$(EXE)
 
 .PHONY: clean run
 
