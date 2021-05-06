@@ -55,8 +55,9 @@ void setup() {
 }
 
 void loop() {
-  selftest.test();
   sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
+  selftest.test();
+  sprintf(logmsg, "Navigating v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
 
   byte sw = switches.value() & 1; // only two routes configurable
   route journey = plattfields[sw];

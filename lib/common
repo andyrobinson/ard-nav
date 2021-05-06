@@ -27,18 +27,18 @@ clean:
 	$(RM) -r *.bin
 	$(RM) -r *.elf
 
-$(BUILD_NUMBER_FILE): $(notdir $(CURDIR)).ino $(DST_FILES)
+$(DEST_DIR)/$(BUILD_NUMBER_FILE)/$(BUILD_NUMBER_FILE).h: $(notdir $(CURDIR)).ino $(DST_FILES)
 	@echo "Updating build number"
 	@if ! test -f $(BUILD_NUMBER_FILE).h; then echo '#define MINOR_VERSION 0' > $(BUILD_NUMBER_FILE).h; fi
 	@echo $$(awk '{print $$1,$$2,$$3+1}' $(BUILD_NUMBER_FILE).h) > $(BUILD_NUMBER_FILE).h
 	@mkdir -p $(DEST_DIR)/$(BUILD_NUMBER_FILE)
 	@cp $(BUILD_NUMBER_FILE).h $(DEST_DIR)/$(BUILD_NUMBER_FILE)
 
-compile: $(notdir $(CURDIR)).ino $(DST_FILES)
+compile: $(notdir $(CURDIR)).ino $(DST_FILES) $(DEST_DIR)/$(BUILD_NUMBER_FILE)/$(BUILD_NUMBER_FILE).h
 	cp -rp $(DEST_DIR)/* $(ARDUINO_LIB_DIR)
 	arduino-cli compile --fqbn arduino:samd:arduino_zero_edbg ../$(notdir $(CURDIR))
 
-$(notdir $(CURDIR)).*.bin: $(notdir $(CURDIR)).ino $(DST_FILES) $(BUILD_NUMBER_FILE)
+$(notdir $(CURDIR)).*.bin: $(notdir $(CURDIR)).ino $(DST_FILES)
 	$(MAKE) compile
 
 upload: $(notdir $(CURDIR)).*.bin
