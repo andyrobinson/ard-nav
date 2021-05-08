@@ -1,5 +1,10 @@
-SRCS := $(shell find . -name "*.cpp") $(SOURCES)
-OBJS =  $(shell find . -name "*.o")
+CLASSES := ConsoleLogger Boat
+LIB_INCLUDES := Logger Position
+INC_PARAMS = $(foreach d, $(LIB_INCLUDES), -I../lib/$d)
+CLASS_PARAMS = $(foreach p, $(CLASSES), ./$(p)/$(p).cpp -I./$(p))
+
+SRCS := sim.cpp
+OBJS = sim.o
 EXE := sim.o
 
 .DEFAULT_GOAL = run
@@ -13,7 +18,7 @@ else
 endif
 
 $(EXE): $(SRCS)
-	$(GCC) $(SRCS) -lstdc++ -o $(EXE)
+	$(GCC) $(SRCS) $(CLASS_PARAMS) $(INC_PARAMS) -lstdc++ -o $(EXE)
 
 run: $(EXE)
 	./$(EXE)
