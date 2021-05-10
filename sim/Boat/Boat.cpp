@@ -1,6 +1,6 @@
 #include "Boat.h"
 
-Boat::Boat(Logger *loggerp):
+Boat::Boat(Timer *timer, Logger *loggerp):
   logger(loggerp){}
 
 position Boat::location() {

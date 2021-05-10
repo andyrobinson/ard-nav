@@ -1,11 +1,13 @@
 #include "gtest/gtest.h"
 #include "Boat.h"
+#include "Timer.h"
 #include "StubLogger.h"
 
 namespace {
 
     StubLogger logger;
-    Boat boat(&logger);
+    Timer timer;
+    Boat boat(&timer, &logger);
 
     class BoatTest : public ::testing::Test {
      protected:
@@ -21,6 +23,8 @@ namespace {
       position expectedPosition = {49.97480, -5.23198, 5.0};
       EXPECT_EQ(boat.location(), expectedPosition);
     }
+
+
 
 }  //namespace
 

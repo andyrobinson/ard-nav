@@ -1,4 +1,4 @@
-CLASSES := ConsoleLogger Boat
+CLASSES := ConsoleLogger Boat Timer
 LIB_INCLUDES := Logger Position
 INC_PARAMS = $(foreach d, $(LIB_INCLUDES), -I../lib/$d)
 CLASS_PARAMS = $(foreach p, $(CLASSES), ./$(p)/$(p).cpp -I./$(p))
