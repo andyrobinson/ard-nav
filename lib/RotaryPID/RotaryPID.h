@@ -3,12 +3,11 @@
 
 #include "Utility.h"
 #include "Angle.h"
-#include "Logger.h"
 #include "Switches.h"
 
-#define MIN_HEADING_AND_ROT 5
-#define NUDGE_DEGREES 4
-#define STEER_INTERVAL 370
+#define KP 0.1
+#define KI 0.1
+#define KD 0.1
 
 using namespace Angle;
 
@@ -16,13 +15,16 @@ class RotaryPID
 {
   public:
       RotaryPID();
-      RotaryPID(Switches *switchesp, Logger *loggerp);
+      RotaryPID(float limit_param, Switches *switchesp);
       angle calculate(uangle desired_heading, uangle current_heading, long interval_ms) ;
 
   private:
     uangle last_heading;
+    float integral_term, limit, output;
     Switches *switches;
-    Logger *logger;
+
+    float clip(float value, float limit);
+
 };
 
 #endif

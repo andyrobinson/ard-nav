@@ -1,5 +1,5 @@
-STUBS = StubLogger Switches
-INCLUDES = ../Angle/ ../Utility/ ../Logger/
+STUBS = Switches
+INCLUDES = ../Angle/ ../Utility/ ../Rudder/
 SOURCES = ../Angle/Angle.cpp
 
 include ../libcommon
