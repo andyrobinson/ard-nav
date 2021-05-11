@@ -1,4 +1,5 @@
 #include "RotaryPID.h"
+#include <iostream>
 
 // based on work by Brett Beauregard - see
 // http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/
@@ -9,23 +10,23 @@ using namespace Utility;
 RotaryPID::RotaryPID() {}
 
 RotaryPID::RotaryPID(float limit_param, Switches *switchesp):
-  limit(limit_param), switches(switchesp), integral_term(0.0) {}
+  limit(limit_param), switches(switchesp), integral_term(0.0), last_heading(0) {}
 
 angle RotaryPID::calculate(uangle desired_heading, uangle current_heading, long interval_ms) {
-      float sample_time_sec = ((float) interval_ms)/1000;
-      float error = (float) udiff(current_heading,desired_heading);
+    float sample_time_sec = ((float) interval_ms)/1000;
+    float error = (float) udiff(current_heading,desired_heading);
 
-      integral_term += (KP * sample_time_sec * error);
-      integral_term = clip(integral_term, limit);
+    integral_term += (KP * sample_time_sec * error);
+    integral_term = clip(integral_term, limit);
 
-      float diff_input = (float) udiff(last_heading,current_heading);
+    float diff_input = (float) udiff(last_heading,current_heading);
 
-      /*Compute PID Output*/
-      output = (KP * error) + integral_term - ((KD / sample_time_sec) * diff_input);
-      output = clip(output, limit);
+    /*Compute PID Output*/
+    output = (KP * error) + integral_term - ((KD / sample_time_sec) * diff_input);
+    output = clip(output, limit);
 
-      last_heading = current_heading; // for next time
-      return angle(-output); // rudder sign is opposite to rotation direction
+    last_heading = current_heading; // for next time
+    return angle(-output); // rudder sign is opposite to rotation direction
 }
 
 float RotaryPID::clip(float value, float limit) {

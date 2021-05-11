@@ -21,36 +21,26 @@ class RotaryPIDTest : public ::testing::Test {
 
 };
 
-TEST_F(RotaryPIDTest, Should_compute_negative_output_towards_clockwise_headings_at_all_compass_points) {
-  angle output;
-  output = rotaryPID.calculate(5,10,500); // discard first one
-  for (int i = 0;i < 405; i+=45) {
-      output = rotaryPID.calculate(uadd(i,10),uadd(i,-10),500);
-      std::cout << uadd(i,10);
-      std::cout << ",";
-      std::cout << uadd(i,-10);
-      std::cout << ",";
-      std::cout << output;
-      std::cout << "\n";
-      EXPECT_LT(output,0);
+TEST_F(RotaryPIDTest, Should_converge_on_heading_at_all_compass_points_clockwise_turns) {
+    angle output;
+    uangle tolerance = 2;
+    for (int i = 0;i < 360; i+=30) {
+        int j = 0;
+        uangle current_heading = i - 10;
+        uangle desired_heading = i + 10;
+
+        std::cout << "**Desired: " << desired_heading << "\n";
+
+        while (j < 30 && abs1(udiff(current_heading,desired_heading)) > tolerance) {
+            output = rotaryPID.calculate(desired_heading,current_heading,200);
+            current_heading = current_heading  - (short) ((float) output/5.0); // cod boat physics
+            std::cout << output << "," << current_heading << "\n";
+            j++;
+        }
+        EXPECT_LE(abs1(udiff(current_heading,desired_heading)), tolerance);
   }
 }
 
-TEST_F(RotaryPIDTest, Should_compute_positive_output_towards_anticlockwise_heading_at_all_compass_points) {
-  angle output;
-  output = rotaryPID.calculate(20,10,500); // discard first one
-  for (int i = 0;i < 405; i+=45) {
-      output = rotaryPID.calculate(uadd(i,-10),uadd(i,10),500);
-      std::cout << uadd(i,-10);
-      std::cout << ",";
-      std::cout << uadd(i,10);
-      std::cout << ",";
-      std::cout << output;
-      std::cout << "\n";
-      EXPECT_GT(output,0);
-  }
-}
-TEST_F(RotaryPIDTest, DISABLED_Should_converge_on_heading_at_all_compass_points) {}
 TEST_F(RotaryPIDTest, DISABLED_Should_converge_on_heading_at_all_compass_points_with_momentum) {}
 TEST_F(RotaryPIDTest, DISABLED_Should_never_exceed_limit) {}
 
