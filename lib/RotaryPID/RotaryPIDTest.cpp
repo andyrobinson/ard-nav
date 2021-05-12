@@ -60,6 +60,14 @@ TEST_F(RotaryPIDTest, Should_converge_on_heading_when_there_is_momentum) {
         assert_convergence(desired_heading,current_heading, 0.8);
   }
 }
+
+TEST_F(RotaryPIDTest, Should_converge_on_heading_for_large_turn_after_a_period_of_straight) {
+    for (int i = 0;i < 10; i++) {
+        assert_convergence(90,0, 0.8);
+    }
+    assert_convergence(270,0, 0.8);
+}
+
 }  //namespace
 
 int main(int argc, char **argv) {
