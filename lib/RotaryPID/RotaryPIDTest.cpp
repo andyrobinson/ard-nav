@@ -31,6 +31,7 @@ class RotaryPIDTest : public ::testing::Test {
        rotary_velocity = (rotary_velocity * momentum_factor) - (((float) output)/5.0);
        rotary_velocity = min1(rotary_velocity, max_rotation);
        current_heading = uadd(current_heading,(short) rotary_velocity);
+       //std::cout << output << "," << current_heading << "\n";
        j++;
      }
      EXPECT_LE(abs1(udiff(current_heading,desired_heading)), tolerance);
@@ -67,6 +68,15 @@ TEST_F(RotaryPIDTest, Should_converge_on_heading_for_large_turn_after_a_period_o
     }
     assert_convergence(270,0, 0.8);
 }
+
+TEST_F(RotaryPIDTest, Should_not_have_output_bounce_when_changing_course) {
+    for (int i = 0;i < 10; i++) {
+        assert_convergence(190,0, 0.8);
+    }
+    angle output = rotaryPID.calculate(170,190,200);
+    EXPECT_LE(output, 30);
+}
+
 
 }  //namespace
 
