@@ -1,6 +1,5 @@
 #include "RotaryPID.h"
 #include "gtest/gtest.h"
-#include <iostream>
 
 using namespace Utility;
 
@@ -19,14 +18,19 @@ class RotaryPIDTest : public ::testing::Test {
     rotaryPID = RotaryPID(45, &stub_switches);
   }
 
-  void assert_convergence(uangle desired_heading, uangle current_heading) {
+  void assert_convergence(uangle desired_heading, uangle current_heading, float momentum_factor) {
      int j = 0;
      angle output;
+     float rotary_velocity = 0.0;
      uangle tolerance = 2;
+     long sample_time_ms = 200;
+     float max_rotation = 20.0; // rotation will not increase beyond a limit
+     EXPECT_LE(momentum_factor, 1.0); // momentum can only decrease on it's own
      while (j < 30 && abs1(udiff(current_heading,desired_heading)) > tolerance) {
-       output = rotaryPID.calculate(desired_heading,current_heading,200);
-       current_heading = current_heading  - (short) ((float) output/5.0); // cod boat physics
-       std::cout << output << "," << current_heading << "\n";
+       output = rotaryPID.calculate(desired_heading,current_heading,sample_time_ms);
+       rotary_velocity = (rotary_velocity * momentum_factor) - (((float) output)/5.0);
+       rotary_velocity = min1(rotary_velocity, max_rotation);
+       current_heading = uadd(current_heading,(short) rotary_velocity);
        j++;
      }
      EXPECT_LE(abs1(udiff(current_heading,desired_heading)), tolerance);
@@ -35,21 +39,28 @@ class RotaryPIDTest : public ::testing::Test {
 
 TEST_F(RotaryPIDTest, Should_converge_on_heading_at_all_compass_points_clockwise_turns) {
     for (int i = 0;i < 360; i+=30) {
-        uangle current_heading = i - 10;
-        uangle desired_heading = i + 10;
-        std::cout << "**Desired: " << desired_heading << "\n";
-        assert_convergence(desired_heading,current_heading);
+        uangle current_heading = uadd(i,- 10);
+        uangle desired_heading = uadd(i,10);
+        assert_convergence(desired_heading,current_heading,0.0);
   }
 }
 
-TEST_F(RotaryPIDTest, DISABLED_Should_converge_on_heading_at_all_compass_points_with_momentum) {}
-TEST_F(RotaryPIDTest, DISABLED_Should_never_exceed_limit) {}
+TEST_F(RotaryPIDTest, Should_converge_on_heading_at_all_compass_points_anticlockwise_turns) {
+    for (int i = 360;i > 0; i-=30) {
+        uangle current_heading = uadd(i,10);
+        uangle desired_heading = uadd(i,-10);
+        assert_convergence(desired_heading,current_heading,0.0);
+  }
+}
 
-
-
+TEST_F(RotaryPIDTest, Should_converge_on_heading_when_there_is_momentum) {
+    for (int i = 0;i < 360; i+=30) {
+        uangle current_heading = uadd(i,-10);
+        uangle desired_heading = uadd(i,10);
+        assert_convergence(desired_heading,current_heading, 0.8);
+  }
+}
 }  //namespace
-
-
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

@@ -1,5 +1,4 @@
 #include "RotaryPID.h"
-#include <iostream>
 
 // based on work by Brett Beauregard - see
 // http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/
