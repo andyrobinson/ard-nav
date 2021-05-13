@@ -5,9 +5,9 @@
 #include "Angle.h"
 #include "Switches.h"
 
-#define KP 1.0
-#define KI 1.0
-#define KD 1.0
+#define KP 0.5
+#define KI 0.5
+#define KD 0.5
 
 using namespace Angle;
 

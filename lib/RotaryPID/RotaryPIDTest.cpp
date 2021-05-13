@@ -26,7 +26,7 @@ class RotaryPIDTest : public ::testing::Test {
      long sample_time_ms = 200;
      float max_rotation = 20.0; // rotation will not increase beyond a limit
      EXPECT_LE(momentum_factor, 1.0); // momentum can only decrease on it's own
-     while (j < 30 && abs1(udiff(current_heading,desired_heading)) > tolerance) {
+     while (j < 40 && abs1(udiff(current_heading,desired_heading)) > tolerance) {
        output = rotaryPID.calculate(desired_heading,current_heading,sample_time_ms);
        rotary_velocity = (rotary_velocity * momentum_factor) - (((float) output)/5.0);
        rotary_velocity = min1(rotary_velocity, max_rotation);
@@ -74,7 +74,7 @@ TEST_F(RotaryPIDTest, Should_not_have_output_bounce_when_changing_course) {
         assert_convergence(190,0, 0.8);
     }
     angle output = rotaryPID.calculate(170,190,200);
-    EXPECT_LE(output, 30);
+    EXPECT_LE(output, 20);
 }
 
 

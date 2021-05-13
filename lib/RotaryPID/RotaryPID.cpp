@@ -20,11 +20,10 @@ angle RotaryPID::calculate(uangle desired_heading, uangle current_heading, long 
 
     float diff_input = (float) udiff(last_heading,current_heading);
 
-    /*Compute PID Output*/
     output = (KP * error) + integral_term - ((KD / sample_time_sec) * diff_input);
     output = clip(output, limit);
 
-    last_heading = current_heading; // for next time
+    last_heading = current_heading;
     return angle(-output); // rudder sign is opposite to rotation direction
 }
 
