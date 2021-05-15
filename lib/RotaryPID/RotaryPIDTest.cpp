@@ -1,5 +1,15 @@
 #include "RotaryPID.h"
 #include "gtest/gtest.h"
+// #include <iostream>
+
+// based on an examination of logs 16192
+// all values are per sample interval, in this case 0.2
+#define MOMENTUM 0.85 // we don't retain angular momentum much, but this is 0.2s
+#define RUDDER_AFFECT 0.3 // i.e each degree of rudder results in 1.5 degress of turn per second
+#define MAX_ROTATION 15.0 // 75 degrees per second
+#define CONVERGENCE_ITERATIONS 50 // 10 seconds
+#define SAMPLE_INTERVAL_MS 200
+#define HEADING_TOLERANCE 2
 
 using namespace Utility;
 
@@ -22,19 +32,18 @@ class RotaryPIDTest : public ::testing::Test {
      int j = 0;
      angle output;
      float rotary_velocity = 0.0;
-     uangle tolerance = 2;
-     long sample_time_ms = 200;
-     float max_rotation = 20.0; // rotation will not increase beyond a limit
+     int sample_factor = 1000/SAMPLE_INTERVAL_MS;
      EXPECT_LE(momentum_factor, 1.0); // momentum can only decrease on it's own
-     while (j < 40 && abs1(udiff(current_heading,desired_heading)) > tolerance) {
-       output = rotaryPID.calculate(desired_heading,current_heading,sample_time_ms);
-       rotary_velocity = (rotary_velocity * momentum_factor) - (((float) output)/5.0);
-       rotary_velocity = min1(rotary_velocity, max_rotation);
+     // std::cout << "begin " << desired_heading << "\n";
+     while (j < CONVERGENCE_ITERATIONS && abs1(udiff(current_heading,desired_heading)) > HEADING_TOLERANCE) {
+       output = rotaryPID.calculate(desired_heading,current_heading,SAMPLE_INTERVAL_MS);
+       rotary_velocity = (rotary_velocity * momentum_factor) - (((float) output) * RUDDER_AFFECT);
+       rotary_velocity = min1(rotary_velocity, (float) MAX_ROTATION);
        current_heading = uadd(current_heading,(short) rotary_velocity);
-       //std::cout << output << "," << current_heading << "\n";
+       // std::cout << output << "," << current_heading << "\n";
        j++;
      }
-     EXPECT_LE(abs1(udiff(current_heading,desired_heading)), tolerance);
+     EXPECT_LE(abs1(udiff(current_heading,desired_heading)), HEADING_TOLERANCE);
   }
 };
 
@@ -58,20 +67,20 @@ TEST_F(RotaryPIDTest, Should_converge_on_heading_when_there_is_momentum) {
     for (int i = 0;i < 360; i+=30) {
         uangle current_heading = uadd(i,-10);
         uangle desired_heading = uadd(i,10);
-        assert_convergence(desired_heading,current_heading, 0.8);
+        assert_convergence(desired_heading,current_heading, MOMENTUM);
   }
 }
 
 TEST_F(RotaryPIDTest, Should_converge_on_heading_for_large_turn_after_a_period_of_straight) {
     for (int i = 0;i < 10; i++) {
-        assert_convergence(90,0, 0.8);
+        assert_convergence(90,0, MOMENTUM);
     }
     assert_convergence(270,0, 0.8);
 }
 
 TEST_F(RotaryPIDTest, Should_not_have_output_bounce_when_changing_course) {
     for (int i = 0;i < 10; i++) {
-        assert_convergence(190,0, 0.8);
+        assert_convergence(190,0, MOMENTUM);
     }
     angle output = rotaryPID.calculate(170,190,200);
     EXPECT_LE(output, 20);
