@@ -23,7 +23,8 @@ class RotaryPIDTest : public ::testing::Test {
   }
 
   void SetUp() override {
-    rotaryPID = RotaryPID(45, KP, KI, KD);
+    rotaryPID = RotaryPID(45);
+    rotaryPID.set_constants(KP, KI, KD);
   }
 
   void assert_convergence(uangle desired_heading, uangle current_heading, float momentum_factor) {

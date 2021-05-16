@@ -8,8 +8,8 @@ using namespace Utility;
 
 RotaryPID::RotaryPID() {}
 
-RotaryPID::RotaryPID(float limit_param, float kp, float ki, float kd):
-  limit(limit_param), Kp(kp), Ki(ki), Kd(kd), integral_term(0.0), last_heading(0) {}
+RotaryPID::RotaryPID(float limit_param):
+  limit(limit_param), Kp(KP), Ki(KI), Kd(KD), integral_term(0.0), last_heading(0) {}
 
 angle RotaryPID::calculate(uangle desired_heading, uangle current_heading, long interval_ms) {
     float sample_time_sec = ((float) interval_ms)/1000;
@@ -25,6 +25,10 @@ angle RotaryPID::calculate(uangle desired_heading, uangle current_heading, long 
 
     last_heading = current_heading;
     return angle(-output); // rudder sign is opposite to rotation direction
+}
+
+void RotaryPID::set_constants(float kp, float ki, float kd) {
+    Kp = kp;Ki = ki; Kd = kd;
 }
 
 float RotaryPID::clip(float value, float limit) {

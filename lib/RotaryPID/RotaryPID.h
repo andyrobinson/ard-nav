@@ -14,8 +14,9 @@ class RotaryPID
 {
   public:
       RotaryPID();
-      RotaryPID(float limit_param, float kp, float ki, float kd);
-      angle calculate(uangle desired_heading, uangle current_heading, long interval_ms) ;
+      RotaryPID(float limit_param);
+      angle calculate(uangle desired_heading, uangle current_heading, long interval_ms);
+      void set_constants(float kp, float ki, float kd);
 
   private:
     uangle last_heading;
