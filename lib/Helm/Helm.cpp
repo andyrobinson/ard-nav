@@ -18,8 +18,7 @@ void Helm::steer(uangle direction, long steer_time) {
     while (remaining > 0) {
 
       angle current_heading = compass->bearing();
-      angle new_rudder_position = new_rudder(direction, current_heading, STEER_INTERVAL);
-      long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
+      angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
 
       set_rudder(new_rudder_position, current_heading);
       sail->set_position(windsensor->relative());
@@ -27,6 +26,7 @@ void Helm::steer(uangle direction, long steer_time) {
       timer->wait(STEER_INTERVAL);
       remaining = remaining - STEER_INTERVAL;
 
+      long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
       sprintf(logmsg, "%8d %3d %8d", turnrate, new_rudder_position, remaining); logger->msg(logmsg);
     }
 }
@@ -37,54 +37,7 @@ void Helm::set_rudder(angle new_position, uangle current_heading) {
   old_heading = current_heading;
 }
 
-angle Helm::new_rudder(uangle direction, uangle current_heading, long steer_interval) {
-
-  angle new_position;
-
-  if (heading_and_turn_ok(direction, old_heading, current_heading, steer_interval)) {
-    new_position =  rudder_position; // no change
-  } else {
-    long desired_rot = udiff(current_heading, direction);
-    long actual_rot = rot(old_heading, current_heading, steer_interval);
-
-    if (not_enough_turn(desired_rot, actual_rot)) {
-     new_position = rudder_position - sign(desired_rot) * NUDGE_DEGREES; // increase deflection
-    }
-    else if (too_much_turn(desired_rot, actual_rot)) {
-         new_position = rudder_position + sign(desired_rot) * NUDGE_DEGREES; // decrease deflection
-    }
-    else {
-       new_position = rudder_position; // no change
-    }
-  }
-
-  if (abs1(new_position) > RUDDER_MAX_DISPLACEMENT) {
-    new_position = sign(new_position) * RUDDER_MAX_DISPLACEMENT;
-  }
-
-  return new_position;
-}
-
-bool Helm::not_enough_turn(angle desired_rotation, angle actual_rotation) {
-  return (sign(desired_rotation) != sign(actual_rotation)) ||
-  (abs1(desired_rotation) - abs1(actual_rotation) > MIN_HEADING_AND_ROT);
-}
-
-bool Helm::too_much_turn(angle desired_rotation, angle actual_rotation) {
-  return (abs1(actual_rotation) - abs1(desired_rotation)) > MIN_HEADING_AND_ROT;
-}
-
-bool Helm::heading_and_turn_ok(uangle direction, uangle old_heading, uangle current_heading, long steer_interval) {
-  return (abs1(udiff(direction, current_heading)) <= MIN_HEADING_AND_ROT) &&
-  (abs1(rot(old_heading, current_heading, steer_interval)) <= MIN_HEADING_AND_ROT);
-}
-
-// rotation speed in degrees per second, with fudge factor
+// rotation speed in degrees per second
 long Helm::rot(uangle old_heading, uangle current_heading, long steer_interval) {
-  return (((long) udiff(old_heading, current_heading)) * (500 + rot_factor())) / steer_interval;
-}
-
-long Helm::rot_factor() {
-  uint8_t relevant_bits = switches->value() >> 1;
-  return ((long) relevant_bits) * 500;
+  return (((long) udiff(old_heading, current_heading)) * 1000) / steer_interval;
 }

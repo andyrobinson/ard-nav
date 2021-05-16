@@ -17,7 +17,7 @@ class Helm
 {
   public:
     Helm();
-    Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, *RotaryPID rotarypidp, Logger *loggerp);
+    Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, Logger *loggerp);
     void steer(uangle direction, long steer_time);
 
   private:
@@ -34,7 +34,6 @@ class Helm
     void set_rudder(angle new_position, uangle current_heading);
     angle new_rudder(uangle direction, uangle current_heading, long steer_interval);
     long rot(uangle direction, uangle current_heading, long steer_interval);
-    long rot_factor();
     bool heading_and_turn_ok(uangle direction, uangle old_heading, uangle current_heading, long steer_interval);
     bool not_enough_turn(angle desired_rotation, angle actual_rotation);
     bool too_much_turn(angle desired_rotation, angle actual_rotation);
