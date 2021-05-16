@@ -18,6 +18,7 @@
 #include <Switches.h>
 #include <RotaryPID.h>
 #include <version.h>
+#include <avr/dtostrf.h>
 
 #define MAJOR_VERSION 1
 #define SAIL_SERVO_PIN 6
@@ -66,11 +67,24 @@ void setup() {
   rotaryPID.set_constants(kp, ki, kd);
 }
 
+void append_float1pl(char *buf, float f) {
+  if (f > -10.0 && f < 10.0) {
+    char stringdbl[5];
+    dtostrf(f,4,1,stringdbl);
+    strcat(buf,stringdbl);
+  } else {
+    strcat(buf, "**.*");
+  }
+}
+
 void loop() {
   sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
   selftest.test();
   sprintf(logmsg, "Navigating v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
   sprintf(logmsg, "Switches %3d", switches.value()); logger.banner(logmsg);
+  sprintf(logmsg, "K ", switches.value());
+  append_float1pl(logmsg,kp);append_float1pl(logmsg,ki);append_float1pl(logmsg,kd);
+  logger.banner(logmsg);
 
   uint8_t sw = switches.value() & 1; // only two routes configurable
   route journey = plattfields[sw];
