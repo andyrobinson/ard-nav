@@ -16,7 +16,6 @@ using namespace Utility;
 namespace {
 
 RotaryPID rotaryPID;
-Switches stub_switches;
 
 class RotaryPIDTest : public ::testing::Test {
  protected:
@@ -24,8 +23,7 @@ class RotaryPIDTest : public ::testing::Test {
   }
 
   void SetUp() override {
-    stub_switches.set(2);
-    rotaryPID = RotaryPID(45, &stub_switches);
+    rotaryPID = RotaryPID(45, KP, KI, KD);
   }
 
   void assert_convergence(uangle desired_heading, uangle current_heading, float momentum_factor) {

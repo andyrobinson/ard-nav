@@ -3,7 +3,6 @@
 
 #include "Utility.h"
 #include "Angle.h"
-#include "Switches.h"
 
 #define KP 0.5
 #define KI 0.8
@@ -15,13 +14,13 @@ class RotaryPID
 {
   public:
       RotaryPID();
-      RotaryPID(float limit_param, Switches *switchesp);
+      RotaryPID(float limit_param, float kp, float ki, float kd);
       angle calculate(uangle desired_heading, uangle current_heading, long interval_ms) ;
 
   private:
     uangle last_heading;
     float integral_term, limit, output;
-    Switches *switches;
+    float Kp, Ki, Kd;
 
     float clip(float value, float limit);
 

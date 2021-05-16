@@ -8,19 +8,19 @@ using namespace Utility;
 
 RotaryPID::RotaryPID() {}
 
-RotaryPID::RotaryPID(float limit_param, Switches *switchesp):
-  limit(limit_param), switches(switchesp), integral_term(0.0), last_heading(0) {}
+RotaryPID::RotaryPID(float limit_param, float kp, float ki, float kd):
+  limit(limit_param), Kp(kp), Ki(ki), Kd(kd), integral_term(0.0), last_heading(0) {}
 
 angle RotaryPID::calculate(uangle desired_heading, uangle current_heading, long interval_ms) {
     float sample_time_sec = ((float) interval_ms)/1000;
     float error = (float) udiff(current_heading,desired_heading);
 
-    integral_term += (KP * sample_time_sec * error);
+    integral_term += (Kp * sample_time_sec * error);
     integral_term = clip(integral_term, limit);
 
     float diff_input = (float) udiff(last_heading,current_heading);
 
-    output = (KP * error) + integral_term - ((KD / sample_time_sec) * diff_input);
+    output = (Kp * error) + integral_term - ((Kd / sample_time_sec) * diff_input);
     output = clip(output, limit);
 
     last_heading = current_heading;
