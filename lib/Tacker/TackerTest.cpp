@@ -88,12 +88,22 @@ TEST_F(TackerTest, Should_adjust_tack_time_using_COS_of_angle_for_first_tack) {
 
 TEST_F(TackerTest, Should_adjust_tack_time_using_SIN_of_angle_for_second_tack) {
   angle wind_relative = 20; stub_windsensor.set_relative(&wind_relative, 1);
-  uangle bearing = 95; stub_compass.set_bearings(&bearing,1);
+  uangle bearing = 80; stub_compass.set_bearings(&bearing,1);
 
-  tacker.steer(95, 2000);
+  tacker.steer(80, 20000);
 
-  EXPECT_EQ(stub_helm.steering(1), 155);
-  EXPECT_EQ(stub_helm.steer_time(1), round (2000 * sin(to_radians (TACKER_NO_GO_LIMIT - wind_relative))));
+  EXPECT_EQ(stub_helm.steering(1), 140);
+  EXPECT_EQ(stub_helm.steer_time(1), round (20000 * sin(to_radians (TACKER_NO_GO_LIMIT - wind_relative))));
+}
+
+TEST_F(TackerTest, Should_not_do_second_tack_if_below_limit) {
+  angle wind_relative = 5-TACKER_NO_GO_LIMIT; stub_windsensor.set_relative(&wind_relative, 1);
+  uangle bearing = 270; stub_compass.set_bearings(&bearing,1);
+
+  tacker.steer(270, 2000);
+
+  EXPECT_EQ(stub_helm.steering(0), 275);
+  EXPECT_EQ(stub_helm.steering_calls(),1);
 }
 
 }  //namespace

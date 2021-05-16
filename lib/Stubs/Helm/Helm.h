@@ -13,6 +13,7 @@ class Helm
     uangle steering(int index);
     long steer_time(int index);
     long interval(int index);
+    int steering_calls();
     void reset();
 
   private:

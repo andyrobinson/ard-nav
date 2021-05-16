@@ -69,7 +69,7 @@ namespace {
     EXPECT_EQ(stub_tacker.steer_time(0), expected_time);
   }
 
-  TEST_F(NavigatorTest, Should_have_a_limit_of_twenty_seconds_on_steer_time) {
+  TEST_F(NavigatorTest, Should_have_a_limit_on_steer_time) {
     gpsResult gps_current = {{10.0, 10.0, 3.0}, 1, 1.0, 0.1, 12345675};
     waypoint destination = {"dst", {30.0, -10.0, 5.0}};
     gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6, 0.6,1}};
@@ -78,7 +78,7 @@ namespace {
     navigator.sailto(destination);
 
     EXPECT_EQ(stub_tacker.steering(0),320);
-    EXPECT_EQ(stub_tacker.steer_time(0), 20000);
+    EXPECT_EQ(stub_tacker.steer_time(0), MAX_STEER_TIME);
   }
 
   TEST_F(NavigatorTest, Should_have_a_minimum_steer_time_of_5s) {
@@ -103,7 +103,7 @@ namespace {
     navigator.sailto(destination);
 
     EXPECT_EQ(stub_tacker.steering(0),221);
-    EXPECT_EQ(stub_tacker.steer_time(0), 20000);
+    EXPECT_EQ(stub_tacker.steer_time(0), 21059);
     EXPECT_EQ(stub_tacker.steering(1),221);
     EXPECT_EQ(stub_tacker.steer_time(1), 14757);
   }

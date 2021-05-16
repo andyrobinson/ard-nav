@@ -11,6 +11,8 @@ void Helm::steer(uangle direction, long steer_time) {
   if (i < 100) i++;
 }
 
+int Helm::steering_calls() { return i;}
+
 uangle Helm::steering(int index) { return requested_direction[index]; }
 long Helm::steer_time(int index) {return requested_steer_time[index]; }
 

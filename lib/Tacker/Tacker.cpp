@@ -27,16 +27,20 @@ void Tacker::steer(uangle direction, long steer_time) {
 
     // first tack
     logger->settack('1');
-    sprintf(logmsg,"Tack1");logger->msg(logmsg);
+    sprintf(logmsg,"Tack1");logger->banner(logmsg);
     uangle tack_direction = uadd(direction, sign(wind_diff) * offset);
     long tack_time = round(steer_time * cos(to_radians((double) offset)));
     helm->steer(tack_direction, tack_time);
 
     // second tack
     logger->settack('2');
-    sprintf(logmsg,"Tack2");logger->msg(logmsg);
     tack_direction = uadd(tack_direction, - sign(wind_diff) * TACKER_NO_GO_LIMIT * 2);
     tack_time = round(steer_time * sin(to_radians((double) offset)));
-    helm->steer(tack_direction, tack_time);
+    if (tack_time > MIN_TACK_MS) {
+        sprintf(logmsg,"Tack2");logger->banner(logmsg);
+        helm->steer(tack_direction, tack_time);
+    } else {
+        sprintf(logmsg,"No Tack2");logger->banner(logmsg);
+    }
   }
 }
