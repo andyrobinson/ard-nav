@@ -9,9 +9,7 @@
 #include "Logger.h"
 #include "RotaryPID.h"
 
-#define MIN_HEADING_AND_ROT 5
-#define NUDGE_DEGREES 4
-#define STEER_INTERVAL 370
+#define STEER_INTERVAL 200
 
 class Helm
 {
