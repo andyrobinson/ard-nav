@@ -65,6 +65,7 @@ Compass compass;
 Switches switches;
 Servo rudder_servo;
 Rudder rudder(&rudder_servo);
+float rc_percent;
 
 void setup() {
   while (!Serial); // wait for Serial to be ready
@@ -129,11 +130,14 @@ void loop() {
   //
   // messageAt(0,buf);
 
-  byte sw = switches.value();
-  short rudder_pos = (12 * sw) - 45;
-  Serial.print("Reading: ");
-  Serial.println(sw);
+  // byte sw = switches.value();
+  // short rudder_pos = (12 * sw) - 45;
+  // Serial.print("Reading: ");
+  // Serial.println(sw);
+  //
+  // rudder.set_position(rudder_pos);
+  rc_percent = switches.dial_percent();
+  Serial.println(rc_percent);
 
-  rudder.set_position(rudder_pos);
   delay(1000);
 }
