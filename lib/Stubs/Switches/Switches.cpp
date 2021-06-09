@@ -9,3 +9,12 @@ void Switches::set(uint8_t value) {
 uint8_t Switches::value() {
   return input_value;
 }
+
+void Switches::set_percent(float value) {
+    percent = value;
+}
+
+float Switches::dial_percent() {
+    return percent;
+}
+
