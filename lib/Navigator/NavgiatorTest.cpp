@@ -81,6 +81,20 @@ namespace {
     EXPECT_EQ(stub_tacker.steer_time(0), MAX_STEER_TIME);
   }
 
+  TEST_F(NavigatorTest, Should_not_overflow_even_if_slow_speed_and_large_distances) {
+    position Moscow = {55.755826, 37.6173,0.0};
+    position Santiago = {-33.4691199,-70.641997,5.0};
+
+    gpsResult gps_current = {Moscow, 1, 1.0, 0.01, 12345675};
+    waypoint destination = {"dst", Santiago};
+    gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6, 0.6,1}};
+
+    stub_gps.set_data(gpsData,2);
+    navigator.sailto(destination);
+
+    EXPECT_EQ(stub_tacker.steer_time(0), MAX_STEER_TIME);
+  }
+
   TEST_F(NavigatorTest, Should_have_a_minimum_steer_time_of_5s) {
     gpsResult gps_current = {{28.0, -16.0, 3.0}, 2, 2, 2, 12345675};
     waypoint destination = {"dest", {27.9999, -15.9999, 5.0}};
