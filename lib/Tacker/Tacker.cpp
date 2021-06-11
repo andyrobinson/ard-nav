@@ -1,10 +1,10 @@
 #include "Tacker.h"
-#include "Angle.h"
 #include "Utility.h"
 #include "math.h"
 
 using namespace Angle;
 using namespace Utility;
+using namespace Windrange;
 
 Tacker::Tacker() {}
 
@@ -20,7 +20,7 @@ void Tacker::steer(uangle direction, long steer_time) {
     // no tack
     logger->settack('0');
     logger->msg(logmsg);
-    helm->steer(direction, steer_time);
+    helm->steer(direction, steer_time, {-TACKER_NO_GO_LIMIT,TACKER_NO_GO_LIMIT});
   }
   else {
     short offset = TACKER_NO_GO_LIMIT - abs1(wind_diff);
@@ -30,7 +30,7 @@ void Tacker::steer(uangle direction, long steer_time) {
     sprintf(logmsg,"Tack1");logger->banner(logmsg);
     uangle tack_direction = uadd(direction, sign(wind_diff) * offset);
     long tack_time = round(steer_time * cos(to_radians((double) offset)));
-    helm->steer(tack_direction, tack_time);
+    helm->steer(tack_direction, tack_time, expected_range());
 
     // second tack
     logger->settack('2');
@@ -38,7 +38,7 @@ void Tacker::steer(uangle direction, long steer_time) {
     tack_time = round(steer_time * sin(to_radians((double) offset)));
     if (tack_time > MIN_TACK_MS) {
         sprintf(logmsg,"Tack2");logger->banner(logmsg);
-        helm->steer(tack_direction, tack_time);
+        helm->steer(tack_direction, tack_time, {0,0});
     } else {
         sprintf(logmsg,"No Tack2");logger->banner(logmsg);
     }

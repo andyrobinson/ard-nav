@@ -49,6 +49,16 @@ TEST_F(TackerTest, Should_steer_directly_if_out_of_no_go_region) {
   EXPECT_EQ(stub_helm.steer_time(0), 2000);
 }
 
+TEST_F(TackerTest, Wind_range_should_be_nogo_if_out_of_no_go_region) {
+  angle wind_relative = 90; stub_windsensor.set_relative(&wind_relative, 1);
+  uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
+  windrange expectedRange = {-TACKER_NO_GO_LIMIT,TACKER_NO_GO_LIMIT};
+
+  tacker.steer(20, 2000);
+
+  EXPECT_EQ(stub_helm.wind_range(0), expectedRange);
+}
+
 TEST_F(TackerTest, Should_tack_left_if_in_nogo_and_closest_to_desired_course) {
   angle wind_relative = TACKER_NO_GO_LIMIT-5; stub_windsensor.set_relative(&wind_relative, 1);
   uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
@@ -56,6 +66,16 @@ TEST_F(TackerTest, Should_tack_left_if_in_nogo_and_closest_to_desired_course) {
   tacker.steer(0, 2000);
 
   EXPECT_EQ(stub_helm.steering(0), 355);
+}
+
+TEST_F(TackerTest, Wind_range_should_be_starboard_no_go_and_180_if_tacking_left) {
+  angle wind_relative = TACKER_NO_GO_LIMIT-5; stub_windsensor.set_relative(&wind_relative, 1);
+  uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
+  windrange expectedRange = {-180,TACKER_NO_GO_LIMIT};
+
+  tacker.steer(0, 2000);
+
+  EXPECT_EQ(stub_helm.wind_range(0), expectedRange);
 }
 
 TEST_F(TackerTest, Should_tack_right_if_in_nogo_and_closest_to_desired_course) {

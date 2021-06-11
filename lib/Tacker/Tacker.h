@@ -6,6 +6,7 @@
 #include "WindSensor.h"
 #include "Angle.h"
 #include "Logger.h"
+#include "Windrange.h"
 
 using namespace Angle;
 
