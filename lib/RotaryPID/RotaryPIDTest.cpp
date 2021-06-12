@@ -1,6 +1,7 @@
 #include "RotaryPID.h"
 #include "gtest/gtest.h"
-// #include <iostream>
+#include "StubLogger.h"
+//#include <iostream>
 
 // based on an examination of logs 16192
 // all values are per sample interval, in this case 0.2
@@ -16,6 +17,8 @@ using namespace Utility;
 namespace {
 
 RotaryPID rotaryPID;
+Switches switches_stub;
+StubLogger stub_logger;
 
 class RotaryPIDTest : public ::testing::Test {
  protected:
@@ -23,8 +26,10 @@ class RotaryPIDTest : public ::testing::Test {
   }
 
   void SetUp() override {
-    rotaryPID = RotaryPID(45);
-    rotaryPID.set_constants(KP, KI, KD);
+
+    rotaryPID = RotaryPID(45, &switches_stub, &stub_logger);
+    switches_stub.set(0);
+    switches_stub.set_percent(50.0);
   }
 
   void assert_convergence(uangle desired_heading, uangle current_heading, float momentum_factor) {
@@ -42,6 +47,7 @@ class RotaryPIDTest : public ::testing::Test {
        // std::cout << output << "," << current_heading << "\n";
        j++;
      }
+     EXPECT_LT(j,CONVERGENCE_ITERATIONS);
      EXPECT_LE(abs1(udiff(current_heading,desired_heading)), HEADING_TOLERANCE);
   }
 };

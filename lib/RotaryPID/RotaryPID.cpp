@@ -8,10 +8,12 @@ using namespace Utility;
 
 RotaryPID::RotaryPID() {}
 
-RotaryPID::RotaryPID(float limit_param):
-  limit(limit_param), Kp(KP), Ki(KI), Kd(KD), integral_term(0.0), last_heading(0) {}
+RotaryPID::RotaryPID(float limit_param, Switches *switchesp, Logger *loggerp):
+  limit(limit_param), Kp(KP), Ki(KI), Kd(KD), integral_term(0.0), last_heading(0), switches(switchesp), logger(loggerp) {}
 
 angle RotaryPID::calculate(uangle desired_heading, uangle current_heading, long interval_ms) {
+    set_constants();
+
     float sample_time_sec = ((float) interval_ms)/1000;
     float error = (float) udiff(current_heading,desired_heading);
 
@@ -27,8 +29,17 @@ angle RotaryPID::calculate(uangle desired_heading, uangle current_heading, long 
     return angle(-output); // rudder sign is opposite to rotation direction
 }
 
-void RotaryPID::set_constants(float kp, float ki, float kd) {
-    Kp = kp;Ki = ki; Kd = kd;
+void RotaryPID::set_constants() {
+  char logmsg[22];
+  float percent = switches->dial_percent();
+  uint8_t sw3 = (switches->value() & 4) >> 2;
+
+  Kp = max1((KP * percent)/33.0,0.25) * (1 + sw3);
+  Ki = max1((KI * (100.0 - percent))/33.0,0.4) * (1 + sw3);
+  Kd = Ki/8;
+
+  sprintf(logmsg, "K percent %3d", (int) percent);
+  logger->msg(logmsg);
 }
 
 float RotaryPID::clip(float value, float limit) {

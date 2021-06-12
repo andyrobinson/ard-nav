@@ -18,7 +18,6 @@
 #include <Switches.h>
 #include <RotaryPID.h>
 #include <version.h>
-#include <avr/dtostrf.h>
 
 #define MAJOR_VERSION 1
 #define SAIL_SERVO_PIN 6
@@ -31,7 +30,6 @@ Compass compass;
 Timer timer;
 Gps gps;
 Globe globe;
-float kp,ki,kd;
 
 Switches switches;
 char logmsg[22];
@@ -39,7 +37,7 @@ char logmsg[22];
 // Dependency injection
 SDLogger logger(&gps, &windsensor, &compass);
 Sail sail(&sail_servo);
-RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT);
+RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
 Rudder rudder(&rudder_servo);
 SelfTest selftest(&gps, &windsensor, &compass, &sail, &rudder, &timer, &logger);
 Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &logger);
@@ -56,25 +54,6 @@ void setup() {
   gps.begin();
   logger.begin();
   switches.begin();
-
-// Steering PID parameters
-  uint8_t sw2 = (switches.value() & 2) >> 1;
-  uint8_t sw3 = (switches.value() & 4) >> 2;
-  kp = KP * (1 + sw2);
-  ki = KI * (1 + sw3);
-  kd = ki/8;
-
-  rotaryPID.set_constants(kp, ki, kd);
-}
-
-void append_float1pl(char *buf, float f) {
-  if (f > -10.0 && f < 10.0) {
-    char stringdbl[5];
-    dtostrf(f,4,1,stringdbl);
-    strcat(buf,stringdbl);
-  } else {
-    strcat(buf, "**.*");
-  }
 }
 
 void loop() {
@@ -82,15 +61,12 @@ void loop() {
   selftest.test();
   sprintf(logmsg, "Navigating v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
   sprintf(logmsg, "Switches %3d", switches.value()); logger.banner(logmsg);
-  sprintf(logmsg, "K ", switches.value());
-  append_float1pl(logmsg,kp);append_float1pl(logmsg,ki);append_float1pl(logmsg,kd);
-  logger.banner(logmsg);
 
-  uint8_t sw = switches.value() & 1; // only two routes configurable
+  uint8_t sw = switches.value() & 3; // four routes configurable
   route journey = plattfields[sw];
 
   captain.voyage(journey.waypoints, journey.length);
-  logger.banner("Done");
+  logger.banner("Finished Navigation :-)");
 
   while(true){};
 }
