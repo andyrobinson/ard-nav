@@ -49,7 +49,7 @@ void Tacker::steer(uangle direction, long steer_time) {
 
 windrange Tacker::set_range(uangle direction, short sign) {
     if (sign > 0)
-      return { uadd(direction, 180), uadd(direction, -WIND_RANGE_NO_GO_LIMIT)};
+      return {uadd(direction, 180), uadd(direction, -WIND_RANGE_NO_GO_LIMIT)};
     else
       return {uadd(direction, WIND_RANGE_NO_GO_LIMIT), uadd(direction, 180)};
 }

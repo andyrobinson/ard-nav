@@ -1,6 +1,7 @@
 #include "Helm.h"
 #include "Angle.h"
 #include "Utility.h"
+
 using namespace Angle;
 using namespace Utility;
 
@@ -9,13 +10,13 @@ Helm::Helm():rudder_position(0) {}
 Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, Logger *loggerp):
   rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), windsensor(windsensorp), sail(sailp), rotarypid(rotarypidp), logger(loggerp), old_heading(0) {}
 
-void Helm::steer(uangle direction, long steer_time) {
+void Helm::steer(uangle direction, long steer_time, windrange range) {
     long remaining = steer_time;
 
     char logmsg[22];
     sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
 
-    while (remaining > 0) {
+    while (remaining > 0 && wind_in_range(range)) {
 
       angle current_heading = compass->bearing();
       angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
@@ -40,4 +41,12 @@ void Helm::set_rudder(angle new_position, uangle current_heading) {
 // rotation speed in degrees per second
 long Helm::rot(uangle old_heading, uangle current_heading, long steer_interval) {
   return (((long) udiff(old_heading, current_heading)) * 1000) / steer_interval;
+}
+
+bool Helm::wind_in_range(windrange range) {
+    char logmsg[22];
+    uangle abs_wind = windsensor->absolute(compass->bearing());
+    if (in_range(abs_wind, range.lower, range.upper)) return true;
+    sprintf(logmsg, "Abandon: %3d,%3d,%3d", abs_wind, range.lower, range.upper); logger->banner(logmsg);
+    return false;
 }

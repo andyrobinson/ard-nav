@@ -60,7 +60,7 @@ TEST_F(HelmTest, Should_steer_using_the_value_from_the_rotary_pid_calculator) {
   angle result[] = {-10};
   stub_compass.set_bearings(&bearing,1);
   stub_rotaryPID.set_results(result,1);
-  helm.steer(30, 1);
+  helm.steer(30, 1, {65, 355});
   EXPECT_EQ(rudder_position(), -10);
 }
 
@@ -69,7 +69,7 @@ TEST_F(HelmTest, Should_steer_using_the_value_from_the_rotary_pid_calculator) {
    angle pid_results[] = {-10,-23,-34};
    stub_compass.set_bearings(bearings, 3);
    stub_rotaryPID.set_results(pid_results,3);
-   helm.steer(30, 1500);
+   helm.steer(30, 1500, {65,355});
 
    angle *positions = stub_rudder.get_positions();
    EXPECT_EQ(positions[0],pid_results[0]);
@@ -79,21 +79,34 @@ TEST_F(HelmTest, Should_steer_using_the_value_from_the_rotary_pid_calculator) {
 
 TEST_F(HelmTest, Should_set_the_sail_every_time_we_steer) {
   uangle bearings[] = {210,190};
-  angle wind[] = {70, 90};
+  angle wind[] = {70, 70, 90, 90};
   angle pid_results[] = {-5,-20};
   stub_compass.set_bearings(bearings, 2);
-  stub_windsensor.set_relative(wind, 2);
+  stub_windsensor.set_relative(wind, 4);
   stub_rotaryPID.set_results(pid_results,2);
 
-  helm.steer(200, 750);
+  helm.steer(200, 750, {235,165});
 
   angle *positions = stub_rudder.get_positions();
   angle *sail_calls = stub_sail.get_calls();
 
   EXPECT_EQ(positions[0],pid_results[0]);
   EXPECT_EQ(positions[1],pid_results[1]);
-  EXPECT_EQ(sail_calls[0],wind[0]);
-  EXPECT_EQ(sail_calls[1],wind[1]);
+  EXPECT_EQ(sail_calls[0],wind[1]);
+  EXPECT_EQ(sail_calls[1],wind[3]);
+}
+
+TEST_F(HelmTest, Should_abort_the_tack_if_the_wind_is_not_in_the_range) {
+  uangle bearing = 0;
+  angle result[] = {-10};
+  angle wind_sample[] = {50};
+  stub_windsensor.set_relative(wind_sample, 1);
+  stub_compass.set_bearings(&bearing,1);
+  stub_rotaryPID.set_results(result,1);
+
+  helm.steer(30, 1, {65, 355});
+
+  EXPECT_STREQ(logger.last_message(), "Abandon:  50, 65,355");
 }
 
 }  //namespace

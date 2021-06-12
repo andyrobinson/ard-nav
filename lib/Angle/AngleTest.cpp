@@ -113,6 +113,24 @@ class AngleTest : public ::testing::Test {
     EXPECT_EQ(udiff(10,345),-25);
   }
 
+  TEST_F(AngleTest, UShould_be_in_the_range) {
+     EXPECT_TRUE(in_range(20,10,30));
+     EXPECT_TRUE(in_range(20,10,300));
+     EXPECT_TRUE(in_range(90,30,350));
+     EXPECT_TRUE(in_range(10,350,20));
+     EXPECT_TRUE(in_range(350,345,10));
+     EXPECT_TRUE(in_range(240,10,350));
+  }
+
+  TEST_F(AngleTest, UShould_not_be_in_the_range) {
+     EXPECT_FALSE(in_range(10, 20, 50));
+     EXPECT_FALSE(in_range(190, 200, 110));
+     EXPECT_FALSE(in_range(90, 270, 80));
+     EXPECT_FALSE(in_range(265, 270, 80));
+     EXPECT_FALSE(in_range(11, 350, 10));
+     EXPECT_FALSE(in_range(340, 350, 10));
+  }
+
   TEST_F(AngleTest, radians_to_degrees_and_back) {
     EXPECT_LT(to_radians(360.0) - 3.1415926 * 2.0, 0.00001); // 2 pi rads in a circle
     EXPECT_EQ(to_degrees(2.0), 114.5916);

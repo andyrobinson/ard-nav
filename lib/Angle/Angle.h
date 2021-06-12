@@ -17,6 +17,9 @@ namespace Angle {
     uangle uadd(uangle start, angle delta);
     angle udiff(uangle a, uangle b);
     angle to_angle(uangle ua);
+    uangle  clockwisediff(uangle start, uangle end);
+
+    bool in_range(uangle value, uangle lower, uangle upper);
 
     double to_radians(double degrees);
     double to_degrees(double radians);

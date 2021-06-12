@@ -11,6 +11,10 @@ class StubLogger : public Logger {
       virtual void banner(char *message);
       virtual void setdest(char destletter);
       virtual void settack(char tackletter);
+      char *last_message();
+
+    private:
+      char last_msg[30];
 };
 
 #endif

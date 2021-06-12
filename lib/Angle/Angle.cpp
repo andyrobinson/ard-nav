@@ -42,6 +42,14 @@ namespace Angle {
       return (ua <= 180) ? ua : (ua - 360);
     }
 
+    uangle clockwisediff(uangle start, uangle end) {
+      return (360 + end - start) % 360;
+    }
+
+    bool in_range(uangle value, uangle lower, uangle upper) {
+        return clockwisediff(lower,value) + clockwisediff(value,upper) < 360;
+    }
+
     double to_radians(double degrees) {
         return degrees/DEGREES_IN_RADIAN;
     }
