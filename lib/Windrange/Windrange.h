@@ -8,14 +8,14 @@ using namespace Angle;
 namespace Windrange {
 
   typedef struct {
-     angle port;
-     angle starboard;
+     uangle lower;
+     uangle upper;
   } windrange;
 
 inline bool operator==(const windrange& lhs, const windrange& rhs) {
     return (
-      lhs.port == rhs.port &&
-      lhs.starboard == rhs.starboard);
+      lhs.lower == rhs.lower &&
+      lhs.upper == rhs.upper);
 }
 
 }

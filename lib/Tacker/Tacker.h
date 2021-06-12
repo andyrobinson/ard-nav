@@ -9,8 +9,10 @@
 #include "Windrange.h"
 
 using namespace Angle;
+using namespace Windrange;
 
 #define TACKER_NO_GO_LIMIT 40
+#define WIND_RANGE_NO_GO_LIMIT 35 // give ourselves a little lee way
 #define MIN_TACK_MS 5000
 
 class Tacker
@@ -25,6 +27,7 @@ class Tacker
     Compass *compass;
     WindSensor *windsensor;
     Logger *logger;
+    windrange set_range(uangle direction, short sign);
 };
 
 #endif

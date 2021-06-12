@@ -52,39 +52,35 @@ TEST_F(TackerTest, Should_steer_directly_if_out_of_no_go_region) {
 TEST_F(TackerTest, Wind_range_should_be_nogo_if_out_of_no_go_region) {
   angle wind_relative = 90; stub_windsensor.set_relative(&wind_relative, 1);
   uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
-  windrange expectedRange = {-TACKER_NO_GO_LIMIT,TACKER_NO_GO_LIMIT};
 
   tacker.steer(20, 2000);
 
-  EXPECT_EQ(stub_helm.wind_range(0), expectedRange);
-}
-
-TEST_F(TackerTest, Should_tack_left_if_in_nogo_and_closest_to_desired_course) {
-  angle wind_relative = TACKER_NO_GO_LIMIT-5; stub_windsensor.set_relative(&wind_relative, 1);
-  uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
-
-  tacker.steer(0, 2000);
-
-  EXPECT_EQ(stub_helm.steering(0), 355);
+  EXPECT_EQ(stub_helm.wind_range(0).lower, uadd(20,WIND_RANGE_NO_GO_LIMIT));
+  EXPECT_EQ(stub_helm.wind_range(0).upper, uadd(20,-WIND_RANGE_NO_GO_LIMIT));
 }
 
 TEST_F(TackerTest, Wind_range_should_be_starboard_no_go_and_180_if_tacking_left) {
   angle wind_relative = TACKER_NO_GO_LIMIT-5; stub_windsensor.set_relative(&wind_relative, 1);
   uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
-  windrange expectedRange = {-180,TACKER_NO_GO_LIMIT};
+  uangle expectedDirection = 355;
 
   tacker.steer(0, 2000);
 
-  EXPECT_EQ(stub_helm.wind_range(0), expectedRange);
+  EXPECT_EQ(stub_helm.steering(0), expectedDirection);
+  EXPECT_EQ(stub_helm.wind_range(0).lower, uadd(expectedDirection,WIND_RANGE_NO_GO_LIMIT));
+  EXPECT_EQ(stub_helm.wind_range(0).upper, uadd(expectedDirection,180));
 }
 
-TEST_F(TackerTest, Should_tack_right_if_in_nogo_and_closest_to_desired_course) {
+TEST_F(TackerTest, Should_tack_right_with_correct_wind_range_if_in_nogo_and_closest_to_desired_course) {
   angle wind_relative = 5-TACKER_NO_GO_LIMIT; stub_windsensor.set_relative(&wind_relative, 1);
   uangle bearing = 180; stub_compass.set_bearings(&bearing,1);
+  uangle expectedDirection = 185;
 
   tacker.steer(180, 2000);
 
-  EXPECT_EQ(stub_helm.steering(0), 185);
+  EXPECT_EQ(stub_helm.steering(0), expectedDirection);
+  EXPECT_EQ(stub_helm.wind_range(0).lower, uadd(expectedDirection,180));
+  EXPECT_EQ(stub_helm.wind_range(0).upper, uadd(expectedDirection,-WIND_RANGE_NO_GO_LIMIT));
 }
 
 TEST_F(TackerTest, Should_tack_left_if_in_nogo_and_only_just_to_left_of_wind) {
@@ -114,6 +110,18 @@ TEST_F(TackerTest, Should_adjust_tack_time_using_SIN_of_angle_for_second_tack) {
 
   EXPECT_EQ(stub_helm.steering(1), 140);
   EXPECT_EQ(stub_helm.steer_time(1), round (20000 * sin(to_radians (TACKER_NO_GO_LIMIT - wind_relative))));
+}
+
+TEST_F(TackerTest, Should_correctly_set_wind_range_for_second_tack) {
+  angle wind_relative = 20; stub_windsensor.set_relative(&wind_relative, 1);
+  uangle bearing = 80; stub_compass.set_bearings(&bearing,1);
+  uangle expectedDirection = 140;
+
+  tacker.steer(80, 20000);
+
+  EXPECT_EQ(stub_helm.steering(1), expectedDirection);
+  EXPECT_EQ(stub_helm.wind_range(1).lower, uadd(expectedDirection,180));
+  EXPECT_EQ(stub_helm.wind_range(1).upper, uadd(expectedDirection,-WIND_RANGE_NO_GO_LIMIT));
 }
 
 TEST_F(TackerTest, Should_not_do_second_tack_if_below_limit) {
