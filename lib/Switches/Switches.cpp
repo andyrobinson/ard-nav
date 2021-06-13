@@ -1,4 +1,7 @@
 #include "Switches.h"
+#include "Utility.h"
+
+using namespace Utility;
 
 Switches::Switches() {}
 
@@ -16,5 +19,5 @@ uint8_t Switches::value() {
 float Switches::dial_percent() {
   int pin_voltage = analogRead(RCINPUT);
   float result = 100.0 * ((float) pin_voltage - RCLOWER)/(RCUPPER - RCLOWER);
-  return min1(max1(0.0, result), 100.0);
+  return min1(max1((float) 0.0, result), (float) 100.0);
 }
