@@ -2,6 +2,7 @@
 #define Switches_h
 
 #include "Arduino.h"
+#include "Utility.h"
 
 #define SWITCH1 7
 #define SWITCH2 8
