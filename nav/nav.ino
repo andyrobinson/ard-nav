@@ -58,7 +58,7 @@ void setup() {
 
 void loop() {
   sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
-  selftest.test();
+  // selftest.test();
   sprintf(logmsg, "Navigating v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
   sprintf(logmsg, "Switches %3d", switches.value()); logger.banner(logmsg);
 
