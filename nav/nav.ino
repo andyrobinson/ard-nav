@@ -19,7 +19,7 @@
 #include <RotaryPID.h>
 #include <version.h>
 
-#define MAJOR_VERSION 1
+#define MAJOR_VERSION 99 // for test
 #define SAIL_SERVO_PIN 6
 #define RUDDER_SERVO_PIN 5
 
