@@ -34,8 +34,8 @@ void RotaryPID::set_constants() {
   float percent = switches->dial_percent();
   uint8_t sw3 = (switches->value() & 4) >> 2;
 
-  Kp = max1((KP * percent)/33.0,0.25) * (1 + sw3);
-  Ki = max1((KI * (100.0 - percent))/33.0,0.4) * (1 + sw3);
+  Kp = KP * (max1(percent, 50.0)/50.0);
+  Ki = KI * (max1((100 - percent), 50.0)/50.0) ;
   Kd = Ki/8;
 
   sprintf(logmsg, "K percent %3d", (int) percent);

@@ -7,8 +7,8 @@
 #include "Logger.h"
 
 #define KP 0.5
-#define KI 0.8
-#define KD 0.1
+#define KI 2.3
+#define KD 0.3
 
 using namespace Angle;
 
