@@ -37,13 +37,15 @@ The other folders represent Arduino applications.  Again each folder has a makef
 * MultiLogger - logs simultaneously to the given list of loggers
 * Navigator - Navigate to a destination lat/long by repeatedly steering
 * Position - lat/long struct with error values
+* RotaryPID - implementation of a PID (proportional-integral-derivative) algorithm for steering a course
+* Routes - contains courses to steer
 * Rudder - wrapper around servo to limit deflection
 * Sail - sailing logic; set sail angle according to relative wind, only gybe when necessary
 * SDLogger - logs to an SD card
 * SelfTest - power-on self test routines
 * SerialLogger - log to the serial port (for Arduino Serial monitor)
 * Stubs - home grown stubs for use in unit testing
-* Switches - reads three switches for in-the-field configuration changes
+* Switches - reads three switches and a proportional RC input for in-the-field configuration changes
 * Tacker - steer directly or do a tack, using Helm
 * TestEg - example of using Gtest (google C++ test library)
 * Timer - wrapper around delay function, for testing and possible multi-tasking
@@ -53,40 +55,32 @@ The other folders represent Arduino applications.  Again each folder has a makef
 
 ## Current concerns
 
-We probably need a turning mode and a steady state mode - it's likely for power management reasons that we will have short bursts of steering followed by longer periods of sleep, although given the fairly instant nature of the transition, the periods of sleep could potentially be quite short.
+Voltage dips (and possibly spikes) caused by startup current of electric motors.  Ideas to reduce:
+- Use a smooth turning servo Library to avoid big jumps
+- The likely reason this is more of a problem OTW is that the water offers more resistance to the servo, hence bigger current draw - again fixed by smooth turning
+- reduce power of rudder servo
+- do not move both rudder and sail at the same time (not ideal)
 
-Display refresh causes jitter, but we can live with that for the moment (this is not an issue OTW).
+This is an ideal time to write and check watchdog Timer
 
-The steering makes the boat fish tail.  Currently adjusting the influence of rate of turn.
+Introduction of solar power is likely to disrupt refinement of steering and navigation software
 
 ## Observations from field tests
 
-### 13 May, Land based
-* The rudder seems to make for weaving navigation - in part due to the unresponsiveness of a human vessel
-* We need a better estimate of speed (and therefore time to destination).  If we underestimate the speed then we will overshoot the target.  Points towards moving averages for both speed and absolute wind direction (and therefore a regular update to both, probably via the GPS interrupt timer)
-* the logging could be better - where are we heading, how long before next review, are we tacking, and is it tack1 or tack2?
-* compass is much better outside
-* broadly speaking the software appears to work(!)
+See the blog (https://noahs-barque.blogspot.com/p/blog-page.html) for field reports
 
-### 25 April 2021, on the water
-* Seems very keen to tack
-* Steering makes the boat weave
-* Logging stopped after 10 mins of second run - will add capacitor to try and remove spikes, but need to monitor
-
-## Planned development
+## Planned development (longer term notes)
 
 1. Should introduce a deliberate memory leak to check that the memory measure works
 2. It would be good to use the analog inputs to measure the battery voltage.  Note that once we have a proper power supply this will require a connection directly from the battery
-3. In the final attempt we need to disable self test (probably completely), to take account of the fact that the system may restart during navigation.  Also the navigation needs to identify the nearest waypoint when it starts, and determine if it has passed this waypoint before selecting a waypoint to navigate towards.
-4. Compass is highly influenced by electric motors - need to check in-situ and potentially isolate - much better outdoors, still perhaps 5 degrees out in the box, so we need to check in the boat
+3. In the final attempt we need to disable self test (probably completely), to take account of the fact that the system may restart during navigation. It may be enough just to know that the GPS has got signal - clear window on the main module?  
+4. Also the navigation needs to identify the nearest waypoint when it starts, and determine if it has passed this waypoint before selecting a waypoint to navigate towards.
 5. Need some kind of integration testing
 6.  We need follow-on code for failed sensors - wind direction (can we find out by steering?), compass (use GPS), gps (use dead reckoning).  Maybe ultimately we need more than one sensor.
-7.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to crash - this may have happened during recent OTW testing.  We need to ensure that the Arduino power supply is protected, and there is a fall-back reset.  Ideally when the batteries get low we shut down until they regain some charge (I guess this could be never ...).  There are voltage regulators that will ensure a stable voltage for as long as possible.
+7.  There are definitely problems with power fluctuation, although probably not spikes.  The current servo draws a lot of current - will replace with a less powerful version, and also reduce the voltage to the electric motors.  The test rig works fine running directly from the solar charging output (around 4v)
 8.  Don't forget fallback (watchdog) timer which reboots the arduino after a period of inactivity (aka crash)
 9.  Need to review all limits (e.g. max steer time) before attempting longer journeys
-10. Consider between navigation checks:
-- To abandon a tack, or start tacking if wind requires it
-11. Other checks to Consider
+10. Other checks to Consider
 - in irons
 - becalmed (ensure preservation of battery)
 - in a storm (ditto)
@@ -99,6 +93,7 @@ The steering makes the boat fish tail.  Currently adjusting the influence of rat
 more importantly memory conservation
 - software versioning
 - average speed
+- abandon current helm session if wind veers out of an expected range (currently too tight when tacking)
 
 ## Hot tips
 
