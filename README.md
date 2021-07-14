@@ -8,6 +8,22 @@ The home grown libraries all have a make file which will compile the library and
 
 The other folders represent Arduino applications.  Again each folder has a makefile, in this case it copies the required libraries into the libraries sub-folder, where the Arduino compiler will look for the source files.  This has been extended so that compile and upload can be run directly from the Makefile.  The .ino file is the Arduino main file which references the libraries.
 
+## Hardware
+
+This project is built around specific hardware, although it could be modified for other hardware.  There is a library component for each hardware
+module, so it should be fairly straightfoward to replace the libraries as needed.  Current list of hardware:
+
+* Arduino Zero (https://store.arduino.cc/arduino-zero)
+* GPS (Adafruit Ultimate GPS - https://www.adafruit.com/product/746)
+* Compass/Accelerometer (LSM303DLHC, Adafruit breakout board https://www.adafruit.com/product/1120)
+* Wind direction sensor (AMS AS5048B https://ams.com/AS5048B)
+* Two servos, one for the sail, one for the rudder
+
+Other hardware is optional:
+* OLED display for initial debugging
+* SD module for data logging
+* Switches/RC input for changing configuration without reprogramming
+
 ## Build and test
 
 * Libraries should be built using Make in the library folder.
@@ -55,15 +71,26 @@ The other folders represent Arduino applications.  Again each folder has a makef
 
 ## Current concerns
 
-Voltage dips (and possibly spikes) caused by startup current of electric motors.  Ideas to reduce:
+1. Voltage dips (and possibly spikes) caused by startup current of electric motors.  Ideas to reduce:
 - Use a smooth turning servo Library to avoid big jumps
 - The likely reason this is more of a problem OTW is that the water offers more resistance to the servo, hence bigger current draw - again fixed by smooth turning
 - reduce power of rudder servo
 - do not move both rudder and sail at the same time (not ideal)
 
-This is an ideal time to write and check watchdog Timer
+2. This is an ideal time to write and check watchdog Timer!
 
-Introduction of solar power is likely to disrupt refinement of steering and navigation software
+3. Introduction of solar power is likely to disrupt refinement of steering and navigation software
+
+## Short term plan
+
+1.  Refine the navigation and steering.  Broadly speaking it appears to work, but needs a bit of tweaking.  The quick way to do this is to use
+two separate batteries, which given that we will probably be splitting out the power supplies is a good thing.  May do one more session before
+taking everything apart to implement solar power
+2.  Change the RC switch wiring so that by default it will be computer controller, even if the RC transmitter is off
+3.  Add solar power - this is a bigger piece of work involving removal of the deck.  At the same time:
+  * Check if the battery cases will fit into the keel space (but don't leave it down there for the moment)
+  * Add suppression ceramic capacitors to both motors
+  * Replace the 20Kg/cm servo with a 10Kg/cm servo on the rudder
 
 ## Observations from field tests
 
