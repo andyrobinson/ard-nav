@@ -7,8 +7,8 @@ int main() {
     std::cout << "Simulation starting ...\n\n";
     char buffer[100];
     ConsoleLogger logger;
-    Timer timer;
-    Boat boat(&timer, &logger);
+    Boat boat(&logger);
+    Timer timer(&boat);
 
     position pos = boat.location();
     sprintf(buffer,"Lat %9.5f, Long %9.5f",pos.latitude, pos.longitude);

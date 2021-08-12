@@ -1,5 +1,4 @@
 STUBS = StubLogger Logger
-INCLUDES = ../../lib/Position/ ../Timer
-SOURCES = ../Timer/Timer.cpp
+INCLUDES = ../../lib/Position/
 
 include ../../lib/libcommon

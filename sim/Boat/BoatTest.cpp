@@ -1,13 +1,11 @@
 #include "gtest/gtest.h"
 #include "Boat.h"
-#include "Timer.h"
 #include "StubLogger.h"
 
 namespace {
 
     StubLogger logger;
-    Timer timer;
-    Boat boat(&timer, &logger);
+    Boat boat(&logger);
 
     class BoatTest : public ::testing::Test {
      protected:
