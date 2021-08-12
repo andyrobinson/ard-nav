@@ -1,11 +1,15 @@
 #include "gtest/gtest.h"
 #include "Boat.h"
 #include "StubLogger.h"
+#include "Position.h"
+
+using namespace Position;
 
 namespace {
 
+    position kynance_cove = {49.97480, -5.23198, 5.0};
     StubLogger logger;
-    Boat boat(&logger);
+    Boat boat(&kynance_cove, &logger);
 
     class BoatTest : public ::testing::Test {
      protected:
@@ -18,8 +22,7 @@ namespace {
     };
 
     TEST_F(BoatTest, Should_start_at_kynance_cove) {
-      position expectedPosition = {49.97480, -5.23198, 5.0};
-      EXPECT_EQ(boat.location(), expectedPosition);
+      EXPECT_EQ(boat.location(), kynance_cove);
     }
 
 

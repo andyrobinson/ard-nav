@@ -1,8 +1,10 @@
 #include "Boat.h"
 
-Boat::Boat(Logger *loggerp):
-  logger(loggerp){}
+Boat::Boat(position *start, Logger *loggerp):
+  logger(loggerp){
+    current_position = {start->latitude, start->longitude, start->error};
+  }
 
 position Boat::location() {
-  return  {49.97480, -5.23198, 5.0};
+  return current_position;
 }
