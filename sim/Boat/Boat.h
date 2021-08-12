@@ -3,18 +3,25 @@
 
 #include "Logger.h"
 #include "Position.h"
+#include "Angle.h"
+#include "Globe.h"
 
 using namespace Position;
+using namespace Angle;
 
 class Boat
 {
   public:
     Boat(position *start, Logger *loggerp);
     position location();
+    void move(unsigned long milliseconds);
 
   private:
     Logger *logger;
     position current_position;
+    uangle heading;
+    double speed_ms;
+    Globe globe;
 };
 
 #endif
