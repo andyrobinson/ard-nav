@@ -6,15 +6,17 @@
 
 using namespace Position;
 
+position start_point = {53.44580, -2.22515, 3.0};
+ConsoleLogger logger;
+Boat boat(&start_point, &logger);
+Timer timer(&boat);
+
 int main() {
-    std::cout << "Simulation starting ...\n\n";
-    position start_point = {53.44580, -2.22515, 3.0};
     char buffer[100];
-    ConsoleLogger logger;
-    Boat boat(&start_point, &logger);
-    Timer timer(&boat);
     unsigned long tm = 0;
     position pos;
+
+    std::cout << "Simulation starting ...\n\n";
 
     while (tm < 10000) {
       pos = boat.location();
