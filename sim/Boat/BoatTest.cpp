@@ -23,11 +23,12 @@ namespace {
 
     };
 
-    TEST_F(BoatTest, Should_start_at_kynance_cove) {
-      EXPECT_EQ(boat.location(), kynance_cove);
+    TEST_F(BoatTest, Should_start_at_provided_location) {
+      Boat boat_start(&kynance_cove, &logger);
+      EXPECT_EQ(boat_start.location(), kynance_cove);
     }
 
-    TEST_F(BoatTest, Should_move) {
+    TEST_F(BoatTest, Should_move_north) {
       boat.move(1000);
       position expected_position = globe.new_position(&kynance_cove, 0, 1.0);
       EXPECT_EQ(boat.location(), expected_position);
