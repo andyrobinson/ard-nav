@@ -15,11 +15,12 @@ class Boat
     Boat(position *start, Logger *loggerp);
     position location();
     void move(unsigned long milliseconds);
+    uangle heading;
+    angle rudder;
 
   private:
     Logger *logger;
     position current_position;
-    uangle heading;
     double speed_ms;
     Globe globe;
 };

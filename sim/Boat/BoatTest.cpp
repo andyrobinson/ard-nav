@@ -34,6 +34,12 @@ namespace {
       EXPECT_EQ(boat.location(), expected_position);
     }
 
+    TEST_F(BoatTest, Should_change_heading_based_on_rudder) {
+      boat.rudder = 20;
+      boat.move(1000);
+      position expected_position = globe.new_position(&kynance_cove, 0, 1.0);
+      EXPECT_EQ(boat.location(), expected_position);
+    }
 
 }  //namespace
 
