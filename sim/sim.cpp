@@ -18,12 +18,13 @@ int main() {
 
     std::cout << "Simulation starting ...\n\n";
 
-    while (tm < 10000) {
+    while (tm < 20000) {
       pos = boat.location();
       sprintf(buffer,"Lat %9.5f, Long %9.5f\n",pos.latitude, pos.longitude);
       logger.msg(buffer);
       tm += 2000;
-      boat.move(2000);
+      boat.rudder = 20;
+      timer.wait(2000);
     }
 
     std::cout << "\nSimulation finished\n";

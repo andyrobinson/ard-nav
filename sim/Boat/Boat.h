@@ -19,6 +19,7 @@ class Boat
     angle rudder;
 
   private:
+    uangle new_heading(unsigned long milliseconds);
     Logger *logger;
     position current_position;
     double speed_ms;

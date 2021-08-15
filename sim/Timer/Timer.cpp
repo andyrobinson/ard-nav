@@ -9,4 +9,5 @@ unsigned long Timer::elapsed() {
 
 void Timer::wait(unsigned long milliseconds) {
     theTime = theTime + milliseconds;
+    boat->move(milliseconds);
 }
