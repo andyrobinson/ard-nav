@@ -21,7 +21,7 @@ void TC5_Handler(void) {
 }
 
 // class based stuff
-Gps::Gps() {}
+Gps::Gps(Timer *timerp): timer(timerp) {}
 
 void Gps::begin() {
   AGPS.begin(9600);
@@ -34,7 +34,7 @@ void Gps::begin() {
 }
 
 void Gps::data(uint32_t max_millis, gpsResult *result) {
-  uint32_t timer = millis();
+  uint32_t start_time = millis();
 
   do {
     //reading is now done by the timer based interrupt
@@ -65,7 +65,9 @@ void Gps::data(uint32_t max_millis, gpsResult *result) {
 
     AGPS.pause(false);
 
-  } while (!AGPS.fix && ((millis() - timer) < max_millis));
+    timer->wait(1); // wait a little and also reset the Watchdog
+
+  } while (!AGPS.fix && ((millis() - start_time) < max_millis));
 
 }
 

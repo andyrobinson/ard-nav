@@ -4,6 +4,7 @@
 #include "Arduino.h"
 #include "Position.h"
 #include "Utility.h"
+#include "Timer.h"
 
 #define PIN_SERIAL2_RX       (34ul)               // Pin description number for PIO_SERCOM on D12
 #define PIN_SERIAL2_TX       (36ul)               // Pin description number for PIO_SERCOM on D10
@@ -36,7 +37,7 @@ typedef struct {
 class Gps
 {
   public:
-    Gps();
+    Gps(Timer *timerp);
     void begin();
     void data(uint32_t max_millis, gpsResult *result);
     void tcStartCounter();
@@ -46,6 +47,7 @@ class Gps
 private:
   void tcConfigure(int sampleRate);
   bool tcIsSyncing();
+  Timer *timer;
 };
 
 #endif

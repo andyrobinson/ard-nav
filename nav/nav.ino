@@ -18,6 +18,7 @@
 #include <Switches.h>
 #include <RotaryPID.h>
 #include <version.h>
+#include <Adafruit_SleepyDog.h>
 
 #define MAJOR_VERSION 99 // for test
 #define SAIL_SERVO_PIN 6
@@ -28,13 +29,13 @@ Servo sail_servo;
 Servo rudder_servo;
 Compass compass;
 Timer timer;
-Gps gps;
 Globe globe;
 
 Switches switches;
 char logmsg[22];
 
 // Dependency injection
+Gps gps(&timer);
 SDLogger logger(&gps, &windsensor, &compass);
 Sail sail(&sail_servo);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
@@ -60,10 +61,18 @@ void loop() {
   sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
   // selftest.test();
   sprintf(logmsg, "Navigating v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
-  sprintf(logmsg, "Switches %3d", switches.value()); logger.banner(logmsg);
+
+  int countdownMS = Watchdog.enable(4000);
+  sprintf(logmsg, "Watchdog at %3d", countdownMS); logger.banner(logmsg);
 
   uint8_t sw = switches.value() & 3; // four routes configurable
   route journey = plattfields[sw];
+
+  // a little indicator that we're starting
+  rudder.set_position(-45);
+  timer.wait(2000);
+  rudder.set_position(45);
+  timer.wait(2000);
 
   captain.voyage(journey.waypoints, journey.length);
   logger.banner("Finished Navigation :-)");
