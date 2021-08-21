@@ -16,7 +16,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
     char logmsg[22];
     sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
 
-    angle TEMP_RUDDER = 20;
+    angle TEMP_RUDDER = 30;
     angle TEMP_SAIL = 90;
     int SAIL_COUNT = 0;
     while (remaining > 0 && wind_in_range(range)) {
