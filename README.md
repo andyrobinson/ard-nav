@@ -88,6 +88,8 @@ two separate batteries, which given that we will probably be splitting out the p
 taking everything apart to implement solar power
 2.  Change the RC switch wiring so that by default it will be computer controller, even if the RC transmitter is off
 3.  Add solar power - this is a bigger piece of work involving removal of the deck.  At the same time:
+  * Investigate 5v power options for Arduino - USB?
+  * Fit thermistor to charging circuit
   * Check if the battery cases will fit into the keel space (but don't leave it down there for the moment)
   * Add suppression ceramic capacitors to both motors
   * Replace the 20Kg/cm servo with a 10Kg/cm servo on the rudder
