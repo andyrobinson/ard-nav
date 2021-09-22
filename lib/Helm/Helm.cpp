@@ -28,6 +28,8 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
      //      sail->set_position(windsensor->relative());
      set_rudder(TEMP_RUDDER, current_heading);
 
+     timer->wait(STEER_INTERVAL/2);
+
      SAIL_COUNT += 1;
      if (SAIL_COUNT == 10) {
        SAIL_COUNT = 0;
@@ -35,7 +37,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
        TEMP_SAIL = -TEMP_SAIL;
      }
 
-      timer->wait(STEER_INTERVAL);
+      timer->wait(STEER_INTERVAL/2);
       remaining = remaining - STEER_INTERVAL;
 
       long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
