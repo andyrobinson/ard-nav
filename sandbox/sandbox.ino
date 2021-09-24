@@ -70,8 +70,12 @@ float rc_percent;
 void setup() {
   while (!Serial); // wait for Serial to be ready
   Serial.begin(19200);
-  rudder_servo.attach(RUDDER_SERVO_PIN);
-  switches.begin();
+  Serial.println("Starting sandbox ...");
+  windsensor.begin();
+  compass.begin();
+
+  //rudder_servo.attach(RUDDER_SERVO_PIN);
+  //switches.begin();
 
   // if(!display.begin(SSD1306_SWITCHCAPVCC)) {
   //   Serial.println(F("SSD1306 allocation failed"));
@@ -122,8 +126,8 @@ void loop() {
 
   // char buf[20];
   //
-  // angle wind = windsensor.relative();
-  // uangle heading = compass.bearing();
+  angle wind = windsensor.relative();
+  uangle heading = compass.bearing();
   //
   // sprintf(buf, "W%4d C%4d", wind, heading);
   // Serial.println(buf);
@@ -136,8 +140,8 @@ void loop() {
   // Serial.println(sw);
   //
   // rudder.set_position(rudder_pos);
-  rc_percent = switches.dial_percent();
-  Serial.println(rc_percent);
+  //rc_percent = switches.dial_percent();
+  Serial.print(wind);Serial.print("  ");Serial.println(heading);
 
   delay(1000);
 }
