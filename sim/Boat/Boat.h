@@ -24,6 +24,7 @@ class Boat
     void move(unsigned long milliseconds);
     uangle heading;
     angle rudder;
+    angle sail; // currently raw servo value (0-180) not -90 to + 90
 
   private:
     uangle new_heading(unsigned long milliseconds);

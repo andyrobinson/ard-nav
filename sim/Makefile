@@ -1,5 +1,5 @@
-CLASSES := ConsoleLogger Timer Boat Rudder
-LIB_CLASSES := Globe Angle
+CLASSES := ConsoleLogger Timer Boat Rudder Gps Compass Sail Switches WindSensor
+LIB_CLASSES := Globe Angle Position Globe Helm Tacker Navigator Captain Utility Routes. RotaryPID
 LIB_INCLUDES := Logger Position Utility
 INC_PARAMS = $(foreach d, $(LIB_INCLUDES), -I../lib/$d)
 CLASS_PARAMS = $(foreach p, $(CLASSES), ./$(p)/$(p).cpp -I./$(p))

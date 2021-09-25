@@ -3,15 +3,15 @@
 #include "ConsoleLogger.h"
 
 // TODO
+#include "WindSensor.h"
+
+// SIMULATION STUBS
+#include "Timer.h"
+#include "Rudder.h"
 #include "Gps.h"
 #include "Compass.h"
 #include "Sail.h"
 #include "Switches.h"
-#include "WindSensor.h"
-
-// DONE
-#include "Timer.h"
-#include "Rudder.h"
 
 //NEUTRAL
 #include "Position.h"
@@ -30,13 +30,13 @@ Switches switches;
 char logmsg[22];
 
 // Dependency injection
-position start_point = {53.44580, -2.22515, 3.0};
+position start_point = pfF.pos;
 ConsoleLogger logger;
 Boat boat(&start_point, &logger);
 WindSensor windsensor(&boat);
 Compass compass(&boat);
-Gps gps(&boat);
 Timer timer(&boat);
+Gps gps(&boat,&timer);
 Sail sail(&boat);
 Rudder rudder(&boat);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
@@ -49,6 +49,8 @@ int main() {
     char buffer[100];
     unsigned long tm = 0;
     position pos;
+    switches.set(0); // simulation of switch
+    switches.set_percent(50.0);
 
     std::cout << "Simulation starting ...\n\n";
 
