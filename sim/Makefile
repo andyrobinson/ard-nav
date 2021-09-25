@@ -1,4 +1,4 @@
-CLASSES := ConsoleLogger Timer Boat
+CLASSES := ConsoleLogger Timer Boat Rudder
 LIB_CLASSES := Globe Angle
 LIB_INCLUDES := Logger Position Utility
 INC_PARAMS = $(foreach d, $(LIB_INCLUDES), -I../lib/$d)

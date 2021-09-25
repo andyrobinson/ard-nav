@@ -3,8 +3,10 @@
 #include "StubLogger.h"
 #include "Position.h"
 #include "Globe.h"
+#include "Utility.h"
 
 using namespace Position;
+using namespace Utility;
 
 namespace {
 
@@ -20,6 +22,10 @@ namespace {
       void SetUp() override {
       }
 
+    angle rudder_effect(angle deflection) {
+        return -deflection;
+    }
+
     };
 
     TEST_F(BoatTest, Should_start_at_provided_location) {
@@ -27,10 +33,10 @@ namespace {
       EXPECT_EQ(boat.location(), kynance_cove);
     }
 
-    TEST_F(BoatTest, Should_move_north) {
+    TEST_F(BoatTest, Should_move_in_initial_direction) {
       Boat boat(&kynance_cove, &logger);
       boat.move(1000);
-      position expected_position = globe.new_position(&kynance_cove, 0, 1.0);
+      position expected_position = globe.new_position(&kynance_cove, STARTING_HEADING, 1.0);
       EXPECT_EQ(boat.location(), expected_position);
     }
 
@@ -38,10 +44,36 @@ namespace {
       Boat boat(&kynance_cove, &logger);
       boat.rudder = 20;
       boat.move(1000);
-      uangle expected_heading = uadd(0,-boat.rudder);
+      uangle expected_heading = uadd(STARTING_HEADING,rudder_effect(boat.rudder));
       position expected_position = globe.new_position(&kynance_cove, expected_heading, 1.0);
-      std::cout << "heading: " << boat.heading << "\n";
       EXPECT_EQ(boat.location(), expected_position);
+    }
+
+    TEST_F(BoatTest, Should_report_stats) {
+      Boat boat(&kynance_cove, &logger);
+      EXPECT_EQ(boat.speed(),STARTING_SPEED);
+      EXPECT_EQ(boat.bearing(),STARTING_HEADING);
+    }
+
+    TEST_F(BoatTest, Should_return_relative_wind) {
+      Boat boat(&kynance_cove, &logger);
+      angle start_wind = add(STARTING_WIND, -STARTING_HEADING);
+      EXPECT_EQ(boat.relative_wind(), start_wind);
+
+      boat.rudder = -30; boat.move(1000);
+      angle expected_wind = add(start_wind, -rudder_effect(boat.rudder));
+      std::cout << expected_wind << "\n";
+      EXPECT_EQ(boat.relative_wind(), expected_wind);
+
+      boat.rudder = 20; boat.move(1000);
+      expected_wind = add(expected_wind, -rudder_effect(boat.rudder));
+      std::cout << expected_wind << "\n";
+      EXPECT_EQ(boat.relative_wind(), expected_wind);
+
+      boat.rudder = 20; boat.move(1000);
+      expected_wind = add(expected_wind, -rudder_effect(boat.rudder));
+      std::cout << expected_wind << "\n";
+      EXPECT_EQ(boat.relative_wind(), expected_wind);
     }
 
 }  //namespace

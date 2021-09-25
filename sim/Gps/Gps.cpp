@@ -2,7 +2,6 @@
 
 using namespace Utility;
 
-// class based stuff
 Gps::Gps(Boat *boatp): boat(boatp), avg_speed(MIN_SPEED) {}
 
 void Gps::data(uint32_t max_millis, gpsResult *result) {

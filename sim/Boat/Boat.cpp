@@ -2,15 +2,28 @@
 
 Boat::Boat(position *start, Logger *loggerp):
   logger(loggerp){
-    heading = 0;
+    heading = STARTING_HEADING;
     rudder = 0;
-    speed_ms = 1.0;
+    speed_ms = STARTING_SPEED;
+    absolute_wind = STARTING_WIND;
     globe = Globe();
     current_position = {start->latitude, start->longitude, start->error};
   }
 
 position Boat::location() {
   return current_position;
+}
+
+double Boat::speed() {
+    return speed_ms;
+}
+
+angle Boat::relative_wind() {
+    return add(absolute_wind, -heading);
+}
+
+uangle Boat::bearing() {
+    return heading;
 }
 
 void Boat::move(unsigned long milliseconds) {
