@@ -10,6 +10,8 @@ SRCS := sim.cpp
 OBJS = sim.o
 EXE := sim.o
 
+.SHELLFLAGS = -ec
+
 .DEFAULT_GOAL = run
 
 include ../lib/detectos
@@ -30,3 +32,17 @@ run: $(EXE)
 
 clean:
 	$(RM) $(OBJS)
+
+# for the sub projects
+SUB_PROJECTS = Boat Compass Gps Rudder Sail WindSensor
+
+test:
+	@for subdir in $(SUB_PROJECTS) ; do \
+  	echo "\nMaking lib $$subdir" ; \
+		$(MAKE) -C $$subdir ; \
+	done
+
+cleanall:
+	for subdir in $(SUB_PROJECTS) ; do \
+		$(MAKE) -C $$subdir clean ; \
+	done
