@@ -18,7 +18,7 @@ TEST_F(GpsTest, should_return_gps_result_based_on_boat_data) {
   gpsResult gpsresult;
   gps.data(100, &gpsresult);
   float expected_avg_speed = (0.9 * MIN_SPEED + 0.1 * boat.speed());
-  long expectedTime = 1234;
+  long expectedTimeInSeconds = 1234;
 
   EXPECT_EQ(gpsresult.pos.latitude, chorlton.latitude);
   EXPECT_EQ(gpsresult.pos.longitude, chorlton.longitude);
@@ -26,9 +26,9 @@ TEST_F(GpsTest, should_return_gps_result_based_on_boat_data) {
   EXPECT_EQ(gpsresult.mps, boat.speed());
   EXPECT_EQ(gpsresult.avg_mps, expected_avg_speed);
 
-  timer.wait(expectedTime);
+  timer.wait(expectedTimeInSeconds * 1000);
   gps.data(100, &gpsresult);
-  EXPECT_EQ(gpsresult.unixTime, expectedTime);
+  EXPECT_EQ(gpsresult.unixTime, expectedTimeInSeconds);
 }
 
 }  //namespace
