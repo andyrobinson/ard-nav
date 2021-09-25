@@ -7,6 +7,8 @@
 #include "Timer.h"
 
 #define FIX_DGPS 2
+#define FIX_NONE -1
+
 #define MAX_ACCURACY_METRES 2
 #define MIN_SPEED 0.01
 

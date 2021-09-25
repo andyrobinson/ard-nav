@@ -1,13 +1,11 @@
 #include "Compass.h"
 #include "Boat.h"
-#include "StubLogger.h"
 #include "gtest/gtest.h"
 
 namespace {
 
 position chorlton = {53.44096, -2.27235, 5.0};
-StubLogger logger;
-Boat boat(&chorlton, &logger);
+Boat boat(&chorlton);
 Compass compass(&boat);
 
 class CompassTest : public ::testing::Test {

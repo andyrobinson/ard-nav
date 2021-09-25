@@ -1,14 +1,10 @@
 #include "Sail.h"
 #include "gtest/gtest.h"
-#include "StubLogger.h"
-
-#include <iostream>
 
 namespace {
 
 position chorlton = {53.44096, -2.27235, 5.0};
-StubLogger logger;
-Boat boat(&chorlton, &logger);
+Boat boat(&chorlton);
 Sail sail(&boat);
 
 uangle NO_GO_LIMIT = ANGLE_OF_ATTACK;

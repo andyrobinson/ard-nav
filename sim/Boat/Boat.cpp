@@ -1,14 +1,8 @@
 #include "Boat.h"
 
-Boat::Boat(position *start, Logger *loggerp):
-  logger(loggerp){
-    heading = STARTING_HEADING;
-    rudder = 0;
-    speed_ms = STARTING_SPEED;
-    absolute_wind = STARTING_WIND;
-    globe = Globe();
-    current_position = {start->latitude, start->longitude, start->error};
-  }
+Boat::Boat(position *start):
+    heading(STARTING_HEADING),rudder(0),speed_ms(STARTING_SPEED),absolute_wind(STARTING_WIND),globe(Globe()),
+    current_position({start->latitude, start->longitude, start->error}),sail(90) {}
 
 position Boat::location() {
   return current_position;
@@ -24,6 +18,10 @@ angle Boat::relative_wind() {
 
 uangle Boat::bearing() {
     return heading;
+}
+
+void Boat::setLogger(Logger *loggerp) {
+    logger = loggerp;
 }
 
 void Boat::move(unsigned long milliseconds) {

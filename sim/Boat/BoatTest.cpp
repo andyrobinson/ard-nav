@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "Boat.h"
-#include "StubLogger.h"
 #include "Position.h"
 #include "Globe.h"
 #include "Utility.h"
@@ -11,7 +10,6 @@ using namespace Utility;
 namespace {
 
     position kynance_cove = {49.97480, -5.23198, 5.0};
-    StubLogger logger;
     Globe globe;
 
     class BoatTest : public ::testing::Test {
@@ -29,19 +27,19 @@ namespace {
     };
 
     TEST_F(BoatTest, Should_start_at_provided_location) {
-      Boat boat(&kynance_cove, &logger);
+      Boat boat(&kynance_cove);
       EXPECT_EQ(boat.location(), kynance_cove);
     }
 
     TEST_F(BoatTest, Should_move_in_initial_direction) {
-      Boat boat(&kynance_cove, &logger);
+      Boat boat(&kynance_cove);
       boat.move(1000);
       position expected_position = globe.new_position(&kynance_cove, STARTING_HEADING, 1.0);
       EXPECT_EQ(boat.location(), expected_position);
     }
 
     TEST_F(BoatTest, Should_change_heading_based_on_rudder) {
-      Boat boat(&kynance_cove, &logger);
+      Boat boat(&kynance_cove);
       boat.rudder = 20;
       boat.move(1000);
       uangle expected_heading = uadd(STARTING_HEADING,rudder_effect(boat.rudder));
@@ -50,13 +48,13 @@ namespace {
     }
 
     TEST_F(BoatTest, Should_report_stats) {
-      Boat boat(&kynance_cove, &logger);
+      Boat boat(&kynance_cove);
       EXPECT_EQ(boat.speed(),STARTING_SPEED);
       EXPECT_EQ(boat.bearing(),STARTING_HEADING);
     }
 
     TEST_F(BoatTest, Should_return_relative_wind) {
-      Boat boat(&kynance_cove, &logger);
+      Boat boat(&kynance_cove);
       angle start_wind = add(STARTING_WIND, -STARTING_HEADING);
       EXPECT_EQ(boat.relative_wind(), start_wind);
 

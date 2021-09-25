@@ -3,6 +3,7 @@
 
 #include "Logger.h"
 #include "Boat.h"
+#include "Timer.h"
 
 class ConsoleLogger : public Logger {
     public:

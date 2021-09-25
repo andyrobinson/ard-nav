@@ -22,20 +22,14 @@ void ConsoleLogger::banner(char *message) {
 }
 
 void ConsoleLogger::msg(char *message) {
-  std::cout << message;
-
-  angle wind = windsensor->relative();
-  uangle bearing = compass->bearing();
-  gps->data(GPS_WAIT_MILLIS, &gpsReading);
-
-  std::cout << timer->elapsed(); std::cout << ",";
-  std::cout << boat->location().latitude; std::cout << ",";
-  std::cout << boat->location().longitude; std::cout << ",";
-  std::cout << boat->speed(); std::cout << "ms,";
-  std::cout << boat->relative_wind(); std::cout << ",";
-  std::cout << boat->bearing(); std::cout << ",";
-  std::cout << destination; std::cout << ",";
-  std::cout << tack; std::cout << ",";
+  std::cout << timer->elapsed() << ",";
+  std::cout << boat->location().latitude  << ",";
+  std::cout << boat->location().longitude << ",";
+  std::cout << boat->speed() << "ms,";
+  std::cout << boat->relative_wind() << ",";
+  std::cout << boat->bearing() << ",";
+  std::cout << destination << ",";
+  std::cout << tack << ",";
   std::cout << message;
   std::cout << "\n";
 }

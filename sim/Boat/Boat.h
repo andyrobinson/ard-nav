@@ -16,15 +16,16 @@ using namespace Angle;
 class Boat
 {
   public:
-    Boat(position *start, Logger *loggerp);
+    Boat(position *start);
     position location();
     double speed();
     angle relative_wind();
     uangle bearing();
     void move(unsigned long milliseconds);
+    void setLogger(Logger *loggerp);
     uangle heading;
     angle rudder;
-    angle sail; // currently raw servo value (0-180) not -90 to + 90
+    int sail; // currently raw servo value (0-180) not -90 to + 90
 
   private:
     uangle new_heading(unsigned long milliseconds);
