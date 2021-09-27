@@ -25,6 +25,10 @@ void Boat::setLogger(Logger *loggerp) {
 }
 
 void Boat::move(unsigned long milliseconds) {
+
+  // speed should use this wind factor =(MAX((190-X*0.7)  -EXP((190-X*0.7)*0.03),0))/90
+  // where X is the ABS(relative wind)
+  // this should give a zero value up to 30, then maxes out at around 90 or 100
   double distance = speed_ms * ((double) milliseconds) / 1000.0;
   heading = new_heading(milliseconds);
   current_position = globe.new_position(&current_position, heading, distance);
