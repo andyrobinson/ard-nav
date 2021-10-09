@@ -12,7 +12,7 @@
 
 using namespace Windrange;
 
-#define STEER_INTERVAL 200
+#define STEER_INTERVAL 300
 
 class Helm
 {
