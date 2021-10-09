@@ -2,7 +2,7 @@
 #define Sail_h
 
 #include "Angle.h"
-#include "Servo.h"
+#include "VSServoSamd.h"
 
 #define ANGLE_OF_ATTACK        30
 #define PURE_LIFT_LIMIT        90
@@ -17,13 +17,13 @@ class Sail
 {
   public:
     Sail();
-    Sail(Servo *servo);
+    Sail(VSServoSamd *servo);
     void set_position(angle relative_wind);
 
   private:
     angle sail_position(angle relative_wind);
     angle gybe_check(angle old_position, angle new_position);
-    Servo *sail_servo;
+    VSServoSamd *sail_servo;
 
 };
 

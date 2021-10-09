@@ -2,10 +2,11 @@
 #define Rudder_h
 
 #include "Angle.h"
-#include "Servo.h"
+#include "VSServoSamd.h"
 
 #define RUDDER_MAX_DISPLACEMENT 45
 #define RUDDER_CENTRE 90
+#define RUDDER_SPEED 50
 
 using namespace Angle;
 
@@ -13,11 +14,11 @@ class Rudder
 {
   public:
     Rudder();
-    Rudder(Servo *servo);
+    Rudder(VSServoSamd *servo);
     void set_position(angle);
 
   private:
-    Servo *rudder_servo;
+    VSServoSamd *rudder_servo;
 
 };
 

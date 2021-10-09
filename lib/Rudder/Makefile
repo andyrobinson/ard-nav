@@ -1,4 +1,4 @@
-STUBS = Servo
+STUBS = VSServoSamd
 INCLUDES = ../Angle/ ../Utility/
 SOURCES = ../Angle/Angle.cpp
 

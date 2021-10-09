@@ -8,7 +8,7 @@ using namespace Utility;
 
 Sail::Sail() {}
 
-Sail::Sail(Servo *servo) {
+Sail::Sail(VSServoSamd *servo) {
   sail_servo = servo;
 }
 
