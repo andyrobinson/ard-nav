@@ -289,11 +289,15 @@ void VSServoSamd::writeMicroseconds(int value, uint8_t speed)
   if( (channel < MAX_SERVOS) )   // ensure channel is valid
   {
     value = constrain(value, SERVO_MIN(), SERVO_MAX());
-
     value = value - TRIM_DURATION;
     value = usToTicks(value);  // convert to ticks after compensating for interrupt overhead
-    servos[channel].ticks = value;
-    servos[channel].speed = speed; // extension for slow move
+    if (speed) {
+      servos[channel].target = value;
+    }
+    else {
+      servos[channel].ticks = value;
+    }
+    servos[channel].speed = speed; // extension for slow move      
   }
 }
 

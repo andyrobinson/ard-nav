@@ -85,7 +85,6 @@ typedef struct  {
 typedef struct {
   ServoPin_t Pin;
   volatile unsigned int ticks;
-  unsigned int value;			// Extension for external wait
   unsigned int target;			// Extension for slowmove
   uint8_t speed;					// Extension for slowmove
 } servo_t;
