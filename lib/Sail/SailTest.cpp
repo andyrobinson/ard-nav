@@ -1,12 +1,12 @@
 #include "Sail.h"
 #include "gtest/gtest.h"
-#include "Servo.h"
+#include "VSServoSamd.h"
 
 #include <iostream>
 
 namespace {
 
-Servo stub_servo;
+VSServoSamd stub_servo;
 Sail sail(&stub_servo);
 uangle NO_GO_LIMIT = ANGLE_OF_ATTACK;
 
@@ -43,7 +43,7 @@ class SailTest : public ::testing::Test {
 };
 
 TEST_F(SailTest, Stub_servo_should_record_last_position) {
-  Servo servo;
+  VSServoSamd servo;
   servo.write(88);
   EXPECT_EQ(servo.write_last_called(), 88);
 }

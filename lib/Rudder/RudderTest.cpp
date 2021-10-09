@@ -1,10 +1,10 @@
 #include "Rudder.h"
 #include "gtest/gtest.h"
-#include "Servo.h"
+#include "VSServoSamd.h"
 
 namespace {
 
-Servo stub_servo;
+VSServoSamd stub_servo;
 Rudder rudder(&stub_servo);
 
 class RudderTest : public ::testing::Test {
@@ -13,7 +13,7 @@ class RudderTest : public ::testing::Test {
 };
 
 TEST_F(RudderTest, Stub_servo_should_record_last_position) {
-  Servo servo;
+  VSServoSamd servo;
   servo.write(42);
   EXPECT_EQ(servo.write_last_called(), 42);
 }

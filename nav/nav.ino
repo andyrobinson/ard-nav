@@ -1,4 +1,4 @@
-#include <Servo.h>
+#include <VSServoSamd.h>
 #include <Position.h>
 #include <Compass.h>
 #include <Timer.h>
@@ -25,8 +25,8 @@
 #define RUDDER_SERVO_PIN 5
 
 WindSensor windsensor;
-Servo sail_servo;
-Servo rudder_servo;
+VSServoSamd sail_servo;
+VSServoSamd rudder_servo;
 Compass compass;
 Timer timer;
 Globe globe;
