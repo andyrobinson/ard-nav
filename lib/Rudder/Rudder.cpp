@@ -18,6 +18,6 @@ void Rudder::set_position(angle position) {
     position = -RUDDER_MAX_DISPLACEMENT;
   }
 
-  int servo_0_to_180_angle = RUDDER_CENTRE - position;
+  int servo_0_to_180_angle = RUDDER_CENTRE + position;
   rudder_servo->write(servo_0_to_180_angle, RUDDER_SPEED);
 }
