@@ -70,9 +70,9 @@ void loop() {
 
   // a little indicator that we're starting
   rudder.set_position(-45);
-  timer.wait(2000);
+  timer.wait(4000);
   rudder.set_position(45);
-  timer.wait(2000);
+  timer.wait(4000);
 
   captain.voyage(journey.waypoints, journey.length);
   logger.banner("Finished Navigation :-)");
