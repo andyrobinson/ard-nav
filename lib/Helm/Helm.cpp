@@ -34,7 +34,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
      if (SAIL_COUNT == 10) {
        SAIL_COUNT = 0;
        sail->set_position(TEMP_SAIL);
-       timer->wait(STEER_INTERVAL/2);
+       timer->wait(STEER_INTERVAL);
        TEMP_SAIL = -TEMP_SAIL;
      }
       remaining = remaining - STEER_INTERVAL;
