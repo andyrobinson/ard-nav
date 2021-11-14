@@ -27,7 +27,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
       // set_rudder(new_rudder_position, current_heading);
      //      sail->set_position(windsensor->relative());
      set_rudder(TEMP_RUDDER, current_heading);
-     sprintf(logmsg, "%8d %3d %8d", turnrate, new_rudder_position, remaining); logger->msg(logmsg);
+     logger->msg("testing");
 
      timer->wait(STEER_INTERVAL);
 
