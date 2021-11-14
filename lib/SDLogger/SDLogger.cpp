@@ -45,7 +45,10 @@ void SDLogger::settack(char tackletter) {
 }
 
 void SDLogger::banner(char *message) {
+  for (int i; i < 10; i++) {
     print_line(message, "*** ");
+  }
+
 }
 
 void SDLogger::print_line(char *message, char *msgprefix) {
@@ -74,7 +77,9 @@ void SDLogger::print_line(char *message, char *msgprefix) {
 }
 
 void SDLogger::msg(char *message) {
-  if (sd_time_to_log()) {
-    print_line(message, "");
-  }
+//  if (sd_time_to_log()) {
+    for (int i; i < 10; i++) {
+      print_line(message, "");
+    }
+//  }
 }
