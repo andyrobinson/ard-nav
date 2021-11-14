@@ -10,7 +10,7 @@
 #define TEST_LOG_FILE 20000l
 #define CHIP_SELECT 4
 #define BASE10 10
-#define LOG_INTERVAL 1000ul // may affect battery life
+#define LOG_INTERVAL 500ul // may affect battery life
 #define GPS_WAIT_MILLIS 10
 
 class SDLogger : public Logger {

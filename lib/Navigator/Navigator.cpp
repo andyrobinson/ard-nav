@@ -23,7 +23,10 @@ void Navigator::sailto(waypoint destination) {
     long steer_time = round(max1(MIN_STEER_TIME,min1(unlimited_steer_time_ms/2.0, MAX_STEER_TIME)));
     tacker->steer(direction, steer_time);
     gps->data(MAX_GPS_WAIT_FOR_FIX, &current_gps);
-    sprintf(logmsg, "To %s", destination.label); logger->banner(logmsg);
+    sprintf(logmsg, "To %s", destination.label);
+    for (int j=0; j < 20; j++) {
+      logger->banner(logmsg);
+    }
   }
 
   sprintf(logmsg, "At %s", destination.label); logger->banner(logmsg);
