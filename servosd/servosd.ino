@@ -25,12 +25,12 @@ void setup() {
 }
 
 void loop() {
-  for (pos = 45; pos <= 135; pos += 1) {
+  for (pos = 35; pos <= 125; pos += 1) {
     servo.write(pos);
     delay(15);
   }
 
-  for (pos = 135; pos >= 45; pos -= 1) {
+  for (pos = 125; pos >= 35; pos -= 1) {
     servo.write(pos);
     delay(15);
   }
@@ -40,7 +40,6 @@ void loop() {
     if (dataFile) {
       dataFile.println(dataString);
       dataFile.close();
-      Serial.println(dataString);
     }
   }
 
