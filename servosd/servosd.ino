@@ -1,20 +1,37 @@
 #include <SPI.h>
 #include <SD.h>
-#include <Servo.h>
+#include <PololuMaestro.h>
+#include "wiring_private.h"
 
-#define SERVO_PIN 5
-#define SERVO_IGNORE 6
+#define SERVO_TX 2
+#define SERVO_RX 3
 #define CHIP_SELECT 4
 
-Servo servo;
-Servo ignore;
+#define PIN_SERIAL2_RX       (3ul)
+#define PIN_SERIAL2_TX       (2ul)
+
+// sercom2SerialPort on SERCOM 2, TX = pin 2, RX = pin 3
+Uart sercom2SerialPort (&sercom2, PIN_SERIAL2_RX, PIN_SERIAL2_TX, SERCOM_RX_PAD_1, UART_TX_PAD_2);
+
+void SERCOM2_Handler()
+{
+  sercom2SerialPort.IrqHandler();
+}
+
+MicroMaestro maestro(sercom2SerialPort);
+
 int pos = 0;    // variable to store the servo position
 File dataFile;
 char dataString[20] = "some data";
 
 void setup() {
-  servo.attach(SERVO_PIN);
-  ignore.attach(SERVO_IGNORE);
+  sercom2SerialPort.begin(9600);
+  Serial.begin(9600);
+
+  pinPeripheral(2, PIO_SERCOM);
+  pinPeripheral(3, PIO_SERCOM_ALT);
+
+  delay(1000);
 
   // see if the card is present and can be initialized:
   if (!SD.begin(CHIP_SELECT)) {
@@ -25,15 +42,17 @@ void setup() {
 }
 
 void loop() {
-  for (pos = 35; pos <= 125; pos += 1) {
-    servo.write(pos);
-    delay(15);
-  }
 
-  for (pos = 125; pos >= 35; pos -= 1) {
-    servo.write(pos);
-    delay(15);
+  if (!sercom2SerialPort.available()) {
+    Serial.println("serial port did not become available");
   }
+  maestro.setSpeed(0, 30);
+  maestro.setAcceleration(0,20);
+
+  maestro.setTarget(0, 5000);
+  delay(2000);
+
+  maestro.setTarget(0, 7000);
 
   for (int i=0; i < 10; i++) {
     dataFile = SD.open("datalog.txt", FILE_WRITE);
@@ -42,5 +61,7 @@ void loop() {
       dataFile.close();
     }
   }
+
+  delay(2000);
 
 }
