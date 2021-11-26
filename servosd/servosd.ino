@@ -22,7 +22,7 @@ MicroMaestro maestro(sercom2SerialPort);
 
 int pos = 0;    // variable to store the servo position
 File dataFile;
-char dataString[20] = "some data";
+char dataString[20] = "new data";
 
 void setup() {
   sercom2SerialPort.begin(9600);
