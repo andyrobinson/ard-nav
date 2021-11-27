@@ -46,20 +46,44 @@ void loop() {
   if (!sercom2SerialPort.available()) {
     Serial.println("serial port did not become available");
   }
-  maestro.setSpeed(0, 30);
-  maestro.setAcceleration(0,20);
+  // maestro.setSpeed(0, 30);
+  // maestro.setAcceleration(0,20);
 
-  maestro.setTarget(0, 5000);
+  Serial.println("moving rudder");
+
+  maestro.setTarget(0, 4000); // just over 45 degrees right rudder
   delay(2000);
 
-  maestro.setTarget(0, 7000);
+  maestro.setTarget(0, 6000);
+  delay(2000);
 
-  for (int i=0; i < 10; i++) {
-    dataFile = SD.open("datalog.txt", FILE_WRITE);
-    if (dataFile) {
-      dataFile.println(dataString);
-      dataFile.close();
-    }
+  maestro.setTarget(0, 8000); // just over 45 degrees left rudder
+  delay(2000);
+
+  maestro.setTarget(0, 6000);
+  delay(2000);
+
+  Serial.println("moving sail");
+
+  maestro.setTarget(1, 2000);
+  delay(8000);
+
+  maestro.setTarget(1, 6000);
+  delay(7000);
+
+  maestro.setTarget(1, 10000);
+  delay(7000);
+
+  maestro.setTarget(1, 6000);
+  delay(7000);
+
+  maestro.setTarget(1, 6000);
+  delay(10000);
+
+  dataFile = SD.open("datalog.txt", FILE_WRITE);
+  if (dataFile) {
+    dataFile.println(dataString);
+    dataFile.close();
   }
 
   delay(2000);
