@@ -45,9 +45,9 @@ Captain captain(&navigator);
 
 void setup() {
   servo_control.begin();
+  delay(1000);
   rudder.begin();
   sail.begin();
-
   windsensor.begin();
   compass.begin();
   gps.begin();
