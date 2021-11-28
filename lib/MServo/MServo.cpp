@@ -1,7 +1,6 @@
 #include "MServo.h"
-
-#include <PololuMaestro.h>
 #include "wiring_private.h"
+#include <PololuMaestro.h>
 
 // sercom2SerialPort on SERCOM 2, TX = pin 2, RX = pin 3
 Uart sercom2SerialPort (&sercom2, PIN_SERIAL2_RX, PIN_SERIAL2_TX, SERCOM_RX_PAD_1, UART_TX_PAD_2);

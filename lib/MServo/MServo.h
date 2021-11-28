@@ -1,15 +1,15 @@
 #ifndef MServo_h
 #define MServo_h
 
-#include <PololuMaestro.h>
+#include "Arduino.h"
 
 #define SERVO_TX 2
 #define SERVO_RX 3
 
 #define PIN_SERIAL2_RX       (3ul)
 #define PIN_SERIAL2_TX       (2ul)
-#define SERVO_MIN = 2000
-#define SERVO_MAX = 10000
+#define SERVO_MIN 2000
+#define SERVO_MAX 10000
 
 // Servo via Pololu Maestro controller, with similar interface to Servo
 class MServo
