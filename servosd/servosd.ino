@@ -1,37 +1,19 @@
 #include <SPI.h>
 #include <SD.h>
-#include <PololuMaestro.h>
-#include "wiring_private.h"
+#include <MServo.h>
 
-#define SERVO_TX 2
-#define SERVO_RX 3
 #define CHIP_SELECT 4
-
-#define PIN_SERIAL2_RX       (3ul)
-#define PIN_SERIAL2_TX       (2ul)
-
-// sercom2SerialPort on SERCOM 2, TX = pin 2, RX = pin 3
-Uart sercom2SerialPort (&sercom2, PIN_SERIAL2_RX, PIN_SERIAL2_TX, SERCOM_RX_PAD_1, UART_TX_PAD_2);
-
-void SERCOM2_Handler()
-{
-  sercom2SerialPort.IrqHandler();
-}
-
-MicroMaestro maestro(sercom2SerialPort);
+#define RUDDER_CHANNEL 0
+#define SAIL_CHANNEL 1
 
 int pos = 0;    // variable to store the servo position
 File dataFile;
 char dataString[20] = "new data";
+MServo servo;
 
 void setup() {
-  sercom2SerialPort.begin(9600);
-  Serial.begin(9600);
 
-  pinPeripheral(2, PIO_SERCOM);
-  pinPeripheral(3, PIO_SERCOM_ALT);
-
-  delay(1000);
+  servo.begin();
 
   // see if the card is present and can be initialized:
   if (!SD.begin(CHIP_SELECT)) {
@@ -43,41 +25,34 @@ void setup() {
 
 void loop() {
 
-  if (!sercom2SerialPort.available()) {
-    Serial.println("serial port did not become available");
-  }
-  // maestro.setSpeed(0, 30);
-  // maestro.setAcceleration(0,20);
+  servo.setSpeed(RUDDER_CHANNEL, 30);
+  servo.setAccel(RUDDER_CHANNEL, 20);
 
   Serial.println("moving rudder");
 
-  maestro.setTarget(0, 4000); // just over 45 degrees right rudder
+  servo.write(RUDDER_CHANNEL, 45);
   delay(2000);
-
-  maestro.setTarget(0, 6000);
+  servo.write(RUDDER_CHANNEL, 90);
   delay(2000);
-
-  maestro.setTarget(0, 8000); // just over 45 degrees left rudder
+  servo.write(RUDDER_CHANNEL, 135);
   delay(2000);
-
-  maestro.setTarget(0, 6000);
+  servo.write(RUDDER_CHANNEL, 90);
   delay(2000);
 
   Serial.println("moving sail");
 
-  maestro.setTarget(1, 2000);
-  delay(8000);
+  servo.write(SAIL_CHANNEL, 0);
+  delay(6000);
+  servo.write(SAIL_CHANNEL, 45);
+  delay(4000);
+  servo.write(SAIL_CHANNEL, 90);
+  delay(4000);
+  servo.write(SAIL_CHANNEL, 135);
+  delay(4000);
+  servo.write(SAIL_CHANNEL, 180);
+  delay(4000);
+  servo.write(SAIL_CHANNEL, 90);
 
-  maestro.setTarget(1, 6000);
-  delay(7000);
-
-  maestro.setTarget(1, 10000);
-  delay(7000);
-
-  maestro.setTarget(1, 6000);
-  delay(7000);
-
-  maestro.setTarget(1, 6000);
   delay(10000);
 
   dataFile = SD.open("datalog.txt", FILE_WRITE);
