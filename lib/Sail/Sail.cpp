@@ -8,8 +8,11 @@ using namespace Utility;
 
 Sail::Sail() {}
 
-Sail::Sail(VSServoSamd *servo) {
-  sail_servo = servo;
+Sail::Sail(MServo *servo_controlp): servo_control(servo_controlp) {}
+
+void Sail::begin() {
+  servo_control->setSpeed(SAIL_CHANNEL, SAIL_SPEED);
+  servo_control->setAccel(SAIL_CHANNEL, SAIL_ACCEL);
 }
 
 void Sail::set_position(angle relative_wind) {
@@ -26,7 +29,7 @@ void Sail::set_position(angle relative_wind) {
     last_position = sign(last_position) * SERVO_MAX_DISPLACEMENT;
   }
   servo_0_to_180_angle = SERVO_MAX_DISPLACEMENT - last_position;
-  sail_servo->write((int) servo_0_to_180_angle);
+  servo_control->write(SAIL_CHANNEL, (uint16_t) servo_0_to_180_angle);
 }
 
 angle Sail::gybe_check(angle old_position, angle new_position) {

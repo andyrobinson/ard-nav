@@ -2,6 +2,7 @@
 #define MServo_h
 
 #include "Arduino.h"
+#include "PololuMaestro.h"
 
 #define SERVO_TX 2
 #define SERVO_RX 3

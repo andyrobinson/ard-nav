@@ -1,4 +1,4 @@
-#include <VSServoSamd.h>
+#include <MServo.h>
 #include <Position.h>
 #include <Compass.h>
 #include <Timer.h>
@@ -21,12 +21,9 @@
 #include <Adafruit_SleepyDog.h>
 
 #define MAJOR_VERSION 99 // for test
-#define SAIL_SERVO_PIN 6
-#define RUDDER_SERVO_PIN 5
 
 WindSensor windsensor;
-VSServoSamd sail_servo;
-VSServoSamd rudder_servo;
+MServo servo_control;
 Compass compass;
 Timer timer;
 Globe globe;
@@ -37,9 +34,9 @@ char logmsg[22];
 // Dependency injection
 Gps gps(&timer);
 SDLogger logger(&gps, &windsensor, &compass);
-Sail sail(&sail_servo);
+Sail sail(&servo_control);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
-Rudder rudder(&rudder_servo);
+Rudder rudder(&servo_control);
 SelfTest selftest(&gps, &windsensor, &compass, &sail, &rudder, &timer, &logger);
 Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &logger);
 Tacker tacker(&helm, &compass, &windsensor, &logger);
@@ -47,8 +44,9 @@ Navigator navigator(&tacker, &gps, &globe, &logger);
 Captain captain(&navigator);
 
 void setup() {
-  sail_servo.attach(SAIL_SERVO_PIN);
-  rudder_servo.attach(RUDDER_SERVO_PIN);
+  servo_control.begin();
+  rudder.begin();
+  sail.begin();
 
   windsensor.begin();
   compass.begin();
@@ -70,7 +68,9 @@ void loop() {
 
   // a little indicator that we're starting
   rudder.set_position(-45);
+  sail.set_position(-45);
   timer.wait(4000);
+  sail.set_position(45);
   rudder.set_position(45);
   timer.wait(4000);
 

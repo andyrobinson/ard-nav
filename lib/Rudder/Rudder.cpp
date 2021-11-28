@@ -5,8 +5,11 @@ using namespace Angle;
 
 Rudder::Rudder() {}
 
-Rudder::Rudder(VSServoSamd *servo) {
-  rudder_servo = servo;
+Rudder::Rudder(MServo *servo_controlp): servo_control(servo_controlp) {}
+
+void Rudder::begin() {
+  servo_control->setSpeed(RUDDER_CHANNEL, RUDDER_SPEED);
+  servo_control->setAccel(RUDDER_CHANNEL, RUDDER_ACCEL);
 }
 
 void Rudder::set_position(angle position) {
@@ -19,5 +22,5 @@ void Rudder::set_position(angle position) {
   }
 
   int servo_0_to_180_angle = RUDDER_CENTRE + position;
-  rudder_servo->write(servo_0_to_180_angle, RUDDER_SPEED);
+  servo_control->write(RUDDER_CHANNEL, servo_0_to_180_angle);
 }
