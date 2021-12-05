@@ -17,7 +17,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
     sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
 
     angle TEMP_RUDDER = 25;
-    angle TEMP_SAIL = 60;
+    angle TEMP_RELATIVE_WIND = 100;
     int SAIL_COUNT = 0;
     while (remaining > 0) { // && wind_in_range(range)) { removed because wind sensor not present
 
@@ -35,9 +35,9 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
      if (SAIL_COUNT == 10) {
        SAIL_COUNT = 0;
        timer->wait(200);
-       sail->set_position(TEMP_SAIL);
+       sail->set_position(TEMP_RELATIVE_WIND);
        timer->wait(400);
-       TEMP_SAIL = -TEMP_SAIL;
+       TEMP_RELATIVE_WIND = -TEMP_RELATIVE_WIND;
      }
       remaining = remaining - STEER_INTERVAL;
 

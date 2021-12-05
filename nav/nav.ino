@@ -60,8 +60,9 @@ void loop() {
   // selftest.test();
   sprintf(logmsg, "Navigating v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
 
-  int countdownMS = Watchdog.enable(4000);
-  sprintf(logmsg, "Watchdog at %3d", countdownMS); logger.banner(logmsg);
+  //int countdownMS = Watchdog.enable(4000);
+  //sprintf(logmsg, "Watchdog at %3d", countdownMS); logger.banner(logmsg);
+  sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
 
   uint8_t sw = switches.value() & 3; // four routes configurable
   route journey = plattfields[sw];
