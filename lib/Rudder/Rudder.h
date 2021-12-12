@@ -8,7 +8,7 @@
 #define RUDDER_CENTRE 90
 #define RUDDER_CHANNEL 0
 #define RUDDER_SPEED 30
-#define RUDDER_ACCEL 20
+#define RUDDER_ACCEL 10
 
 using namespace Angle;
 
