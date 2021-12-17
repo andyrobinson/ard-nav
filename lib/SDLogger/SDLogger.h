@@ -4,7 +4,7 @@
 #include "Logger.h"
 #include "WindSensor.h"
 #include "Compass.h"
-#include "Gps.h"
+//#include "Gps.h"
 #include "Utility.h"
 
 #define TEST_LOG_FILE 20000l
@@ -16,7 +16,8 @@
 class SDLogger : public Logger {
     public:
       SDLogger();
-      SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp);
+//      SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp);
+      SDLogger(WindSensor *windsensorp, Compass *compassp);
       virtual void begin();
       virtual void msg(char *message);
       virtual void banner(char *message);
@@ -28,10 +29,10 @@ class SDLogger : public Logger {
       void calculate_filename(char *filename, long unix_ts);
       boolean sd_time_to_log();
 
-      Gps *gps;
+//      Gps *gps;
       WindSensor *windsensor;
       Compass *compass;
-      gpsResult gpsReading;
+  //    gpsResult gpsReading;
       char destination;
       char tack;
       char logfile[13];
