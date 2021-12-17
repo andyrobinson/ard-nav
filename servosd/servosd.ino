@@ -25,42 +25,23 @@ void setup() {
 
 void loop() {
 
-  servo.setSpeed(RUDDER_CHANNEL, 30);
-  servo.setAccel(RUDDER_CHANNEL, 20);
+  servo.setSpeed(RUDDER_CHANNEL, 20);
+  servo.setAccel(RUDDER_CHANNEL, 0);
 
-  Serial.println("moving rudder");
+  servo.write(SAIL_CHANNEL, 45);
 
   servo.write(RUDDER_CHANNEL, 45);
-  delay(2000);
-  servo.write(RUDDER_CHANNEL, 90);
-  delay(2000);
+  delay(1000);
   servo.write(RUDDER_CHANNEL, 135);
-  delay(2000);
-  servo.write(RUDDER_CHANNEL, 90);
-  delay(2000);
+  delay(1000);
 
-  Serial.println("moving sail");
-
-  servo.write(SAIL_CHANNEL, 0);
-  delay(6000);
-  servo.write(SAIL_CHANNEL, 45);
-  delay(4000);
-  servo.write(SAIL_CHANNEL, 90);
-  delay(4000);
   servo.write(SAIL_CHANNEL, 135);
-  delay(4000);
-  servo.write(SAIL_CHANNEL, 180);
-  delay(4000);
-  servo.write(SAIL_CHANNEL, 90);
-
-  delay(10000);
+  delay(2000);
 
   dataFile = SD.open("datalog.txt", FILE_WRITE);
   if (dataFile) {
     dataFile.println(dataString);
     dataFile.close();
   }
-
-  delay(2000);
 
 }
