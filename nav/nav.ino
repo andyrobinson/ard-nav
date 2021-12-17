@@ -2,23 +2,22 @@
 #include <Position.h>
 #include <Compass.h>
 #include <Timer.h>
-#include <Gps.h>
-#include <Globe.h>
+//#include <Gps.h>
+//#include <Globe.h>
 #include <Sail.h>
 #include <Rudder.h>
 #include <Helm.h>
-#include <SelfTest.h>
-#include <Tacker.h>
-#include <Navigator.h>
-#include <Captain.h>
+//#include <SelfTest.h>
+//#include <Tacker.h>
+//#include <Navigator.h>
+//#include <Captain.h>
 #include <SDLogger.h>
-#include <SerialLogger.h>
+//#include <SerialLogger.h>
 #include <Utility.h>
 #include <Routes.h>
-#include <Switches.h>
+//#include <Switches.h>
 #include <RotaryPID.h>
 #include <version.h>
-#include <Adafruit_SleepyDog.h>
 
 #define MAJOR_VERSION 99 // for test
 
@@ -26,22 +25,23 @@ WindSensor windsensor;
 MServo servo_control;
 Compass compass;
 Timer timer;
-Globe globe;
+//Globe globe;
 
 Switches switches;
 char logmsg[22];
 
 // Dependency injection
-Gps gps(&timer);
-SDLogger logger(&gps, &windsensor, &compass);
+//Gps gps(&timer);
+//SDLogger logger(&gps, &windsensor, &compass);
+SDLogger logger(&windsensor, &compass);
 Sail sail(&servo_control);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
 Rudder rudder(&servo_control);
-SelfTest selftest(&gps, &windsensor, &compass, &sail, &rudder, &timer, &logger);
+//SelfTest selftest(&gps, &windsensor, &compass, &sail, &rudder, &timer, &logger);
 Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &logger);
-Tacker tacker(&helm, &compass, &windsensor, &logger);
-Navigator navigator(&tacker, &gps, &globe, &logger);
-Captain captain(&navigator);
+//Tacker tacker(&helm, &compass, &windsensor, &logger);
+//Navigator navigator(&tacker, &gps, &globe, &logger);
+//Captain captain(&navigator);
 
 void setup() {
   servo_control.begin();
@@ -50,9 +50,9 @@ void setup() {
   sail.begin();
   windsensor.begin();
   compass.begin();
-  gps.begin();
+//  gps.begin();
   logger.begin();
-  switches.begin();
+//  switches.begin();
 }
 
 void loop() {
@@ -62,10 +62,10 @@ void loop() {
 
   //int countdownMS = Watchdog.enable(4000);
   //sprintf(logmsg, "Watchdog at %3d", countdownMS); logger.banner(logmsg);
-  sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
+  //sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
 
-  uint8_t sw = switches.value() & 3; // four routes configurable
-  route journey = plattfields[sw];
+  //uint8_t sw = switches.value() & 3; // four routes configurable
+  //route journey = plattfields[sw];
 
   // a little indicator that we're starting
   rudder.set_position(-45);
@@ -75,7 +75,11 @@ void loop() {
   rudder.set_position(45);
   timer.wait(4000);
 
-  captain.voyage(journey.waypoints, journey.length);
+  while(true){
+    helm.steer(90, 36000, {5,355});
+  };
+
+  // captain.voyage(journey.waypoints, journey.length);
   logger.banner("Finished Navigation :-)");
 
   while(true){};
