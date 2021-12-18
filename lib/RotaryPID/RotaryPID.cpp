@@ -8,8 +8,8 @@ using namespace Utility;
 
 RotaryPID::RotaryPID() {}
 
-RotaryPID::RotaryPID(float limit_param, Switches *switchesp, Logger *loggerp):
-  limit(limit_param), Kp(KP), Ki(KI), Kd(KD), integral_term(0.0), last_heading(0), switches(switchesp), logger(loggerp) {}
+RotaryPID::RotaryPID(float limit_param, Switches *switchesp):
+  limit(limit_param), Kp(KP), Ki(KI), Kd(KD), integral_term(0.0), last_heading(0), switches(switchesp) {}
 
 angle RotaryPID::calculate(uangle desired_heading, uangle current_heading, long interval_ms) {
     set_constants();
@@ -39,7 +39,7 @@ void RotaryPID::set_constants() {
   Kd = Ki/8;
 
   sprintf(logmsg, "K percent %3d", (int) percent);
-  logger->msg(logmsg);
+  // logger->msg(logmsg);
 }
 
 float RotaryPID::clip(float value, float limit) {
