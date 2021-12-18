@@ -9,6 +9,7 @@ void Switches::begin() {
 }
 
 uint8_t Switches::value() {
+  //uint8_t result = 0;
   uint8_t result = (4 * digitalRead(SWITCH4)) + (2 * digitalRead(SWITCH2)) + digitalRead(SWITCH1);
   return result;
 }
@@ -19,4 +20,5 @@ float Switches::dial_percent() {
   int pin_voltage = analogRead(RCINPUT);
   float result = 100.0 * ((float) pin_voltage - RCLOWER)/(RCUPPER - RCLOWER);
   return result;
+  //return 50.0;
 }
