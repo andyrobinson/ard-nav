@@ -2,12 +2,10 @@
 #define Helm_h
 
 #include "Rudder.h"
-#include "Compass.h"
 #include "Timer.h"
 #include "WindSensor.h"
 #include "Sail.h"
 #include "Logger.h"
-#include "RotaryPID.h"
 #include "Windrange.h"
 
 using namespace Windrange;
@@ -18,16 +16,14 @@ class Helm
 {
   public:
     Helm();
-    Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, Logger *loggerp);
+    Helm(Rudder *rudderp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, Logger *loggerp);
     void steer(uangle direction, long steer_time, windrange range);
 
   private:
     Rudder *rudder;
-    Compass *compass;
     Timer *timer;
     WindSensor *windsensor;
     Sail *sail;
-    RotaryPID *rotarypid;
     Logger *logger;
     angle rudder_position;
     uangle old_heading;
