@@ -7,8 +7,8 @@ using namespace Utility;
 
 Helm::Helm():rudder_position(0) {}
 
-Helm::Helm(Rudder *rudderp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, Logger *loggerp):
-  rudder_position(0),rudder(rudderp), timer(timerp), windsensor(windsensorp), sail(sailp), logger(loggerp), old_heading(0) {}
+Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, Logger *loggerp):
+  rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), windsensor(windsensorp), sail(sailp), rotarypid(rotarypidp), logger(loggerp), old_heading(0) {}
 
 void Helm::steer(uangle direction, long steer_time, windrange range) {
     long remaining = steer_time;
@@ -19,13 +19,10 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
     angle TEMP_RUDDER = 25;
     angle TEMP_RELATIVE_WIND = 100;
     int SAIL_COUNT = 0;
-    uangle current_heading = 0;
-
     while (remaining > 0) { // && wind_in_range(range)) { removed because wind sensor not present
 
-      current_heading = uadd(current_heading, 10);
-      // angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
-      angle new_rudder_position = 10;
+      angle current_heading = compass->bearing();
+      angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
 
       // set_rudder(new_rudder_position, current_heading);
      //      sail->set_position(windsensor->relative());
@@ -63,5 +60,9 @@ long Helm::rot(uangle old_heading, uangle current_heading, long steer_interval) 
 }
 
 bool Helm::wind_in_range(windrange range) {
-    return true;
+    char logmsg[22];
+    uangle abs_wind = windsensor->absolute(compass->bearing());
+    if (in_range(abs_wind, range.lower, range.upper)) return true;
+    sprintf(logmsg, "Abandon: %3d,%3d,%3d", abs_wind, range.lower, range.upper); logger->banner(logmsg);
+    return false;
 }
