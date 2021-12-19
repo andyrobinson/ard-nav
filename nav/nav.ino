@@ -1,25 +1,30 @@
 #include <MServo.h>
 #include <Position.h>
+#include <Compass.h>
 #include <Timer.h>
 #include <Gps.h>
 #include <Globe.h>
 #include <Sail.h>
 #include <Rudder.h>
 #include <Helm.h>
+#include <SelfTest.h>
 #include <Tacker.h>
 #include <Navigator.h>
 #include <Captain.h>
 #include <SDLogger.h>
+#include <SerialLogger.h>
 #include <Utility.h>
-#include <Switches.h>
 #include <Routes.h>
+#include <Switches.h>
+#include <RotaryPID.h>
 #include <version.h>
+#include <Adafruit_SleepyDog.h>
 
 #define MAJOR_VERSION 99 // for test
 
 WindSensor windsensor;
 MServo servo_control;
-//Compass compass;
+Compass compass;
 Timer timer;
 Globe globe;
 
@@ -28,11 +33,13 @@ char logmsg[22];
 
 // Dependency injection
 Gps gps(&timer);
-SDLogger logger(&gps, &windsensor);
+SDLogger logger(&gps, &windsensor, &compass);
 Sail sail(&servo_control);
+RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
 Rudder rudder(&servo_control);
-Helm helm(&rudder, &timer, &windsensor, &sail, &logger);
-Tacker tacker(&helm, &windsensor, &logger);
+SelfTest selftest(&gps, &windsensor, &compass, &sail, &rudder, &timer, &logger);
+Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &logger);
+Tacker tacker(&helm, &compass, &windsensor, &logger);
 Navigator navigator(&tacker, &gps, &globe, &logger);
 Captain captain(&navigator);
 
@@ -42,6 +49,7 @@ void setup() {
   rudder.begin();
   sail.begin();
   windsensor.begin();
+  compass.begin();
   gps.begin();
   logger.begin();
   switches.begin();
@@ -49,7 +57,11 @@ void setup() {
 
 void loop() {
   sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
+  // selftest.test();
   sprintf(logmsg, "Navigating v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
+
+  //int countdownMS = Watchdog.enable(4000);
+  //sprintf(logmsg, "Watchdog at %3d", countdownMS); logger.banner(logmsg);
   sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
 
   uint8_t sw = switches.value() & 3; // four routes configurable

@@ -16,7 +16,7 @@
 class SDLogger : public Logger {
     public:
       SDLogger();
-      SDLogger(Gps *gpsp, WindSensor *windsensorp);
+      SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp);
       virtual void begin();
       virtual void msg(char *message);
       virtual void banner(char *message);
@@ -30,6 +30,7 @@ class SDLogger : public Logger {
 
       Gps *gps;
       WindSensor *windsensor;
+      Compass *compass;
       gpsResult gpsReading;
       char destination;
       char tack;
