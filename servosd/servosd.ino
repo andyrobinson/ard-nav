@@ -8,7 +8,7 @@
 
 int pos = 0;    // variable to store the servo position
 File dataFile;
-char dataString[20] = " new data";
+char dataString[20] = "new data";
 MServo servo;
 
 void setup() {
@@ -23,32 +23,25 @@ void setup() {
 
 }
 
-void slow_log() {
-  for (int i=0; i<4; i++) {
-    delay(300);
-    dataFile = SD.open("datalog.txt", FILE_WRITE);
-    if (dataFile) {
-      dataFile.print(millis());
-      dataFile.println(dataString);
-      dataFile.close();
-    }
-  }
-}
-
 void loop() {
 
   servo.setSpeed(RUDDER_CHANNEL, 20);
   servo.setAccel(RUDDER_CHANNEL, 0);
 
   servo.write(SAIL_CHANNEL, 45);
-  servo.write(RUDDER_CHANNEL, 45);
-  slow_log();
 
+  servo.write(RUDDER_CHANNEL, 45);
+  delay(1000);
   servo.write(RUDDER_CHANNEL, 135);
-  slow_log();
+  delay(1000);
 
   servo.write(SAIL_CHANNEL, 135);
-  slow_log();
-  slow_log();
+  delay(2000);
+
+  dataFile = SD.open("datalog.txt", FILE_WRITE);
+  if (dataFile) {
+    dataFile.println(dataString);
+    dataFile.close();
+  }
 
 }
