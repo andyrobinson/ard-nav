@@ -7,8 +7,8 @@ using namespace Utility;
 
 Helm::Helm():rudder_position(0) {}
 
-Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, Logger *loggerp):
-  rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), windsensor(windsensorp), sail(sailp), rotarypid(rotarypidp), logger(loggerp), old_heading(0) {}
+Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, Logger *loggerp):
+  rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), windsensor(windsensorp), sail(sailp), logger(loggerp), old_heading(0) {}
 
 void Helm::steer(uangle direction, long steer_time, windrange range) {
     long remaining = steer_time;
@@ -22,7 +22,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
     while (remaining > 0) { // && wind_in_range(range)) { removed because wind sensor not present
 
       angle current_heading = compass->bearing();
-      angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
+      angle new_rudder_position = 15; // rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
 
       // set_rudder(new_rudder_position, current_heading);
      //      sail->set_position(windsensor->relative());

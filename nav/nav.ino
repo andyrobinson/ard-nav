@@ -7,7 +7,6 @@
 #include <Sail.h>
 #include <Rudder.h>
 #include <Helm.h>
-#include <SelfTest.h>
 #include <Tacker.h>
 #include <Navigator.h>
 #include <Captain.h>
@@ -16,9 +15,7 @@
 #include <Utility.h>
 #include <Routes.h>
 #include <Switches.h>
-#include <RotaryPID.h>
 #include <version.h>
-#include <Adafruit_SleepyDog.h>
 
 #define MAJOR_VERSION 99 // for test
 
@@ -35,10 +32,8 @@ char logmsg[22];
 Gps gps(&timer);
 SDLogger logger(&gps, &windsensor, &compass);
 Sail sail(&servo_control);
-RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
 Rudder rudder(&servo_control);
-SelfTest selftest(&gps, &windsensor, &compass, &sail, &rudder, &timer, &logger);
-Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &logger);
+Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &logger);
 Tacker tacker(&helm, &compass, &windsensor, &logger);
 Navigator navigator(&tacker, &gps, &globe, &logger);
 Captain captain(&navigator);
