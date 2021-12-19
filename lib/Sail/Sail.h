@@ -13,8 +13,6 @@
 #define SAIL_CHANNEL 1
 #define SAIL_SPEED 0
 #define SAIL_ACCEL 0
-#define NO_WIND_VALUE -999
-
 
 using namespace Angle;
 

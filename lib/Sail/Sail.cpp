@@ -1,6 +1,7 @@
 #include "Sail.h"
 #include "Angle.h"
 #include "Utility.h"
+#include "Windsensor.h"
 
 using namespace Angle;
 using namespace Utility;
