@@ -19,12 +19,11 @@ class Tacker
 {
   public:
     Tacker();
-    Tacker(Helm *helmp, Compass *compassp, WindSensor *windsensorp, Logger *loggerp);
+    Tacker(Helm *helmp, WindSensor *windsensorp, Logger *loggerp);
     void steer(uangle direction, long steer_time);
 
   private:
     Helm *helm;
-    Compass *compass;
     WindSensor *windsensor;
     Logger *logger;
     windrange set_range(uangle direction, short sign);
