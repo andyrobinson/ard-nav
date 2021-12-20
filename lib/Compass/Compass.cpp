@@ -32,38 +32,63 @@ uangle Compass::bearing() {
 }
 
 MagResult Compass::raw_bearing() {
+  byte endTransResult;
+  byte xlo = 0;  byte xhi = 0;  byte ylo = 0;  byte yhi = 0;  byte zlo = 0;  byte zhi = 0;
+
   Wire.beginTransmission((byte) COMPASS_COMPASS_I2C_ADDRESS);
   Wire.write(COMPASS_REGISTER_X_HIGH);
-  Wire.endTransmission();
+  endTransResult = Wire.endTransmission();
+
+  if (endTransResult) {
+    Serial.println("raw_bearing ERROR: " + String(endTransResult) + " Write failed to " + String(COMPASS_COMPASS_I2C_ADDRESS) + " " + String(COMPASS_REGISTER_X_HIGH));
+  }
+
   Wire.requestFrom((byte) COMPASS_COMPASS_I2C_ADDRESS, (byte) 6);
 
-  while (Wire.available() < 6);
+  long start = millis();
+  while (Wire.available() < 6 && ((millis() - start) < 2));
 
-  byte xhi = Wire.read();
-  byte xlo = Wire.read();
-  byte zhi = Wire.read();
-  byte zlo = Wire.read();
-  byte yhi = Wire.read();
-  byte ylo = Wire.read();
+  if (Wire.available() < 6) {
+    Serial.println("raw_bearing ERROR: Not enough data, wanted 6 got " + String(Wire.available()));
+  } else {
+      xhi = Wire.read();
+      xlo = Wire.read();
+      zhi = Wire.read();
+      zlo = Wire.read();
+      yhi = Wire.read();
+      ylo = Wire.read();
+  }
 
   return {hilow_toint(xhi,xlo) + COMPASS_X_CORRECTION, hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
 }
 
 MagResult Compass::raw_accel() {
+  byte endTransResult;
+  byte xlo = 0;  byte xhi = 0;  byte ylo = 0;  byte yhi = 0;  byte zlo = 0;  byte zhi = 0;
 
   Wire.beginTransmission((byte) COMPASS_ACCEL_I2C_ADDRESS);
   Wire.write(ACCEL_REGISTER_OUT_X_L_A | 0x80);
-  Wire.endTransmission();
+  endTransResult = Wire.endTransmission();
+
+  if (endTransResult) {
+    Serial.println("raw accel ERROR: " + String(endTransResult) + " Write failed to " + String(ACCEL_REGISTER_OUT_X_L_A) + " 0x80 ");
+  }
+
   Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
 
-  while (Wire.available() < 6);
+  long start = millis();
+  while (Wire.available() < 6 && ((millis() - start) < 2));
 
-  byte xlo = Wire.read();
-  byte xhi = Wire.read();
-  byte ylo = Wire.read();
-  byte yhi = Wire.read();
-  byte zlo = Wire.read();
-  byte zhi = Wire.read();
+  if (Wire.available() < 6) {
+    Serial.println("raw accel ERROR: Not enough data, wanted 6 got " + String(Wire.available()));
+  } else {
+    xlo = Wire.read();
+    xhi = Wire.read();
+    ylo = Wire.read();
+    yhi = Wire.read();
+    zlo = Wire.read();
+    zhi = Wire.read();
+  }
 
   return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
 }
@@ -76,7 +101,7 @@ void Compass::write8(byte address, byte reg, byte value)
   Wire.write((uint8_t)value);
   endTransResult = Wire.endTransmission(false);
   if (endTransResult) {
-    Serial.println("ERROR: Write failed " + String(address) + " " + String(reg) + " " + String(value));
+    Serial.println("write8 ERROR: Write failed " + String(address) + " " + String(reg) + " " + String(value));
   }
 
 }

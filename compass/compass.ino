@@ -12,13 +12,15 @@ void setup() {
   while (!Serial); // wait for Serial to be ready
   Serial.begin(19200);
   compass.begin();
+  Serial.println("Starting test");
 }
 
 void loop() {
 
- sprintf(buf, "Bearing: %d",compass.bearing());
- Serial.println(buf);
-
- delay(1000);
+  for (int i=0;i<600;i++) {
+    compass.bearing();
+    delay(100);
+  }
+  Serial.println("tick");
 
 }
