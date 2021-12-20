@@ -8,12 +8,12 @@ using namespace Windrange;
 
 Tacker::Tacker() {}
 
-Tacker::Tacker(Helm *helmp, Compass *compassp, WindSensor *windsensorp, Logger *loggerp):
-  helm(helmp), compass(compassp), windsensor(windsensorp), logger(loggerp) {}
+Tacker::Tacker(Helm *helmp, WindSensor *windsensorp, Logger *loggerp):
+  helm(helmp), windsensor(windsensorp), logger(loggerp) {}
 
 void Tacker::steer(uangle direction, long steer_time) {
 
-  angle wind_diff = udiff(windsensor->absolute(compass->bearing()), direction);
+  angle wind_diff = udiff(windsensor->absolute(255), direction);
   char logmsg[10]="Straight";
 
   if (abs1(wind_diff) >= TACKER_NO_GO_LIMIT) {

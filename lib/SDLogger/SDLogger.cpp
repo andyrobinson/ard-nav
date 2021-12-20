@@ -8,8 +8,8 @@ using namespace Utility;
 
 SDLogger::SDLogger() {}
 
-SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp):
-  gps(gpsp), compass(compassp), windsensor(windsensorp) {}
+SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp):
+  gps(gpsp), windsensor(windsensorp) {}
 
 void SDLogger::calculate_filename(char *filename, long unix_ts) {
     long filenameint = TEST_LOG_FILE;
@@ -55,7 +55,7 @@ void SDLogger::print_line(char *message, char *msgprefix) {
     File dataFile = SD.open(logfile, FILE_WRITE);
     if (dataFile) {
       angle wind = windsensor->relative();
-      uangle bearing = compass->bearing();
+      uangle bearing = 255;
       int mem=dispFreeMemory();
 
       dataFile.print(gpsReading.unixTime); dataFile.print(",");
