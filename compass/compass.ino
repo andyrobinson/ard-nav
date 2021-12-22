@@ -14,11 +14,12 @@ void setup() {
 }
 
 void loop() {
-
-  for (int i=0;i<600;i++) {
-    compass.bearing();
+  short b;
+  for (int i=0;i<100;i++) {
+    b = compass.bearing();
     delay(100);
   }
-  Serial.println("tick");
+  Serial.print(b);
+  Serial.println(" tick");
 
 }
