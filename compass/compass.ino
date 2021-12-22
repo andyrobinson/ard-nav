@@ -1,5 +1,3 @@
-#include <SPI.h>
-#include <Wire.h>
 #include <Compass.h>
 
 // Simple test for the compass library - should
