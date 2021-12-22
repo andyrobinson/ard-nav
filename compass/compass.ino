@@ -14,12 +14,19 @@ void setup() {
 }
 
 void loop() {
-  short b;
-  for (int i=0;i<100;i++) {
-    b = compass.bearing();
-    delay(100);
-  }
-  Serial.print(b);
-  Serial.println(" tick");
-
+    MagResult m;
+    Serial.print(compass.bearing());Serial.print(": ");
+    m = compass.raw_accel();
+    Serial.print("{");
+    Serial.print(m.x); Serial.print(",");
+    Serial.print(m.y); Serial.print(",");
+    Serial.print(m.z);
+    Serial.print("} ");
+    m = compass.raw_bearing();
+    Serial.print("{"); 
+    Serial.print(m.x); Serial.print(",");
+    Serial.print(m.y); Serial.print(",");
+    Serial.print(m.z);
+    Serial.println("} ");
+    delay(1000);
 }
