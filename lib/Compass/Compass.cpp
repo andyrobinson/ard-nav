@@ -3,8 +3,6 @@
 
 Compass::Compass() {}
 
-uint8_t data[6];
-
 void Compass::begin() {
 
   I2C.begin(400000);                                        // Start I2C bus at 400kHz
@@ -37,8 +35,9 @@ uangle Compass::bearing() {
 }
 
 MagResult Compass::raw_bearing() {
-  byte xlo = 0;  byte xhi = 0;  byte ylo = 0;  byte yhi = 0;  byte zlo = 0;  byte zhi = 0;
+  for (int i = 0; i < 6; i++) {data[i] = 0;}
 
+  I2C.initReadBytes(COMPASS_COMPASS_I2C_ADDRESS, data, sizeof(data));
   I2C.initWriteRegAddr(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_X_HIGH);       // Set-up DMAC to write to MPU6050 register pointer
   I2C.write();                                              // DMAC write to set MPU6050 register pointer to start of the data
 
@@ -51,21 +50,15 @@ MagResult Compass::raw_bearing() {
 
   if (I2C.writeBusy || I2C.readBusy) {
     Serial.println("raw_bearing ERROR: Busy state while writing/reading");
-  } else {
-      xhi = data[0];
-      xlo = data[1];
-      zhi = data[2];
-      zlo = data[3];
-      yhi = data[4];
-      ylo = data[5];
   }
 
-  return {hilow_toint(xhi,xlo) + COMPASS_X_CORRECTION, hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
+  return {hilow_toint(data[0],data[1]) + COMPASS_X_CORRECTION, hilow_toint(data[4],data[5]), hilow_toint(data[2],data[3])};
 }
 
 MagResult Compass::raw_accel() {
-  byte xlo = 0;  byte xhi = 0;  byte ylo = 0;  byte yhi = 0;  byte zlo = 0;  byte zhi = 0;
+  for (int i = 0; i < 6; i++) {data[i] = 0;}
 
+  I2C.initReadBytes(COMPASS_COMPASS_I2C_ADDRESS, data, sizeof(data));
   I2C.initWriteRegAddr(COMPASS_ACCEL_I2C_ADDRESS, ACCEL_REGISTER_OUT_X_L_A | 0x80);       // Set-up DMAC to write to MPU6050 register pointer
   I2C.write();                                              // DMAC write to set MPU6050 register pointer to start of the data
 
@@ -78,16 +71,9 @@ MagResult Compass::raw_accel() {
 
   if (I2C.writeBusy || I2C.readBusy) {
     Serial.println("raw_accel ERROR: Busy state while writing/reading");
-  } else {
-    xlo = data[0];
-    xhi = data[1];
-    ylo = data[2];
-    yhi = data[3];
-    zlo = data[4];
-    zhi = data[5];
   }
 
-  return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
+  return {hilow_toint(data[1],data[0]), hilow_toint(data[3],data[2]), hilow_toint(data[5],data[4])};
 }
 
 int Compass::hilow_toint(byte high, byte low) {

@@ -32,6 +32,8 @@ class Compass
 
   private:
     int hilow_toint(byte high, byte low);
+    uint8_t data[6];
+
 };
 
 #endif
