@@ -4,9 +4,7 @@
 Compass::Compass() {}
 
 void Compass::begin() {
-
-  I2C.begin(400000);                                        // Start I2C bus at 400kHz
-  I2C.initReadBytes(COMPASS_COMPASS_I2C_ADDRESS, data, sizeof(data));   // Set DMAC to read the data
+  I2C.begin(400000);
 
   // Enable the compass
   I2C.writeByte(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);

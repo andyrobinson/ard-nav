@@ -1,9 +1,9 @@
-
 #ifndef WindSensor_h
 #define WindSensor_h
 
 #ifdef ARDUINO
 #include "Arduino.h"
+#include "I2C_DMAC.h"
 #endif
 #include "Angle.h"
 
@@ -20,6 +20,8 @@ class WindSensor
     angle relative();
     uangle absolute(uangle bearing);
     void begin();
+  private:
+    uint8_t data[2];
 };
 
 #endif
