@@ -15,7 +15,7 @@ void setup() {
 
 void loop() {
     MagResult m;
-    for (int i=0; i<100;i++) {
+    for (int i=0; i< 200;i++) {
       compass.bearing();
       delay(10);
     }
