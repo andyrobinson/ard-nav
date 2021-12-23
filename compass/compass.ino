@@ -15,6 +15,10 @@ void setup() {
 
 void loop() {
     MagResult m;
+    for (int i=0; i<100;i++) {
+      compass.bearing();
+      delay(10);
+    }
     Serial.print(compass.bearing());Serial.print(": ");
     m = compass.raw_accel();
     Serial.print("{");
@@ -23,10 +27,9 @@ void loop() {
     Serial.print(m.z);
     Serial.print("} ");
     m = compass.raw_bearing();
-    Serial.print("{"); 
+    Serial.print("{");
     Serial.print(m.x); Serial.print(",");
     Serial.print(m.y); Serial.print(",");
     Serial.print(m.z);
     Serial.println("} ");
-    delay(1000);
 }
