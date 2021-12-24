@@ -38,14 +38,12 @@ MagResult Compass::raw_bearing() {
 
   I2C.initReadBytes(COMPASS_COMPASS_I2C_ADDRESS, data, sizeof(data));
   I2C.initWriteRegAddr(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_X_HIGH);       // Set-up DMAC to write to MPU6050 register pointer
-  I2C.write();                                              // DMAC write to set MPU6050 register pointer to start of the data
 
-  long start = millis();
-  while (I2C.writeBusy && ((millis() - start) < 2));
+  I2C.write();
+  wait_with_timeout(&(I2C.writeBusy),2);
 
-  start = millis();
   I2C.read();
-  while (I2C.readBusy && ((millis() - start) < 2));
+  wait_with_timeout(&(I2C.readBusy),2);
 
   if (I2C.writeBusy || I2C.readBusy) {
     Serial.println("raw_bearing ERROR: Busy state while writing/reading");
@@ -58,21 +56,24 @@ MagResult Compass::raw_accel() {
   for (int i = 0; i < 6; i++) {data[i] = 0;}
 
   I2C.initReadBytes(COMPASS_COMPASS_I2C_ADDRESS, data, sizeof(data));
-  I2C.initWriteRegAddr(COMPASS_ACCEL_I2C_ADDRESS, ACCEL_REGISTER_OUT_X_L_A | 0x80);       // Set-up DMAC to write to MPU6050 register pointer
-  I2C.write();                                              // DMAC write to set MPU6050 register pointer to start of the data
+  I2C.initWriteRegAddr(COMPASS_ACCEL_I2C_ADDRESS, ACCEL_REGISTER_OUT_X_L_A | 0x80);
+  I2C.write();
+  wait_with_timeout(&(I2C.writeBusy),2);
 
-  long start = millis();
-  while (I2C.writeBusy && ((millis() - start) < 2));
-
-  start = millis();
   I2C.read();
-  while (I2C.readBusy && ((millis() - start) < 2));
+  wait_with_timeout(&(I2C.readBusy),2);
 
   if (I2C.writeBusy || I2C.readBusy) {
     Serial.println("raw_accel ERROR: Busy state while writing/reading");
   }
 
   return {hilow_toint(data[1],data[0]), hilow_toint(data[3],data[2]), hilow_toint(data[5],data[4])};
+}
+
+bool Compass::wait_with_timeout(volatile bool *busy, int timeout) {
+  long start = millis();
+  while (*busy && ((millis() - start) < timeout));
+  return *busy;
 }
 
 int Compass::hilow_toint(byte high, byte low) {
