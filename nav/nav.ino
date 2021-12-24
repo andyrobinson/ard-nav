@@ -1,5 +1,6 @@
 #include <MServo.h>
 #include <Position.h>
+#include <Compass.h>
 #include <Timer.h>
 #include <Gps.h>
 #include <Globe.h>
@@ -21,6 +22,7 @@
 
 WindSensor windsensor;
 MServo servo_control;
+Compass compass;
 Timer timer;
 Globe globe;
 
@@ -29,12 +31,12 @@ char logmsg[22];
 
 // Dependency injection
 Gps gps(&timer);
-SDLogger logger(&gps, &windsensor);
+SDLogger logger(&gps, &windsensor, &compass);
 Sail sail(&servo_control);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
 Rudder rudder(&servo_control);
-Helm helm(&rudder, &timer, &windsensor, &sail, &rotaryPID, &logger);
-Tacker tacker(&helm, &windsensor, &logger);
+Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &logger);
+Tacker tacker(&helm, &compass, &windsensor, &logger);
 Navigator navigator(&tacker, &gps, &globe, &logger);
 Captain captain(&navigator);
 
@@ -44,6 +46,8 @@ void setup() {
   rudder.begin();
   sail.begin();
   windsensor.begin();
+  delay(100); // to allow time for I2C
+  compass.begin();
   gps.begin();
   logger.begin();
   switches.begin();
