@@ -32,6 +32,7 @@ class Compass
 
   private:
     int hilow_toint(byte high, byte low);
+    bool wait_with_timeout(volatile bool *busy, int timeout);
     uint8_t data[6];
 
 };
