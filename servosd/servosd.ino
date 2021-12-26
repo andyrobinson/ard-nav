@@ -1,6 +1,8 @@
 #include <SPI.h>
 #include <SD.h>
 #include <MServo.h>
+#include <Compass.h>
+#include <WindSensor.h>
 
 #define CHIP_SELECT 4
 #define RUDDER_CHANNEL 0
@@ -10,8 +12,15 @@ int pos = 0;    // variable to store the servo position
 File dataFile;
 char dataString[20] = "new data";
 MServo servo;
+Compass compass;
+WindSensor wind;
+char buf[20];
 
 void setup() {
+
+  wind.begin();
+  delay(50);
+  compass.begin();
 
   servo.begin();
 
@@ -39,8 +48,14 @@ void loop() {
   delay(2000);
 
   dataFile = SD.open("datalog.txt", FILE_WRITE);
+
+  short bearing compass.bearing();
+  short wind = wind.relative();
+
   if (dataFile) {
-    dataFile.println(dataString);
+    dataFile.print(dataString);dataFile.print(",");
+    dataFile.print(bearing);dataFile.print(",");
+    dataFile.println(wind);
     dataFile.close();
   }
 
