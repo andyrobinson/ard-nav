@@ -3,6 +3,7 @@
 #include <MServo.h>
 #include <Compass.h>
 #include <WindSensor.h>
+#include <Gps.h>
 
 #define CHIP_SELECT 4
 #define RUDDER_CHANNEL 0
@@ -14,10 +15,14 @@ char dataString[20] = "new data";
 MServo servo;
 Compass compass;
 WindSensor wind;
+Timer timer;
+Gps gps(&timer);
+gpsResult gpsReading;
 char buf[20];
 
 void setup() {
 
+  gps.begin();
   wind.begin();
   delay(50);
   compass.begin();
@@ -44,15 +49,24 @@ void loop() {
   servo.write(RUDDER_CHANNEL, 135);
   delay(1000);
 
+
   servo.write(SAIL_CHANNEL, 135);
   delay(2000);
 
-  dataFile = SD.open("datalog.txt", FILE_WRITE);
-
+  gps.data(500, &gpsReading);
   short bearing = compass.bearing();
   short relative_wind = wind.relative();
+  bearing = compass.bearing();
+  relative_wind = wind.relative();
+  bearing = compass.bearing();
+  relative_wind = wind.relative();
+
+  dataFile = SD.open("datalog.txt", FILE_WRITE);
 
   if (dataFile) {
+    dataFile.print(gpsReading.unixTime); dataFile.print(",");
+    dataFile.print(gpsReading.pos.latitude,5); dataFile.print(",");
+    dataFile.print(gpsReading.pos.longitude,5); dataFile.print(",");
     dataFile.print(dataString);dataFile.print(",");
     dataFile.print(bearing);dataFile.print(",");
     dataFile.println(relative_wind);
