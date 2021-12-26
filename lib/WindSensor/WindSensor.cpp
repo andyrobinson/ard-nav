@@ -11,11 +11,16 @@ angle WindSensor::relative() {
   angle result = 0;
   uint16_t raw_result = 0;
 
-  I2C.readBytes(WINDSENSOR_AS5048B_I2C_ADDRESS, WINDSENSOR_AS5048B_I2C_REGISTER, &data[0], 2);
+  I2C.initReadBytes(WINDSENSOR_AS5048B_I2C_ADDRESS, data, sizeof(data));
+  I2C.initWriteRegAddr(WINDSENSOR_AS5048B_I2C_ADDRESS, WINDSENSOR_AS5048B_I2C_REGISTER);
+
+  I2C.write();
+  wait_with_timeout(&(I2C.writeBusy),20);
+
   I2C.read();
   wait_with_timeout(&(I2C.readBusy),20);
 
-  if (I2C.readBusy) {
+  if (I2C.writeBusy || I2C.readBusy) {
     return NO_WIND_VALUE;
   } else {
 
