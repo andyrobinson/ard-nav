@@ -45,9 +45,9 @@ void setup() {
   delay(1000);
   rudder.begin();
   sail.begin();
-  windsensor.begin();
-  delay(100); // to allow time for I2C
   compass.begin();
+//  windsensor.begin();
+//  delay(100); // to allow time for I2C
   gps.begin();
   logger.begin();
   switches.begin();

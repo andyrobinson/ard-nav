@@ -54,8 +54,8 @@ void SDLogger::print_line(char *message, char *msgprefix) {
     calculate_filename(logfile, gpsReading.unixTime);
     File dataFile = SD.open(logfile, FILE_WRITE);
     if (dataFile) {
-      angle wind = 99 // windsensor->relative();
-      uangle bearing = 99 // compass->bearing();
+      angle wind = 99; // windsensor->relative();
+      uangle bearing = 99; // compass->bearing();
       int mem=dispFreeMemory();
 
       dataFile.print(gpsReading.unixTime); dataFile.print(",");
