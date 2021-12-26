@@ -49,13 +49,13 @@ void loop() {
 
   dataFile = SD.open("datalog.txt", FILE_WRITE);
 
-  short bearing compass.bearing();
-  short wind = wind.relative();
+  short bearing = compass.bearing();
+  short relative_wind = wind.relative();
 
   if (dataFile) {
     dataFile.print(dataString);dataFile.print(",");
     dataFile.print(bearing);dataFile.print(",");
-    dataFile.println(wind);
+    dataFile.println(relative_wind);
     dataFile.close();
   }
 
