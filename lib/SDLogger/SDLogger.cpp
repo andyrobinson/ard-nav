@@ -61,7 +61,7 @@ void SDLogger::print_line(char *message, char *msgprefix) {
       int mem=dispFreeMemory();
 
       dataFile.print(gpsReading.unixTime); dataFile.print(",");
-      dataFile.print(millis()); dataFile.print(",");
+      dataFile.print(millis()/1000); dataFile.print(",");
       dataFile.print(gpsReading.pos.latitude,5); dataFile.print(",");
       dataFile.print(gpsReading.pos.longitude,5); dataFile.print(",");
       dataFile.print(gpsReading.pos.error); dataFile.print(",");
