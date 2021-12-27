@@ -18,15 +18,17 @@ void setup() {
 }
 
 void loop() {
-    // MagResult m;
-    // for (int i=0; i< 200;i++) {
-    //   compass.bearing();
-    //   delay(10);
-    // }
+    for (int i=0; i< 200;i++) {
+      compass.bearing();
+      wind.relative();
+      delay(10);
+    }
 
-    delay(1000);
-    Serial.print("Compass: "); Serial.print(compass.bearing());Serial.print(" ");
-    Serial.print("Wind: "); Serial.println(wind.relative());
+    Serial.print("Compass: "); Serial.print(compass.bearing());
+    Serial.print(" e: ");Serial.print(compass.err_percent());Serial.print(" | ");
+
+    Serial.print("Wind: "); Serial.print(wind.relative());
+    Serial.print(" e: ");Serial.println(wind.err_percent());
 
     // m = compass.raw_accel();
     // Serial.print("{");
