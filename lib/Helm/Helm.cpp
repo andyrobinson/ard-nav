@@ -19,10 +19,9 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
     angle TEMP_RUDDER = 25;
     angle TEMP_RELATIVE_WIND = 100;
     int SAIL_COUNT = 0;
-    while ((remaining > 0) && wind_in_range(range)) { 
+    while ((remaining > 0) && wind_in_range(range)) {
 
       angle current_heading = compass->bearing();
-      sprintf(logmsg, "T3 %4d ", current_heading); logger->banner(logmsg);
       angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
 
       // set_rudder(new_rudder_position, current_heading);

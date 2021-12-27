@@ -15,10 +15,7 @@ void Tacker::steer(uangle direction, long steer_time) {
 
   char logmsg[20]="Straight";
   angle current_heading = compass->bearing();
-  sprintf(logmsg, "T1 %4d", current_heading); logger->banner(logmsg);
-
   angle wind_diff = udiff(windsensor->absolute(current_heading), direction);
-  sprintf(logmsg, "T2 %4d", wind_diff); logger->banner(logmsg);
 
   if (abs1(wind_diff) >= TACKER_NO_GO_LIMIT) {
     // no tack
