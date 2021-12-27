@@ -91,6 +91,11 @@ The steering makes the boat fish tail.  Currently adjusting the influence of rat
 - becalmed (ensure preservation of battery)
 - in a storm (ditto)
 
+## Crash Notes
+- nav.ino - Currently fails before the first log - creates the file, but it's empty
+- servoSD works completely.
+- Add SDLogger to servoSD -
+
 ## Done (for reference)
 
 - Logging now includes memory

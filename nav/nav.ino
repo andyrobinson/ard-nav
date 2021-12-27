@@ -11,7 +11,6 @@
 #include <Navigator.h>
 #include <Captain.h>
 #include <SDLogger.h>
-#include <SerialLogger.h>
 #include <Utility.h>
 #include <Routes.h>
 #include <RotaryPID.h>
