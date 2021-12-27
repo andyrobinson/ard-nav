@@ -116,12 +116,6 @@ See the blog (https://noahs-barque.blogspot.com/p/blog-page.html) for field repo
 - becalmed (ensure preservation of battery)
 - in a storm (ditto)
 
-## Crash Notes
-- nav.ino - Currently fails before the first log - creates the file, but it's empty
-- servoSD works completely.
-- Add SDLogger to servoSD - still works!!
-- Add all libs and initialisation to SDLogger
-
 ## Done (for reference)
 
 - Logging now includes memory
