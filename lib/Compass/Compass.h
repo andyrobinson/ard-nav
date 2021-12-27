@@ -29,12 +29,13 @@ class Compass
     void begin();
     MagResult raw_bearing();
     MagResult raw_accel();
+    int err_percent();
 
   private:
     int hilow_toint(byte high, byte low);
     bool wait_with_timeout(volatile bool *busy, int timeout);
     uint8_t data[6];
-
+    int errors;
 };
 
 #endif

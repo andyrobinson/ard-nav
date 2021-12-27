@@ -19,10 +19,12 @@ class WindSensor
     WindSensor();
     angle relative();
     uangle absolute(uangle bearing);
+    int err_percent();
     void begin();
   private:
     bool wait_with_timeout(volatile bool *busy, int timeout);
     uint8_t data[2];
+    int errors;
 };
 
 #endif

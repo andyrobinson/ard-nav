@@ -1,6 +1,6 @@
 #include "WindSensor.h"
 
-WindSensor::WindSensor() {}
+WindSensor::WindSensor(): errors(0) {}
 
 void WindSensor::begin() {
   I2C.begin();
@@ -21,9 +21,10 @@ angle WindSensor::relative() {
   wait_with_timeout(&(I2C.readBusy),20);
 
   if (I2C.writeBusy || I2C.readBusy) {
+    errors = constrain(errors + 100, 0, 10000);
     return NO_WIND_VALUE;
   } else {
-
+    errors = constrain(errors -1, 0, 10000);
     uint8_t lower6bits = data[0];
     uint8_t upper8bits = data[1];
 
@@ -32,6 +33,10 @@ angle WindSensor::relative() {
 
     return result;
   }
+}
+
+int WindSensor::err_percent() {
+  return errors;
 }
 
 bool WindSensor::wait_with_timeout(volatile bool *busy, int timeout) {

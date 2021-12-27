@@ -1,7 +1,7 @@
 #include "I2C_DMAC.h"
 #include "Compass.h"
 
-Compass::Compass() {}
+Compass::Compass(): errors(0) {}
 
 void Compass::begin() {
   I2C.begin(400000);
@@ -46,7 +46,9 @@ MagResult Compass::raw_bearing() {
   wait_with_timeout(&(I2C.readBusy),200);
 
   if (I2C.writeBusy || I2C.readBusy) {
-    Serial.println("raw_bearing ERROR: Busy state while writing/reading");
+    errors = constrain(errors + 100, 0, 10000);
+  } else {
+    errors = constrain(errors-1, 0, 10000);
   }
 
   return {hilow_toint(data[0],data[1]) + COMPASS_X_CORRECTION, hilow_toint(data[4],data[5]), hilow_toint(data[2],data[3])};
@@ -64,7 +66,9 @@ MagResult Compass::raw_accel() {
   wait_with_timeout(&(I2C.readBusy),200);
 
   if (I2C.writeBusy || I2C.readBusy) {
-    Serial.println("raw_accel ERROR: Busy state while writing/reading");
+    errors = constrain(errors + 100, 0, 10000);
+  } else {
+    errors = constrain(errors-1, 0, 10000);
   }
 
   return {hilow_toint(data[1],data[0]), hilow_toint(data[3],data[2]), hilow_toint(data[5],data[4])};
@@ -74,6 +78,10 @@ bool Compass::wait_with_timeout(volatile bool *busy, int timeout) {
   long start = millis();
   while (*busy && ((millis() - start) < timeout));
   return *busy;
+}
+
+int Compass::err_percent() {
+  return errors;
 }
 
 int Compass::hilow_toint(byte high, byte low) {

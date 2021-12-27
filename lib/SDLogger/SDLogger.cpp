@@ -55,10 +55,13 @@ void SDLogger::print_line(char *message, char *msgprefix) {
     File dataFile = SD.open(logfile, FILE_WRITE);
     if (dataFile) {
       angle wind = windsensor->relative();
+      int winderr = windsensor->err_percent();
       uangle bearing = compass->bearing();
+      int compasserr = compass->err_percent();
       int mem=dispFreeMemory();
 
       dataFile.print(gpsReading.unixTime); dataFile.print(",");
+      dataFile.print(millis()); dataFile.print(",");
       dataFile.print(gpsReading.pos.latitude,5); dataFile.print(",");
       dataFile.print(gpsReading.pos.longitude,5); dataFile.print(",");
       dataFile.print(gpsReading.pos.error); dataFile.print(",");
@@ -66,7 +69,9 @@ void SDLogger::print_line(char *message, char *msgprefix) {
       dataFile.print(gpsReading.mps); dataFile.print(",");
       dataFile.print(mem); dataFile.print(",");
       dataFile.print(wind); dataFile.print(",");
+      dataFile.print(winderr); dataFile.print(",");
       dataFile.print(bearing); dataFile.print(",");
+      dataFile.print(compasserr); dataFile.print(",");
       dataFile.print(destination); dataFile.print(",");
       dataFile.print(tack); dataFile.print(",");
       dataFile.print(msgprefix);dataFile.println(message);
