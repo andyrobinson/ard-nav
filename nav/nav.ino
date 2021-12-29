@@ -3,6 +3,9 @@
 #include <Compass.h>
 #include <CompassWire.h>
 #include <CompassDmac.h>
+#include <WindSensor.h>
+#include <WindSensorWire.h>
+#include <WindSensorDmac.h>
 #include <Timer.h>
 #include <Gps.h>
 #include <Globe.h>
@@ -21,7 +24,8 @@
 
 #define MAJOR_VERSION 99 // for test
 
-WindSensor windsensor;
+WindSensorWire windsensor;
+//WindSensorDmac windsensor;
 MServo servo_control;
 CompassWire compass;
 //CompassDmac compass;

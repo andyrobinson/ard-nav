@@ -1,17 +1,4 @@
-#include "WindSensor.h"
-
-// Wire.beginTransmission(address);
-// Wire.write(/* byte, string, or buffer with length */);
-// int result = Wire.endTransmission(/* boolean selecting to send stop bit or not */);
-
-// int bytesRead = Wire.requestFrom(address, byteCount, stopBitBoolean);
-// if(bytesRead == byteCount) {
-//     // It worked, but we still need to get the bytes from Wire
-//     while(Wire.available()>0) {
-//         byte b = Wire.read();
-//         // do something with this byte
-//     }
-// }
+#include "WindSensorWire.h"
 
 WindSensorWire::WindSensorWire() {}
 
@@ -26,21 +13,36 @@ angle WindSensorWire::relative() {
 
   Wire.beginTransmission(WINDSENSOR_AS5048B_I2C_ADDRESS);
   Wire.write(WINDSENSOR_AS5048B_I2C_REGISTER);
-
   endTransResult = Wire.endTransmission(false);
 
   if (endTransResult) {
+    errors = constrain(errors + 100, 0, 10000);
     return NO_WIND_VALUE;
-  } else {
-    Wire.requestFrom(WINDSENSOR_AS5048B_I2C_ADDRESS, (uint8_t) 2);
-    byte upper8bits = Wire.read();
-    byte lower6bits = Wire.read();
-
-    raw_result = (((uint16_t) upper8bits) << 6) + (lower6bits & 0x3F);
-    result = to_angle(360 - round((((float) raw_result)/16383.0) * 360.0) % 360);
-
-    return result;
   }
+
+  Wire.requestFrom(WINDSENSOR_AS5048B_I2C_ADDRESS, (uint8_t) 2);
+
+  long start = millis();
+  while (Wire.available() < 2 && ((millis() - start) < 20));
+
+  if (Wire.available() < 2) {
+    errors = constrain(errors + 100, 0, 10000);
+    return NO_WIND_VALUE;
+  }
+
+  errors = constrain(errors -1, 0, 10000);
+
+  byte upper8bits = Wire.read();
+  byte lower6bits = Wire.read();
+
+  raw_result = (((uint16_t) upper8bits) << 6) + (lower6bits & 0x3F);
+  result = to_angle(360 - round((((float) raw_result)/16383.0) * 360.0) % 360);
+
+  return result;
+}
+
+int WindSensorWire::err_percent() {
+  return errors;
 }
 
 uangle WindSensorWire::absolute(uangle bearing) {

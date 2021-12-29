@@ -1,12 +1,12 @@
-#include "WindSensor.h"
+#include "WindSensorDmac.h"
 
-WindSensor::WindSensor(): errors(0) {}
+WindSensorDmac::WindSensorDmac(): errors(0) {}
 
-void WindSensor::begin() {
+void WindSensorDmac::begin() {
   I2C.begin();
 }
 
-angle WindSensor::relative() {
+angle WindSensorDmac::relative() {
   byte endTransResult;
   angle result = 0;
   uint16_t raw_result = 0;
@@ -35,16 +35,16 @@ angle WindSensor::relative() {
   }
 }
 
-int WindSensor::err_percent() {
+int WindSensorDmac::err_percent() {
   return errors;
 }
 
-bool WindSensor::wait_with_timeout(volatile bool *busy, int timeout) {
+bool WindSensorDmac::wait_with_timeout(volatile bool *busy, int timeout) {
   long start = millis();
   while (*busy && ((millis() - start) < timeout));
   return *busy;
 }
 
-uangle WindSensor::absolute(uangle bearing) {
+uangle WindSensorDmac::absolute(uangle bearing) {
   return uadd(bearing, relative());
 }
