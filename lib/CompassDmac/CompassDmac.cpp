@@ -4,7 +4,7 @@
 CompassDmac::CompassDmac(): errors(0) {}
 
 void CompassDmac::begin() {
-  I2C.begin(400000);
+  I2C.begin();
 
   // Enable the compass
   I2C.writeByte(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
