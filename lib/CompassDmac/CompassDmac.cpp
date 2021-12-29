@@ -1,9 +1,9 @@
 #include "I2C_DMAC.h"
-#include "Compass.h"
+#include "CompassDmac.h"
 
-Compass::Compass(): errors(0) {}
+CompassDmac::CompassDmac(): errors(0) {}
 
-void Compass::begin() {
+void CompassDmac::begin() {
   I2C.begin(400000);
 
   // Enable the compass
@@ -12,7 +12,7 @@ void Compass::begin() {
   I2C.writeByte(COMPASS_ACCEL_I2C_ADDRESS, COMPASS_ACCEL_CTRL_REG1_A, 0x27);
 }
 
-uangle Compass::bearing() {
+uangle CompassDmac::bearing() {
 
    MagResult bearing = raw_bearing();
    MagResult accel = raw_accel();
@@ -32,7 +32,7 @@ uangle Compass::bearing() {
    return tiltadjust;
 }
 
-MagResult Compass::raw_bearing() {
+MagResult CompassDmac::raw_bearing() {
   for (int i = 0; i < 6; i++) {data[i] = 0;}
 
   I2C.initReadBytes(COMPASS_COMPASS_I2C_ADDRESS, data, sizeof(data));
@@ -53,7 +53,7 @@ MagResult Compass::raw_bearing() {
   return {hilow_toint(data[0],data[1]) + COMPASS_X_CORRECTION, hilow_toint(data[4],data[5]), hilow_toint(data[2],data[3])};
 }
 
-MagResult Compass::raw_accel() {
+MagResult CompassDmac::raw_accel() {
   for (int i = 0; i < 6; i++) {data[i] = 0;}
 
   I2C.initReadBytes(COMPASS_COMPASS_I2C_ADDRESS, data, sizeof(data));
@@ -73,16 +73,16 @@ MagResult Compass::raw_accel() {
   return {hilow_toint(data[1],data[0]), hilow_toint(data[3],data[2]), hilow_toint(data[5],data[4])};
 }
 
-bool Compass::wait_with_timeout(volatile bool *busy, int timeout) {
+bool CompassDmac::wait_with_timeout(volatile bool *busy, int timeout) {
   long start = millis();
   while (*busy && ((millis() - start) < timeout));
   return *busy;
 }
 
-int Compass::err_percent() {
+int CompassDmac::err_percent() {
   return errors;
 }
 
-int Compass::hilow_toint(byte high, byte low) {
+int CompassDmac::hilow_toint(byte high, byte low) {
   return (int16_t)((uint16_t) low | ((uint16_t) high << 8));
 }

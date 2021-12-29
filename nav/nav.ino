@@ -1,6 +1,8 @@
 #include <MServo.h>
 #include <Position.h>
 #include <Compass.h>
+#include <CompassWire.h>
+#include <CompassDmac.h>
 #include <Timer.h>
 #include <Gps.h>
 #include <Globe.h>
@@ -21,7 +23,8 @@
 
 WindSensor windsensor;
 MServo servo_control;
-Compass compass;
+CompassWire compass;
+//CompassDmac compass;
 Timer timer;
 Globe globe;
 
