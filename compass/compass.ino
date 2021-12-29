@@ -1,10 +1,12 @@
 #include <Compass.h>
+#include <CompassDmac.h>
+#include <CompassWire.h>
 #include <WindSensor.h>
 
 // Simple test for the compass library - should
 // manually try it at all compass points, and with tilt
 
-Compass compass;
+CompassWire compass;
 WindSensor wind;
 char buf[20];
 

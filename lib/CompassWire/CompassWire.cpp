@@ -1,7 +1,7 @@
 #include "Wire.h"
 #include "CompassWire.h"
 
-CompassWire::CompassWire() {}
+CompassWire::CompassWire(): errors(0) {}
 
 void CompassWire::begin() {
   Wire.begin();
@@ -33,12 +33,26 @@ uangle CompassWire::bearing() {
 }
 
 MagResult CompassWire::raw_bearing() {
+  byte endTransResult;
+
   Wire.beginTransmission((byte) COMPASS_COMPASS_I2C_ADDRESS);
   Wire.write(COMPASS_REGISTER_X_HIGH);
-  Wire.endTransmission();
-  Wire.requestFrom((byte) COMPASS_COMPASS_I2C_ADDRESS, (byte) 6);
+  endTransResult = Wire.endTransmission();
 
-  while (Wire.available() < 6);
+  if (endTransResult) {
+    errors = constrain(errors + 100, 0, 10000);
+    return {0,0,0};
+  }
+
+  Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
+
+  long start = millis();
+  while (Wire.available() < 6 && ((millis() - start) < 20));
+
+  if (Wire.available() < 6) {
+    errors = constrain(errors + 100, 0, 10000);
+    return {0,0,0};
+  }
 
   byte xhi = Wire.read();
   byte xlo = Wire.read();
@@ -52,13 +66,28 @@ MagResult CompassWire::raw_bearing() {
 
 MagResult CompassWire::raw_accel() {
 
+  byte endTransResult;
+
   Wire.beginTransmission((byte) COMPASS_ACCEL_I2C_ADDRESS);
   Wire.write(ACCEL_REGISTER_OUT_X_L_A | 0x80);
-  Wire.endTransmission();
+  endTransResult = Wire.endTransmission();
+
+  if (endTransResult) {
+    errors = constrain(errors + 100, 0, 10000);
+    return {0,0,0};
+  }
+
   Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
 
-  while (Wire.available() < 6);
+  long start = millis();
+  while (Wire.available() < 6 && ((millis() - start) < 20));
 
+  if (Wire.available() < 6) {
+    errors = constrain(errors + 100, 0, 10000);
+    return {0,0,0};
+  }
+
+  errors = constrain(errors -1, 0, 10000);
   byte xlo = Wire.read();
   byte xhi = Wire.read();
   byte ylo = Wire.read();
@@ -72,15 +101,23 @@ MagResult CompassWire::raw_accel() {
 void CompassWire::write8(byte address, byte reg, byte value)
 {
   byte endTransResult;
+
   Wire.beginTransmission(address);
   Wire.write((uint8_t)reg);
   Wire.write((uint8_t)value);
   endTransResult = Wire.endTransmission(false);
+
   if (endTransResult) {
-    Serial.println("ERROR: Write failed " + String(address) + " " + String(reg) + " " + String(value));
+    errors = constrain(errors + 100, 0, 10000);
+  } else {
+    errors = constrain(errors -1, 0, 10000);
   }
 
 }
+
+int CompassWire::err_percent() {
+   return errors;
+ }
 
 int CompassWire::hilow_toint(byte high, byte low) {
   return (int16_t)((uint16_t) low | ((uint16_t) high << 8));

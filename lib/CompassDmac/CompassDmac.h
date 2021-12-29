@@ -1,5 +1,5 @@
-#ifndef CompassWire_h
-#define CompassWire_h
+#ifndef CompassDmac_h
+#define CompassDmac_h
 
 #include "Arduino.h"
 #include "Compass.h"
@@ -13,9 +13,9 @@
 #define COMPASS_ACCEL_CTRL_REG1_A      0x20
 #define COMPASS_X_CORRECTION           -100
 
-class CompassWire : public Compass {
+class CompassDmac : public Compass {
   public:
-    CompassWire();
+    CompassDmac();
     uangle bearing();
     void begin();
     MagResult raw_bearing();
@@ -24,7 +24,8 @@ class CompassWire : public Compass {
 
   private:
     int hilow_toint(byte high, byte low);
-    void write8(byte address, byte reg, byte value);
+    bool wait_with_timeout(volatile bool *busy, int timeout);
+    uint8_t data[6];
     int errors;
 };
 

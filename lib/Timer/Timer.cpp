@@ -1,6 +1,6 @@
 #include "Timer.h"
 #include "Arduino.h"
-#include "Adafruit_SleepyDog.h"
+//#include "Adafruit_SleepyDog.h"
 
 // to allow mocking of delays.
 // Also potentially we could do useful work while waiting in the future
