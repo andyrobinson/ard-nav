@@ -24,6 +24,7 @@ copylibs: $(DST_FILES)
 
 clean:
 	$(RM) -r $(DEST_DIR)/*
+	$(RM) -r $(ARDUINO_LIB_DIR)/*
 	$(RM) -r *.bin
 	$(RM) -r *.elf
 
