@@ -53,11 +53,17 @@ The other folders represent Arduino applications.  Again each folder has a makef
 
 ## Current concerns
 
-We probably need a turning mode and a steady state mode - it's likely for power management reasons that we will have short bursts of steering followed by longer periods of sleep, although given the fairly instant nature of the transition, the periods of sleep could potentially be quite short.
+* Main concern is occasional crashes caused by problems with I2C communication - this can lock up the whole processor requiring
+a power off.  Need to both improve the reliability of I2C and provide a hardware watchdog for recovery should this happen
+  
+* The rotary PID appears to deal with steering satisfactorily, but needs tuning
 
-Display refresh causes jitter, but we can live with that for the moment (this is not an issue OTW).
+* Still working on solar power.  Once this is complete only satellite communications remain.
 
-The steering makes the boat fish tail.  Currently adjusting the influence of rate of turn.
+### Plan for addressing crashing
+
+* Compare WIRE and DMAC libraries for error handling and recovery
+* Review pull-up resistors
 
 ## Observations from field tests
 
@@ -81,7 +87,9 @@ The steering makes the boat fish tail.  Currently adjusting the influence of rat
 4. Compass is highly influenced by electric motors - need to check in-situ and potentially isolate - much better outdoors, still perhaps 5 degrees out in the box, so we need to check in the boat
 5. Need some kind of integration testing
 6.  We need follow-on code for failed sensors - wind direction (can we find out by steering?), compass (use GPS), gps (use dead reckoning).  Maybe ultimately we need more than one sensor.
-7.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to crash - this may have happened during recent OTW testing.  We need to ensure that the Arduino power supply is protected, and there is a fall-back reset.  Ideally when the batteries get low we shut down until they regain some charge (I guess this could be never ...).  There are voltage regulators that will ensure a stable voltage for as long as possible.
+7.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to 
+    crash - this may have happened during recent OTW testing.  We need to ensure that the Arduino power supply is protected, and there is a fall-back reset.  Ideally when the batteries get low we shut down until they regain some charge (I guess this could be never ...).  There are voltage regulators 
+    that will ensure a stable voltage for as long as possible.
 8.  Don't forget fallback (watchdog) timer which reboots the arduino after a period of inactivity (aka crash)
 9.  Need to review all limits (e.g. max steer time) before attempting longer journeys
 10. Consider between navigation checks:
