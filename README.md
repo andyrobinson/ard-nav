@@ -62,8 +62,16 @@ a power off.  Need to both improve the reliability of I2C and provide a hardware
 
 ### Plan for addressing crashing
 
-* Compare WIRE and DMAC libraries for error handling and recovery
-* Review pull-up resistors
+* Could be
+    * Hardware glitches causing software to crash - only ways to improve hardware are to change 
+  value of pull-up resistor or improve isolation of 3.3v power supply.  _Measure using the scope. Could add ceramic capacitance.  Also make
+      sure library is running at no more than 100KHz_
+    * Problems with libraries - compare the ones we have on their own for longevity and error detection.  If neither
+  are good then possibly rewrite the alternative library for SAMD21. _Try
+      error handling of different libraries (WIRE, DMAC)_
+    * Interaction with other parts of the system - I'm looking at you GPS time based interrupt! _Experiments with different
+      combinations, try disabling the GPS interrupt while reading/writing to I2C.  What other parts of
+      the system could be interfering with I2C?  Perhaps the servo stuff_
 
 ## Observations from field tests
 
