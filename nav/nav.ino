@@ -1,11 +1,11 @@
 #include <MServo.h>
 #include <Position.h>
 #include <Compass.h>
-#include <CompassWire.h>
-#include <CompassDmac.h>
 #include <WindSensor.h>
-#include <WindSensorWire.h>
+#include <CompassDmac.h>
 #include <WindSensorDmac.h>
+//#include <CompassWire.h>
+//#include <WindSensorWire.h>
 #include <Timer.h>
 #include <Gps.h>
 #include <Globe.h>
@@ -24,11 +24,11 @@
 
 #define MAJOR_VERSION 99 // for test
 
-WindSensorWire windsensor;
-//WindSensorDmac windsensor;
+//WindSensorWire windsensor;
+//CompassWire compass;
+CompassDmac compass;
+WindSensorDmac windsensor;
 MServo servo_control;
-CompassWire compass;
-//CompassDmac compass;
 Timer timer;
 Globe globe;
 
