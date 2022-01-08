@@ -11,15 +11,12 @@ angle WindSensorWire::relative() {
   angle result = 0;
   uint16_t raw_result = 0;
 
-  AGPS.pause(true);
-
   Wire.beginTransmission(WINDSENSOR_AS5048B_I2C_ADDRESS);
   Wire.write(WINDSENSOR_AS5048B_I2C_REGISTER);
   endTransResult = Wire.endTransmission(false);
 
   if (endTransResult) {
     errors = constrain(errors + 100, 0, 10000);
-    AGPS.pause(false);
     return NO_WIND_VALUE;
   }
 
@@ -30,7 +27,6 @@ angle WindSensorWire::relative() {
 
   if (Wire.available() < 2) {
     errors = constrain(errors + 100, 0, 10000);
-    AGPS.pause(false);
     return NO_WIND_VALUE;
   }
 
@@ -41,8 +37,6 @@ angle WindSensorWire::relative() {
 
   raw_result = (((uint16_t) upper8bits) << 6) + (lower6bits & 0x3F);
   result = to_angle(360 - round((((float) raw_result)/16383.0) * 360.0) % 360);
-
-  AGPS.pause(false);
 
   return result;
 }

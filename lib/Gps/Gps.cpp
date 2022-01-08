@@ -1,4 +1,5 @@
 #include "Gps.h"
+#include "Adafruit_GPS.h"
 
 using namespace Utility;
 

@@ -5,7 +5,6 @@
 #include "Position.h"
 #include "Utility.h"
 #include "Timer.h"
-#include "Adafruit_GPS.h"
 
 #define PIN_SERIAL2_RX       (34ul)               // Pin description number for PIO_SERCOM on D12
 #define PIN_SERIAL2_TX       (36ul)               // Pin description number for PIO_SERCOM on D10
@@ -34,9 +33,6 @@ typedef struct {
   float avg_mps;
   long unixTime;
 } gpsResult;
-
-
-extern Adafruit_GPS AGPS;
 
 class Gps
 {
