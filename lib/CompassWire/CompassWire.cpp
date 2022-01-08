@@ -13,8 +13,6 @@ void CompassWire::begin() {
 }
 
 uangle CompassWire::bearing() {
-   AGPS.pause(true);
-
    MagResult bearing = raw_bearing();
    MagResult accel = raw_accel();
 
@@ -30,8 +28,6 @@ uangle CompassWire::bearing() {
    double x_final = ((double) bearing.x) * cos_pitch + ((double) bearing.y)*sin_roll*sin_pitch+((double) bearing.z)*cos_roll*sin_pitch;
    double y_final = ((double) bearing.y) * cos_roll-((double) bearing.z) * sin_roll;
    uangle tiltadjust = (360 + round(57.2958 * (atan2(y_final,x_final)))) % 360;
-
-   AGPS.pause(false);
 
    return tiltadjust;
 }

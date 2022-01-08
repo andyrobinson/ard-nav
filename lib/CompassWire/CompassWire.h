@@ -3,7 +3,6 @@
 
 #include "Arduino.h"
 #include "Compass.h"
-#include "Gps.h"
 
 #define COMPASS_COMPASS_I2C_ADDRESS 0x1E
 #define COMPASS_ACCEL_I2C_ADDRESS 0x19
