@@ -4,7 +4,7 @@
 CompassWire::CompassWire(): errors(0) {}
 
 void CompassWire::begin() {
-  Wire.begin();
+  //Wire.begin();
 
   // Enable the compass
   write8(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
