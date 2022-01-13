@@ -29,13 +29,8 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
       // set_rudder(new_rudder_position, current_heading);
      //      sail->set_position(windsensor->relative());
      set_rudder(TEMP_RUDDER, current_heading);
-       logger->msg("testing");
 
-       for (int i=0; i<20; i++) {
-         current_heading = compass->bearing();
-         windsensor->relative();
-         timer->wait(STEER_INTERVAL/20);
-       }
+     timer->wait(STEER_INTERVAL);
 
      SAIL_COUNT += 1;
      if (SAIL_COUNT == 10) {
