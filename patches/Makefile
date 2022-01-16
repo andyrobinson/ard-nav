@@ -5,7 +5,7 @@ include ../lib/detectos
 ifeq ($(UNAME), Darwin)
 	ARDUINO_CORE_DIR = ${HOME}/Library/Arduino15/packages/arduino/hardware/samd/1.8.6/cores/arduino
 else
-	ARDUINO_CORE_DIR =
+	ARDUINO_CORE_DIR= ../../../../AppData/Local/Arduino15/packages/arduino/hardware/samd/1.6.21/cores/arduino
 endif
 
 PATCH_FILES = $(wildcard *.cpp *.h)
