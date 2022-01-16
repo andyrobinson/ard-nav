@@ -58,13 +58,13 @@ void SDLogger::print_line(char *message, char *msgprefix) {
       int tol = compass->timeout_location();
       int mem=dispFreeMemory();
 
-      // dataFile.print(gpsReading.unixTime); dataFile.print(",");
+      dataFile.print(gpsReading.unixTime); dataFile.print(",");
       dataFile.print(millis()/1000); dataFile.print(",");
-      // dataFile.print(gpsReading.pos.latitude,5); dataFile.print(",");
-      // dataFile.print(gpsReading.pos.longitude,5); dataFile.print(",");
-      // dataFile.print(gpsReading.pos.error); dataFile.print(",");
-      // dataFile.print(gpsReading.fix); dataFile.print(",");
-      // dataFile.print(gpsReading.mps); dataFile.print(",");
+      dataFile.print(gpsReading.pos.latitude,5); dataFile.print(",");
+      dataFile.print(gpsReading.pos.longitude,5); dataFile.print(",");
+      dataFile.print(gpsReading.pos.error); dataFile.print(",");
+      dataFile.print(gpsReading.fix); dataFile.print(",");
+      dataFile.print(gpsReading.mps); dataFile.print(",");
       dataFile.print(mem); dataFile.print(",");
       dataFile.print(wind); dataFile.print(",");
       dataFile.print(winderr); dataFile.print(",");

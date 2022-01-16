@@ -50,16 +50,15 @@ void setup() {
 
   //sercom3.setTimeoutInMicrosWIRE(25000ul, false);  // for new timeout
 
-//   servo_control.begin();
-//   delay(1000);
-//   rudder.begin();
-//   sail.begin();
+  servo_control.begin();
+  delay(1000);
+  rudder.begin();
+  sail.begin();
   compass.begin();
   //windsensor.begin();  // do NOT do this
-// //  delay(100); // to allow time for I2C
-//   gps.begin();
+  gps.begin();
   logger.begin();
-  // switches.begin();
+  switches.begin();
 }
 
 void loop() {

@@ -1,1 +1,1 @@
-#define MINOR_VERSION 186
+#define MINOR_VERSION 188
