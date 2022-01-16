@@ -1,5 +1,3 @@
-#define WIRE_RISE_TIME_NANOSECONDS 250 // for 10K pull-up resistor
-
 #include <MServo.h>
 #include <Position.h>
 #include <Compass.h>
@@ -50,7 +48,7 @@ Captain captain(&navigator);
 
 void setup() {
 
-  sercom3.setTimeoutInMicrosWIRE(5000, true);  // for new timeout
+  sercom3.setTimeoutInMicrosWIRE(25000, true);  // for new timeout
 
   servo_control.begin();
   delay(1000);
