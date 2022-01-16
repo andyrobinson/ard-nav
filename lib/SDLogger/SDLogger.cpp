@@ -50,30 +50,31 @@ void SDLogger::banner(char *message) {
 }
 
 void SDLogger::print_line(char *message, char *msgprefix) {
-    gps->data(GPS_WAIT_MILLIS, &gpsReading);
-    calculate_filename(logfile, gpsReading.unixTime);
-    File dataFile = SD.open(logfile, FILE_WRITE);
+    // gps->data(GPS_WAIT_MILLIS, &gpsReading);
+    // calculate_filename(logfile, gpsReading.unixTime);
+    File dataFile = SD.open("BOOTSTRP.TXT", FILE_WRITE);
     if (dataFile) {
-      angle wind = windsensor->relative();
-      int winderr = windsensor->err_percent();
-      uangle bearing = compass->bearing();
-      int compasserr = compass->err_percent();
-      int tol = compass->timeout_location();
+      // angle wind = windsensor->relative();
+      //
+      // int winderr = windsensor->err_percent();
+      // uangle bearing = compass->bearing();
+      // int compasserr = compass->err_percent();
+      // int tol = compass->timeout_location();
       int mem=dispFreeMemory();
 
-      dataFile.print(gpsReading.unixTime); dataFile.print(",");
+      // dataFile.print(gpsReading.unixTime); dataFile.print(",");
       dataFile.print(millis()/1000); dataFile.print(",");
-      dataFile.print(gpsReading.pos.latitude,5); dataFile.print(",");
-      dataFile.print(gpsReading.pos.longitude,5); dataFile.print(",");
-      dataFile.print(gpsReading.pos.error); dataFile.print(",");
-      dataFile.print(gpsReading.fix); dataFile.print(",");
-      dataFile.print(gpsReading.mps); dataFile.print(",");
+      // dataFile.print(gpsReading.pos.latitude,5); dataFile.print(",");
+      // dataFile.print(gpsReading.pos.longitude,5); dataFile.print(",");
+      // dataFile.print(gpsReading.pos.error); dataFile.print(",");
+      // dataFile.print(gpsReading.fix); dataFile.print(",");
+      // dataFile.print(gpsReading.mps); dataFile.print(",");
       dataFile.print(mem); dataFile.print(",");
-      dataFile.print(wind); dataFile.print(",");
-      dataFile.print(winderr); dataFile.print(",");
-      dataFile.print(bearing); dataFile.print(",");
-      dataFile.print(compasserr); dataFile.print(",[");
-      dataFile.print(tol); dataFile.print("],");
+      // dataFile.print(wind); dataFile.print(",");
+      // dataFile.print(winderr); dataFile.print(",");
+      // dataFile.print(bearing); dataFile.print(",");
+      // dataFile.print(compasserr); dataFile.print(",[");
+      // dataFile.print(tol); dataFile.print("],");
       dataFile.print(destination); dataFile.print(",");
       dataFile.print(tack); dataFile.print(",");
       dataFile.print(msgprefix);dataFile.println(message);

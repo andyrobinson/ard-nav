@@ -50,16 +50,16 @@ void setup() {
 
   //sercom3.setTimeoutInMicrosWIRE(25000ul, false);  // for new timeout
 
-  servo_control.begin();
-  delay(1000);
-  rudder.begin();
-  sail.begin();
-  compass.begin();
-//  windsensor.begin();
-//  delay(100); // to allow time for I2C
-  gps.begin();
+//   servo_control.begin();
+//   delay(1000);
+//   rudder.begin();
+//   sail.begin();
+//   compass.begin();
+// //  windsensor.begin();
+// //  delay(100); // to allow time for I2C
+//   gps.begin();
   logger.begin();
-  switches.begin();
+  // switches.begin();
 }
 
 void loop() {
@@ -67,22 +67,23 @@ void loop() {
   // selftest.test();
   sprintf(logmsg, "Navigating v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
 
-  //int countdownMS = Watchdog.enable(4000);
-  //sprintf(logmsg, "Watchdog at %3d", countdownMS); logger.banner(logmsg);
-  sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
 
-  uint8_t sw = switches.value() & 3; // four routes configurable
-  route journey = plattfields[sw];
-
-  // a little indicator that we're starting
-  rudder.set_position(-45);
-  sail.set_position(-45);
-  timer.wait(4000);
-  sail.set_position(45);
-  rudder.set_position(45);
-  timer.wait(4000);
-
-  captain.voyage(journey.waypoints, journey.length);
+  // //int countdownMS = Watchdog.enable(4000);
+  // //sprintf(logmsg, "Watchdog at %3d", countdownMS); logger.banner(logmsg);
+  // sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
+  //
+  // uint8_t sw = switches.value() & 3; // four routes configurable
+  // route journey = plattfields[sw];
+  //
+  // // a little indicator that we're starting
+  // rudder.set_position(-45);
+  // sail.set_position(-45);
+  // timer.wait(4000);
+  // sail.set_position(45);
+  // rudder.set_position(45);
+  // timer.wait(4000);
+  //
+  // captain.voyage(journey.waypoints, journey.length);
   logger.banner("Finished Navigation :-)");
 
   while(true){};
