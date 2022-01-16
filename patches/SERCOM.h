@@ -215,6 +215,7 @@ class SERCOM
 		uint8_t readDataWIRE( void ) ;
 		void setTimeoutInMicrosWIRE(uint32_t, bool);
 		bool hasTimedout( bool );
+		int timeoutLocation( void );
 
 	private:
 		Sercom* sercom;
@@ -225,6 +226,7 @@ class SERCOM
 		uint32_t timeout_us_WIRE ;
 		bool do_reset_on_timeout_WIRE ;
 		bool timed_out_WIRE ;
+		int timeoutloc ;
 
 		// Flag set when data is loaded into sercom->USART.DATA.reg.
 		// Helps with preventing UART lockups when flushing on startup

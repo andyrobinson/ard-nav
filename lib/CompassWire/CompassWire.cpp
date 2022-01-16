@@ -1,7 +1,7 @@
 #include "Wire.h"
 #include "CompassWire.h"
 
-CompassWire::CompassWire(): errors(0) {}
+CompassWire::CompassWire(): errors(0), tol(0) {}
 
 void CompassWire::begin() {
   //Wire.begin();
@@ -39,6 +39,10 @@ MagResult CompassWire::raw_bearing() {
   Wire.write(COMPASS_REGISTER_X_HIGH);
   endTransResult = Wire.endTransmission();
 
+  if (sercom3.hasTimedout(true)) {
+     tol = sercom3.timeoutLocation();
+  }
+
   if (endTransResult) {
     errors = constrain(errors + 100, 0, 10000);
     return {0,0,0};
@@ -47,6 +51,10 @@ MagResult CompassWire::raw_bearing() {
   // TODO: If this times out then we will get all zeros
   // We need to check for the timeout and act accordingly
   Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
+
+  if (sercom3.hasTimedout(true)) {
+     tol = sercom3.timeoutLocation();
+  }
 
   long start = millis();
   while (Wire.available() < 6 && ((millis() - start) < 20));
@@ -74,12 +82,20 @@ MagResult CompassWire::raw_accel() {
   Wire.write(ACCEL_REGISTER_OUT_X_L_A | 0x80);
   endTransResult = Wire.endTransmission();
 
+  if (sercom3.hasTimedout(true)) {
+     tol = sercom3.timeoutLocation();
+  }
+
   if (endTransResult) {
     errors = constrain(errors + 100, 0, 10000);
     return {0,0,0};
   }
 
   Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
+
+  if (sercom3.hasTimedout(true)) {
+     tol = sercom3.timeoutLocation();
+  }
 
   long start = millis();
   while (Wire.available() < 6 && ((millis() - start) < 20));
@@ -119,7 +135,11 @@ void CompassWire::write8(byte address, byte reg, byte value)
 
 int CompassWire::err_percent() {
    return errors;
- }
+}
+
+int CompassWire:: timeout_location() {
+  return tol;
+}
 
 int CompassWire::hilow_toint(byte high, byte low) {
   return (int16_t)((uint16_t) low | ((uint16_t) high << 8));
