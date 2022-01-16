@@ -54,8 +54,9 @@ void setup() {
 //   delay(1000);
 //   rudder.begin();
 //   sail.begin();
-//   compass.begin();
-// //  windsensor.begin();
+  //windsensor.begin();  // this is NOT nice - the WindSensor begin must come first or not at all - I think we should make Wire.begin work only once ...
+  delay(50);
+  compass.begin();
 // //  delay(100); // to allow time for I2C
 //   gps.begin();
   logger.begin();
@@ -67,6 +68,10 @@ void loop() {
   // selftest.test();
   sprintf(logmsg, "Navigating v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
 
+  for (int i=0;i<10;i++) {
+    logger.banner("Logging ...");
+    delay(1000);
+  }
 
   // //int countdownMS = Watchdog.enable(4000);
   // //sprintf(logmsg, "Watchdog at %3d", countdownMS); logger.banner(logmsg);

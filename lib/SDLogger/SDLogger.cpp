@@ -26,10 +26,7 @@ boolean SDLogger::sd_time_to_log() {
 }
 
 void SDLogger::begin() {
-  if (!SD.begin(CHIP_SELECT)) {
-    // need to do something else?
-    Serial.println("Card failed, or not present");
-  }
+  SD.begin(CHIP_SELECT); // ignore return, we can't do anything with it
   logfile[0] = '\0';
   unsigned long sd_last_log_time = 0;
   destination = ' ';
@@ -55,11 +52,10 @@ void SDLogger::print_line(char *message, char *msgprefix) {
     File dataFile = SD.open("BOOTSTRP.TXT", FILE_WRITE);
     if (dataFile) {
       // angle wind = windsensor->relative();
-      //
       // int winderr = windsensor->err_percent();
-      // uangle bearing = compass->bearing();
+      uangle bearing = compass->bearing();
       // int compasserr = compass->err_percent();
-      // int tol = compass->timeout_location();
+      int tol = compass->timeout_location();
       int mem=dispFreeMemory();
 
       // dataFile.print(gpsReading.unixTime); dataFile.print(",");
@@ -72,9 +68,9 @@ void SDLogger::print_line(char *message, char *msgprefix) {
       dataFile.print(mem); dataFile.print(",");
       // dataFile.print(wind); dataFile.print(",");
       // dataFile.print(winderr); dataFile.print(",");
-      // dataFile.print(bearing); dataFile.print(",");
+      dataFile.print(bearing); dataFile.print(",");
       // dataFile.print(compasserr); dataFile.print(",[");
-      // dataFile.print(tol); dataFile.print("],");
+      dataFile.print(tol); dataFile.print("],");
       dataFile.print(destination); dataFile.print(",");
       dataFile.print(tack); dataFile.print(",");
       dataFile.print(msgprefix);dataFile.println(message);
