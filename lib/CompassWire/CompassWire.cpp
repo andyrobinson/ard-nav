@@ -44,6 +44,8 @@ MagResult CompassWire::raw_bearing() {
     return {0,0,0};
   }
 
+  // TODO: If this times out then we will get all zeros
+  // We need to check for the timeout and act accordingly
   Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
 
   long start = millis();
