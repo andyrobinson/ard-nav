@@ -20,6 +20,7 @@ angle WindSensorWire::relative() {
     return NO_WIND_VALUE;
   }
 
+  // TODO: If this times out then we will get all zeros
   Wire.requestFrom(WINDSENSOR_AS5048B_I2C_ADDRESS, (uint8_t) 2);
 
   long start = millis();
