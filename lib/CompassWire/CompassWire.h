@@ -21,11 +21,13 @@ class CompassWire : public Compass {
     MagResult raw_bearing();
     MagResult raw_accel();
     int err_percent();
+    int timeout_location();
 
   private:
     int hilow_toint(byte high, byte low);
     void write8(byte address, byte reg, byte value);
     int errors;
+    int tol;
 };
 
 #endif

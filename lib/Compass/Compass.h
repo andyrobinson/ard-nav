@@ -19,5 +19,6 @@ class Compass
     virtual MagResult raw_bearing() = 0;
     virtual MagResult raw_accel() = 0;
     virtual int err_percent() =0;
+    virtual int timeout_location()=0;
 };
 #endif

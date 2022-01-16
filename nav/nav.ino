@@ -48,7 +48,7 @@ Captain captain(&navigator);
 
 void setup() {
 
-  sercom3.setTimeoutInMicrosWIRE(25000, true);  // for new timeout
+  sercom3.setTimeoutInMicrosWIRE(25000ul, false);  // for new timeout
 
   servo_control.begin();
   delay(1000);

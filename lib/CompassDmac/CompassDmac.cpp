@@ -84,6 +84,10 @@ int CompassDmac::err_percent() {
   return errors;
 }
 
+int CompassDmac::timeout_location() {
+    return 0;
+}
+
 int CompassDmac::hilow_toint(byte high, byte low) {
   return (int16_t)((uint16_t) low | ((uint16_t) high << 8));
 }

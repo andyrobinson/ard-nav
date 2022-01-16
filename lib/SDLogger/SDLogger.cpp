@@ -58,6 +58,7 @@ void SDLogger::print_line(char *message, char *msgprefix) {
       int winderr = windsensor->err_percent();
       uangle bearing = compass->bearing();
       int compasserr = compass->err_percent();
+      int tol = compass->timeout_location();
       int mem=dispFreeMemory();
 
       dataFile.print(gpsReading.unixTime); dataFile.print(",");
@@ -71,7 +72,8 @@ void SDLogger::print_line(char *message, char *msgprefix) {
       dataFile.print(wind); dataFile.print(",");
       dataFile.print(winderr); dataFile.print(",");
       dataFile.print(bearing); dataFile.print(",");
-      dataFile.print(compasserr); dataFile.print(",");
+      dataFile.print(compasserr); dataFile.print(",[");
+      dataFile.print(tol); dataFile.print("],");
       dataFile.print(destination); dataFile.print(",");
       dataFile.print(tack); dataFile.print(",");
       dataFile.print(msgprefix);dataFile.println(message);

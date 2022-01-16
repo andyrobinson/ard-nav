@@ -389,6 +389,8 @@ void SERCOM::enableWIRE()
 {
   // no longer timed out
   timed_out_WIRE = false;
+  timeoutloc = 0;
+
   // I2C Master and Slave modes share the ENABLE bit function.
 
   // Enable the I2C master mode
@@ -527,6 +529,7 @@ bool SERCOM::startTransmissionWIRE(uint8_t address, SercomWireReadWriteFlag flag
   // Address Transmitted
   if ( flag == WIRE_WRITE_FLAG ) // Write mode
   {
+    timeoutloc = 1;
     uint32_t startMicros = micros();
     while( !sercom->I2CM.INTFLAG.bit.MB )
     {
@@ -546,6 +549,7 @@ bool SERCOM::startTransmissionWIRE(uint8_t address, SercomWireReadWriteFlag flag
   }
   else  // Read mode
   {
+    timeoutloc = 2;
     uint32_t startMicros = micros();
     while( !sercom->I2CM.INTFLAG.bit.SB )
     {
@@ -567,7 +571,6 @@ bool SERCOM::startTransmissionWIRE(uint8_t address, SercomWireReadWriteFlag flag
     //sercom->I2CM.INTFLAG.bit.SB = 0x1ul;
   }
 
-
   //ACK received (0: ACK, 1: NACK)
   if(sercom->I2CM.STATUS.bit.RXNACK)
   {
@@ -585,6 +588,7 @@ bool SERCOM::sendDataMasterWIRE(uint8_t data)
   sercom->I2CM.DATA.bit.DATA = data;
 
   //Wait transmission successful
+  timeoutloc = 3;
   uint32_t startMicros = micros();
   while(!sercom->I2CM.INTFLAG.bit.MB) {
 
@@ -691,6 +695,7 @@ uint8_t SERCOM::readDataWIRE( void )
 {
   if(isMasterWIRE())
   {
+    timeoutloc = 4;
     uint32_t startMicros = micros();
     while( sercom->I2CM.INTFLAG.bit.SB == 0 && sercom->I2CM.INTFLAG.bit.MB == 0 )
     {
@@ -729,6 +734,9 @@ bool SERCOM::hasTimedout( bool clear) {
     return result;
 }
 
+int SERCOM::timeoutLocation( void ) {
+    return timeoutloc;
+}
 
 void SERCOM::initClockNVIC( void )
 {

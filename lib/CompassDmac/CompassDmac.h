@@ -21,6 +21,7 @@ class CompassDmac : public Compass {
     MagResult raw_bearing();
     MagResult raw_accel();
     int err_percent();
+    int timeout_location();
 
   private:
     int hilow_toint(byte high, byte low);
