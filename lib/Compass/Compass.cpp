@@ -16,7 +16,6 @@ uangle Compass::bearing() {
    MagResult bearing = raw_bearing();
    MagResult accel = raw_accel();
 
-   int heading = (360 + round(57.2958 * atan2((double) bearing.y, (double) bearing.x))) % 360;
 
    double roll = atan2((double)accel.y, (double)accel.z);
    double pitch = atan2((double) -accel.x, (double) accel.z); // reversing x accel makes it work
@@ -27,7 +26,7 @@ uangle Compass::bearing() {
 
    double x_final = ((double) bearing.x) * cos_pitch + ((double) bearing.y)*sin_roll*sin_pitch+((double) bearing.z)*cos_roll*sin_pitch;
    double y_final = ((double) bearing.y) * cos_roll-((double) bearing.z) * sin_roll;
-   uangle tiltadjust = (360 + round(57.2958 * (atan2(y_final,x_final)))) % 360;
+   uangle tiltadjust = (360 + (short) round(57.2958 * (atan2(y_final,x_final)))) % 360;
 
    return tiltadjust;
 }
