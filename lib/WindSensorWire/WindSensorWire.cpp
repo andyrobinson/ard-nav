@@ -37,7 +37,7 @@ angle WindSensorWire::relative() {
   byte lower6bits = Wire.read();
 
   raw_result = (((uint16_t) upper8bits) << 6) + (lower6bits & 0x3F);
-  result = to_angle(360 - round((((float) raw_result)/16383.0) * 360.0) % 360);
+  result = to_angle(360 - (short) round((((float) raw_result)/16383.0) * 360.0) % 360);
 
   return result;
 }
