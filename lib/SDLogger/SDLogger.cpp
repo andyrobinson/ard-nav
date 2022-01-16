@@ -51,8 +51,8 @@ void SDLogger::print_line(char *message, char *msgprefix) {
     // calculate_filename(logfile, gpsReading.unixTime);
     File dataFile = SD.open("BOOTSTRP.TXT", FILE_WRITE);
     if (dataFile) {
-      // angle wind = windsensor->relative();
-      // int winderr = windsensor->err_percent();
+      angle wind = windsensor->relative();
+      int winderr = windsensor->err_percent();
       uangle bearing = compass->bearing();
       int compasserr = compass->err_percent();
       int tol = compass->timeout_location();
@@ -66,8 +66,8 @@ void SDLogger::print_line(char *message, char *msgprefix) {
       // dataFile.print(gpsReading.fix); dataFile.print(",");
       // dataFile.print(gpsReading.mps); dataFile.print(",");
       dataFile.print(mem); dataFile.print(",");
-      // dataFile.print(wind); dataFile.print(",");
-      // dataFile.print(winderr); dataFile.print(",");
+      dataFile.print(wind); dataFile.print(",");
+      dataFile.print(winderr); dataFile.print(",");
       dataFile.print(bearing); dataFile.print(",");
       dataFile.print(compasserr); dataFile.print(",[");
       dataFile.print(tol); dataFile.print("],");

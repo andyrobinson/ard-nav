@@ -54,9 +54,8 @@ void setup() {
 //   delay(1000);
 //   rudder.begin();
 //   sail.begin();
-  //windsensor.begin();  // this is NOT nice - the WindSensor begin must come first or not at all - I think we should make Wire.begin work only once ...
-  delay(50);
   compass.begin();
+  //windsensor.begin();  // do NOT do this
 // //  delay(100); // to allow time for I2C
 //   gps.begin();
   logger.begin();
