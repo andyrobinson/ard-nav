@@ -47,8 +47,8 @@ void SDLogger::banner(char *message) {
 }
 
 void SDLogger::print_line(char *message, char *msgprefix) {
-    // gps->data(GPS_WAIT_MILLIS, &gpsReading);
-    // calculate_filename(logfile, gpsReading.unixTime);
+    gps->data(GPS_WAIT_MILLIS, &gpsReading);
+    calculate_filename(logfile, gpsReading.unixTime);
     File dataFile = SD.open("BOOTSTRP.TXT", FILE_WRITE);
     if (dataFile) {
       angle wind = windsensor->relative();
