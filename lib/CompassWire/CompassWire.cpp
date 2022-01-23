@@ -15,6 +15,7 @@ void CompassWire::begin() {
 uangle CompassWire::bearing() {
    tol = 0;
    MagResult bearing = raw_bearing();
+   delay(2);
    MagResult accel = raw_accel();
 
    double roll = atan2((double)accel.y, (double)accel.z);

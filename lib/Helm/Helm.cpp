@@ -40,8 +40,9 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
      long start = millis();
      while ((millis() - start) < STEER_INTERVAL) {
        compass->bearing();
+       timer->wait(1);
        windsensor->relative();
-       timer->wait(4);
+       timer->wait(1);
      }
      // timer->wait(STEER_INTERVAL);
 
