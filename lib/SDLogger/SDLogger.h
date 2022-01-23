@@ -7,7 +7,7 @@
 #include "Gps.h"
 #include "Utility.h"
 
-#define TEST_LOG_FILE 20001l
+#define TEST_LOG_FILE 20001ul
 #define CHIP_SELECT 4
 #define BASE10 10
 #define LOG_INTERVAL 300ul // may affect battery life
