@@ -13,6 +13,7 @@ void CompassWire::begin() {
 }
 
 uangle CompassWire::bearing() {
+   tol = 0;
    MagResult bearing = raw_bearing();
    MagResult accel = raw_accel();
 
@@ -39,7 +40,7 @@ MagResult CompassWire::raw_bearing() {
   endTransResult = Wire.endTransmission();
 
   if (sercom3.hasTimedout(true)) {
-     tol = sercom3.timeoutLocation();
+     tol = sercom3.timeoutLocation() + 100;
   }
 
   if (endTransResult) {
@@ -52,7 +53,7 @@ MagResult CompassWire::raw_bearing() {
   Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
 
   if (sercom3.hasTimedout(true)) {
-     tol = sercom3.timeoutLocation();
+     tol = sercom3.timeoutLocation() + 200;
   }
 
   long start = millis();
@@ -82,7 +83,7 @@ MagResult CompassWire::raw_accel() {
   endTransResult = Wire.endTransmission();
 
   if (sercom3.hasTimedout(true)) {
-     tol = sercom3.timeoutLocation();
+     tol = sercom3.timeoutLocation() + 300;
   }
 
   if (endTransResult) {
@@ -93,7 +94,7 @@ MagResult CompassWire::raw_accel() {
   Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
 
   if (sercom3.hasTimedout(true)) {
-     tol = sercom3.timeoutLocation();
+     tol = sercom3.timeoutLocation() + 400;
   }
 
   long start = millis();
