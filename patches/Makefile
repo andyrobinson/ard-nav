@@ -10,9 +10,17 @@ endif
 
 PATCH_FILES = $(wildcard *.cpp *.h)
 DST_FILES = $(foreach file, $(PATCH_FILES), $(ARDUINO_CORE_DIR)/$(file))
+ORIGINAL_FILES = $(foreach file, $(PATCH_FILES), $(ARDUINO_CORE_DIR)/$(file))
 
 $(DST_FILES): $(ARDUINO_CORE_DIR)/%: %
 	@echo patching $@
 	@cp -rp $< $@
 
+$(ORIGINAL_FILES): $(ARDUINO_CORE_DIR)/%: %
+	@echo restoring $@
+	@echo from original/$<
+#	@cp -rp $< $@
+
 patch: $(DST_FILES)
+
+unpatch: $(ORIGINAL_FILES)
