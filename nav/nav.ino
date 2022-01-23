@@ -1,3 +1,4 @@
+#define WIRE_RISE_TIME_NANOSECONDS 250
 #include <MServo.h>
 #include <Position.h>
 #include <Compass.h>
