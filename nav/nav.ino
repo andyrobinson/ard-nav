@@ -47,7 +47,7 @@ Navigator navigator(&tacker, &gps, &globe, &logger);
 Captain captain(&navigator);
 
 void setup() {
-  //sercom3.setTimeoutInMicrosWIRE(25000ul, false);  // for new timeout
+  sercom3.setTimeoutInMicrosWIRE(25000ul, true);  // for new timeout
   servo_control.begin();
   delay(1000);
   rudder.begin();
