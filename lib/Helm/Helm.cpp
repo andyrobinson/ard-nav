@@ -19,6 +19,12 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
     angle TEMP_RUDDER = 25;
     angle TEMP_RELATIVE_WIND = 100;
     int SAIL_COUNT = 0;
+
+    if (compass->err_percent() >= 10000 && windsensor->err_percent() >= 10000) {
+      sprintf(logmsg, "** I2C Failure **"); logger->banner(logmsg);
+      while (true) {};
+    }
+
     while ((remaining > 0) && wind_in_range(range)) {
 
       // more reads
@@ -30,7 +36,14 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
      //      sail->set_position(windsensor->relative());
      set_rudder(TEMP_RUDDER, current_heading);
 
-     timer->wait(STEER_INTERVAL);
+     // exercise I2C a lot
+     long start = millis();
+     while ((millis() - start) < STEER_INTERVAL) {
+       compass->bearing();
+       windsensor->relative();
+       timer->wait(2);
+     }
+     // timer->wait(STEER_INTERVAL);
 
      SAIL_COUNT += 1;
      if (SAIL_COUNT == 10) {
