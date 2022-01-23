@@ -38,9 +38,9 @@ MagResult CompassWire::raw_bearing() {
   Wire.write(COMPASS_REGISTER_X_HIGH);
   endTransResult = Wire.endTransmission();
 
-  // if (sercom3.hasTimedout(true)) {
-  //    tol = sercom3.timeoutLocation();
-  // }
+  if (sercom3.hasTimedout(true)) {
+     tol = sercom3.timeoutLocation();
+  }
 
   if (endTransResult) {
     errors = constrain(errors + 100, 0, 10000);
@@ -51,9 +51,9 @@ MagResult CompassWire::raw_bearing() {
   // We need to check for the timeout and act accordingly
   Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
 
-  // if (sercom3.hasTimedout(true)) {
-  //    tol = sercom3.timeoutLocation();
-  // }
+  if (sercom3.hasTimedout(true)) {
+     tol = sercom3.timeoutLocation();
+  }
 
   long start = millis();
   while (Wire.available() < 6 && ((millis() - start) < 20));
@@ -81,9 +81,9 @@ MagResult CompassWire::raw_accel() {
   Wire.write(ACCEL_REGISTER_OUT_X_L_A | 0x80);
   endTransResult = Wire.endTransmission();
 
-  // if (sercom3.hasTimedout(true)) {
-  //    tol = sercom3.timeoutLocation();
-  // }
+  if (sercom3.hasTimedout(true)) {
+     tol = sercom3.timeoutLocation();
+  }
 
   if (endTransResult) {
     errors = constrain(errors + 100, 0, 10000);
@@ -92,10 +92,10 @@ MagResult CompassWire::raw_accel() {
 
   Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
 
-  // if (sercom3.hasTimedout(true)) {
-  //    tol = sercom3.timeoutLocation();
-  // }
-  //
+  if (sercom3.hasTimedout(true)) {
+     tol = sercom3.timeoutLocation();
+  }
+
   long start = millis();
   while (Wire.available() < 6 && ((millis() - start) < 20));
 

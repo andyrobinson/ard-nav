@@ -1,4 +1,6 @@
 /*
+  Modified to include timeout
+
   Copyright (c) 2014 Arduino.  All right reserved.
 
   This library is free software; you can redistribute it and/or
