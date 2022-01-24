@@ -13,9 +13,7 @@ void CompassWire::begin() {
 }
 
 uangle CompassWire::bearing() {
-   tol = 0;
    MagResult bearing = raw_bearing();
-   delay(2);
    MagResult accel = raw_accel();
 
    double roll = atan2((double)accel.y, (double)accel.z);
@@ -42,10 +40,13 @@ MagResult CompassWire::raw_bearing() {
 
   if (sercom3.hasTimedout(true)) {
      tol = sercom3.timeoutLocation() + 100;
+     endTransResult = true;
   }
 
   if (endTransResult) {
     errors = constrain(errors + 100, 0, 10000);
+    Wire.end();
+    Wire.begin();
     return {0,0,0};
   }
 
@@ -55,6 +56,9 @@ MagResult CompassWire::raw_bearing() {
 
   if (sercom3.hasTimedout(true)) {
      tol = sercom3.timeoutLocation() + 200;
+     Wire.end();
+     Wire.begin();
+     return {0,0,0};
   }
 
   long start = millis();
@@ -62,6 +66,8 @@ MagResult CompassWire::raw_bearing() {
 
   if (Wire.available() < 6) {
     errors = constrain(errors + 100, 0, 10000);
+    Wire.end();
+    Wire.begin();
     return {0,0,0};
   }
 
@@ -85,10 +91,13 @@ MagResult CompassWire::raw_accel() {
 
   if (sercom3.hasTimedout(true)) {
      tol = sercom3.timeoutLocation() + 300;
+     endTransResult = true;
   }
 
   if (endTransResult) {
     errors = constrain(errors + 100, 0, 10000);
+    Wire.end();
+    Wire.begin();
     return {0,0,0};
   }
 
@@ -96,6 +105,9 @@ MagResult CompassWire::raw_accel() {
 
   if (sercom3.hasTimedout(true)) {
      tol = sercom3.timeoutLocation() + 400;
+     Wire.end();
+     Wire.begin();
+     return {0,0,0};
   }
 
   long start = millis();
@@ -103,6 +115,8 @@ MagResult CompassWire::raw_accel() {
 
   if (Wire.available() < 6) {
     errors = constrain(errors + 100, 0, 10000);
+    Wire.end();
+    Wire.begin();
     return {0,0,0};
   }
 
@@ -127,6 +141,8 @@ void CompassWire::write8(byte address, byte reg, byte value)
   endTransResult = Wire.endTransmission(false);
 
   if (endTransResult) {
+    Wire.end();
+    Wire.begin();
     errors = constrain(errors + 100, 0, 10000);
   } else {
     errors = constrain(errors -1, 0, 10000);
