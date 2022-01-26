@@ -20,10 +20,10 @@ void setup() {
 }
 
 void loop() {
-    for (int i=0; i< 200;i++) {
+    for (int i=0; i< 2000;i++) {
       compass.bearing();
       wind.relative();
-      delay(10);
+      delay(5);
     }
 
     Serial.print("Compass: "); Serial.print(compass.bearing());
