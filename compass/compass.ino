@@ -2,21 +2,25 @@
 #include <CompassWire.h>
 #include <WindSensor.h>
 #include <WindSensorWire.h>
-#include <SPI.h>
-#include <SD.h>
+#include <Timer.h>
+#include <Gps.h>
+#include <SDLogger.h>
 #include <MServo.h>
 
 #define CHIP_SELECT 4
 
-File dataFile;
 char dataString[20] = ", new data";
 MServo servo;
 
 // Simple test for the compass library - should
 // manually try it at all compass points, and with tilt
 
+Timer timer;
 CompassWire compass;
 WindSensorWire wind;
+Gps gps(&timer);
+SDLogger logger(&gps, &wind, &compass);
+
 char buf[20];
 
 void setup() {
@@ -25,16 +29,13 @@ void setup() {
   wind.begin();
   delay(50);
   compass.begin();
-  if (!SD.begin(CHIP_SELECT)) {
-    // need to do something else?
-    Serial.println("Card failed, or not present");
-      while(true) {};
-  }
+  gps.begin();
+  logger.begin();
   Serial.println("Starting test");
 }
 
 void loop() {
-    for (int i=0; i< 200;i++) {
+    for (int i=0; i< 100;i++) {
       compass.bearing();
       wind.relative();
       delay(5);
@@ -46,13 +47,7 @@ void loop() {
     Serial.print("Wind: "); Serial.print(wind.relative());
     Serial.print(" e: ");Serial.println(wind.err_percent());
 
-    dataFile = SD.open("datalog.txt", FILE_WRITE);
-  
-    if (dataFile) {
-      dataFile.print(millis());
-      dataFile.println(dataString);
-      dataFile.close();
-    }
+    logger.banner(dataString);
 
     // m = compass.raw_accel();
     // Serial.print("{");
