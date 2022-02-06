@@ -11,13 +11,14 @@
 #include <RotaryPID.h>
 #include <Switches.h>
 #include <MServo.h>
+#include <version.h>
 
 #define MAJOR_VERSION 111
 
 #define CHIP_SELECT 4
 
 char dataString[20] = ", new data";
-car logmsg[30];
+char logmsg[30];
 MServo servo_control;
 
 // Simple test for the compass library - should
@@ -37,6 +38,9 @@ Helm helm(&rudder, &compass, &timer, &wind, &sail, &rotaryPID, &logger);
 char buf[20];
 
 void setup() {
+  sercom3.setTimeoutInMicrosWIRE(25000ul, true);  // for new timeout
+  servo_control.begin();
+
   while (!Serial); // wait for Serial to be ready
   Serial.begin(19200);
   wind.begin();
