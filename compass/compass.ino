@@ -5,21 +5,34 @@
 #include <Timer.h>
 #include <Gps.h>
 #include <SDLogger.h>
+#include <Sail.h>
+#include <Rudder.h>
+#include <Helm.h>
+#include <RotaryPID.h>
+#include <Switches.h>
 #include <MServo.h>
+
+#define MAJOR_VERSION 111
 
 #define CHIP_SELECT 4
 
 char dataString[20] = ", new data";
-MServo servo;
+car logmsg[30];
+MServo servo_control;
 
 // Simple test for the compass library - should
 // manually try it at all compass points, and with tilt
 
+Switches switches;
 Timer timer;
 CompassWire compass;
 WindSensorWire wind;
 Gps gps(&timer);
 SDLogger logger(&gps, &wind, &compass);
+Sail sail(&servo_control);
+RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
+Rudder rudder(&servo_control);
+Helm helm(&rudder, &compass, &timer, &wind, &sail, &rotaryPID, &logger);
 
 char buf[20];
 
@@ -31,16 +44,18 @@ void setup() {
   compass.begin();
   gps.begin();
   logger.begin();
+  sail.begin();
+  rudder.begin();
+  switches.begin();
   Serial.println("Starting test");
+  sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
+
 }
 
 void loop() {
-    for (int i=0; i< 100;i++) {
-      compass.bearing();
-      wind.relative();
-      delay(5);
-    }
 
+    windrange range = {0, 359};
+    helm.steer(90, 30000l, range);
     Serial.print("Compass: "); Serial.print(compass.bearing());
     Serial.print(" e: ");Serial.print(compass.err_percent());Serial.print(" | ");
 
@@ -49,16 +64,4 @@ void loop() {
 
     logger.banner(dataString);
 
-    // m = compass.raw_accel();
-    // Serial.print("{");
-    // Serial.print(m.x); Serial.print(",");
-    // Serial.print(m.y); Serial.print(",");
-    // Serial.print(m.z);
-    // Serial.print("} ");
-    // m = compass.raw_bearing();
-    // Serial.print("{");
-    // Serial.print(m.x); Serial.print(",");
-    // Serial.print(m.y); Serial.print(",");
-    // Serial.print(m.z);
-    // Serial.println("} ");
 }
