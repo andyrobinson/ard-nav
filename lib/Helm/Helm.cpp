@@ -13,7 +13,7 @@ Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windse
 void Helm::steer(uangle direction, long steer_time, windrange range) {
     long remaining = steer_time;
 
-    char logmsg[22];
+    char logmsg[50];
     sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
 
     angle TEMP_RUDDER = 25;
@@ -27,24 +27,24 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
 
     while ((remaining > 0) && wind_in_range(range)) {
 
-      // more reads
+      // exercise I2C a lot
+      long start = millis();
+      while ((millis() - start) < STEER_INTERVAL - 200) {
+        compass->bearing();
+        timer->wait(2);
+        windsensor->relative();
+        timer->wait(4);
+      }
+
       angle current_heading;
+      timer->wait(100);
+
       current_heading = compass->bearing();
       angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
 
       // set_rudder(new_rudder_position, current_heading);
      //      sail->set_position(windsensor->relative());
      set_rudder(TEMP_RUDDER, current_heading);
-
-     // exercise I2C a lot
-     long start = millis();
-     while ((millis() - start) < STEER_INTERVAL) {
-       compass->bearing();
-       timer->wait(2);
-       windsensor->relative();
-       timer->wait(4);
-     }
-     // timer->wait(STEER_INTERVAL);
 
      SAIL_COUNT += 1;
      if (SAIL_COUNT == 10) {
@@ -54,10 +54,13 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
        timer->wait(400);
        TEMP_RELATIVE_WIND = -TEMP_RELATIVE_WIND;
      }
+
+     timer->wait(100);
+
       remaining = remaining - STEER_INTERVAL;
 
       long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
-      sprintf(logmsg, "%8d %3d %8d", turnrate, new_rudder_position, remaining); logger->msg(logmsg);
+      sprintf(logmsg, "%8d %3d %8d %2d", turnrate, new_rudder_position, remaining, SAIL_COUNT); logger->msg(logmsg);
 
       TEMP_RUDDER = -TEMP_RUDDER;
     }
