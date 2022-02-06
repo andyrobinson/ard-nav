@@ -30,7 +30,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
       // more reads
       angle current_heading;
       current_heading = compass->bearing();
-      angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
+      // angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
 
       // set_rudder(new_rudder_position, current_heading);
      //      sail->set_position(windsensor->relative());
