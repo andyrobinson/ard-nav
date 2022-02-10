@@ -14,26 +14,31 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
 
 
     long remaining = steer_time;
+    char logmsg[50] = "stuff";
+
+    sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
+
+    angle TEMP_RUDDER = 25;
+    angle TEMP_RELATIVE_WIND = 100;
+    int SAIL_COUNT = 0;
+
+    if (compass->err_percent() >= 10000 && windsensor->err_percent() >= 10000) {
+      sprintf(logmsg, "** I2C Failure **"); logger->banner(logmsg);
+      while (true) {};
+    }
 
     while (remaining > 0) {
       for (int i=0; i< 100;i++) {
-        compass.bearing();
-        wind.relative();
+        compass->bearing();
+        windsensor->relative();
         delay(5);
       }
 
-      Serial.print("Compass: "); Serial.print(compass.bearing());
-      Serial.print(" e: ");Serial.print(compass.err_percent());Serial.print(" | ");
-
-      Serial.print("Wind: "); Serial.print(wind.relative());
-      Serial.print(" e: ");Serial.println(wind.err_percent());
-
-      logger.banner(dataString);
+      logger->banner(logmsg);
 
       remaining = remaining - 500;
     }
 
-    // char logmsg[50];
     // sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
     //
     // angle TEMP_RUDDER = 25;
