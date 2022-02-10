@@ -60,12 +60,4 @@ void loop() {
 
     windrange range = {0, 359};
     helm.steer(90, 30000l, range);
-    Serial.print("Compass: "); Serial.print(compass.bearing());
-    Serial.print(" e: ");Serial.print(compass.err_percent());Serial.print(" | ");
-
-    Serial.print("Wind: "); Serial.print(wind.relative());
-    Serial.print(" e: ");Serial.println(wind.err_percent());
-
-    logger.banner(dataString);
-
 }
