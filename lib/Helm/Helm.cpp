@@ -12,7 +12,6 @@ Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windse
 
 void Helm::steer(uangle direction, long steer_time, windrange range) {
 
-
     long remaining = steer_time;
     char logmsg[50] = "stuff";
 
@@ -27,45 +26,24 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
       while (true) {};
     }
 
-    while (remaining > 0) {
+    while ((remaining > 0) && wind_in_range(range)) {
+      // lots of exercise for I2C
       for (int i=0; i< 100;i++) {
         compass->bearing();
         windsensor->relative();
         delay(5);
       }
 
+      angle current_heading;
+
+      current_heading = compass->bearing();
+      angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
+
       logger->banner(logmsg);
 
       remaining = remaining - 500;
     }
 
-    // sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
-    //
-    // angle TEMP_RUDDER = 25;
-    // angle TEMP_RELATIVE_WIND = 100;
-    // int SAIL_COUNT = 0;
-    //
-    // if (compass->err_percent() >= 10000 && windsensor->err_percent() >= 10000) {
-    //   sprintf(logmsg, "** I2C Failure **"); logger->banner(logmsg);
-    //   while (true) {};
-    // }
-    //
-    // while ((remaining > 0) && wind_in_range(range)) {
-    //
-    //   // exercise I2C a lot
-    //   long start = millis();
-    //   while ((millis() - start) < STEER_INTERVAL - 200) {
-    //     compass->bearing();
-    //     timer->wait(2);
-    //     windsensor->relative();
-    //     timer->wait(4);
-    //   }
-    //
-    //   angle current_heading;
-    //   timer->wait(100);
-    //
-    //   current_heading = compass->bearing();
-    //   angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
     //
     //   // set_rudder(new_rudder_position, current_heading);
     //  //      sail->set_position(windsensor->relative());
