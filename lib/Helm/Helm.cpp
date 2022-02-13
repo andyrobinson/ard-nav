@@ -51,8 +51,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
          TEMP_RELATIVE_WIND = -TEMP_RELATIVE_WIND;
        }
 
-      long turnrate = 0;
-      // long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
+      long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
       sprintf(logmsg, "%8d %3d %8d %2d", turnrate, new_rudder_position, remaining, SAIL_COUNT); logger->msg(logmsg);
 
       TEMP_RUDDER = -TEMP_RUDDER;
