@@ -24,6 +24,31 @@
 
 #define MAJOR_VERSION 99 // for test
 
+
+/*
+Serial ports used Sercom - not sure if this is the cause of the problems, but the definitions
+are certainly used more than once, and have different values
+
++---------+--------+--------+--------+--------+--------+
+|  Name   | Sercom | Pin Tx | Pin Rx | Pad Tx | Pad Rx |
++---------+--------+--------+--------+--------+--------+
+| Serial  |        |        |        |        |        |
++---------+--------+--------+--------+--------+--------+
+| Serial1 |        |        |        |        |        |
++---------+--------+--------+--------+--------+--------+
+| Serial2 |        |        |        |        |        |
++---------+--------+--------+--------+--------+--------+
+| Serial3 |        |        |        |        |        |
++---------+--------+--------+--------+--------+--------+
+| Serial4 |        |        |        |        |        |
++---------+--------+--------+--------+--------+--------+
+
+0 - Used for serial text output to the serial monitor, destined for the satellite comms
+1 - GPS
+2 - Servo controller
+3 - I2C controller
+EDBG
+*/
 WindSensorWire windsensor;
 CompassWire compass;
 //CompassDmac compass;
