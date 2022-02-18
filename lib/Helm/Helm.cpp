@@ -62,7 +62,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
 }
 
 void Helm::set_rudder(angle new_position, uangle current_heading) {
-  // rudder->set_position(new_position);
+  rudder->set_position(new_position);
   rudder_position = new_position;
   old_heading = current_heading;
 }
