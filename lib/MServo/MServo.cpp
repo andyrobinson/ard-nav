@@ -2,19 +2,19 @@
 #include "wiring_private.h"
 
 // sercom2SerialPort on SERCOM 2, TX = pin 2, RX = pin 3
-Uart sercom2SerialPort (&sercom2, PIN_SERIAL2_RX, PIN_SERIAL2_TX, SERCOM_RX_PAD_1, UART_TX_PAD_2);
+Uart Serial3(&sercom2, PIN_SERIAL2_RX, PIN_SERIAL2_TX, SERCOM_RX_PAD_1, UART_TX_PAD_2);
 
 void SERCOM2_Handler()
 {
-  sercom2SerialPort.IrqHandler();
+  Serial3.IrqHandler();
 }
 
-MicroMaestro maestro(sercom2SerialPort);
+MicroMaestro maestro(Serial3);
 
 MServo::MServo() {};
 
 void MServo::begin() {
-  sercom2SerialPort.begin(9600);
+  Serial3.begin(9600);
   pinPeripheral(2, PIO_SERCOM);
   pinPeripheral(3, PIO_SERCOM_ALT);
 }
