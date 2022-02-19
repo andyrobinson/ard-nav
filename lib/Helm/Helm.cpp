@@ -40,7 +40,9 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
 
        // set_rudder(new_rudder_position, current_heading);
        // sail->set_position(windsensor->relative());
+       delay(50);
        set_rudder(TEMP_RUDDER, current_heading);
+       delay(50);
 
        SAIL_COUNT += 1;
        if (SAIL_COUNT == 10) {
@@ -62,7 +64,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
 }
 
 void Helm::set_rudder(angle new_position, uangle current_heading) {
-  //rudder->set_position(new_position);
+  rudder->set_position(new_position);
   rudder_position = new_position;
   old_heading = current_heading;
 }
