@@ -1,8 +1,8 @@
 #include "MServo.h"
 #include "wiring_private.h"
 
-// sercom2SerialPort on SERCOM 2, TX = pin 2, RX = pin 3
-Uart Serial3(&sercom2, PIN_SERIAL2_RX, PIN_SERIAL2_TX, SERCOM_RX_PAD_1, UART_TX_PAD_2);
+// Serial3 on SERCOM 2, TX = pin 2, RX = pin 3
+Uart Serial3(&sercom2, PIN_SERIAL3_RX, PIN_SERIAL3_TX, SERCOM_RX_PAD_1, UART_TX_PAD_2);
 
 void SERCOM2_Handler()
 {
@@ -14,9 +14,9 @@ MicroMaestro maestro(Serial3);
 MServo::MServo() {};
 
 void MServo::begin() {
+  pinPeripheral(PIN_SERIAL3_TX, PIO_SERCOM);
+  pinPeripheral(PIN_SERIAL3_RX, PIO_SERCOM_ALT);
   Serial3.begin(9600);
-  pinPeripheral(2, PIO_SERCOM);
-  pinPeripheral(3, PIO_SERCOM_ALT);
 }
 
 void MServo::write(uint8_t channel, uint16_t angle) {

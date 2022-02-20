@@ -4,11 +4,8 @@
 #include "Arduino.h"
 #include "PololuMaestro.h"
 
-#define SERVO_TX 2
-#define SERVO_RX 3
-
-#define PIN_SERIAL2_RX       (3ul)
-#define PIN_SERIAL2_TX       (2ul)
+#define PIN_SERIAL3_RX       (3ul)
+#define PIN_SERIAL3_TX       (2ul)
 #define SERVO_MIN 2000
 #define SERVO_MAX 10000
 
