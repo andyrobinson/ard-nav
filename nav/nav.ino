@@ -26,6 +26,11 @@
 
 
 /*
+
+This is a good guide to configuring the SERCOMS on SAM21 Arduino
+
+https://cdn-learn.adafruit.com/downloads/pdf/using-atsamd21-sercom-to-add-more-spi-i2c-serial-ports.pdf
+
 Serial ports used Sercom - not sure if this is the cause of the problems, but the definitions
 are certainly used more than once, and have different values
 
@@ -36,7 +41,7 @@ are certainly used more than once, and have different values
 +---------+--------+--------+--------+--------+--------+----------+----------+-----------+
 | Serial1 |    0   |   10   |  11    |    2   |    3   |   D1     |   D0     | Sat       |
 +---------+--------+--------+--------+--------+--------+----------+----------+-----------+
-| Serial2 |    1   |   10   |  12    |    2   |    3   |   D10    |   D12    | GPS       |
+| Serial2 |    1   |   36   |  34    |    2   |    3   |   D10    |   D12    | GPS       |
 +---------+--------+--------+--------+--------+--------+----------+----------+-----------+
 | Serial3 |    2   |   2    |   3A   |    2   |    1   |   D2     |   D3     | Servo     |
 +---------+--------+--------+--------+--------+--------+----------+----------+-----------+
