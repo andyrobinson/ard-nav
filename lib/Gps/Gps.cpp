@@ -1,11 +1,12 @@
 #include "Gps.h"
 #include "Adafruit_GPS.h"
+#include "wiring_private.h"
 
 using namespace Utility;
 
 // not in the class, must be static
 
-Uart Serial2(&sercom1, PIN_SERIAL2_RX, PIN_SERIAL2_TX, PAD_SERIAL2_RX, PAD_SERIAL2_TX);
+Uart Serial2(&sercom1, PIN_SERIAL2_RX, PIN_SERIAL2_TX, SERCOM_RX_PAD_3, UART_TX_PAD_2);
 
 void SERCOM1_Handler()
 {
@@ -24,6 +25,9 @@ void TC5_Handler(void) {
 Gps::Gps(Timer *timerp): timer(timerp) {}
 
 void Gps::begin() {
+  pinPeripheral(PIN_SERIAL2_TX, PIO_SERCOM);
+  pinPeripheral(PIN_SERIAL2_RX, PIO_SERCOM);
+
   AGPS.begin(9600);
   AGPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGAGSA);  // with fix quality, satellites, and error values
   AGPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
