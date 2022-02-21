@@ -57,7 +57,7 @@ void setup() {
 }
 
 void loop() {
-
+    Serial.println("Loop");
     windrange range = {0, 359};
     helm.steer(90, 30000l, range);
 }

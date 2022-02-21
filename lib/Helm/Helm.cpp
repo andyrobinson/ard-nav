@@ -15,18 +15,19 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
     long remaining = steer_time;
     char logmsg[50] = "stuff";
 
-    sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
+    // sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
 
     angle TEMP_RUDDER = 25;
     angle TEMP_RELATIVE_WIND = 100;
     int SAIL_COUNT = 0;
 
     if (compass->err_percent() >= 10000 && windsensor->err_percent() >= 10000) {
+      Serial.println("I2C failure");
       sprintf(logmsg, "** I2C Failure **"); logger->banner(logmsg);
       while (true) {};
     }
 
-    while ((remaining > 0) && wind_in_range(range)) {
+    while (remaining > 0) { // && wind_in_range(range)) {
       // lots of exercise for I2C
       for (int i=0; i< 100;i++) {
         compass->bearing();
@@ -35,26 +36,27 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
       }
 
       angle current_heading = compass->bearing();
-      angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
+      // angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
+      Serial.print("Steering ...");
+      Serial.println(current_heading);
 
 
        // set_rudder(new_rudder_position, current_heading);
        // sail->set_position(windsensor->relative());
-       delay(50);
        set_rudder(TEMP_RUDDER, current_heading);
-       delay(50);
 
-       SAIL_COUNT += 1;
-       if (SAIL_COUNT == 10) {
-         SAIL_COUNT = 0;
-         timer->wait(200);
-         sail->set_position(TEMP_RELATIVE_WIND);
-         timer->wait(400);
-         TEMP_RELATIVE_WIND = -TEMP_RELATIVE_WIND;
-       }
-
-      long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
-      sprintf(logmsg, "%8d %3d %8d %2d", turnrate, new_rudder_position, remaining, SAIL_COUNT); logger->msg(logmsg);
+      //  SAIL_COUNT += 1;
+      //  if (SAIL_COUNT == 10) {
+      //    SAIL_COUNT = 0;
+      //    timer->wait(200);
+      //    sail->set_position(TEMP_RELATIVE_WIND);
+      //    timer->wait(400);
+      //    TEMP_RELATIVE_WIND = -TEMP_RELATIVE_WIND;
+      //  }
+      //
+      // long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
+      // sprintf(logmsg, "%8d %3d %8d %2d", turnrate, new_rudder_position, remaining, SAIL_COUNT); logger->msg(logmsg);
+      sprintf(logmsg, "%4d", TEMP_RUDDER); logger->msg(logmsg);
 
       TEMP_RUDDER = -TEMP_RUDDER;
 
