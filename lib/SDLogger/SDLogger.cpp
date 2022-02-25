@@ -8,8 +8,8 @@ using namespace Utility;
 
 SDLogger::SDLogger() {}
 
-SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp):
-  gps(gpsp), compass(compassp), windsensor(windsensorp) {}
+SDLogger::SDLogger(WindSensor *windsensorp, Compass *compassp):
+  compass(compassp), windsensor(windsensorp) {}
 
 void SDLogger::calculate_filename(char *filename, long unix_ts) {
     long filenameint = TEST_LOG_FILE;
@@ -47,8 +47,7 @@ void SDLogger::banner(char *message) {
 }
 
 void SDLogger::print_line(char *message, char *msgprefix) {
-    gps->data(GPS_WAIT_MILLIS, &gpsReading);
-    calculate_filename(logfile, gpsReading.unixTime);
+    calculate_filename(logfile, 10l);
     File dataFile = SD.open(logfile, FILE_WRITE);
     if (dataFile) {
       angle wind = windsensor->relative();
@@ -58,13 +57,7 @@ void SDLogger::print_line(char *message, char *msgprefix) {
       int tol = compass->timeout_location();
       int mem=dispFreeMemory();
 
-      dataFile.print(gpsReading.unixTime); dataFile.print(",");
       dataFile.print(millis()/1000); dataFile.print(",");
-      dataFile.print(gpsReading.pos.latitude,5); dataFile.print(",");
-      dataFile.print(gpsReading.pos.longitude,5); dataFile.print(",");
-      dataFile.print(gpsReading.pos.error); dataFile.print(",");
-      dataFile.print(gpsReading.fix); dataFile.print(",");
-      dataFile.print(gpsReading.mps); dataFile.print(",");
       dataFile.print(mem); dataFile.print(",");
       dataFile.print(wind); dataFile.print(",");
       dataFile.print(winderr); dataFile.print(",");

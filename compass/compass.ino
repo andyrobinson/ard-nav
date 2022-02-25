@@ -2,13 +2,8 @@
 #include <CompassWire.h>
 #include <WindSensor.h>
 #include <WindSensorWire.h>
-#include <Timer.h>
-#include <Gps.h>
 #include <SDLogger.h>
 #include <Rudder.h>
-#include <Helm.h>
-#include <RotaryPID.h>
-#include <Switches.h>
 #include <MServo.h>
 #include <version.h>
 
@@ -20,12 +15,9 @@ MServo servo_control;
 // Simple test for the compass library - should
 // manually try it at all compass points, and with tilt
 
-Switches switches;
-Timer timer;
 CompassWire compass;
 WindSensorWire wind;
-Gps gps(&timer);
-SDLogger logger(&gps, &wind, &compass);
+SDLogger logger(&wind, &compass);
 Rudder rudder(&servo_control);
 
 void setup() {
@@ -35,7 +27,6 @@ void setup() {
   wind.begin();
   delay(50);
   compass.begin();
-  gps.begin();
   logger.begin();
   rudder.begin();
   sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
