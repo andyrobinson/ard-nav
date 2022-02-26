@@ -34,31 +34,24 @@ void setup() {
 }
 
 void loop() {
-    long remaining = 30000l;
 
     angle TEMP_RUDDER = 25;
+
+    // lots of exercise for I2C
+    for (int i=0; i< 200;i++) {
+      compass.bearing();
+      wind.relative();
+      delay(5);
+    }
 
     if (compass.err_percent() >= 10000 && wind.err_percent() >= 10000) {
       sprintf(logmsg, "** I2C Failure **"); logger.banner(logmsg);
       while (true) {};
     }
 
-    while (remaining > 0) {
-      // lots of exercise for I2C
-      for (int i=0; i< 100;i++) {
-        compass.bearing();
-        wind.relative();
-        delay(5);
-      }
+    rudder.set_position(TEMP_RUDDER);
 
-      angle current_heading = compass.bearing();
-
-      rudder.set_position(TEMP_RUDDER);
-
-      sprintf(logmsg, "%4d", TEMP_RUDDER); logger.msg(logmsg);
-      TEMP_RUDDER = -TEMP_RUDDER;
-
-      remaining = remaining - 800;
-    }
+    sprintf(logmsg, "%4d", TEMP_RUDDER); logger.msg(logmsg);
+    TEMP_RUDDER = -TEMP_RUDDER;
 
 }
