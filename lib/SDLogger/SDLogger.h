@@ -2,7 +2,6 @@
 #define SDLogger_h
 
 #include "Logger.h"
-#include "WindSensor.h"
 #include "Compass.h"
 #include "Utility.h"
 
@@ -15,7 +14,7 @@
 class SDLogger : public Logger {
     public:
       SDLogger();
-      SDLogger(WindSensor *windsensorp, Compass *compassp);
+      SDLogger(Compass *compassp);
       virtual void begin();
       virtual void msg(char *message);
       virtual void banner(char *message);
@@ -27,7 +26,6 @@ class SDLogger : public Logger {
       void calculate_filename(char *filename, long unix_ts);
       boolean sd_time_to_log();
 
-      WindSensor *windsensor;
       Compass *compass;
       char destination;
       char tack;
