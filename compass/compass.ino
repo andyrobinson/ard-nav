@@ -1,7 +1,5 @@
 #include <Compass.h>
 #include <CompassWire.h>
-#include <WindSensor.h>
-#include <WindSensorWire.h>
 #include <SDLogger.h>
 #include <Rudder.h>
 #include <MServo.h>
@@ -16,21 +14,17 @@ MServo servo_control;
 // manually try it at all compass points, and with tilt
 
 CompassWire compass;
-WindSensorWire wind;
-SDLogger logger(&wind, &compass);
+SDLogger logger(&compass);
 Rudder rudder(&servo_control);
 
 void setup() {
   sercom3.setTimeoutInMicrosWIRE(25000ul, true);  // for new timeout
   servo_control.begin();
 
-  wind.begin();
-  delay(50);
   compass.begin();
   logger.begin();
   rudder.begin();
   sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
-
 }
 
 void loop() {
@@ -40,11 +34,10 @@ void loop() {
     // lots of exercise for I2C
     for (int i=0; i< 200;i++) {
       compass.bearing();
-      wind.relative();
       delay(5);
     }
 
-    if (compass.err_percent() >= 10000 && wind.err_percent() >= 10000) {
+    if (compass.err_percent() >= 10000) {
       sprintf(logmsg, "** I2C Failure **"); logger.banner(logmsg);
       while (true) {};
     }

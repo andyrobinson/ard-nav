@@ -8,8 +8,8 @@ using namespace Utility;
 
 SDLogger::SDLogger() {}
 
-SDLogger::SDLogger(WindSensor *windsensorp, Compass *compassp):
-  compass(compassp), windsensor(windsensorp) {}
+SDLogger::SDLogger(Compass *compassp):
+  compass(compassp) {}
 
 void SDLogger::calculate_filename(char *filename, long unix_ts) {
     long filenameint = TEST_LOG_FILE;
@@ -50,8 +50,6 @@ void SDLogger::print_line(char *message, char *msgprefix) {
     calculate_filename(logfile, 10l);
     File dataFile = SD.open(logfile, FILE_WRITE);
     if (dataFile) {
-      angle wind = windsensor->relative();
-      int winderr = windsensor->err_percent();
       uangle bearing = compass->bearing();
       int compasserr = compass->err_percent();
       int tol = compass->timeout_location();
@@ -59,8 +57,6 @@ void SDLogger::print_line(char *message, char *msgprefix) {
 
       dataFile.print(millis()/1000); dataFile.print(",");
       dataFile.print(mem); dataFile.print(",");
-      dataFile.print(wind); dataFile.print(",");
-      dataFile.print(winderr); dataFile.print(",");
       dataFile.print(bearing); dataFile.print(",");
       dataFile.print(compasserr); dataFile.print(",[");
       dataFile.print(tol); dataFile.print("],");
