@@ -1,30 +1,33 @@
 #include <Compass.h>
 #include <CompassWire.h>
-#include <SDLogger.h>
 #include <Rudder.h>
 #include <MServo.h>
 #include <version.h>
+#include <Angle.h>
 
 #define MAJOR_VERSION 111
 
+using namespace Angle;
+
 char logmsg[50] = "stuff";
 MServo servo_control;
-
-// Simple test for the compass library - should
-// manually try it at all compass points, and with tilt
-
 CompassWire compass;
-SDLogger logger(&compass);
 Rudder rudder(&servo_control);
+angle bearing;
+int tol;
+int compasserr;
 
 void setup() {
+  while (!Serial);
+  Serial.begin(19200);
+
   sercom3.setTimeoutInMicrosWIRE(25000ul, true);  // for new timeout
   servo_control.begin();
 
   compass.begin();
-  logger.begin();
   rudder.begin();
-  sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
+  sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION);
+  Serial.println(logmsg);
 }
 
 void loop() {
@@ -33,18 +36,25 @@ void loop() {
 
     // lots of exercise for I2C
     for (int i=0; i< 200;i++) {
-      compass.bearing();
+      bearing = compass.bearing();
+      compasserr = compass.err_percent();
+      tol = compass.timeout_location();
       delay(5);
     }
 
     if (compass.err_percent() >= 10000) {
-      sprintf(logmsg, "** I2C Failure **"); logger.banner(logmsg);
+      Serial.println("** I2C Failure **");
       while (true) {};
     }
 
     rudder.set_position(TEMP_RUDDER);
 
-    sprintf(logmsg, "%4d", TEMP_RUDDER); logger.msg(logmsg);
+    Serial.print(millis()/1000); Serial.print(",");
+    Serial.print(bearing); Serial.print(",");
+    Serial.print(compasserr); Serial.print(",");
+    Serial.print(tol); Serial.print(",");
+    Serial.println("logging");
+
     TEMP_RUDDER = -TEMP_RUDDER;
 
 }
