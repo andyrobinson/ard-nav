@@ -1,5 +1,5 @@
-LIBS = Utility Angle CompassWire MServo Rudder
+LIBS = Utility Angle CompassWire
 # For libs that require all files, not just the standard .cpp and .h
-LIBS_ALL = Compass WindSensor Logger Position PololuMaestro
+LIBS_ALL = Compass Position
 
 include ../lib/common
