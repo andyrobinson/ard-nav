@@ -71,6 +71,7 @@ MagResult CompassWire::raw_bearing() {
     return {0,0,0};
   }
 
+  errors = constrain(errors -1, 0, 10000);
   byte xhi = Wire.read();
   byte xlo = Wire.read();
   byte zhi = Wire.read();

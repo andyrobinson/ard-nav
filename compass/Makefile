@@ -1,5 +1,5 @@
-LIBS = Utility Angle CompassWire
+LIBS = Utility
 # For libs that require all files, not just the standard .cpp and .h
-LIBS_ALL = Compass Position
+LIBS_ALL = 
 
 include ../lib/common
