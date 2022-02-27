@@ -13,7 +13,7 @@ using namespace Angle;
 char logmsg[50] = "stuff";
 CompassWire compass;
 MagResult rbearing;
-MagResult raccel;
+// MagResult raccel;
 int tol;
 int compasserr;
 
@@ -48,7 +48,7 @@ void loop() {
     // lots of exercise for I2C
     for (int i=0; i< 200;i++) {
       rbearing = compass.raw_bearing();
-      raccel = compass.raw_accel();
+//      raccel = compass.raw_accel();
       compasserr = compass.err_percent();
       tol = compass.timeout_location();
       delay(5);
@@ -60,9 +60,9 @@ void loop() {
     Serial.print(rbearing.x); Serial.print(",");
     Serial.print(rbearing.y); Serial.print(",");
     Serial.print(rbearing.z); Serial.print("),(");
-    Serial.print(raccel.x); Serial.print(",");
-    Serial.print(raccel.y); Serial.print(",");
-    Serial.print(raccel.z); Serial.print("),");
+    // Serial.print(raccel.x); Serial.print(",");
+    // Serial.print(raccel.y); Serial.print(",");
+    // Serial.print(raccel.z); Serial.print("),");
     Serial.print(compasserr); Serial.print(",");
     Serial.print(tol); Serial.print(",");
     Serial.println("logging");
