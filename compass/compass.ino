@@ -21,9 +21,10 @@ struct MagResult {
 };
 
 char logmsg[50] = "stuff";
-MagResult rbearing;
-int tol;
-int errors;
+MagResult rbearing = {2,2,2};
+int tol=0;
+int errors=0;
+int TEMP_RUDDER = 25;
 
 // Serial3 on SERCOM 2, TX = pin 2, RX = pin 3
 Uart Serial3(&sercom2, PIN_SERIAL3_RX, PIN_SERIAL3_TX, SERCOM_RX_PAD_1, UART_TX_PAD_2);
@@ -101,6 +102,14 @@ MagResult raw_bearing() {
   byte yhi = Wire.read();
   byte ylo = Wire.read();
 
+  Serial.print(">>> [");
+  Serial.print(xhi);Serial.print(",");
+  Serial.print(xlo);Serial.print(",");
+  Serial.print(zhi);Serial.print(",");
+  Serial.print(zlo);Serial.print(",");
+  Serial.print(yhi);Serial.print(",");
+  Serial.print(ylo);Serial.println("]");
+
   return {hilow_toint(xhi,xlo) + COMPASS_X_CORRECTION, hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
 }
 
@@ -128,8 +137,6 @@ int hilow_toint(byte high, byte low) {
 }
 
 void loop() {
-
-    int TEMP_RUDDER = 25;
 
     // lots of exercise for I2C
     for (int i=0; i< 200;i++) {
