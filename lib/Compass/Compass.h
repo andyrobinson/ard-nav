@@ -1,7 +1,17 @@
 #ifndef Compass_h
 #define Compass_h
 
+#include "Arduino.h"
 #include "Angle.h"
+
+#define COMPASS_COMPASS_I2C_ADDRESS 0x1E
+#define COMPASS_ACCEL_I2C_ADDRESS 0x19
+
+#define COMPASS_REGISTER_ENABLE        0x02
+#define COMPASS_REGISTER_X_HIGH        0x03
+#define ACCEL_REGISTER_OUT_X_L_A       0x28
+#define COMPASS_ACCEL_CTRL_REG1_A      0x20
+#define COMPASS_X_CORRECTION           -100
 
 using namespace Angle;
 
@@ -14,11 +24,15 @@ struct MagResult {
 class Compass
 {
   public:
-    virtual uangle bearing() = 0;
-    virtual void begin() =0;
-    virtual MagResult raw_bearing() = 0;
-    virtual MagResult raw_accel() = 0;
-    virtual int err_percent() =0;
-    virtual int timeout_location()=0;
+    Compass();
+    uangle bearing();
+    void begin();
+    MagResult raw_bearing();
+    MagResult raw_accel();
+
+  private:
+    int hilow_toint(byte high, byte low);
+    void write8(byte address, byte reg, byte value);
 };
+
 #endif
