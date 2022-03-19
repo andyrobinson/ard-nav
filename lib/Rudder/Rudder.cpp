@@ -13,14 +13,7 @@ void Rudder::begin() {
 }
 
 void Rudder::set_position(angle position) {
-
-  if (position > RUDDER_MAX_DISPLACEMENT) {
-    position = RUDDER_MAX_DISPLACEMENT;
-  }
-  else if (position < -RUDDER_MAX_DISPLACEMENT) {
-    position = -RUDDER_MAX_DISPLACEMENT;
-  }
-
-  int servo_0_to_180_angle = RUDDER_CENTRE + position;
+  position = constrain(position, -RUDDER_MAX_DISPLACEMENT, RUDDER_MAX_DISPLACEMENT)
+  uint16_t servo_0_to_180_angle = RUDDER_CENTRE + position;
   servo_control->write(RUDDER_CHANNEL, servo_0_to_180_angle);
 }
