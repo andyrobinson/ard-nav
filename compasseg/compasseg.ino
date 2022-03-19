@@ -2,24 +2,38 @@
 #include <SPI.h>
 #include <Wire.h>
 #include <Compass.h>
-#include <MServo.h>
-#include <Rudder.h>
+#include <PololuMaestro.h>
+#include <wiring_private.h>
 
 #define MAJOR_VERSION         111
+#define PIN_SERIAL3_RX       (3ul)
+#define PIN_SERIAL3_TX       (2ul)
+
 using namespace Angle;
 
-MServo servo_control;
-Rudder rudder(&servo_control);
+// Serial3 on SERCOM 2, TX = pin 2, RX = pin 3
+Uart Serial3(&sercom2, PIN_SERIAL3_RX, PIN_SERIAL3_TX, SERCOM_RX_PAD_1, UART_TX_PAD_2);
+
+void SERCOM2_Handler()
+{
+  Serial3.IrqHandler();
+}
+
+MicroMaestro maestro(Serial3);
+
 Compass compass;
 char buf[50];
 MagResult rbearing;
-angle rudder_pos = 25;
+uint16_t rudder_pos = 6000;
+int rudder_diff = 2000;
 
 void setup() {
+  pinPeripheral(PIN_SERIAL3_TX, PIO_SERCOM);
+  pinPeripheral(PIN_SERIAL3_RX, PIO_SERCOM_ALT);
+
   while (!Serial); // wait for Serial to be ready
   Serial.begin(19200);
-  servo_control.begin();
-  rudder.begin();
+  Serial3.begin(9600);
   compass.begin();
 
   sprintf(buf, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION);
@@ -35,7 +49,7 @@ void loop() {
     delay(5);
   }
 
-  rudder.set_position(rudder_pos);
+  maestro.setTarget(0, rudder_pos);
 
   Serial.print(millis()/1000); Serial.print(",");
   sprintf(buf, "B: %d", compass.bearing());
@@ -45,5 +59,6 @@ void loop() {
   Serial.print(rbearing.y); Serial.print(",");
   Serial.print(rbearing.z); Serial.println(")");
 
-  rudder_pos = -rudder_pos;
+  rudder_diff = -rudder_diff;
+  rudder_pos = rudder_pos + rudder_diff;
 }
