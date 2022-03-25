@@ -14,13 +14,12 @@ Compass compass;
 char buf[50];
 MagResult rbearing;
 uint16_t rudder_pos = 135;
-int rudder_diff = 90;
+uint16_t rudder_diff = 90;
 
 void setup() {
-
+  servo.begin();
   while (!Serial); // wait for Serial to be ready
   Serial.begin(19200);
-  servo.begin();
   servo.setSpeed(RUDDER_CHANNEL, 15);
   servo.setAccel(RUDDER_CHANNEL, 0);
 

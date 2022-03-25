@@ -16,7 +16,9 @@ MServo::MServo() {};
 void MServo::begin() {
   pinPeripheral(PIN_SERIAL3_TX, PIO_SERCOM);
   pinPeripheral(PIN_SERIAL3_RX, PIO_SERCOM_ALT);
+  delay(10);
   Serial3.begin(9600);
+  delay(10);
 }
 
 void MServo::write(uint8_t channel, uint16_t angle) {
