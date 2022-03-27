@@ -2,10 +2,6 @@
 #include <Position.h>
 #include <Compass.h>
 #include <WindSensor.h>
-//#include <CompassDmac.h>
-//#include <WindSensorDmac.h>
-#include <CompassWire.h>
-#include <WindSensorWire.h>
 #include <Timer.h>
 #include <Gps.h>
 #include <Globe.h>
@@ -57,11 +53,23 @@ A = SERCOM ALT
 2 - Servo controller  5 and 6???
 EDBG
 */
-WindSensorWire windsensor;
-CompassWire compass;
-//CompassDmac compass;
-//WindSensorDmac windsensor;
-MServo servo_control;
+
+#define PIN_SERIAL3_RX       (3ul)
+#define PIN_SERIAL3_TX       (2ul)
+
+// Serial3 on SERCOM 2, TX = pin 2, RX = pin 3
+Uart Serial3(&sercom2, PIN_SERIAL3_RX, PIN_SERIAL3_TX, SERCOM_RX_PAD_1, UART_TX_PAD_2);
+
+void SERCOM2_Handler()
+{
+  Serial3.IrqHandler();
+}
+
+MicroMaestro maestrolib(Serial3);
+MServo servo_control(&maestrolib);
+
+WindSensor windsensor;
+Compass compass;
 Timer timer;
 Globe globe;
 
@@ -80,13 +88,15 @@ Navigator navigator(&tacker, &gps, &globe, &logger);
 Captain captain(&navigator);
 
 void setup() {
-  sercom3.setTimeoutInMicrosWIRE(25000ul, true);  // for new timeout
-  servo_control.begin();
-  delay(1000);
+  // must come first
+  pinPeripheral(PIN_SERIAL3_TX, PIO_SERCOM);
+  pinPeripheral(PIN_SERIAL3_RX, PIO_SERCOM_ALT);
+  Serial3.begin(9600);
+
   rudder.begin();
   sail.begin();
+  Wire.begin();   // no longer included in compass or windsensor
   compass.begin();
-  //windsensor.begin();  // do NOT do this, it messes everything up
   gps.begin();
   logger.begin();
   switches.begin();
