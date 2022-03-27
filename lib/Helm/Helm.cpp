@@ -21,7 +21,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
     angle TEMP_RELATIVE_WIND = 100;
     int SAIL_COUNT = 0;
 
-    if (compass->err_percent() >= 10000 && windsensor->err_percent() >= 10000) {
+    if (compass->err_percent() >= 100 && windsensor->err_percent() >= 100) {
       Serial.println("I2C failure");
       sprintf(logmsg, "** I2C Failure **"); logger->banner(logmsg);
       while (true) {};

@@ -29,10 +29,13 @@ class Compass
     void begin();
     MagResult raw_bearing();
     MagResult raw_accel();
+    int err_percent();
 
   private:
     int hilow_toint(byte high, byte low);
     void write8(byte address, byte reg, byte value);
+    int errors;
+
 };
 
 #endif

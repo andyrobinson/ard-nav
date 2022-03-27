@@ -61,6 +61,8 @@ void loop() {
 
   Serial.print(millis()/1000); Serial.print(",");
   sprintf(buf, "B: %d", compass.bearing());
+  Serial.print(buf);Serial.print(",");
+  sprintf(buf, "E: %d", compass.err_percent());
   Serial.print(buf);Serial.print(",(");
 
   Serial.print(rbearing.x); Serial.print(",");
