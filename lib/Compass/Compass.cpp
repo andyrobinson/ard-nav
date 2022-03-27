@@ -1,12 +1,9 @@
 #include "Wire.h"
 #include "Compass.h"
 
-Compass::Compass() {}
+Compass::Compass():errors(0) {}
 
 void Compass::begin() {
-  Wire.begin();
-  errors = 0;
-
   // Enable the compass
   write8(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
   // Enable the accelerometer

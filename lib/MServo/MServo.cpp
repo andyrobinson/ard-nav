@@ -4,8 +4,6 @@ MServo::MServo() {};
 
 MServo::MServo(MicroMaestro *maestrop): maestro(maestrop) {}
 
-void MServo::begin() {}
-
 void MServo::write(uint8_t channel, uint16_t angle) {
   angle = constrain(angle, 0, 180);
 

@@ -25,8 +25,8 @@ class Compass
 {
   public:
     Compass();
-    uangle bearing();
     void begin();
+    uangle bearing();
     MagResult raw_bearing();
     MagResult raw_accel();
     int err_percent();
