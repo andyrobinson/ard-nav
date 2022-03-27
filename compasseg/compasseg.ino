@@ -3,13 +3,27 @@
 #include <Wire.h>
 #include <Compass.h>
 #include <MServo.h>
+#include "wiring_private.h"
 
 #define MAJOR_VERSION         111
 #define RUDDER_CHANNEL      0
+#define PIN_SERIAL3_RX       (3ul)
+#define PIN_SERIAL3_TX       (2ul)
 
 using namespace Angle;
 
-MServo servo;
+// Serial3 on SERCOM 2, TX = pin 2, RX = pin 3
+Uart Serial3(&sercom2, PIN_SERIAL3_RX, PIN_SERIAL3_TX, SERCOM_RX_PAD_1, UART_TX_PAD_2);
+
+void SERCOM2_Handler()
+{
+  Serial3.IrqHandler();
+}
+
+MicroMaestro maestrolib(Serial3);
+
+MServo servo(&maestrolib);
+
 Compass compass;
 char buf[50];
 MagResult rbearing;
@@ -17,9 +31,14 @@ uint16_t rudder_pos = 135;
 uint16_t rudder_diff = 90;
 
 void setup() {
+  pinPeripheral(PIN_SERIAL3_TX, PIO_SERCOM);
+  pinPeripheral(PIN_SERIAL3_RX, PIO_SERCOM_ALT);
+  Serial3.begin(9600);
+
   servo.begin();
   while (!Serial); // wait for Serial to be ready
   Serial.begin(19200);
+
   servo.setSpeed(RUDDER_CHANNEL, 15);
   servo.setAccel(RUDDER_CHANNEL, 0);
 
