@@ -1,12 +1,8 @@
-#include "WindSensorWire.h"
+#include "WindSensor.h"
 
-WindSensorWire::WindSensorWire() {}
+WindSensor::WindSensor():errors(0) {}
 
-void WindSensorWire::begin() {
-  Wire.begin();
-}
-
-angle WindSensorWire::relative() {
+angle WindSensor::relative() {
   byte endTransResult;
   angle result = 0;
   uint16_t raw_result = 0;
@@ -42,10 +38,10 @@ angle WindSensorWire::relative() {
   return result;
 }
 
-int WindSensorWire::err_percent() {
+int WindSensor::err_percent() {
   return errors/100;
 }
 
-uangle WindSensorWire::absolute(uangle bearing) {
+uangle WindSensor::absolute(uangle bearing) {
   return uadd(bearing, relative());
 }

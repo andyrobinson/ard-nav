@@ -1,18 +1,22 @@
 #ifndef WindSensor_h
 #define WindSensor_h
 
-#include "Angle.h"
+#ifdef ARDUINO
+#include "Arduino.h"
+#endif
+#include "Wire.h"
 
-using namespace Angle;
-#define NO_WIND_VALUE -999
+#define WINDSENSOR_AS5048B_I2C_ADDRESS 0x40
+#define WINDSENSOR_AS5048B_I2C_REGISTER 0xFE
 
-class WindSensor
-{
+class WindSensor {
   public:
-    virtual angle relative() = 0;
-    virtual uangle absolute(uangle bearing) = 0;
-    virtual int err_percent() = 0;
-    virtual void begin() = 0;
+    WindSensor();
+    angle relative();
+    uangle absolute(uangle bearing);
+    int err_percent();
+  private:
+    int errors;
 };
 
 #endif
