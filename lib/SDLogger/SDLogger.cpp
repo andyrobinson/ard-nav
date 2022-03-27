@@ -27,8 +27,7 @@ boolean SDLogger::sd_time_to_log() {
 
 void SDLogger::begin() {
   if (!SD.begin(CHIP_SELECT)) {
-    // need to do something else?
-    Serial.println("Card failed, or not present");
+    // card failure, do nothing
   }
   logfile[0] = '\0';
   unsigned long sd_last_log_time = 0;

@@ -102,9 +102,6 @@ void setup() {
   logger.begin();
   switches.begin();
 
-  while (!Serial); // wait for Serial to be ready
-  Serial.begin(19200);
-
 }
 
 void loop() {
