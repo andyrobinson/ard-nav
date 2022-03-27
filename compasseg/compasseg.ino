@@ -35,13 +35,13 @@ void setup() {
   pinPeripheral(PIN_SERIAL3_RX, PIO_SERCOM_ALT);
   Serial3.begin(9600);
 
-  servo.begin();
   while (!Serial); // wait for Serial to be ready
   Serial.begin(19200);
 
   servo.setSpeed(RUDDER_CHANNEL, 15);
   servo.setAccel(RUDDER_CHANNEL, 0);
 
+  Wire.begin();  // no longer included in compass or windsensor
   compass.begin();
 
   sprintf(buf, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION);

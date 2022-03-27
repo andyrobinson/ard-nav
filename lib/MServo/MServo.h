@@ -16,7 +16,6 @@ class MServo
     void write(uint8_t channel, uint16_t angle);  // unsigned angle
     void setSpeed(uint8_t channel, uint16_t speed);
     void setAccel(uint8_t channel, uint16_t accel);
-    void begin();
 
   private:
     MicroMaestro *maestro;
