@@ -28,7 +28,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
 
     while (remaining > 0) { // && wind_in_range(range)) {
       // lots of exercise for I2C
-      for (int i=0; i< 100;i++) {
+      for (int i=0; i< 1;i++) {
         compass->bearing();
         windsensor->relative();
         delay(5);
