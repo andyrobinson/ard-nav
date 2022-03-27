@@ -17,6 +17,7 @@
 #include <RotaryPID.h>
 #include <Switches.h>
 #include <version.h>
+#include <wiring_private.h>
 
 #define MAJOR_VERSION 99 // for test
 
@@ -100,6 +101,10 @@ void setup() {
   gps.begin();
   logger.begin();
   switches.begin();
+
+  while (!Serial); // wait for Serial to be ready
+  Serial.begin(19200);
+
 }
 
 void loop() {
