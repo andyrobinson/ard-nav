@@ -12,7 +12,7 @@ SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp):
   gps(gpsp), compass(compassp), windsensor(windsensorp) {}
 
 void SDLogger::calculate_filename(char *filename, long unix_ts) {
-    long filenameint = max1(unix_ts / 100000, JAN1_2000_TS);
+    long filenameint = 2022; // max1(unix_ts / 100000, JAN1_2000_TS);
     itoa(filenameint, filename, BASE10);
     strcat(filename,".csv");
 }
@@ -52,10 +52,10 @@ void SDLogger::print_line(char *message, char *msgprefix) {
     calculate_filename(logfile, gpsReading.unixTime);
     File dataFile = SD.open(logfile, FILE_WRITE);
     if (dataFile) {
-      angle wind = windsensor->relative();
+      angle wind = 55; // not working windsensor->relative();
+      int windsensor_err = 0; // not working windsensor->err_percent();
       uangle bearing = compass->bearing();
       int compass_err = compass->err_percent();
-      int windsensor_err = windsensor->err_percent();
       int mem=dispFreeMemory();
 
       dataFile.print(gpsReading.unixTime); dataFile.print(",");
