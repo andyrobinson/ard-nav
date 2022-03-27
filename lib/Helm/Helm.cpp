@@ -37,7 +37,8 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
 
       angle current_heading = compass->bearing();
       // angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
-      Serial.print("Steering ...");
+      Serial.print(millis()/1000);
+      Serial.print(" Steering ...");
       Serial.println(current_heading);
 
 
