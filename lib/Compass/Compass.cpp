@@ -5,6 +5,7 @@ Compass::Compass() {}
 
 void Compass::begin() {
   Wire.begin();
+  errors = 0;
 
   // Enable the compass
   write8(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
@@ -15,7 +16,6 @@ void Compass::begin() {
 uangle Compass::bearing() {
    MagResult bearing = raw_bearing();
    MagResult accel = raw_accel();
-
 
    double roll = atan2((double)accel.y, (double)accel.z);
    double pitch = atan2((double) -accel.x, (double) accel.z); // reversing x accel makes it work
@@ -32,12 +32,25 @@ uangle Compass::bearing() {
 }
 
 MagResult Compass::raw_bearing() {
+  byte endTransResult;
   Wire.beginTransmission((byte) COMPASS_COMPASS_I2C_ADDRESS);
   Wire.write(COMPASS_REGISTER_X_HIGH);
-  Wire.endTransmission();
+  endTransResult = Wire.endTransmission();
+
+  if (endTransResult) {
+    errors = constrain(errors + 100, 0, 10000);
+    return {0,0,0};
+  }
+
   Wire.requestFrom((byte) COMPASS_COMPASS_I2C_ADDRESS, (byte) 6);
 
-  while (Wire.available() < 6);
+  long start = millis();
+  while (Wire.available() < 6 && ((millis() - start) < 20));
+
+  if (Wire.available() < 6) {
+    errors = constrain(errors + 100, 0, 10000);
+    return {0,0,0};
+  }
 
   byte xhi = Wire.read();
   byte xlo = Wire.read();
@@ -45,16 +58,33 @@ MagResult Compass::raw_bearing() {
   byte zlo = Wire.read();
   byte yhi = Wire.read();
   byte ylo = Wire.read();
+
+  errors = constrain(errors-1, 0, 10000);
 
   return {hilow_toint(xhi,xlo) + COMPASS_X_CORRECTION, hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
 }
 
 MagResult Compass::raw_accel() {
+  byte endTransResult;
 
   Wire.beginTransmission((byte) COMPASS_ACCEL_I2C_ADDRESS);
   Wire.write(ACCEL_REGISTER_OUT_X_L_A | 0x80);
-  Wire.endTransmission();
+  endTransResult = Wire.endTransmission();
+
+  if (endTransResult) {
+    errors = constrain(errors + 100, 0, 10000);
+    return {0,0,0};
+  }
+
   Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
+
+  long start = millis();
+  while (Wire.available() < 6 && ((millis() - start) < 20));
+
+  if (Wire.available() < 6) {
+    errors = constrain(errors + 100, 0, 10000);
+    return {0,0,0};
+  }
 
   while (Wire.available() < 6);
 
@@ -64,6 +94,8 @@ MagResult Compass::raw_accel() {
   byte yhi = Wire.read();
   byte zlo = Wire.read();
   byte zhi = Wire.read();
+
+  errors = constrain(errors-1, 0, 10000);
 
   return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
 }
@@ -76,11 +108,15 @@ void Compass::write8(byte address, byte reg, byte value)
   Wire.write((uint8_t)value);
   endTransResult = Wire.endTransmission(false);
   if (endTransResult) {
-    Serial.println("ERROR: Write failed " + String(address) + " " + String(reg) + " " + String(value));
+    errors = constrain(errors + 100, 0, 10000);
   }
 
 }
 
 int Compass::hilow_toint(byte high, byte low) {
   return (int16_t)((uint16_t) low | ((uint16_t) high << 8));
+}
+
+int Compass::err_percent() {
+   return errors/100;
 }
