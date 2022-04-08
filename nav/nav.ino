@@ -17,7 +17,6 @@
 #include <RotaryPID.h>
 #include <Switches.h>
 #include <version.h>
-#include <wiring_private.h>
 
 #define MAJOR_VERSION 99 // for test
 
