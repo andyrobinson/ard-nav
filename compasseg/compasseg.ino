@@ -3,6 +3,10 @@
 #include <Wire.h>
 #include <Compass.h>
 #include <MServo.h>
+#include <WindSensor.h>
+#include <Timer.h>
+#include <Gps.h>
+#include <SDLogger.h>
 #include "wiring_private.h"
 
 #define MAJOR_VERSION         111
@@ -24,7 +28,14 @@ MicroMaestro maestrolib(Serial3);
 
 MServo servo(&maestrolib);
 
+WindSensor windsensor;
 Compass compass;
+Timer timer;
+
+// Dependency injection
+Gps gps(&timer);
+SDLogger logger(&gps, &windsensor, &compass);
+
 char buf[50];
 MagResult rbearing;
 uint16_t rudder_pos = 135;
@@ -43,6 +54,8 @@ void setup() {
 
   Wire.begin();  // no longer included in compass or windsensor
   compass.begin();
+  gps.begin();
+  logger.begin();
 
   sprintf(buf, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION);
   Serial.println(buf);
@@ -68,6 +81,8 @@ void loop() {
   Serial.print(rbearing.x); Serial.print(",");
   Serial.print(rbearing.y); Serial.print(",");
   Serial.print(rbearing.z); Serial.println(")");
+
+  logger.banner("compass eg");
 
   rudder_diff = -rudder_diff;
   rudder_pos = rudder_pos + rudder_diff;
