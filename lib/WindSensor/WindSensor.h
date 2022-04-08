@@ -5,7 +5,11 @@
 #include "Arduino.h"
 #endif
 #include "Wire.h"
+#include "Angle.h"
 
+using namespace Angle;
+
+#define NO_WIND_VALUE -999
 #define WINDSENSOR_AS5048B_I2C_ADDRESS 0x40
 #define WINDSENSOR_AS5048B_I2C_REGISTER 0xFE
 
