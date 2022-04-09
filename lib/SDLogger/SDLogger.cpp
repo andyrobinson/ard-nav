@@ -53,8 +53,8 @@ void SDLogger::print_line(char *message, char *msgprefix) {
     calculate_filename(logfile, gpsReading.unixTime);
     File dataFile = SD.open(logfile, FILE_WRITE);
     if (dataFile) {
-      angle wind = windsensor->relative();
-      int winderr = windsensor->err_percent();
+      angle wind = 99; // windsensor->relative();
+      int winderr = 9; //windsensor->err_percent();
       uangle bearing = compass->bearing();
       int compasserr = compass->err_percent();
       int mem=dispFreeMemory();
