@@ -82,7 +82,11 @@ void loop() {
   // Serial.print(rbearing.y); Serial.print(",");
   // Serial.print(rbearing.z); Serial.println(")");
 
-  logger.banner("compass eg");
+  logger.msg("compass eg");
+  if (compass.err_percent() == 100) {
+    logger.banner("I2C Failed!");
+    while(true){};
+  }
 
   rudder_diff = -rudder_diff;
   rudder_pos = rudder_pos + rudder_diff;
