@@ -8,9 +8,15 @@ void Compass::begin() {
   write8(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
   // Enable the accelerometer
   write8(COMPASS_ACCEL_I2C_ADDRESS, COMPASS_ACCEL_CTRL_REG1_A, 0x27);
+  last_read_time = millis() - CACHE_TTL_MS;
 }
 
 uangle Compass::bearing() {
+
+    if (millis() - last_read_time < CACHE_TTL_MS) {
+      return tiltadjust;
+    }
+
    MagResult bearing = raw_bearing();
    MagResult accel = raw_accel();
 
@@ -23,7 +29,9 @@ uangle Compass::bearing() {
 
    double x_final = ((double) bearing.x) * cos_pitch + ((double) bearing.y)*sin_roll*sin_pitch+((double) bearing.z)*cos_roll*sin_pitch;
    double y_final = ((double) bearing.y) * cos_roll-((double) bearing.z) * sin_roll;
-   uangle tiltadjust = (360 + (short) round(57.2958 * (atan2(y_final,x_final)))) % 360;
+   tiltadjust = (360 + (short) round(57.2958 * (atan2(y_final,x_final)))) % 360;
+
+   long last_read_time = millis();
 
    return tiltadjust;
 }

@@ -12,6 +12,7 @@
 #define ACCEL_REGISTER_OUT_X_L_A       0x28
 #define COMPASS_ACCEL_CTRL_REG1_A      0x20
 #define COMPASS_X_CORRECTION           -100
+#define CACHE_TTL_MS                   10
 
 using namespace Angle;
 
@@ -34,6 +35,8 @@ class Compass
   private:
     int hilow_toint(byte high, byte low);
     void write8(byte address, byte reg, byte value);
+    uangle tiltadjust;
+    long last_read_time;
     int errors;
 
 };
