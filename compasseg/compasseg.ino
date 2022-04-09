@@ -7,7 +7,20 @@
 #include <Timer.h>
 #include <Gps.h>
 #include <SDLogger.h>
+#include <Position.h>
+#include <Globe.h>
+#include <Sail.h>
+#include <Rudder.h>
+#include <Helm.h>
+#include <Tacker.h>
+#include <Navigator.h>
+#include <Captain.h>
+#include <Utility.h>
+#include <Routes.h>
+#include <Switches.h>
+#include <RotaryPID.h>
 #include "wiring_private.h"
+
 
 #define MAJOR_VERSION         111
 #define RUDDER_CHANNEL      0
@@ -24,19 +37,26 @@ void SERCOM2_Handler()
   Serial3.IrqHandler();
 }
 
-MicroMaestro maestrolib(Serial3);
-
-MServo servo(&maestrolib);
-
 WindSensor windsensor;
 Compass compass;
 Timer timer;
+Globe globe;
+Switches switches;
+char logmsg[50];
 
 // Dependency injection
+MicroMaestro maestrolib(Serial3);
+MServo servo_controller(&maestrolib);
 Gps gps(&timer);
 SDLogger logger(&gps, &windsensor, &compass);
+Sail sail(&servo_controller);
+RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
+Rudder rudder(&servo_controller);
+Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &logger);
+Tacker tacker(&helm, &compass, &windsensor, &logger);
+Navigator navigator(&tacker, &gps, &globe, &logger);
+Captain captain(&navigator);
 
-char buf[50];
 MagResult rbearing;
 uint16_t rudder_pos = 135;
 uint16_t rudder_diff = 90;
@@ -45,45 +65,48 @@ void setup() {
   pinPeripheral(PIN_SERIAL3_TX, PIO_SERCOM);
   pinPeripheral(PIN_SERIAL3_RX, PIO_SERCOM_ALT);
   Serial3.begin(9600);
-
-  // while (!Serial); // wait for Serial to be ready
-  // Serial.begin(19200);
-
-  servo.setSpeed(RUDDER_CHANNEL, 15);
-  servo.setAccel(RUDDER_CHANNEL, 0);
+  servo_controller.setSpeed(RUDDER_CHANNEL, 15);
+  servo_controller.setAccel(RUDDER_CHANNEL, 0);
 
   Wire.begin();  // no longer included in compass or windsensor
   compass.begin();
   gps.begin();
   logger.begin();
 
-  sprintf(buf, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION);
-  logger.banner(buf);
+  // sail_servo.attach(SAIL_SERVO_PIN);
+  // rudder_servo.attach(RUDDER_SERVO_PIN);
+
+  switches.begin();
 }
 
 void loop() {
+  sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
+  sprintf(logmsg, "Switches %3d", switches.value()); logger.banner(logmsg);
 
-  // lots of exercise for I2C
-  for (int i=0; i< 110;i++) {
-    rbearing = compass.raw_bearing();
-    compass.bearing(); // this adds a significant amount of time
-    delay(5);
+  uint8_t sw = switches.value() & 3; // four routes configurable
+  route journey = plattfields[sw];
+
+  // TEMP TEST
+  while(true){
+    // lots of exercise for I2C
+    for (int i=0; i< 110;i++) {
+      rbearing = compass.raw_bearing();
+      compass.bearing(); // this adds a significant amount of time
+      delay(5);
+    }
+
+    servo_controller.write(RUDDER_CHANNEL, rudder_pos);
+
+    logger.banner("compass eg");
+
+    rudder_diff = -rudder_diff;
+    rudder_pos = rudder_pos + rudder_diff;
   }
+  // END TEMP TEST
 
-  servo.write(RUDDER_CHANNEL, rudder_pos);
+  //  captain.voyage(journey.waypoints, journey.length);
 
-  // Serial.print(millis()/1000); Serial.print(",");
-  // sprintf(buf, "B: %d", compass.bearing());
-  // Serial.print(buf);Serial.print(",");
-  // sprintf(buf, "E: %d", compass.err_percent());
-  // Serial.print(buf);Serial.print(",(");
-  //
-  // Serial.print(rbearing.x); Serial.print(",");
-  // Serial.print(rbearing.y); Serial.print(",");
-  // Serial.print(rbearing.z); Serial.println(")");
+  logger.banner("Finished Navigation :-)");
 
-  logger.banner("compass eg");
-
-  rudder_diff = -rudder_diff;
-  rudder_pos = rudder_pos + rudder_diff;
+  while(true){};
 }
