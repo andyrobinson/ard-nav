@@ -72,22 +72,24 @@ void loop() {
 
   servo.write(RUDDER_CHANNEL, rudder_pos);
 
-  long start = millis();
-  Serial.print(millis()/1000); Serial.print(",");
-  sprintf(buf, "B: %d", compass.bearing());
-  Serial.print(buf);Serial.print(",");
-  sprintf(buf, "E: %d", compass.err_percent());
-  Serial.print(buf);Serial.print(",(");
-
-  Serial.print(rbearing.x); Serial.print(",");
-  Serial.print(rbearing.y); Serial.print(",");
-  Serial.print(rbearing.z); Serial.print(")");
-  Serial.println(millis()-start);
+  // serial writes take about 3-4 ms
+  // long start = millis();
+  // Serial.print(millis()/1000); Serial.print(",");
+  // sprintf(buf, "B: %d", compass.bearing());
+  // Serial.print(buf);Serial.print(",");
+  // sprintf(buf, "E: %d", compass.err_percent());
+  // Serial.print(buf);Serial.print(",(");
+  //
+  // Serial.print(rbearing.x); Serial.print(",");
+  // Serial.print(rbearing.y); Serial.print(",");
+  // Serial.print(rbearing.z); Serial.print(")");
+  // Serial.println(millis()-start);
+  delay(4); // equiv to Serial writes
 
   logger.msg("compass eg");
   if (compass.err_percent() == 100) {
     logger.banner("I2C Failed!");
-    Serial.println("*** I2C Failed ***");
+    // Serial.println("*** I2C Failed ***");
     while(true){};
   }
 
