@@ -46,8 +46,8 @@ void setup() {
   pinPeripheral(PIN_SERIAL3_RX, PIO_SERCOM_ALT);
   Serial3.begin(9600);
 
-  while (!Serial); // wait for Serial to be ready
-  Serial.begin(19200);
+  // while (!Serial); // wait for Serial to be ready
+  // Serial.begin(19200);
 
   servo.setSpeed(RUDDER_CHANNEL, 15);
   servo.setAccel(RUDDER_CHANNEL, 0);
@@ -58,7 +58,7 @@ void setup() {
   logger.begin();
 
   sprintf(buf, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION);
-  Serial.println(buf);
+  logger.banner(buf);
 }
 
 void loop() {
@@ -72,15 +72,15 @@ void loop() {
 
   servo.write(RUDDER_CHANNEL, rudder_pos);
 
-  Serial.print(millis()/1000); Serial.print(",");
-  sprintf(buf, "B: %d", compass.bearing());
-  Serial.print(buf);Serial.print(",");
-  sprintf(buf, "E: %d", compass.err_percent());
-  Serial.print(buf);Serial.print(",(");
-
-  Serial.print(rbearing.x); Serial.print(",");
-  Serial.print(rbearing.y); Serial.print(",");
-  Serial.print(rbearing.z); Serial.println(")");
+  // Serial.print(millis()/1000); Serial.print(",");
+  // sprintf(buf, "B: %d", compass.bearing());
+  // Serial.print(buf);Serial.print(",");
+  // sprintf(buf, "E: %d", compass.err_percent());
+  // Serial.print(buf);Serial.print(",(");
+  //
+  // Serial.print(rbearing.x); Serial.print(",");
+  // Serial.print(rbearing.y); Serial.print(",");
+  // Serial.print(rbearing.z); Serial.println(")");
 
   logger.banner("compass eg");
 
