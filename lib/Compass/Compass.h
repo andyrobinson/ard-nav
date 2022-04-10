@@ -12,7 +12,9 @@
 #define ACCEL_REGISTER_OUT_X_L_A       0x28
 #define COMPASS_ACCEL_CTRL_REG1_A      0x20
 #define COMPASS_X_CORRECTION           -100
-#define CACHE_TTL_MS                   10
+#define COMPASS_CACHE_TTL_MS            10
+#define COMPASS_POWER_PIN               13
+#define COMPASS_RESET_PAUSE_MS        100
 
 using namespace Angle;
 
@@ -25,7 +27,7 @@ struct MagResult {
 class Compass
 {
   public:
-    Compass();
+    Compass(Timer *timerp);
     void begin();
     uangle bearing();
     MagResult raw_bearing();
@@ -33,8 +35,10 @@ class Compass
     int err_percent();
 
   private:
+    void reset();
     int hilow_toint(byte high, byte low);
     void write8(byte address, byte reg, byte value);
+    Timer *timer;
     uangle tiltadjust;
     long last_read_time;
     int errors;

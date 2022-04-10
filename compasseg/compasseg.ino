@@ -29,10 +29,10 @@ MicroMaestro maestrolib(Serial3);
 MServo servo(&maestrolib);
 
 WindSensor windsensor;
-Compass compass;
 Timer timer;
 
 // Dependency injection
+Compass compass(&timer);
 Gps gps(&timer);
 SDLogger logger(&gps, &windsensor, &compass);
 
@@ -45,9 +45,6 @@ void setup() {
   pinPeripheral(PIN_SERIAL3_TX, PIO_SERCOM);
   pinPeripheral(PIN_SERIAL3_RX, PIO_SERCOM_ALT);
   Serial3.begin(9600);
-
-  // while (!Serial); // wait for Serial to be ready
-  // Serial.begin(19200);
 
   servo.setSpeed(RUDDER_CHANNEL, 15);
   servo.setAccel(RUDDER_CHANNEL, 0);
@@ -63,34 +60,17 @@ void setup() {
 
 void loop() {
 
-  // lots of exercise for I2C
-  for (int i=0; i< 110;i++) {
-    rbearing = compass.raw_bearing();
-    compass.bearing(); // this adds a significant amount of time
-    delay(5);
-  }
+  rbearing = compass.raw_bearing();
+  compass.bearing(); // this adds a significant amount of time
+  delay(1000);
 
   servo.write(RUDDER_CHANNEL, rudder_pos);
 
-  // serial writes take about 3-4 ms
-  // long start = millis();
-  // Serial.print(millis()/1000); Serial.print(",");
-  // sprintf(buf, "B: %d", compass.bearing());
-  // Serial.print(buf);Serial.print(",");
-  // sprintf(buf, "E: %d", compass.err_percent());
-  // Serial.print(buf);Serial.print(",(");
-  //
-  // Serial.print(rbearing.x); Serial.print(",");
-  // Serial.print(rbearing.y); Serial.print(",");
-  // Serial.print(rbearing.z); Serial.print(")");
-  // Serial.println(millis()-start);
-  delay(4); // equiv to Serial writes
-
   logger.msg("compass eg");
+
   if (compass.err_percent() == 100) {
-    logger.banner("I2C Failed!");
-    // Serial.println("*** I2C Failed ***");
-    while(true){};
+    logger.banner("I2C Failed, resetting");
+    compass.reset();
   }
 
   rudder_diff = -rudder_diff;

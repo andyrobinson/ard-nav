@@ -1,21 +1,31 @@
 #include "Wire.h"
 #include "Compass.h"
 
-Compass::Compass():errors(0) {}
+Compass::Compass(Timer* timerp):timer(timerp) {}
 
 void Compass::begin() {
+  pinMode(COMPASS_POWER_PIN, OUTPUT);
+  digitalWrite(COMPASS_POWER_PIN, HIGH);
+  timer->wait(50);
+
   // Enable the compass
   write8(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
   // Enable the accelerometer
   write8(COMPASS_ACCEL_I2C_ADDRESS, COMPASS_ACCEL_CTRL_REG1_A, 0x27);
-  last_read_time = millis() - CACHE_TTL_MS;
+  last_read_time = millis() - COMPASS_CACHE_TTL_MS;
+  errors = 0;
 }
 
 uangle Compass::bearing() {
 
-    if (millis() - last_read_time < CACHE_TTL_MS) {
+    if ((millis() - last_read_time) < COMPASS_CACHE_TTL_MS) {
       return tiltadjust;
     }
+
+   if (err_percent() >= 100) {
+     reset();
+     return 400; // for testing purposes only!
+   }
 
    MagResult bearing = raw_bearing();
    MagResult accel = raw_accel();
@@ -124,4 +134,12 @@ int Compass::hilow_toint(byte high, byte low) {
 
 int Compass::err_percent() {
    return errors/100;
+}
+
+void Compass::reset() {
+  digitalWrite(COMPASS_POWER_PIN, LOW);
+  timer->wait(COMPASS_RESET_PAUSE_MS);
+  Wire.end();
+  Wire.start();
+  begin();
 }
