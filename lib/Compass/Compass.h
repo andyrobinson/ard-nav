@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "Angle.h"
+#include "Timer.h"
 
 #define COMPASS_COMPASS_I2C_ADDRESS 0x1E
 #define COMPASS_ACCEL_I2C_ADDRESS 0x19
@@ -27,6 +28,7 @@ struct MagResult {
 class Compass
 {
   public:
+    Compass();
     Compass(Timer *timerp);
     void begin();
     uangle bearing();
