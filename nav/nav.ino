@@ -70,7 +70,6 @@ MicroMaestro maestrolib(Serial3);
 MServo servo_control(&maestrolib);
 
 WindSensor windsensor;
-Compass compass;
 Timer timer;
 Globe globe;
 
@@ -78,6 +77,7 @@ Switches switches;
 char logmsg[22];
 
 // Dependency injection
+Compass compass(&timer);
 Gps gps(&timer);
 SDLogger logger(&gps, &windsensor, &compass);
 Sail sail(&servo_control);

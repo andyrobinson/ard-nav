@@ -137,6 +137,7 @@ int Compass::err_percent() {
 }
 
 void Compass::reset() {
+  // TODO: Exponential backoff with ultimate failure threshold
   digitalWrite(COMPASS_POWER_PIN, LOW);
   timer->wait(COMPASS_RESET_PAUSE_MS);
   Wire.end();
