@@ -69,8 +69,7 @@ void loop() {
   logger.msg("compass eg");
 
   if (compass.err_percent() == 100) {
-    logger.banner("I2C Failed, resetting");
-    compass.reset();
+    logger.banner("Error limit reached, will reset");
   }
 
   rudder_diff = -rudder_diff;

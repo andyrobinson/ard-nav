@@ -1,6 +1,7 @@
 #include "Wire.h"
 #include "Compass.h"
 
+Compass::Compass(){}
 Compass::Compass(Timer* timerp):timer(timerp) {}
 
 void Compass::begin() {
@@ -24,7 +25,6 @@ uangle Compass::bearing() {
 
    if (err_percent() >= 100) {
      reset();
-     return 400; // for testing purposes only!
    }
 
    MagResult bearing = raw_bearing();
@@ -140,6 +140,6 @@ void Compass::reset() {
   digitalWrite(COMPASS_POWER_PIN, LOW);
   timer->wait(COMPASS_RESET_PAUSE_MS);
   Wire.end();
-  Wire.start();
+  Wire.begin();
   begin();
 }
