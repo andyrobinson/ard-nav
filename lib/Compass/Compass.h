@@ -15,7 +15,9 @@
 #define COMPASS_X_CORRECTION           -100
 #define COMPASS_CACHE_TTL_MS            10
 #define COMPASS_POWER_PIN               13
-#define COMPASS_RESET_PAUSE_MS        100
+#define COMPASS_RESET_PAUSE_MS          50
+#define COMPASS_MAX_RESET_PAUSE_MS     2000
+#define COMPASS_RESET_ERROR_THRESHOLD  75
 
 using namespace Angle;
 
@@ -43,6 +45,7 @@ class Compass
     Timer *timer;
     uangle tiltadjust;
     long last_read_time;
+    long reset_pause;
     int errors;
 
 };

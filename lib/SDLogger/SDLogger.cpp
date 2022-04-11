@@ -12,7 +12,7 @@ SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp):
   gps(gpsp), compass(compassp), windsensor(windsensorp) {}
 
 void SDLogger::calculate_filename(char *filename, long unix_ts) {
-    long filenameint = 2022; //max1(unix_ts / 100000, JAN1_2000_TS);
+    long filenameint = 2023; //max1(unix_ts / 100000, JAN1_2000_TS);
     itoa(filenameint, filename, BASE10);
     strcat(filename,".csv");
 }

@@ -2,7 +2,7 @@
 #include "Compass.h"
 
 Compass::Compass(){}
-Compass::Compass(Timer* timerp):timer(timerp) {}
+Compass::Compass(Timer* timerp):errors(0),timer(timerp),reset_pause(COMPASS_RESET_PAUSE_MS) {}
 
 void Compass::begin() {
   pinMode(COMPASS_POWER_PIN, OUTPUT);
@@ -14,7 +14,6 @@ void Compass::begin() {
   // Enable the accelerometer
   write8(COMPASS_ACCEL_I2C_ADDRESS, COMPASS_ACCEL_CTRL_REG1_A, 0x27);
   last_read_time = millis() - COMPASS_CACHE_TTL_MS;
-  errors = 0;
 }
 
 uangle Compass::bearing() {
@@ -23,7 +22,7 @@ uangle Compass::bearing() {
       return tiltadjust;
     }
 
-   if (err_percent() >= 100) {
+   if (err_percent() >= COMPASS_RESET_ERROR_THRESHOLD) {
      reset();
    }
 
@@ -75,6 +74,7 @@ MagResult Compass::raw_bearing() {
   byte ylo = Wire.read();
 
   errors = constrain(errors-1, 0, 10000);
+  reset_pause = COMPASS_RESET_PAUSE_MS;
 
   return {hilow_toint(xhi,xlo) + COMPASS_X_CORRECTION, hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
 }
@@ -111,6 +111,7 @@ MagResult Compass::raw_accel() {
   byte zhi = Wire.read();
 
   errors = constrain(errors-1, 0, 10000);
+  reset_pause = COMPASS_RESET_PAUSE_MS;
 
   return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
 }
@@ -137,10 +138,15 @@ int Compass::err_percent() {
 }
 
 void Compass::reset() {
-  // TODO: Exponential backoff with ultimate failure threshold
   digitalWrite(COMPASS_POWER_PIN, LOW);
-  timer->wait(COMPASS_RESET_PAUSE_MS);
+  timer->wait(reset_pause);
   Wire.end();
   Wire.begin();
   begin();
+
+  // once we have reached the limit, don't increase the pause further or reset errors
+  if (reset_pause <= COMPASS_MAX_RESET_PAUSE_MS) {
+    errors = 0;
+    reset_pause = reset_pause * 2;
+  }
 }

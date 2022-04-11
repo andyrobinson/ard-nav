@@ -21,8 +21,8 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
     angle TEMP_RELATIVE_WIND = 100;
     int SAIL_COUNT = 0;
 
-    // we should consider either a failure when windsensor is not connected
-    if (compass->err_percent() >= 100 || windsensor->err_percent() >= 100) {
+    // ignore windsensor, as not connected
+    if (compass->err_percent() >= 100) {
       sprintf(logmsg, "** I2C Failure **"); logger->banner(logmsg);
       while (true) {};
     }
