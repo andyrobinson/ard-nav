@@ -21,14 +21,14 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
     angle TEMP_RELATIVE_WIND = 100;
     int SAIL_COUNT = 0;
 
-    // ignore windsensor, as not connected
-    if (compass->err_percent() >= 100) {
+    if (compass->err_percent() >= 100 || windsensor->err_percent() >=100) {
       sprintf(logmsg, "** I2C Failure **"); logger->banner(logmsg);
       while (true) {};
     }
 
     while (remaining > 0) { // && wind_in_range(range)) {
 
+      wind_in_range(range); // for test purposes
       angle current_heading = compass->bearing();
       angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
       Serial.print("Steering ...");
