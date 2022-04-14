@@ -28,7 +28,6 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
 
     while (remaining > 0) { // && wind_in_range(range)) {
 
-      wind_in_range(range); // for test purposes
       angle current_heading = compass->bearing();
       angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
       Serial.print("Steering ...");
