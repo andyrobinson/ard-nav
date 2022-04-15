@@ -30,8 +30,6 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
 
       angle current_heading = compass->bearing();
       angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
-      Serial.print("Steering ...");
-      Serial.println(current_heading);
 
        // set_rudder(new_rudder_position, current_heading);
        // sail->set_position(windsensor->relative());
@@ -46,6 +44,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
          TEMP_RELATIVE_WIND = -TEMP_RELATIVE_WIND;
        }
 
+      timer->wait(STEER_INTERVAL);
       long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
       sprintf(logmsg, "%8d %3d %8d %2d", turnrate, new_rudder_position, remaining, SAIL_COUNT); logger->msg(logmsg);
       sprintf(logmsg, "%4d", TEMP_RUDDER); logger->msg(logmsg);
