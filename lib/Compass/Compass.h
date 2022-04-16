@@ -18,6 +18,7 @@
 #define COMPASS_RESET_PAUSE_MS          50
 #define COMPASS_MAX_RESET_PAUSE_MS     2000
 #define COMPASS_RESET_ERROR_THRESHOLD  75
+#define COMPASS_MILLIS_PER_HOUR        3600000
 
 using namespace Angle;
 
@@ -37,6 +38,7 @@ class Compass
     MagResult raw_bearing();
     MagResult raw_accel();
     int err_percent();
+    long resets_per_hour();
 
   private:
     void reset();
@@ -47,6 +49,8 @@ class Compass
     long last_read_time;
     long reset_pause;
     int errors;
+    long resets_ph;
+    long last_reset;
 
 };
 
