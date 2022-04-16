@@ -2,7 +2,7 @@
 #include "Compass.h"
 
 Compass::Compass(){}
-Compass::Compass(Timer* timerp):errors(0),timer(timerp),reset_pause(COMPASS_RESET_PAUSE_MS) {}
+Compass::Compass(Timer* timerp):errors(0),timer(timerp),reset_pause(COMPASS_RESET_PAUSE_MS),resets_ph(0) {}
 
 void Compass::begin() {
   pinMode(COMPASS_POWER_PIN, OUTPUT);
@@ -14,6 +14,7 @@ void Compass::begin() {
   // Enable the accelerometer
   write8(COMPASS_ACCEL_I2C_ADDRESS, COMPASS_ACCEL_CTRL_REG1_A, 0x27);
   last_read_time = millis() - COMPASS_CACHE_TTL_MS;
+  last_reset = millis();
 }
 
 uangle Compass::bearing() {
@@ -137,12 +138,21 @@ int Compass::err_percent() {
    return errors/100;
 }
 
+long Compass::resets_per_hour() {
+  return resets_ph;
+}
+
 void Compass::reset() {
   digitalWrite(COMPASS_POWER_PIN, LOW);
   timer->wait(reset_pause);
   Wire.end();
   Wire.begin();
   begin();
+
+  // poor approximation based on last two resets
+  // gives maximum of 3600 (one per second), min of zero
+  long time_from_last_reset = last_reset - millis();
+  resets_ph = COMPASS_MILLIS_PER_HOUR/constrain(time_from_last_reset, 1000, time_from_last_reset);
 
   // once we have reached the limit, don't increase the pause further or reset errors
   if (reset_pause <= COMPASS_MAX_RESET_PAUSE_MS) {
