@@ -72,7 +72,7 @@ This is a list of all of the wiring connections to the Arduino Zero
     <td>Green - Temp Switch bit 0</td>
   </tr>
   <tr>
-    <td>Yellow - Solar Lipo v(2) yellow</td>
+    <td>Yellow - Solar Lipo v(2)</td>
     <td>A1</td>
     <td>D6</td>
     <td>Blue - unassigned</td>
