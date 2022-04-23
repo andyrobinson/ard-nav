@@ -17,6 +17,8 @@ module, so it should be fairly straightfoward to replace the libraries as needed
 * GPS (Adafruit Ultimate GPS - https://www.adafruit.com/product/746)
 * Compass/Accelerometer (LSM303DLHC, Adafruit breakout board https://www.adafruit.com/product/1120)
 * Wind direction sensor (AMS AS5048B https://ams.com/AS5048B)
+* Pololu Micro Maestro servo controller (https://www.pololu.com/product/1350)
+* Adafruit USB/DC/Solar Lipo charger (bq24074 https://www.adafruit.com/product/4755)
 * Two servos, one for the sail, one for the rudder
 
 Other hardware is optional:
