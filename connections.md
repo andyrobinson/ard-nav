@@ -6,7 +6,7 @@ This is a list of all of the wiring connections to the Arduino Zero
     <td></td>
     <td></td>
     <td rowspan="18">
-    Arduino Zero
+    <h2>&nbsp;&nbsp;Arduino Zero&nbsp;&nbsp;</h2>
     </td>
     <td>SCL</td>
     <td>Green - LSM303DLHC, AS5048B</td>
@@ -14,8 +14,8 @@ This is a list of all of the wiring connections to the Arduino Zero
   <tr>
     <td></td>
     <td>ATN</td>
-    <td>Yellow - SDA</td>
-    <td>LSM303DLHC, AS5048B</td>
+    <td>SDA</td>
+    <td>Yellow - LSM303DLHC, AS5048B</td>
   </tr>
   <tr>
     <td></td>
@@ -51,25 +51,25 @@ This is a list of all of the wiring connections to the Arduino Zero
     <td></td>
     <td>GND</td>
     <td>D10</td>
-    <td>Red - GPs Rx</td>
+    <td>Red - Gps Rx</td>
   </tr>
   <tr>
     <td></td>
     <td></td>
     <td>D9</td>
-    <td></td>
+    <td>Yellow - Temp Switch bit 2</td>
   </tr>
   <tr>
     <td>Red - 7.5v from Solar</td>
     <td>VIN</td>
     <td>D8</td>
-    <td></td>
+    <td>Blue - Temp Swtich bit 1</td>
   </tr>
   <tr>
     <td>White - Solar Lipo v(1)</td>
     <td>A0</td>
     <td>D7</td>
-    <td></td>
+    <td>Green - Temp Switch bit 0</td>
   </tr>
   <tr>
     <td>Yellow - Solar Lipo v(2) yellow</td>
@@ -93,24 +93,24 @@ This is a list of all of the wiring connections to the Arduino Zero
     <td></td>
     <td>A4</td>
     <td>D3</td>
-    <td></td>
+    <td>White - Servo controller Tx</td>
   </tr>
   <tr>
     <td>Yellow - Temp RC input</td>
     <td>A5</td>
     <td>D2</td>
-    <td></td>
+    <td>Grey - Servo controller Rx</td>
   </tr>
   <tr>
     <td></td>
     <td></td>
-    <td>D1</td>
+    <td>D1 -> Tx</td>
     <td>Green - Satellite Comms Rx (planned)</td>
   </tr>
   <tr>
     <td></td>
     <td></td>
-    <td>D0 -> Rx</td>
+    <td>D0 <- Rx</td>
     <td>Orange - Satellite Comms Tx (planned)</td>
   </tr>
 
