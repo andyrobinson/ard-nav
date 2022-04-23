@@ -13,49 +13,49 @@ This is a list of all of the wiring connections to the Arduino Zero
   </tr>
   <tr>
     <td></td>
-    <td></td>
+    <td>ATN</td>
     <td>SDA</td>
     <td></td>
   </tr>
   <tr>
     <td></td>
-    <td></td>
+    <td>IOREF</td>
     <td>AREF</td>
     <td></td>
   </tr>
   <tr>
     <td></td>
-    <td></td>
+    <td>RESET</td>
     <td>GND</td>
     <td></td>
   </tr>
   <tr>
     <td></td>
-    <td></td>
+    <td>3.3v</td>
     <td>D13</td>
     <td></td>
   </tr>
   <tr>
     <td></td>
-    <td>RESET</td>
+    <td>5v</td>
     <td>D12</td>
     <td></td>
   </tr>
   <tr>
     <td></td>
-    <td>3.3V</td>
+    <td>GND</td>
     <td>D11</td>
     <td></td>
   </tr>
   <tr>
     <td></td>
-    <td>5V</td>
+    <td>GND</td>
     <td>D10</td>
     <td></td>
   </tr>
   <tr>
     <td></td>
-    <td>GND</td>
+    <td></td>
     <td>D9</td>
     <td></td>
   </tr>
