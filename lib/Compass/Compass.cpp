@@ -2,7 +2,7 @@
 #include "Compass.h"
 
 Compass::Compass(){}
-Compass::Compass(Timer* timerp):errors(0),timer(timerp),reset_pause(COMPASS_RESET_PAUSE_MS),resets_ph(0) {}
+Compass::Compass(Timer* timerp):errors(0),timer(timerp),reset_pause(COMPASS_INITIAL_RESET_PAUSE_MS),resets_ph(0) {}
 
 void Compass::begin() {
   pinMode(COMPASS_POWER_PIN, OUTPUT);
@@ -25,6 +25,10 @@ uangle Compass::bearing() {
 
    if (err_percent() >= COMPASS_RESET_ERROR_THRESHOLD) {
      reset();
+   }
+
+   if (err_percent() == 0) {
+     reset_pause = COMPASS_INITIAL_RESET_PAUSE_MS;
    }
 
    MagResult bearing = raw_bearing();
@@ -75,7 +79,6 @@ MagResult Compass::raw_bearing() {
   byte ylo = Wire.read();
 
   errors = constrain(errors-1, 0, 10000);
-  reset_pause = COMPASS_RESET_PAUSE_MS;
 
   return {hilow_toint(xhi,xlo) + COMPASS_X_CORRECTION, hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
 }
@@ -112,7 +115,6 @@ MagResult Compass::raw_accel() {
   byte zhi = Wire.read();
 
   errors = constrain(errors-1, 0, 10000);
-  reset_pause = COMPASS_RESET_PAUSE_MS;
 
   return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
 }
@@ -145,18 +147,19 @@ long Compass::resets_per_hour() {
 void Compass::reset() {
   digitalWrite(COMPASS_POWER_PIN, LOW);
   timer->wait(reset_pause);
-  Wire.end();
-  Wire.begin();
+  // See if it's better without resetting Wire
+  // Wire.end();
+  // Wire.begin();
   begin();
 
   // poor approximation based on last two resets
   // gives maximum of 3600 (one per second), min of zero
-  long time_from_last_reset = last_reset - millis();
+  long time_from_last_reset = millis() - last_reset;
   resets_ph = COMPASS_MILLIS_PER_HOUR/constrain(time_from_last_reset, 1000, time_from_last_reset);
 
   // once we have reached the limit, don't increase the pause further or reset errors
   if (reset_pause <= COMPASS_MAX_RESET_PAUSE_MS) {
-    errors = 0;
-    reset_pause = reset_pause * 2;
+    errors = 100; // one percent, so that we don't reset the back-off
+    reset_pause = reset_pause * 2; // exponential back-off
   }
 }
