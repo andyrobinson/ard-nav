@@ -50,16 +50,16 @@ void SDLogger::banner(char *message) {
 
 void SDLogger::print_line(char *message, char *msgprefix) {
     gps->data(GPS_WAIT_MILLIS, &gpsReading);
-    angle wind = windsensor->relative();
-    int winderr = windsensor->err_percent();
-    uangle bearing = compass->bearing();
-    int compasserr = compass->err_percent();
-    long compass_resets = compass->resets_per_hour();
-    int mem=dispFreeMemory();
-
     calculate_filename(logfile, gpsReading.unixTime);
     File dataFile = SD.open(logfile, FILE_WRITE);
     if (dataFile) {
+      angle wind = windsensor->relative();
+      int winderr = windsensor->err_percent();
+      uangle bearing = compass->bearing();
+      int compasserr = compass->err_percent();
+      long compass_resets = compass->resets_per_hour();
+      int mem=dispFreeMemory();
+
       dataFile.print(gpsReading.unixTime); dataFile.print(",");
       dataFile.print(millis()/1000); dataFile.print(",");
       dataFile.print(gpsReading.pos.latitude,5); dataFile.print(",");
