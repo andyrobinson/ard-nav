@@ -30,7 +30,7 @@ This is a list of all of the wiring connections to the Arduino Zero
     <td></td>
   </tr>
   <tr>
-    <td>AS5048B</td>
+    <td>AS5048B, Brown(W)</td>
     <td>3.3v</td>
     <td>D13</td>
     <td>Brown - LSM303DLHC Vin</td>
@@ -42,10 +42,10 @@ This is a list of all of the wiring connections to the Arduino Zero
     <td>Purple - Gps Tx</td>
   </tr>
   <tr>
-    <td></td>
+    <td>Black(W)</td>
     <td>GND</td>
     <td>D11</td>
-    <td>Red - unassigned</td>
+    <td>Red(W) - unassigned</td>
   </tr>
   <tr>
     <td></td>
@@ -66,16 +66,16 @@ This is a list of all of the wiring connections to the Arduino Zero
     <td>Blue - Temp Swtich bit 1</td>
   </tr>
   <tr>
-    <td>White - Solar Lipo v(1)</td>
+    <td>White(W) - Solar Lipo v(1)</td>
     <td>A0</td>
     <td>D7</td>
     <td>Green - Temp Switch bit 0</td>
   </tr>
   <tr>
-    <td>Yellow - Solar Lipo v(2)</td>
+    <td>Yellow(W) - Solar Lipo v(2)</td>
     <td>A1</td>
     <td>D6</td>
-    <td>Blue - unassigned</td>
+    <td>Blue(W) - unassigned</td>
   </tr>
   <tr>
     <td></td>
@@ -105,13 +105,13 @@ This is a list of all of the wiring connections to the Arduino Zero
     <td></td>
     <td></td>
     <td>D1 -> Tx</td>
-    <td>Green - Satellite Comms Rx (planned)</td>
+    <td>Green(W) - Satellite Comms Rx (planned)</td>
   </tr>
   <tr>
     <td></td>
     <td></td>
     <td>D0 <- Rx</td>
-    <td>Orange - Satellite Comms Tx (planned)</td>
+    <td>Orange(W) - Satellite Comms Tx (planned)</td>
   </tr>
 
 </table>
