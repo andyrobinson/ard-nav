@@ -1,5 +1,5 @@
 # ard-nav
-Self sailing using the Arduino zero.
+Self sailing using the Arduino zero. See the [blog](https://noahs-barque.blogspot.com/p/blog-page.html) for more grisly details.
 
 ## Structure
 The libraries are contained in sub folders under lib.  This includes open source libraries (typically Adafruit libraries), and home grown ones.
