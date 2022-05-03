@@ -39,15 +39,21 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
        if (SAIL_COUNT == 10) {
          SAIL_COUNT = 0;
          timer->wait(200);
+         logger->msg("start sail");
          sail->set_position(TEMP_RELATIVE_WIND);
          timer->wait(400);
+         logger->msg("finish sail");
          TEMP_RELATIVE_WIND = -TEMP_RELATIVE_WIND;
        }
 
-      timer->wait(STEER_INTERVAL);
-      long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
-      sprintf(logmsg, "%8d %3d %8d %2d", turnrate, new_rudder_position, remaining, SAIL_COUNT); logger->msg(logmsg);
-      sprintf(logmsg, "%4d", TEMP_RUDDER); logger->msg(logmsg);
+      int i=0;
+      // additional logging to stress SD writing
+      while (i < STEER_INTERVAL) {
+        long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
+        sprintf(logmsg, "%8d %3d %8d %2d", turnrate, new_rudder_position, remaining, SAIL_COUNT); logger->msg(logmsg);
+        i = i + 100;
+        timer->wait(100);
+      }
 
       TEMP_RUDDER = -TEMP_RUDDER;
 
