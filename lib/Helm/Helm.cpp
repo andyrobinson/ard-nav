@@ -27,13 +27,17 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
     }
 
     while (remaining > 0) { // && wind_in_range(range)) {
+      logger->msg("while");
 
       angle current_heading = compass->bearing();
+      logger->msg("*1");
       angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
+      logger->msg("*2");
 
        // set_rudder(new_rudder_position, current_heading);
        // sail->set_position(windsensor->relative());
        set_rudder(TEMP_RUDDER, current_heading);
+       logger->msg("*3");
 
        SAIL_COUNT += 1;
        if (SAIL_COUNT == 10) {
@@ -49,15 +53,20 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
       int i=0;
       // additional logging to stress SD writing
       while (i < STEER_INTERVAL) {
+        logger->msg("*4");
         long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
+        logger->msg("*5");
+
         sprintf(logmsg, "%8d %3d %8d %2d", turnrate, new_rudder_position, remaining, SAIL_COUNT); logger->msg(logmsg);
-        i = i + 100;
-        timer->wait(100);
+        i = i + 50;
+        timer->wait(50);
       }
 
       TEMP_RUDDER = -TEMP_RUDDER;
 
       remaining = remaining - STEER_INTERVAL;
+      logger->msg("end while");
+
     }
 
 }

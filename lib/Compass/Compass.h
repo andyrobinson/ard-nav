@@ -4,6 +4,7 @@
 #include "Arduino.h"
 #include "Angle.h"
 #include "Timer.h"
+#include "Utility.h"
 
 #define COMPASS_COMPASS_I2C_ADDRESS 0x1E
 #define COMPASS_ACCEL_I2C_ADDRESS 0x19
@@ -21,6 +22,7 @@
 #define COMPASS_MILLIS_PER_HOUR        3600000
 
 using namespace Angle;
+using namespace Utility;
 
 struct MagResult {
   int x;
