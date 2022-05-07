@@ -21,7 +21,6 @@
 
 #define MAJOR_VERSION 99 // for test
 
-
 /*
 
 This is a good guide to configuring the SERCOMS on SAM21 Arduino
@@ -54,6 +53,7 @@ A = SERCOM ALT
 2 - Servo controller  5 and 6???
 EDBG
 */
+
 
 #define PIN_SERIAL3_RX       (3ul)
 #define PIN_SERIAL3_TX       (2ul)
@@ -89,6 +89,27 @@ Navigator navigator(&tacker, &gps, &globe, &logger);
 Captain captain(&navigator);
 
 void setup() {
+  /*  BROWN OUT CONFIGURATION
+   *  Thanks to Stargirl Flowers https://blog.thea.codes/sam-d21-brown-out-detector/
+   */
+
+  // Disable the brown-out detector during configuration
+  SYSCTRL->BOD33.bit.ENABLE = 0;
+  while (!SYSCTRL->PCLKSR.bit.B33SRDY) {};
+
+  // Configure the brown-out detection
+  SYSCTRL->BOD33.reg = (
+      // This sets the minimum voltage level to 3.0v - 3.2v.   See datasheet table 37-21.
+      SYSCTRL_BOD33_LEVEL(48) |
+      // reset on brownout
+      SYSCTRL_BOD33_ACTION_RESET |
+      // Enable hysteresis to better deal with noisy powersupplies and voltage transients.
+      SYSCTRL_BOD33_HYST);
+
+  // Enable the brown-out detector and then wait for the voltage level to settle.
+  SYSCTRL->BOD33.bit.ENABLE = 1;
+  while (!SYSCTRL->PCLKSR.bit.BOD33RDY) {}
+
   // must come first
   pinPeripheral(PIN_SERIAL3_TX, PIO_SERCOM);
   pinPeripheral(PIN_SERIAL3_RX, PIO_SERCOM_ALT);
