@@ -21,25 +21,18 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
     angle TEMP_RELATIVE_WIND = 100;
     int SAIL_COUNT = 0;
 
-    if (compass->err_percent() >= 100 || windsensor->err_percent() >=100) {
+    if (compass->err_percent() >= 100 && windsensor->err_percent() >=100) {
       sprintf(logmsg, "** I2C Failure **"); logger->banner(logmsg);
-      while (true) {};
     }
 
     while (remaining > 0) { // && wind_in_range(range)) {
       long iteration_time = STEER_INTERVAL;
-      logger->msg("while");
-      timer->wait(10);
-      iteration_time = iteration_time - 10;
       angle current_heading = compass->bearing();
-      logger->msg("*1");
       angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
-      logger->msg("*2");
 
        // set_rudder(new_rudder_position, current_heading);
        // sail->set_position(windsensor->relative());
        set_rudder(TEMP_RUDDER, current_heading);
-       logger->msg("*3");
 
        SAIL_COUNT += 1;
        if (SAIL_COUNT == 10) {
@@ -54,21 +47,12 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
          TEMP_RELATIVE_WIND = -TEMP_RELATIVE_WIND;
        }
 
-      // additional logging to stress SD writing
-      while (iteration_time > 0) {
-        logger->msg("*4");
-        timer->wait(20);
-        long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
-        logger->msg("*5");
-        sprintf(logmsg, "%8d %3d %8d %2d", turnrate, new_rudder_position, remaining, SAIL_COUNT); logger->msg(logmsg);
-        timer->wait(20);
-        iteration_time = iteration_time - 50;
-      }
+      long turnrate = rot(old_heading, current_heading, STEER_INTERVAL);
+      sprintf(logmsg, "%8d %3d %8d %2d", turnrate, new_rudder_position, remaining, SAIL_COUNT); logger->msg(logmsg);
 
+      timer->wait(iteration_time);
       TEMP_RUDDER = -TEMP_RUDDER;
-
       remaining = remaining - STEER_INTERVAL;
-      logger->msg("end while");
 
     }
 
