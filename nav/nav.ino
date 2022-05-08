@@ -16,6 +16,7 @@
 #include <Routes.h>
 #include <RotaryPID.h>
 #include <Switches.h>
+#include <Battery.h>
 #include <version.h>
 #include "wiring_private.h"
 
@@ -66,20 +67,22 @@ void SERCOM2_Handler()
   Serial3.IrqHandler();
 }
 
-MicroMaestro maestrolib(Serial3);
-MServo servo_control(&maestrolib);
+
+char logmsg[22];
+
+// Dependency injection
 
 WindSensor windsensor;
 Timer timer;
 Globe globe;
-
 Switches switches;
-char logmsg[22];
+Battery battery;
 
-// Dependency injection
+MicroMaestro maestrolib(Serial3);
+MServo servo_control(&maestrolib);
 Compass compass(&timer);
 Gps gps(&timer);
-SDLogger logger(&gps, &windsensor, &compass);
+SDLogger logger(&gps, &windsensor, &compass, &battery);
 Sail sail(&servo_control);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
 Rudder rudder(&servo_control);

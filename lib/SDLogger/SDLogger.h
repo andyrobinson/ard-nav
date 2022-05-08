@@ -5,18 +5,19 @@
 #include "WindSensor.h"
 #include "Compass.h"
 #include "Gps.h"
+#include "Battery.h"
 #include "Utility.h"
 
 #define JAN1_2000_TS 15778l
 #define CHIP_SELECT 4
 #define BASE10 10
-#define LOG_INTERVAL 10ul // may affect battery life
+#define LOG_INTERVAL 10000ul // may affect battery life
 #define GPS_WAIT_MILLIS 10
 
 class SDLogger : public Logger {
     public:
       SDLogger();
-      SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp);
+      SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp);
       virtual void begin();
       virtual void msg(char *message);
       virtual void banner(char *message);
@@ -31,6 +32,7 @@ class SDLogger : public Logger {
       Gps *gps;
       WindSensor *windsensor;
       Compass *compass;
+      Battery *battery;
       gpsResult gpsReading;
       char destination;
       char tack;

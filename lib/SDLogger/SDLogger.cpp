@@ -8,11 +8,11 @@ using namespace Utility;
 
 SDLogger::SDLogger() {}
 
-SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp):
-  gps(gpsp), compass(compassp), windsensor(windsensorp) {}
+SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp):
+  gps(gpsp), compass(compassp), windsensor(windsensorp), battery(batteryp) {}
 
 void SDLogger::calculate_filename(char *filename, long unix_ts) {
-    long filenameint = 2024; //max1(unix_ts / 100000, JAN1_2000_TS);
+    long filenameint = 2025; //max1(unix_ts / 100000, JAN1_2000_TS);
     itoa(filenameint, filename, BASE10);
     strcat(filename,".csv");
 }
@@ -56,6 +56,7 @@ void SDLogger::print_line(char *message, char *msgprefix) {
     int compasserr = compass->err_percent();
     long compass_resets = compass->resets_per_hour();
     int mem=dispFreeMemory();
+    float voltage = battery->lipo1v();
 
     calculate_filename(logfile, gpsReading.unixTime);
     File dataFile = SD.open(logfile, FILE_WRITE);
@@ -69,6 +70,7 @@ void SDLogger::print_line(char *message, char *msgprefix) {
       dataFile.print(gpsReading.pos.error); dataFile.print(",");
       dataFile.print(gpsReading.fix); dataFile.print(",");
       dataFile.print(gpsReading.mps); dataFile.print(",");
+      dataFile.print(voltage,2); dataFile.print(",");
       dataFile.print(mem); dataFile.print(",");
       dataFile.print(wind); dataFile.print(",");
       dataFile.print(winderr); dataFile.print(",");
