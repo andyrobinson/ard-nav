@@ -56,7 +56,7 @@ void SDLogger::print_line(char *message, char *msgprefix) {
     int compasserr = compass->err_percent();
     long compass_resets = compass->resets_per_hour();
     int mem=dispFreeMemory();
-    float voltage = battery->lipo1v();
+    float voltage = battery->lipo1avgv();
 
     calculate_filename(logfile, gpsReading.unixTime);
     File dataFile = SD.open(logfile, FILE_WRITE);
