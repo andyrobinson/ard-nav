@@ -148,13 +148,14 @@ void Compass::reset() {
   digitalWrite(COMPASS_POWER_PIN, LOW);
   timer->wait(reset_pause);
   // Seems to recover better WITHOUT a Wire reset
-  begin();
 
   // poor approximation based on last two resets
   // gives maximum of 3600 (one per second), min of zero
   long time_from_last_reset = millis() - last_reset;
   time_from_last_reset = max1(time_from_last_reset, 1000l);
   resets_ph = COMPASS_MILLIS_PER_HOUR/time_from_last_reset;
+
+  begin();
 
   // once we have reached the limit, don't increase the pause further or reset errors
   if (reset_pause <= COMPASS_MAX_RESET_PAUSE_MS) {
