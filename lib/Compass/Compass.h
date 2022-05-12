@@ -19,7 +19,8 @@
 #define COMPASS_INITIAL_RESET_PAUSE_MS  100
 #define COMPASS_MAX_RESET_PAUSE_MS     2000
 #define COMPASS_RESET_ERROR_THRESHOLD  75
-#define COMPASS_MILLIS_PER_HOUR        3600000
+#define COMPASS_SECONDS_PER_HOUR       3600
+#define COMPASS_MAX_RESETS             3600
 
 using namespace Angle;
 using namespace Utility;
@@ -51,8 +52,8 @@ class Compass
     long last_read_time;
     long reset_pause;
     int errors;
-    long resets_ph;
-    long last_reset;
+    long reset_count;
+    long reset_start;
 
 };
 
