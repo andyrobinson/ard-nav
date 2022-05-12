@@ -17,7 +17,7 @@ class Battery
   private:
     float average1;
     int readings1;
-    void add_reading();
+    void add_reading(float battery_volts);
 
 };
 
