@@ -79,7 +79,7 @@ Switches switches;
 Battery battery;
 
 MicroMaestro maestrolib(Serial3);
-MServo servo_control(&maestrolib);
+MServo servo_control(&maestrolib, &timer);
 
 Compass compass(&timer);
 Gps gps(&timer);
@@ -130,9 +130,11 @@ void setup() {
   while (!Serial); // wait for Serial to be ready
   Serial.begin(19200);
 
+  timer.wait(5000); // don't do anything, give it all a chance to settle
 }
 
 void loop() {
+
   sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
   // selftest.test();
 
@@ -143,12 +145,11 @@ void loop() {
   uint8_t sw = switches.value() & 3; // four routes configurable
   route journey = plattfields[sw];
 
+
   // a little indicator that we're starting
   rudder.set_position(-45);
-  sail.set_position(-45);
   timer.wait(4000);
-  sail.set_position(45);
-  rudder.set_position(45);
+  sail.set_position(0);
   timer.wait(4000);
 
   captain.voyage(journey.waypoints, journey.length);
