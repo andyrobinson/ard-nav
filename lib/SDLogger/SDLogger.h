@@ -13,6 +13,7 @@
 #define BASE10 10
 #define LOG_INTERVAL 10000ul // may affect battery life
 #define GPS_WAIT_MILLIS 10
+#define LOG_BANNER_LENGTH 200
 
 class SDLogger : public Logger {
     public:
@@ -25,7 +26,7 @@ class SDLogger : public Logger {
       virtual void settack(char tackletter);
 
     private:
-      void print_line(char *message, char *msgprefix);
+      void print_line(char *message);
       void calculate_filename(char *filename, long unix_ts);
       boolean sd_time_to_log();
 
@@ -37,6 +38,8 @@ class SDLogger : public Logger {
       char destination;
       char tack;
       char logfile[13];
+      char banner_msg[LOG_BANNER_LENGTH];
+      int banner_space;
       unsigned long sd_last_log_time;
 };
 

@@ -5,7 +5,7 @@
 
 #define LIPO1 A0
 #define MAX_ANALOG 1024.0  // default 10 bits
-#define SAMPLES 10
+#define SAMPLES 30 // currently depends on being called - might be good to add this to the timer wait
 
 class Battery
 {
@@ -18,6 +18,7 @@ class Battery
     float average1;
     int readings1;
     void add_reading(float battery_volts);
+    float read_voltage();
 
 };
 

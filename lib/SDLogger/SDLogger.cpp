@@ -34,6 +34,8 @@ void SDLogger::begin() {
   unsigned long sd_last_log_time = 0;
   destination = ' ';
   tack = '0';
+  banner_msg[0] = '\0';
+  banner_space = LOG_BANNER_LENGTH-1;
 }
 
 void SDLogger::setdest(char destletter) {
@@ -45,10 +47,17 @@ void SDLogger::settack(char tackletter) {
 }
 
 void SDLogger::banner(char *message) {
-    print_line(message, "*** ");
+    // keep hold of banner messages until we can print
+    if (banner_space > strlen(message)) {
+      strcat(banner_msg, message);
+      strcat(banner_msg, " ");
+      banner_space = banner_space - (strlen(message) + 1);
+    }
+    banner_msg[LOG_BANNER_LENGTH-1]='\0'; // belt and braces
+    msg("");
 }
 
-void SDLogger::print_line(char *message, char *msgprefix) {
+void SDLogger::print_line(char *message) {
     gps->data(GPS_WAIT_MILLIS, &gpsReading);
     angle wind = windsensor->relative();
     int winderr = windsensor->err_percent();
@@ -79,13 +88,19 @@ void SDLogger::print_line(char *message, char *msgprefix) {
       dataFile.print(compass_resets); dataFile.print(",");
       dataFile.print(destination); dataFile.print(",");
       dataFile.print(tack); dataFile.print(",");
-      dataFile.print(msgprefix);dataFile.println(message);
+      dataFile.print(message);
+      if (banner_msg[0] != '\0') {
+        dataFile.print(" **** "), dataFile.print(banner_msg);
+        banner_msg[0]='\0';
+        banner_space = LOG_BANNER_LENGTH-1;
+      }
+      dataFile.println("");
       dataFile.close();
     }
 }
 
 void SDLogger::msg(char *message) {
   if (sd_time_to_log()) {
-    print_line(message, "");
+    print_line(message);
   }
 }
