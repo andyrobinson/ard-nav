@@ -80,6 +80,7 @@ Battery battery;
 
 MicroMaestro maestrolib(Serial3);
 MServo servo_control(&maestrolib);
+
 Compass compass(&timer);
 Gps gps(&timer);
 SDLogger logger(&gps, &windsensor, &compass, &battery);
@@ -134,7 +135,6 @@ void setup() {
 void loop() {
   sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
   // selftest.test();
-  sprintf(logmsg, "Navigating v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
 
   //int countdownMS = Watchdog.enable(4000);
   //sprintf(logmsg, "Watchdog at %3d", countdownMS); logger.banner(logmsg);
