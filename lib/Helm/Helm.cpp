@@ -35,14 +35,14 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
        set_rudder(TEMP_RUDDER, current_heading);
 
        SAIL_COUNT += 1;
-       if (SAIL_COUNT == 10) {
+       if (SAIL_COUNT == 5) {
          SAIL_COUNT = 0;
          timer->wait(200);
          iteration_time = iteration_time - 200;
          logger->msg("start sail");
          sail->set_position(TEMP_RELATIVE_WIND);
-         timer->wait(400);
-         iteration_time = iteration_time - 400;
+         timer->wait(200);
+         iteration_time = iteration_time - 200;
          logger->msg("finish sail");
          TEMP_RELATIVE_WIND = -TEMP_RELATIVE_WIND;
        }
