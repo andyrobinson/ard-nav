@@ -12,7 +12,7 @@
 #define SERVO_MAX_DISPLACEMENT 90
 #define SAIL_CHANNEL 1
 #define SAIL_SPEED 0
-#define SAIL_ACCEL 20
+#define SAIL_ACCEL 15
 
 using namespace Angle;
 
