@@ -79,7 +79,7 @@ Switches switches;
 Battery battery;
 
 MicroMaestro maestrolib(Serial3);
-MServo servo_control(&maestrolib, &timer);
+MServo servo_control(&maestrolib);
 
 Compass compass(&timer);
 Gps gps(&timer);
