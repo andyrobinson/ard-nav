@@ -76,10 +76,10 @@ WindSensor windsensor;
 Timer timer;
 Globe globe;
 Switches switches;
-Battery battery;
+Battery battery(&analogRead);
 
 MicroMaestro maestrolib(Serial3);
-MServo servo_control(&maestrolib, &timer);
+MServo servo_control(&maestrolib);
 
 Compass compass(&timer);
 Gps gps(&timer);
@@ -144,7 +144,6 @@ void loop() {
 
   uint8_t sw = switches.value() & 3; // four routes configurable
   route journey = plattfields[sw];
-
 
   // a little indicator that we're starting
   rudder.set_position(-45);
