@@ -1,24 +1,29 @@
+
 #ifndef Battery_h
 #define Battery_h
 
+#ifdef ARDUINO
 #include "Arduino.h"
+#endif
 
-#define LIPO1 A0
+#define LIPO1 99//A0
 #define MAX_ANALOG 1024.0  // default 10 bits
-#define SAMPLES 30 // currently depends on being called - might be good to add this to the timer wait
+#define SAMPLES 20 // currently depends on being called - might be good to add this to the timer wait
 
 class Battery
 {
   public:
     Battery();
-    float lipo1v();
-    float lipo1avgv();
+    Battery(int (*analogPinFn)(uint8_t));
+    float lipo1maxv();
 
   private:
-    float average1;
-    int readings1;
-    void add_reading(float battery_volts);
-    float read_voltage();
+    void add_reading(int reading);
+    int max_reading();
+    float to_volts(int reading);
+    int (*readAnalogPin) (uint8_t);
+    int readings_buffer[SAMPLES];
+    int buffer_index;
 
 };
 

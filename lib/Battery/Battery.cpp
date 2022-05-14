@@ -1,25 +1,31 @@
 #include "Battery.h"
 
-Battery::Battery():readings1(0),average1(0.0) {}
+Battery::Battery() {}
 
-float Battery::lipo1v() {
-  float voltage = read_voltage();
-  add_reading(voltage);
-  return voltage;
+Battery::Battery(int (*analogPinFn)(uint8_t)):buffer_index(0),readAnalogPin(analogPinFn){
+  for (int i=0;i<SAMPLES;i++) readings_buffer[i]=0;
 }
 
-float Battery::lipo1avgv() {
-  add_reading(read_voltage());
-  return average1;
+float Battery::lipo1maxv() {
+  add_reading(readAnalogPin(LIPO1));
+  return to_volts(max_reading());
 }
 
-void Battery::add_reading(float battery_volts) {
-  if (readings1 < SAMPLES) readings1++;
-  average1 = (average1 * (readings1 - 1))/readings1 + battery_volts/readings1;
+int Battery::max_reading() {
+  int max = 0;
+  for (int i=0; i < SAMPLES; i++) {
+    max = (readings_buffer[i] > max) ? readings_buffer[i] : max;
+  }
+  return max;
 }
 
-float Battery::read_voltage() {
-  int pin_voltage = analogRead(LIPO1);
-  float result = 6.6 * ((float) pin_voltage)/MAX_ANALOG; // we have divided the voltage to get it below 3.3v
+void Battery::add_reading(int reading) {
+  readings_buffer[buffer_index] = reading;
+  buffer_index = (buffer_index + 1) % SAMPLES; // circular buffer
+}
+
+float Battery::to_volts(int reading) {
+  float result = 6.6 * ((float) reading)/MAX_ANALOG; // we have divided the voltage to get it below 3.3v
   return result;
+
 }
