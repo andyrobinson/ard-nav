@@ -5,6 +5,7 @@
 #include "Angle.h"
 #include "Timer.h"
 #include "Utility.h"
+#include "I2C.h"
 
 #define COMPASS_COMPASS_I2C_ADDRESS 0x1E
 #define COMPASS_ACCEL_I2C_ADDRESS 0x19
@@ -35,7 +36,7 @@ class Compass
 {
   public:
     Compass();
-    Compass(Timer *timerp);
+    Compass(I2C *i2cp, Timer *timerp);
     void begin();
     uangle bearing();
     MagResult raw_bearing();
@@ -48,6 +49,7 @@ class Compass
     int hilow_toint(byte high, byte low);
     void write8(byte address, byte reg, byte value);
     Timer *timer;
+    I2C *i2c;
     uangle tiltadjust;
     long last_read_time;
     long reset_pause;

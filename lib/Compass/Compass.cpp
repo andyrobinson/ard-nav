@@ -2,17 +2,26 @@
 #include "Compass.h"
 
 Compass::Compass(){}
-Compass::Compass(Timer* timerp):errors(0),timer(timerp),reset_pause(COMPASS_INITIAL_RESET_PAUSE_MS),reset_count(0),reset_start(0) {}
+Compass::Compass(I2C* i2cp, Timer* timerp):errors(0),i2c(i2cp),timer(timerp),reset_pause(COMPASS_INITIAL_RESET_PAUSE_MS),reset_count(0),reset_start(0) {}
 
 void Compass::begin() {
   pinMode(COMPASS_POWER_PIN, OUTPUT);
   digitalWrite(COMPASS_POWER_PIN, HIGH);
   timer->wait(50);
 
+  byte endTransResult;
   // Enable the compass
-  write8(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
+  endTransResult = i2c->write_register_value(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
+  if (endTransResult) {
+    errors = constrain(errors + 100, 0, 10000);
+  }
+
   // Enable the accelerometer
-  write8(COMPASS_ACCEL_I2C_ADDRESS, COMPASS_ACCEL_CTRL_REG1_A, 0x27);
+  endTransResult = i2c->write_register_value(COMPASS_ACCEL_I2C_ADDRESS, COMPASS_ACCEL_CTRL_REG1_A, 0x27);
+  if (endTransResult) {
+    errors = constrain(errors + 100, 0, 10000);
+  }
+
   last_read_time = millis() - COMPASS_CACHE_TTL_MS;
   if (reset_start == 0) reset_start = millis();
 }
@@ -51,22 +60,16 @@ uangle Compass::bearing() {
 }
 
 MagResult Compass::raw_bearing() {
-  byte endTransResult;
-  Wire.beginTransmission((byte) COMPASS_COMPASS_I2C_ADDRESS);
-  Wire.write(COMPASS_REGISTER_X_HIGH);
-  endTransResult = Wire.endTransmission();
+  byte endTransResult = i2c->write_register((byte) COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_X_HIGH);
 
   if (endTransResult) {
     errors = constrain(errors + 100, 0, 10000);
     return {0,0,0};
   }
 
-  Wire.requestFrom((byte) COMPASS_COMPASS_I2C_ADDRESS, (byte) 6);
+  i2c->requestFrom((byte) COMPASS_COMPASS_I2C_ADDRESS, (byte) 6);
 
-  long start = millis();
-  while (Wire.available() < 6 && ((millis() - start) < 20));
-
-  if (Wire.available() < 6) {
+  if (!i2c->wait_for_data(6)) {
     errors = constrain(errors + 100, 0, 10000);
     return {0,0,0};
   }
@@ -84,28 +87,19 @@ MagResult Compass::raw_bearing() {
 }
 
 MagResult Compass::raw_accel() {
-  byte endTransResult;
-
-  Wire.beginTransmission((byte) COMPASS_ACCEL_I2C_ADDRESS);
-  Wire.write(ACCEL_REGISTER_OUT_X_L_A | 0x80);
-  endTransResult = Wire.endTransmission();
+  byte endTransResult = i2c->write_register((byte) COMPASS_ACCEL_I2C_ADDRESS, ACCEL_REGISTER_OUT_X_L_A | 0x80);
 
   if (endTransResult) {
     errors = constrain(errors + 100, 0, 10000);
     return {0,0,0};
   }
 
-  Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
+  i2c->requestFrom((byte) COMPASS_COMPASS_I2C_ADDRESS, (byte) 6);
 
-  long start = millis();
-  while (Wire.available() < 6 && ((millis() - start) < 20));
-
-  if (Wire.available() < 6) {
+  if (!i2c->wait_for_data(6)) {
     errors = constrain(errors + 100, 0, 10000);
     return {0,0,0};
   }
-
-  while (Wire.available() < 6);
 
   byte xlo = Wire.read();
   byte xhi = Wire.read();
@@ -117,19 +111,6 @@ MagResult Compass::raw_accel() {
   errors = constrain(errors-1, 0, 10000);
 
   return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
-}
-
-void Compass::write8(byte address, byte reg, byte value)
-{
-  byte endTransResult;
-  Wire.beginTransmission(address);
-  Wire.write((uint8_t)reg);
-  Wire.write((uint8_t)value);
-  endTransResult = Wire.endTransmission(false);
-  if (endTransResult) {
-    errors = constrain(errors + 100, 0, 10000);
-  }
-
 }
 
 int Compass::hilow_toint(byte high, byte low) {
