@@ -1,5 +1,6 @@
 #include <MServo.h>
 #include <Position.h>
+#include <I2C.h>
 #include <Compass.h>
 #include <WindSensor.h>
 #include <Timer.h>
@@ -76,12 +77,13 @@ WindSensor windsensor;
 Timer timer;
 Globe globe;
 Switches switches;
+I2C i2c;
 Battery battery(&analogRead);
 
 MicroMaestro maestrolib(Serial3);
 MServo servo_control(&maestrolib);
 
-Compass compass(&timer);
+Compass compass(&i2c, &timer);
 Gps gps(&timer);
 SDLogger logger(&gps, &windsensor, &compass, &battery);
 Sail sail(&servo_control);
@@ -121,7 +123,7 @@ void setup() {
 
   rudder.begin();
   sail.begin();
-  Wire.begin();   // no longer included in compass or windsensor
+  i2c.begin();
   compass.begin();
   gps.begin();
   logger.begin();
