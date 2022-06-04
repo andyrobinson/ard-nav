@@ -9,18 +9,13 @@ void Compass::begin() {
   digitalWrite(COMPASS_POWER_PIN, HIGH);
   timer->wait(50);
 
-  byte endTransResult;
   // Enable the compass
-  endTransResult = i2c->write_register_value(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
-  if (endTransResult) {
+  if (i2c->write_register_value(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00))
     errors = constrain(errors + 100, 0, 10000);
-  }
 
   // Enable the accelerometer
-  endTransResult = i2c->write_register_value(COMPASS_ACCEL_I2C_ADDRESS, COMPASS_ACCEL_CTRL_REG1_A, 0x27);
-  if (endTransResult) {
+  if(i2c->write_register_value(COMPASS_ACCEL_I2C_ADDRESS, COMPASS_ACCEL_CTRL_REG1_A, 0x27))
     errors = constrain(errors + 100, 0, 10000);
-  }
 
   last_read_time = millis() - COMPASS_CACHE_TTL_MS;
   if (reset_start == 0) reset_start = millis();
