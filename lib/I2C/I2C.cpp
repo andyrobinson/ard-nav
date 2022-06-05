@@ -34,6 +34,10 @@ bool I2C::wait_for_data(uint8_t num_bytes) {
   return Wire.available() >= num_bytes;
 }
 
+uint8_t I2C::read() {
+  return Wire.read();
+}
+
 int I2C::err_percent() {
    return errors/100;
 }
