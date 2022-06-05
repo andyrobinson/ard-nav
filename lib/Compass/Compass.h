@@ -30,6 +30,7 @@ struct MagResult {
   int x;
   int y;
   int z;
+  bool valid;
 };
 
 class Compass
@@ -53,7 +54,6 @@ class Compass
     uangle tiltadjust;
     long last_read_time;
     long reset_pause;
-    int errors;
     long reset_count;
     long reset_start;
 
