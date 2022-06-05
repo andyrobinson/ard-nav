@@ -1,4 +1,3 @@
-#include "Wire.h"
 #include "Compass.h"
 
 Compass::Compass(){}
@@ -54,12 +53,12 @@ MagResult Compass::raw_bearing() {
 
   if (!i2c->wait_for_data(6)) return {0,0,0,false};
 
-  byte xhi = Wire.read();
-  byte xlo = Wire.read();
-  byte zhi = Wire.read();
-  byte zlo = Wire.read();
-  byte yhi = Wire.read();
-  byte ylo = Wire.read();
+  byte xhi = i2c->read();
+  byte xlo = i2c->read();
+  byte zhi = i2c->read();
+  byte zlo = i2c->read();
+  byte yhi = i2c->read();
+  byte ylo = i2c->read();
 
   return {hilow_toint(xhi,xlo) + COMPASS_X_CORRECTION, hilow_toint(yhi,ylo), hilow_toint(zhi,zlo), true};
 }
@@ -73,12 +72,12 @@ MagResult Compass::raw_accel() {
 
   if (!i2c->wait_for_data(6)) return {0,0,0,false};
 
-  byte xlo = Wire.read();
-  byte xhi = Wire.read();
-  byte ylo = Wire.read();
-  byte yhi = Wire.read();
-  byte zlo = Wire.read();
-  byte zhi = Wire.read();
+  byte xlo = i2c->read();
+  byte xhi = i2c->read();
+  byte ylo = i2c->read();
+  byte yhi = i2c->read();
+  byte zlo = i2c->read();
+  byte zhi = i2c->read();
 
   return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo),true};
 }

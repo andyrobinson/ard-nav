@@ -15,6 +15,7 @@ class I2C
     uint8_t write_register(uint8_t address, uint8_t reg);
     void requestFrom(uint8_t address, uint8_t num_bytes);
     bool wait_for_data(uint8_t num_bytes);
+    uint8_t read();
     int err_percent();
     void set_error_percent(int percent);
 
