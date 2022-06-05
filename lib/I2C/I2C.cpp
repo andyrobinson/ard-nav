@@ -30,7 +30,7 @@ void I2C::requestFrom(uint8_t address, uint8_t num_bytes) {
 bool I2C::wait_for_data(uint8_t num_bytes) {
   long start = millis();
   while (Wire.available() < 6 && ((millis() - start) < I2C_TIMEOUT_MILLIS));
-  record_errors(Wire.available() >= num_bytes);
+  record_errors(Wire.available() < num_bytes);
   return Wire.available() >= num_bytes;
 }
 

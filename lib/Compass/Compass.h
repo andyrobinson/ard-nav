@@ -6,6 +6,7 @@
 #include "Timer.h"
 #include "Utility.h"
 #include "I2C.h"
+#include "math.h"
 
 #define COMPASS_COMPASS_I2C_ADDRESS 0x1E
 #define COMPASS_ACCEL_I2C_ADDRESS 0x19
@@ -20,8 +21,8 @@
 #define COMPASS_INITIAL_RESET_PAUSE_MS  100
 #define COMPASS_MAX_RESET_PAUSE_MS     2000
 #define COMPASS_RESET_ERROR_THRESHOLD  75
-#define COMPASS_SECONDS_PER_HOUR       3600
-#define COMPASS_MAX_RESETS             3600
+#define COMPASS_SECONDS_PER_HOUR       3600l
+#define COMPASS_MAX_RESETS             3600l
 
 using namespace Angle;
 using namespace Utility;
@@ -47,8 +48,7 @@ class Compass
 
   private:
     void reset();
-    int hilow_toint(byte high, byte low);
-    void write8(byte address, byte reg, byte value);
+    int hilow_toint(uint8_t high, uint8_t low);
     Timer *timer;
     I2C *i2c;
     uangle tiltadjust;

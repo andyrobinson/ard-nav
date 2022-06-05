@@ -10,3 +10,7 @@ void Timer::wait(unsigned long milliseconds) {
   //Watchdog.reset(); // note we need to call the timer from the GPS module as well
   delay(milliseconds);
 }
+
+long Timer::millis() {
+  return millis();
+}
