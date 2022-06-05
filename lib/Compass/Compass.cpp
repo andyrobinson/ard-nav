@@ -2,7 +2,7 @@
 #include "Compass.h"
 
 Compass::Compass(){}
-Compass::Compass(I2C* i2cp, Timer* timerp):errors(0),i2c(i2cp),timer(timerp),reset_pause(COMPASS_INITIAL_RESET_PAUSE_MS),reset_count(0),reset_start(0) {}
+Compass::Compass(I2C* i2cp, Timer* timerp):i2c(i2cp),timer(timerp),reset_pause(COMPASS_INITIAL_RESET_PAUSE_MS),reset_count(0),reset_start(0) {}
 
 void Compass::begin() {
   pinMode(COMPASS_POWER_PIN, OUTPUT);
@@ -10,12 +10,9 @@ void Compass::begin() {
   timer->wait(50);
 
   // Enable the compass
-  if (i2c->write_register_value(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00))
-    errors = constrain(errors + 100, 0, 10000);
-
+  i2c->write_register_value(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
   // Enable the accelerometer
-  if(i2c->write_register_value(COMPASS_ACCEL_I2C_ADDRESS, COMPASS_ACCEL_CTRL_REG1_A, 0x27))
-    errors = constrain(errors + 100, 0, 10000);
+  i2c->write_register_value(COMPASS_ACCEL_I2C_ADDRESS, COMPASS_ACCEL_CTRL_REG1_A, 0x27);
 
   last_read_time = millis() - COMPASS_CACHE_TTL_MS;
   if (reset_start == 0) reset_start = millis();
@@ -23,17 +20,11 @@ void Compass::begin() {
 
 uangle Compass::bearing() {
 
-    if ((millis() - last_read_time) < COMPASS_CACHE_TTL_MS) {
-      return tiltadjust;
-    }
+   if ((millis() - last_read_time) < COMPASS_CACHE_TTL_MS) return tiltadjust;
 
-   if (err_percent() >= COMPASS_RESET_ERROR_THRESHOLD) {
-     reset();
-   }
+   if (i2c->err_percent() >= COMPASS_RESET_ERROR_THRESHOLD) reset();
 
-   if (err_percent() == 0) {
-     reset_pause = COMPASS_INITIAL_RESET_PAUSE_MS;
-   }
+   if (i2c->err_percent() == 0) reset_pause = COMPASS_INITIAL_RESET_PAUSE_MS;
 
    MagResult bearing = raw_bearing();
    MagResult accel = raw_accel();
@@ -57,17 +48,11 @@ uangle Compass::bearing() {
 MagResult Compass::raw_bearing() {
   byte endTransResult = i2c->write_register((byte) COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_X_HIGH);
 
-  if (endTransResult) {
-    errors = constrain(errors + 100, 0, 10000);
-    return {0,0,0};
-  }
+  if (endTransResult) return {0,0,0,false};
 
   i2c->requestFrom((byte) COMPASS_COMPASS_I2C_ADDRESS, (byte) 6);
 
-  if (!i2c->wait_for_data(6)) {
-    errors = constrain(errors + 100, 0, 10000);
-    return {0,0,0};
-  }
+  if (!i2c->wait_for_data(6)) return {0,0,0,false};
 
   byte xhi = Wire.read();
   byte xlo = Wire.read();
@@ -76,25 +61,17 @@ MagResult Compass::raw_bearing() {
   byte yhi = Wire.read();
   byte ylo = Wire.read();
 
-  errors = constrain(errors-1, 0, 10000);
-
-  return {hilow_toint(xhi,xlo) + COMPASS_X_CORRECTION, hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
+  return {hilow_toint(xhi,xlo) + COMPASS_X_CORRECTION, hilow_toint(yhi,ylo), hilow_toint(zhi,zlo), true};
 }
 
 MagResult Compass::raw_accel() {
   byte endTransResult = i2c->write_register((byte) COMPASS_ACCEL_I2C_ADDRESS, ACCEL_REGISTER_OUT_X_L_A | 0x80);
 
-  if (endTransResult) {
-    errors = constrain(errors + 100, 0, 10000);
-    return {0,0,0};
-  }
+  if (endTransResult) return {0,0,0,false};
 
   i2c->requestFrom((byte) COMPASS_COMPASS_I2C_ADDRESS, (byte) 6);
 
-  if (!i2c->wait_for_data(6)) {
-    errors = constrain(errors + 100, 0, 10000);
-    return {0,0,0};
-  }
+  if (!i2c->wait_for_data(6)) return {0,0,0,false};
 
   byte xlo = Wire.read();
   byte xhi = Wire.read();
@@ -103,9 +80,7 @@ MagResult Compass::raw_accel() {
   byte zlo = Wire.read();
   byte zhi = Wire.read();
 
-  errors = constrain(errors-1, 0, 10000);
-
-  return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo)};
+  return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo),true};
 }
 
 int Compass::hilow_toint(byte high, byte low) {
@@ -113,7 +88,7 @@ int Compass::hilow_toint(byte high, byte low) {
 }
 
 int Compass::err_percent() {
-   return errors/100;
+   return i2c->err_percent();
 }
 
 long Compass::resets_per_hour() {
@@ -132,7 +107,7 @@ void Compass::reset() {
 
   // once we have reached the limit, don't increase the pause further or reset errors
   if (reset_pause <= COMPASS_MAX_RESET_PAUSE_MS) {
-    errors = 100; // one percent, so that we don't reset the back-off
+    i2c->set_error_percent(1); // one percent, so that we don't reset the back-off
     reset_pause = reset_pause * 2; // exponential back-off
   }
 }
