@@ -1,7 +1,10 @@
 #include "Compass.h"
+#include <iostream>
 
 Compass::Compass(){}
 Compass::Compass(I2C* i2cp, Timer* timerp):i2c(i2cp),timer(timerp),reset_pause(COMPASS_INITIAL_RESET_PAUSE_MS),reset_count(0),reset_start(0) {}
+
+using namespace std;
 
 void Compass::begin() {
 
@@ -23,14 +26,21 @@ void Compass::begin() {
 
 uangle Compass::bearing() {
 
-   if ((timer->millis() - last_read_time) < COMPASS_CACHE_TTL_MS) return tiltadjust;
+   if ((timer->millis() - last_read_time) < COMPASS_CACHE_TTL_MS) {
+     cout << "cached" << " " << tiltadjust << "\n";
+     return tiltadjust;
+   }
+   cout << "Not cached\n";
 
    if (i2c->err_percent() >= COMPASS_RESET_ERROR_THRESHOLD) reset();
+   cout << "Not reset\n";
 
    if (i2c->err_percent() == 0) reset_pause = COMPASS_INITIAL_RESET_PAUSE_MS;
+   cout << "calling i2c\n";
 
    MagResult bearing = raw_bearing();
    MagResult accel = raw_accel();
+   cout << "calculating result\n";
 
    double roll = atan2((double)accel.y, (double)accel.z);
    double pitch = atan2((double) -accel.x, (double) accel.z); // reversing x accel makes it work
@@ -44,6 +54,8 @@ uangle Compass::bearing() {
    tiltadjust = (360 + (short) round(57.2958 * (atan2(y_final,x_final)))) % 360;
 
    long last_read_time = timer->millis();
+
+   cout << "return value" << " " << tiltadjust << "\n";
 
    return tiltadjust;
 }
@@ -63,6 +75,8 @@ MagResult Compass::raw_bearing() {
   uint8_t zlo = i2c->read();
   uint8_t yhi = i2c->read();
   uint8_t ylo = i2c->read();
+
+  cout << xhi << "," << xlo << "," << zhi << "," << zlo << "," << yhi << "," << ylo << "\n";
 
   return {hilow_toint(xhi,xlo) + COMPASS_X_CORRECTION, hilow_toint(yhi,ylo), hilow_toint(zhi,zlo), true};
 }

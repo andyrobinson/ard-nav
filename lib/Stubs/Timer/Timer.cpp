@@ -5,7 +5,7 @@
 Timer::Timer():timer_millis(0) {}
 
 void Timer::wait(unsigned long milliseconds) {
-  // do nothing at the moment
+  timer_millis += milliseconds;
 }
 
 long Timer::millis()  {

@@ -30,6 +30,19 @@ TEST_F(CompassTest, should_return_a_valid_bearing) {
   EXPECT_EQ(bearing, 45);
 }
 
+
+TEST_F(CompassTest, should_cache_the_value_for_10_ms) {
+  uint8_t readings[] = {50,0,50,0,50,0,0,0,0,0,50,0,100,0,100,0,100,0,0,0,0,0,50,0};
+  stub_i2c.set_results(readings,24);
+  uangle bearing = compass.bearing();
+  //uangle bearing2 = compass.bearing();
+  // wait 10 ms
+  //uangle bearing3 = compass.bearing();
+  EXPECT_EQ(bearing, 45);
+  //EXPECT_EQ(bearing2, 45);
+  //EXPECT_EQ(bearing3, 95);
+}
+
 // TEST_F(CompassTest, should_cache_the_value_for_10_ms)
 // TEST_F(CompassTest, should_reset_if_errors_are_beyond_threshhold)
 // TEST_F(CompassTest, should_return_the_error_percentage)
