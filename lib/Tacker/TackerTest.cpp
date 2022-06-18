@@ -134,6 +134,26 @@ TEST_F(TackerTest, Should_not_do_second_tack_if_below_limit) {
   EXPECT_EQ(stub_helm.steering_calls(),1);
 }
 
+TEST_F(TackerTest, Attempt_to_steer_straight_if_compass_in_error) {
+  angle wind_relative = 0; stub_windsensor.set_relative(&wind_relative, 1);
+  uangle bearing = ANGLE_ERROR; stub_compass.set_bearings(&bearing,1);
+
+  tacker.steer(40, 2000);
+
+  EXPECT_EQ(stub_helm.steering(0), 40);
+  EXPECT_EQ(stub_helm.steering_calls(),1);
+}
+
+TEST_F(TackerTest, Attempt_to_steer_straight_if_windsensor_in_error) {
+  angle wind_relative = ANGLE_ERROR; stub_windsensor.set_relative(&wind_relative, 1);
+  uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
+
+  tacker.steer(20, 2000);
+
+  EXPECT_EQ(stub_helm.steering(0), 20);
+  EXPECT_EQ(stub_helm.steering_calls(),1);
+}
+
 }  //namespace
 
 int main(int argc, char **argv) {

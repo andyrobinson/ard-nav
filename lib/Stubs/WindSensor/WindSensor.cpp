@@ -9,7 +9,8 @@ angle WindSensor::relative() {
 }
 
 uangle WindSensor::absolute(uangle bearing) {
-  return uadd(bearing, relative());
+  angle rel = relative();
+  return rel == ANGLE_ERROR ? ANGLE_ERROR : uadd(bearing, rel);
 }
 
 void WindSensor::set_relative(angle *rel_angles, int size) {
