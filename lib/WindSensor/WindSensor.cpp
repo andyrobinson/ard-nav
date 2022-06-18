@@ -13,7 +13,7 @@ angle WindSensor::relative() {
 
   if (endTransResult) {
     errors = constrain(errors + 100, 0, 10000);
-    return NO_WIND_VALUE;
+    return ANGLE_ERROR;
   }
 
   // TODO: If this times out then we will get all zeros
@@ -24,7 +24,7 @@ angle WindSensor::relative() {
 
   if (Wire.available() < 2) {
     errors = constrain(errors + 100, 0, 10000);
-    return NO_WIND_VALUE;
+    return ANGLE_ERROR;
   }
 
   errors = constrain(errors -1, 0, 10000);

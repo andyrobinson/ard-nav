@@ -19,7 +19,7 @@ void Sail::set_position(angle relative_wind) {
   static angle last_position;
   angle servo_0_to_180_angle;
 
-  if (relative_wind == NO_WIND_VALUE) {
+  if (relative_wind == ANGLE_ERROR) {
       last_position = 30;
   }
   else {
