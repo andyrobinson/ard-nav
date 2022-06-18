@@ -29,5 +29,6 @@ int WindSensor::err_percent() {
 }
 
 uangle WindSensor::absolute(uangle bearing) {
-  return uadd(bearing, relative());
+  angle rel = relative();
+  return rel == ANGLE_ERROR ? ANGLE_ERROR : uadd(bearing, rel);
 }
