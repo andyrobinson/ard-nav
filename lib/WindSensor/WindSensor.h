@@ -4,8 +4,9 @@
 #ifdef ARDUINO
 #include "Arduino.h"
 #endif
-#include "Wire.h"
 #include "Angle.h"
+#include "I2C.h"
+#include "math.h"
 
 using namespace Angle;
 
@@ -15,11 +16,12 @@ using namespace Angle;
 class WindSensor {
   public:
     WindSensor();
+    WindSensor(I2C *i2cp);
     angle relative();
     uangle absolute(uangle bearing);
     int err_percent();
   private:
-    int errors;
+    I2C *i2c;
 };
 
 #endif

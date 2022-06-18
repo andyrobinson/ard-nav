@@ -16,12 +16,14 @@ class I2C
     int err_percent();
     void set_error_percent(int percent);
     void set_results(uint8_t *results, int size);
+    void set_transmission_result(uint8_t result);
 
   private:
     int errors;
     uint8_t *result_list;
     int list_size;
     int current_position;
+    uint8_t trans_result;
 };
 
 #endif

@@ -1,15 +1,15 @@
 #include "I2C.h"
 
-I2C::I2C():errors(0) {}
+I2C::I2C():errors(0),trans_result(0) {}
 
 void I2C::begin() {}
 
 uint8_t I2C::write_register_value(uint8_t address, uint8_t reg, uint8_t value) {
-  return 0;
+  return trans_result;
 }
 
 uint8_t I2C::write_register(uint8_t address, uint8_t reg) {
-  return 0;
+  return trans_result;
 }
 
 void I2C::requestFrom(uint8_t address, uint8_t num_bytes) {}
@@ -36,4 +36,8 @@ void I2C::set_results(uint8_t *results, int size) {
   result_list = results;
   list_size = size;
   current_position = 0;
+}
+
+void I2C::set_transmission_result(uint8_t result) {
+  trans_result = result;
 }
