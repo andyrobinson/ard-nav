@@ -2,6 +2,7 @@
 #define Angle_h
 
 #define DEGREES_IN_RADIAN 57.2958
+#define ANGLE_ERROR 399
 
 namespace Angle {
     typedef short angle;

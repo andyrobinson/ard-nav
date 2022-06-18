@@ -1,5 +1,4 @@
 #include "Compass.h"
-#include <iostream>
 
 Compass::Compass(){}
 Compass::Compass(I2C* i2cp, Timer* timerp):i2c(i2cp),timer(timerp),reset_pause(COMPASS_INITIAL_RESET_PAUSE_MS),reset_count(0),reset_start(0) {}
@@ -7,40 +6,34 @@ Compass::Compass(I2C* i2cp, Timer* timerp):i2c(i2cp),timer(timerp),reset_pause(C
 using namespace std;
 
 void Compass::begin() {
-
   #ifdef ARDUINO
   pinMode(COMPASS_POWER_PIN, OUTPUT);
   digitalWrite(COMPASS_POWER_PIN, HIGH);
   #endif
 
-  timer->wait(50);
+  timer->wait(COMPASS_INITIAL_PAUSE);
 
   // Enable the compass
   i2c->write_register_value(COMPASS_COMPASS_I2C_ADDRESS, COMPASS_REGISTER_ENABLE, 0x00);
   // Enable the accelerometer
   i2c->write_register_value(COMPASS_ACCEL_I2C_ADDRESS, COMPASS_ACCEL_CTRL_REG1_A, 0x27);
 
-  last_read_time = timer->millis() - COMPASS_CACHE_TTL_MS;
+  last_read_time = timer->millis() - (COMPASS_CACHE_TTL_MS + 1);
   if (reset_start == 0) reset_start = timer->millis();
 }
 
 uangle Compass::bearing() {
 
-   if ((timer->millis() - last_read_time) < COMPASS_CACHE_TTL_MS) {
-     cout << "cached" << " " << tiltadjust << "\n";
-     return tiltadjust;
-   }
-   cout << "Not cached\n";
+   if ((timer->millis() - last_read_time) < COMPASS_CACHE_TTL_MS) return tiltadjust;
 
    if (i2c->err_percent() >= COMPASS_RESET_ERROR_THRESHOLD) reset();
-   cout << "Not reset\n";
 
    if (i2c->err_percent() == 0) reset_pause = COMPASS_INITIAL_RESET_PAUSE_MS;
-   cout << "calling i2c\n";
 
    MagResult bearing = raw_bearing();
    MagResult accel = raw_accel();
-   cout << "calculating result\n";
+
+   if(!bearing.valid || !accel.valid) return ANGLE_ERROR;
 
    double roll = atan2((double)accel.y, (double)accel.z);
    double pitch = atan2((double) -accel.x, (double) accel.z); // reversing x accel makes it work
@@ -53,9 +46,7 @@ uangle Compass::bearing() {
    double y_final = ((double) bearing.y) * cos_roll-((double) bearing.z) * sin_roll;
    tiltadjust = (360 + (short) round(57.2958 * (atan2(y_final,x_final)))) % 360;
 
-   long last_read_time = timer->millis();
-
-   cout << "return value" << " " << tiltadjust << "\n";
+   last_read_time = timer->millis();
 
    return tiltadjust;
 }
@@ -75,8 +66,6 @@ MagResult Compass::raw_bearing() {
   uint8_t zlo = i2c->read();
   uint8_t yhi = i2c->read();
   uint8_t ylo = i2c->read();
-
-  cout << xhi << "," << xlo << "," << zhi << "," << zlo << "," << yhi << "," << ylo << "\n";
 
   return {hilow_toint(xhi,xlo) + COMPASS_X_CORRECTION, hilow_toint(yhi,ylo), hilow_toint(zhi,zlo), true};
 }

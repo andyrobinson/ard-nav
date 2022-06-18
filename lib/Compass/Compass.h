@@ -23,6 +23,7 @@
 #define COMPASS_RESET_ERROR_THRESHOLD  75
 #define COMPASS_SECONDS_PER_HOUR       3600l
 #define COMPASS_MAX_RESETS             3600l
+#define COMPASS_INITIAL_PAUSE          50
 
 using namespace Angle;
 using namespace Utility;
