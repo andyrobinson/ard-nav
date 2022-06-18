@@ -1,45 +1,31 @@
 #include "WindSensor.h"
+#include <iostream>
 
-WindSensor::WindSensor():errors(0) {}
+WindSensor::WindSensor() {}
+WindSensor::WindSensor(I2C *i2cp):i2c(i2cp) {}
 
 angle WindSensor::relative() {
-  byte endTransResult;
+  uint8_t endTransResult;
   angle result = 0;
   uint16_t raw_result = 0;
 
-  Wire.beginTransmission(WINDSENSOR_AS5048B_I2C_ADDRESS);
-  Wire.write(WINDSENSOR_AS5048B_I2C_REGISTER);
-  endTransResult = Wire.endTransmission(false);
+  endTransResult = i2c->write_register(WINDSENSOR_AS5048B_I2C_ADDRESS, WINDSENSOR_AS5048B_I2C_REGISTER);
+  if (endTransResult) return ANGLE_ERROR;
 
-  if (endTransResult) {
-    errors = constrain(errors + 100, 0, 10000);
-    return ANGLE_ERROR;
-  }
+  i2c->requestFrom(WINDSENSOR_AS5048B_I2C_ADDRESS, 2);
+  if (!i2c->wait_for_data(2)) return ANGLE_ERROR;
 
-  // TODO: If this times out then we will get all zeros
-  Wire.requestFrom(WINDSENSOR_AS5048B_I2C_ADDRESS, (uint8_t) 2);
+  uint8_t upper8bits = i2c->read();
+  uint8_t lower6bits = i2c->read();
 
-  long start = millis();
-  while (Wire.available() < 2 && ((millis() - start) < 20));
-
-  if (Wire.available() < 2) {
-    errors = constrain(errors + 100, 0, 10000);
-    return ANGLE_ERROR;
-  }
-
-  errors = constrain(errors -1, 0, 10000);
-
-  byte upper8bits = Wire.read();
-  byte lower6bits = Wire.read();
-
-  raw_result = (((uint16_t) upper8bits) << 6) + (lower6bits & 0x3F);
+  raw_result = (((uint16_t) upper8bits) << 6) + (uint16_t) (lower6bits & 0x3F);
   result = to_angle(360 - (short) round((((float) raw_result)/16383.0) * 360.0) % 360);
 
   return result;
 }
 
 int WindSensor::err_percent() {
-  return errors/100;
+  i2c->err_percent();
 }
 
 uangle WindSensor::absolute(uangle bearing) {
