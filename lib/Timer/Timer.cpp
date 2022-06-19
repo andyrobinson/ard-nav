@@ -11,6 +11,6 @@ void Timer::wait(unsigned long milliseconds) {
   delay(milliseconds);
 }
 
-long Timer::millis() {
+long Timer::milliseconds() {
   return millis();
 }

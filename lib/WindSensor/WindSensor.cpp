@@ -25,7 +25,7 @@ angle WindSensor::relative() {
 }
 
 int WindSensor::err_percent() {
-  i2c->err_percent();
+  return i2c->err_percent();
 }
 
 uangle WindSensor::absolute(uangle bearing) {

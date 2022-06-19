@@ -6,7 +6,7 @@ class Timer
   public:
     Timer();
     void wait(unsigned long milliseconds);
-    long millis();
+    long milliseconds();
 };
 
 #endif
