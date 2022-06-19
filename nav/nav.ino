@@ -56,19 +56,6 @@ A = SERCOM ALT
 EDBG
 */
 
-
-#define PIN_SERIAL3_RX       (3ul)
-#define PIN_SERIAL3_TX       (2ul)
-
-// Serial3 on SERCOM 2, TX = pin 2, RX = pin 3
-Uart Serial3(&sercom2, PIN_SERIAL3_RX, PIN_SERIAL3_TX, SERCOM_RX_PAD_1, UART_TX_PAD_2);
-
-void SERCOM2_Handler()
-{
-  Serial3.IrqHandler();
-}
-
-
 char logmsg[22];
 
 // Dependency injection
@@ -80,8 +67,7 @@ Switches switches;
 I2C i2c;
 Battery battery(&analogRead);
 
-MicroMaestro maestrolib(Serial3);
-MServo servo_control(&maestrolib);
+MServo servo_control;
 
 Compass compass(&i2c, &timer);
 Gps gps(&timer);
@@ -116,11 +102,7 @@ void setup() {
   SYSCTRL->BOD33.bit.ENABLE = 1;
   while (!SYSCTRL->PCLKSR.bit.BOD33RDY) {}
 
-  // must come first
-  pinPeripheral(PIN_SERIAL3_TX, PIO_SERCOM);
-  pinPeripheral(PIN_SERIAL3_RX, PIO_SERCOM_ALT);
-  Serial3.begin(9600);
-
+  servo_control.begin();
   rudder.begin();
   sail.begin();
   i2c.begin();
@@ -128,9 +110,6 @@ void setup() {
   gps.begin();
   logger.begin();
   switches.begin();
-
-  while (!Serial); // wait for Serial to be ready
-  Serial.begin(19200);
 
   timer.wait(5000); // don't do anything, give it all a chance to settle
 }
