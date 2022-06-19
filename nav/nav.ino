@@ -1,4 +1,3 @@
-#include <MServo.h>
 #include <Position.h>
 #include <I2C.h>
 #include <Compass.h>
@@ -12,14 +11,14 @@
 #include <Tacker.h>
 #include <Navigator.h>
 #include <Captain.h>
-#include <SDLogger.h>
+#include <SerialLogger.h>
 #include <Utility.h>
 #include <Routes.h>
 #include <RotaryPID.h>
 #include <Switches.h>
 #include <Battery.h>
 #include <version.h>
-#include "wiring_private.h"
+#include <MServo.h>
 
 #define MAJOR_VERSION 99 // for test
 
@@ -71,7 +70,10 @@ MServo servo_control;
 
 Compass compass(&i2c, &timer);
 Gps gps(&timer);
-SDLogger logger(&gps, &windsensor, &compass, &battery);
+
+//SDLogger logger(&gps, &windsensor, &compass, &battery);
+SerialLogger logger(&gps, &windsensor, &compass, &battery);
+
 Sail sail(&servo_control);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
 Rudder rudder(&servo_control);
@@ -102,15 +104,17 @@ void setup() {
   SYSCTRL->BOD33.bit.ENABLE = 1;
   while (!SYSCTRL->PCLKSR.bit.BOD33RDY) {}
 
+  logger.begin();
+  Serial.println("pre logging message");
+  i2c.begin();
   servo_control.begin();
   rudder.begin();
   sail.begin();
-  i2c.begin();
   compass.begin();
   gps.begin();
-  logger.begin();
   switches.begin();
-
+  Serial.println("init complete, attempting logging");
+  logger.msg("init complete ");
   timer.wait(5000); // don't do anything, give it all a chance to settle
 }
 

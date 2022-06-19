@@ -15,7 +15,6 @@ void MServo::begin() {
   // must come first
   pinPeripheral(PIN_SERIAL3_TX, PIO_SERCOM);
   pinPeripheral(PIN_SERIAL3_RX, PIO_SERCOM_ALT);
-  while (!Serial3) {};
   Serial3.begin(9600);
 }
 
