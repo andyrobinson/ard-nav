@@ -114,6 +114,7 @@ void setup() {
   gps.begin();
   switches.begin();
   Serial.println("init complete, attempting logging");
+  Serial.flush();
   logger.msg("init complete ");
   timer.wait(5000); // don't do anything, give it all a chance to settle
 }
