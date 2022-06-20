@@ -4,9 +4,11 @@
 
 #ifdef ARDUINO
 #include "Arduino.h"
+#define LIPO1 A0
+#else
+#define LIPO1 99
 #endif
 
-#define LIPO1 99//A0
 #define MAX_ANALOG 1024.0  // default 10 bits
 #define SAMPLES 20 // currently depends on being called - might be good to add this to the timer wait
 

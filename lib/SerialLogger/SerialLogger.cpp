@@ -28,23 +28,14 @@ void SerialLogger::banner(char *message) {
 }
 
 void SerialLogger::msg(char *message) {
-  Serial.println("gps");  Serial.flush();
   gps->data(GPS_WAIT_MILLIS, &gpsReading);
-  Serial.println("wind");  Serial.flush();
   angle wind = windsensor->relative();
-  Serial.println("wind error");  Serial.flush();
   int winderr = windsensor->err_percent();
-  Serial.println("compass");  Serial.flush();
   uangle bearing = compass->bearing();
-  Serial.println("compass error");  Serial.flush();
   int compasserr = compass->err_percent();
-  Serial.println("compass resets");  Serial.flush();
   long compass_resets = compass->resets_per_hour();
-  Serial.println("memory");  Serial.flush();
   int mem=dispFreeMemory();
-  Serial.println("battery");  Serial.flush();
-  float voltage = battery->lipo1maxv();
-  Serial.println("main log line");  Serial.flush();
+  float voltage = battery->lipo1maxv();  // CRASHES HERE
 
   Serial.print(gpsReading.unixTime); Serial.print(",");
   Serial.print(millis()/1000); Serial.print(",");

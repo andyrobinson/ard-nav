@@ -104,8 +104,6 @@ void setup() {
   SYSCTRL->BOD33.bit.ENABLE = 1;
   while (!SYSCTRL->PCLKSR.bit.BOD33RDY) {}
 
-  logger.begin();
-  Serial.println("pre logging message");
   i2c.begin();
   servo_control.begin();
   rudder.begin();
@@ -113,9 +111,7 @@ void setup() {
   compass.begin();
   gps.begin();
   switches.begin();
-  Serial.println("init complete, attempting logging");
-  Serial.flush();
-  logger.msg("init complete ");
+  logger.begin();
   timer.wait(5000); // don't do anything, give it all a chance to settle
 }
 
