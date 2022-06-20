@@ -7,7 +7,8 @@ Battery::Battery(int (*analogPinFn)(uint8_t)):buffer_index(0),readAnalogPin(anal
 }
 
 float Battery::lipo1maxv() {
-  add_reading(readAnalogPin(LIPO1));
+  int raw_reading = readAnalogPin((uint8_t) LIPO1);
+  add_reading(raw_reading);
   return to_volts(max_reading());
 }
 
