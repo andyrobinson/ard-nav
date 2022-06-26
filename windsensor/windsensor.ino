@@ -22,6 +22,8 @@ float bearing() {
     Wire.requestFrom(WINDSENSOR_AS5048B_I2C_ADDRESS, (uint8_t) 2);
     uint8_t upper8bits = Wire.read();
     uint8_t lower6bits = Wire.read();
+    Serial.print(upper8bits);Serial.print("|");
+    Serial.print(lower6bits);Serial.print("|");
 
     raw_result = (((uint16_t) upper8bits) << 6) + (lower6bits & 0x3F); // shift upperbits left 6 places, add on lower 6 bits
     result = (((float) raw_result)/16383.0) * 360.0;
