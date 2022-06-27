@@ -18,7 +18,7 @@ uint8_t I2C::write_register_value(uint8_t address, uint8_t reg, uint8_t value) {
 uint8_t I2C::write_register(uint8_t address, uint8_t reg) {
   Wire.beginTransmission(address);
   Wire.write(reg);
-  uint8_t result = Wire.endTransmission();
+  uint8_t result = Wire.endTransmission(false);
   record_errors(result);
   return result;
 }
