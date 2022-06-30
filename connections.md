@@ -45,7 +45,7 @@ This is a list of all of the wiring connections to the Arduino Zero
     <td>Black(W)</td>
     <td>GND</td>
     <td>D11</td>
-    <td>Red(W) - unassigned</td>
+    <td>Red(W) - Power Sleep (planned)</td>
   </tr>
   <tr>
     <td></td>
@@ -75,7 +75,7 @@ This is a list of all of the wiring connections to the Arduino Zero
     <td>Yellow(W) - Solar Lipo v(2)</td>
     <td>A1</td>
     <td>D6</td>
-    <td>Blue(W) - unassigned</td>
+    <td>Blue(W) - Satellite Sleep (planned)</td>
   </tr>
   <tr>
     <td></td>
