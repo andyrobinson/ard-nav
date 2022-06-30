@@ -11,7 +11,7 @@
 #include <Tacker.h>
 #include <Navigator.h>
 #include <Captain.h>
-#include <SerialLogger.h>
+#include <SDLogger.h>
 #include <Utility.h>
 #include <Routes.h>
 #include <RotaryPID.h>
@@ -71,8 +71,8 @@ MServo servo_control;
 Compass compass(&i2c, &timer);
 Gps gps(&timer);
 
-//SDLogger logger(&gps, &windsensor, &compass, &battery);
-SerialLogger logger(&gps, &windsensor, &compass, &battery);
+SDLogger logger(&gps, &windsensor, &compass, &battery, &i2c);
+//SerialLogger logger(&gps, &windsensor, &compass, &battery);
 
 Sail sail(&servo_control);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);

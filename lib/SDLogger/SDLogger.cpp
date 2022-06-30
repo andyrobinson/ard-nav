@@ -8,8 +8,8 @@ using namespace Utility;
 
 SDLogger::SDLogger() {}
 
-SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp):
-  gps(gpsp), compass(compassp), windsensor(windsensorp), battery(batteryp) {}
+SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, I2C *i2cp):
+  gps(gpsp), compass(compassp), windsensor(windsensorp), battery(batteryp), i2c(i2cp) {}
 
 void SDLogger::calculate_filename(char *filename, long unix_ts) {
     long filenameint = 2025; //max1(unix_ts / 100000, JAN1_2000_TS);
@@ -60,9 +60,8 @@ void SDLogger::banner(char *message) {
 void SDLogger::print_line(char *message) {
     gps->data(GPS_WAIT_MILLIS, &gpsReading);
     angle wind = windsensor->relative();
-    int winderr = windsensor->err_percent();
+    int i2c_error = i2c->err_percent();
     uangle bearing = compass->bearing();
-    int compasserr = compass->err_percent();
     long compass_resets = compass->resets_per_hour();
     int mem=dispFreeMemory();
     float voltage = battery->lipo1maxv();
@@ -82,10 +81,9 @@ void SDLogger::print_line(char *message) {
       dataFile.print(voltage,2); dataFile.print(",");
       dataFile.print(mem); dataFile.print(",");
       dataFile.print(wind); dataFile.print(",");
-      dataFile.print(winderr); dataFile.print(",");
       dataFile.print(bearing); dataFile.print(",");
-      dataFile.print(compasserr); dataFile.print(",");
       dataFile.print(compass_resets); dataFile.print(",");
+      dataFile.print(i2c_error); dataFile.print(",");
       dataFile.print(destination); dataFile.print(",");
       dataFile.print(tack); dataFile.print(",");
       dataFile.print(message);

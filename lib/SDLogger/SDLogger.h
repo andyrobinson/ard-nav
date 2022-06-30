@@ -6,6 +6,7 @@
 #include "Compass.h"
 #include "Gps.h"
 #include "Battery.h"
+#include "I2C.h"
 #include "Utility.h"
 
 #define JAN1_2000_TS 15778l
@@ -18,7 +19,7 @@
 class SDLogger : public Logger {
     public:
       SDLogger();
-      SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp);
+      SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, I2C *i2cp);
       virtual void begin();
       virtual void msg(char *message);
       virtual void banner(char *message);
@@ -34,6 +35,7 @@ class SDLogger : public Logger {
       WindSensor *windsensor;
       Compass *compass;
       Battery *battery;
+      I2C *i2c;
       gpsResult gpsReading;
       char destination;
       char tack;
