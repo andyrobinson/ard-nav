@@ -13,3 +13,11 @@ void Compass::set_bearings(uangle *bearings, int size) {
   list_size = size;
   current_position = 0;
 }
+
+int Compass::err_percent() {
+    return 0;
+}
+
+long Compass::resets_per_hour() {
+    return 0;
+}

@@ -11,6 +11,9 @@ class Compass
     Compass();
     uangle bearing();
     void set_bearings(uangle *bearings, int size);
+    int err_percent();
+    long resets_per_hour();
+
   private:
     int list_size;
     int current_position;
