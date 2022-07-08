@@ -1,5 +1,5 @@
-STUBS = VSServoSamd
-INCLUDES = ../Angle/ ../Utility/ ./stubs/ ../WindSensor
+STUBS = MServo
+INCLUDES = ../Angle/ ../Utility/ ./stubs/
 SOURCES = ../Angle/Angle.cpp
 
 include ../libcommon
