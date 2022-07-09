@@ -8,7 +8,7 @@ void Timer::wait(unsigned long milliseconds) {
   timer_millis += milliseconds;
 }
 
-long Timer::millis()  {
+long Timer::milliseconds()  {
   return timer_millis;
 }
 
