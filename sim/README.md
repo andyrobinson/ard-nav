@@ -13,6 +13,9 @@ replaced with libs than wrap a central "boat" which contains a simplified physic
 requests to sleep, the simulation calculates the new position for the boat and returns immediately.
 
 ## To do
+* Move boat into an MServo wrapper, then use the real Rudder and Sail software
+* Add a wind component which is time depedendent (both magnitude and direction can vary with time), signal time
+  passing from the Timer component
 * Make the boat respond to the wind direction (currently moves forwards regardless)
 * Add forward momentum (slowish decay)
 * Add angular momentum to turns (faster decay)
