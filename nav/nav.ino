@@ -20,7 +20,7 @@
 #include <version.h>
 #include <MServo.h>
 
-#define MAJOR_VERSION 99 // for test
+#define MAJOR_VERSION 2 // for test
 
 /*
 
