@@ -20,6 +20,10 @@ TEST_F(CompassTest, should_return_result_based_on_boat) {
   EXPECT_EQ(compass.bearing(),boat.bearing());
 }
 
+TEST_F(CompassTest, should_return_zero_errors) {
+  EXPECT_EQ(compass.err_percent(), 0);
+}
+
 }  //namespace
 
 int main(int argc, char **argv) {

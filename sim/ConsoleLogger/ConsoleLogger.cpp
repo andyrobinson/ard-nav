@@ -16,9 +16,10 @@ void ConsoleLogger::settack(char tackletter) {
 }
 
 void ConsoleLogger::banner(char *message) {
-  std::cout << "\n==========================================\n";
-  std::cout << message;
-  std::cout << "\n==========================================\n\n";
+  char line[] = "==========================================";
+  msg(line);
+  msg(message);
+  msg(line);
 }
 
 void ConsoleLogger::msg(char *message) {

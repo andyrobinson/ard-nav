@@ -17,6 +17,7 @@ class Compass
   public:
     Compass(Boat *boatp);
     uangle bearing();
+    int err_percent();
 
   private:
   Boat *boat;

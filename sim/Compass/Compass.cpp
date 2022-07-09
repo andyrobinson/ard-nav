@@ -6,3 +6,8 @@ uangle Compass::bearing() {
     return boat->bearing();
 }
 
+int Compass::err_percent() {
+    return 0;
+}
+
+
