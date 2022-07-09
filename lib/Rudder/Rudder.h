@@ -1,6 +1,7 @@
 #ifndef Rudder_h
 #define Rudder_h
 
+#include "Arduino.h"
 #include "Angle.h"
 #include "MServo.h"
 
