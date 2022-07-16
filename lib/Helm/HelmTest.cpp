@@ -109,6 +109,52 @@ TEST_F(HelmTest, Should_abort_the_tack_if_the_wind_is_not_in_the_range) {
   EXPECT_STREQ(logger.last_message(), "Abandon:  50, 65,355");
 }
 
+ TEST_F(HelmTest, Should_steer_straight_passing_sail_error_value_if_wind_sensor_in_error) {
+   uangle bearings[] = {0, 3, 8};
+   angle pid_results[] = {-10,-23,-34};
+   angle wind_sample[] = {ANGLE_ERROR};
+
+   stub_windsensor.set_relative(wind_sample, 1);
+   stub_compass.set_bearings(bearings, 3);
+   stub_rotaryPID.set_results(pid_results,3);
+   helm.steer(30, 1500, {65,355});
+
+   angle *positions = stub_rudder.get_positions();
+   angle *sail_calls = stub_sail.get_calls();
+
+   EXPECT_EQ(positions[0],pid_results[0]);
+   EXPECT_EQ(positions[1],pid_results[1]);
+   EXPECT_EQ(positions[2],pid_results[2]);
+
+   EXPECT_EQ(sail_calls[0],ANGLE_ERROR); // Sail will deal with this OK and set to 30
+   EXPECT_EQ(sail_calls[1],ANGLE_ERROR);
+   EXPECT_EQ(sail_calls[2],ANGLE_ERROR);
+ }
+
+// TODO: Use GPS value instead here
+ TEST_F(HelmTest, Should_steer_straight_ignoring_PID_and_passing_sail_wind_value_if_compass_in_error) {
+   uangle bearings[] = {ANGLE_ERROR};
+   angle pid_results[] = {-10,-23,-34};
+   angle wind_sample[] = {70,70,70,70,90,90};
+
+   stub_windsensor.set_relative(wind_sample, 6);
+   stub_compass.set_bearings(bearings, 1);
+   stub_rotaryPID.set_results(pid_results,3);
+   helm.steer(30, 1500, {65,355});
+
+   angle *positions = stub_rudder.get_positions();
+   angle *sail_calls = stub_sail.get_calls();
+
+   EXPECT_EQ(positions[0],0);
+   EXPECT_EQ(positions[1],0);
+   EXPECT_EQ(positions[2],0);
+
+   EXPECT_EQ(sail_calls[0],70);
+   EXPECT_EQ(sail_calls[1],70);
+   EXPECT_EQ(sail_calls[2],90);
+ }
+
+
 }  //namespace
 
 int main(int argc, char **argv) {

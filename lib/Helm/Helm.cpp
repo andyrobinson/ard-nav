@@ -12,6 +12,7 @@ Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windse
 
 void Helm::steer(uangle direction, long steer_time, windrange range) {
     long remaining = steer_time;
+    angle new_rudder_position;
 
     char logmsg[50];
     sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
@@ -22,8 +23,13 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
     while (remaining > 0 && wind_in_range(range)) {
 
       angle current_heading = compass->bearing();
-      angle new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
-      set_rudder(new_rudder_position, current_heading);
+      if (current_heading == ANGLE_ERROR) {
+          new_rudder_position = 0;
+          set_rudder(new_rudder_position,old_heading);
+      } else {
+          new_rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
+          set_rudder(new_rudder_position, current_heading);
+      }
       timer->wait(STEER_INTERVAL/2);
 
       sail->set_position(windsensor->relative());
@@ -51,7 +57,7 @@ long Helm::rot(uangle old_heading, uangle current_heading, long steer_interval) 
 bool Helm::wind_in_range(windrange range) {
     char logmsg[22];
     uangle abs_wind = windsensor->absolute(compass->bearing());
-    if (in_range(abs_wind, range.lower, range.upper)) return true;
+    if (in_range(abs_wind, range.lower, range.upper) || abs_wind == ANGLE_ERROR) return true;
     sprintf(logmsg, "Abandon: %3d,%3d,%3d", abs_wind, range.lower, range.upper); logger->banner(logmsg);
     return false;
 }
