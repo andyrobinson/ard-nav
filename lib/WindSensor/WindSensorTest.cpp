@@ -69,6 +69,15 @@ TEST_F(WindSensorTest, should_pass_though_the_error_percentage) {
   EXPECT_EQ(sensor.err_percent(),36);
 }
 
+TEST_F(WindSensorTest, absolute_should_return_an_error_if_supplied_bearing_is_error) {
+  uint8_t readings[] = {0x80,0x00};
+  stub_i2c.set_results(readings,2);
+  angle wind = sensor.absolute(ANGLE_ERROR);
+
+  EXPECT_EQ(wind, ANGLE_ERROR);
+}
+
+
 }  //namespace
 
 int main(int argc, char **argv) {
