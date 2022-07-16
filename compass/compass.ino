@@ -41,8 +41,6 @@ void setup() {
   while (!Serial);
   Serial.begin(19200);
 
-  sercom3.setTimeoutInMicrosWIRE(25000ul, true);  // for new timeout
-
   Wire.begin();
 
   // Enable the compass
@@ -61,11 +59,6 @@ MagResult raw_bearing() {
   Wire.write(COMPASS_REGISTER_X_HIGH);
   endTransResult = Wire.endTransmission();
 
-  if (sercom3.hasTimedout(true)) {
-     tol = sercom3.timeoutLocation() + 100;
-     endTransResult = true;
-  }
-
   if (endTransResult) {
     errors = constrain(errors + 100, 0, 10000);
     Wire.end();
@@ -74,13 +67,6 @@ MagResult raw_bearing() {
   }
 
   Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
-
-  if (sercom3.hasTimedout(true)) {
-     tol = sercom3.timeoutLocation() + 200;
-     Wire.end();
-     Wire.begin();
-     return {0,0,0};
-  }
 
   long start = millis();
   while (Wire.available() < 6 && ((millis() - start) < 20));
