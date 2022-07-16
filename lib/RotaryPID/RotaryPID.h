@@ -5,10 +5,12 @@
 #include "Angle.h"
 #include "Switches.h"
 #include "Logger.h"
+#include "Arduino.h"
 
 #define KP 0.5
 #define KI 2.3
 #define KD 0.3
+#define MAX_DEFLECTION_PER_SECOND 40 // depends upon rudder speed set in Rudder.h
 
 using namespace Angle;
 
@@ -23,10 +25,10 @@ class RotaryPID
     uangle last_heading;
     Switches *switches;
     Logger *logger;
-    float integral_term, limit, output;
+    float integral_term, limit, output, last_output;
     float Kp, Ki, Kd;
 
-    float clip(float value, float limit);
+    float constrain_deflection(float desired, float previous, float max);
     void set_constants();
 
 };
