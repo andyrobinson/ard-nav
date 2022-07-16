@@ -8,6 +8,7 @@
 #include "Logger.h"
 #include "Utility.h"
 #include "Angle.h"
+#include "Arduino.h"
 
 #define MAX_GPS_WAIT_FOR_FIX 1000
 #define MAX_STEER_TIME  36000.0 // beware maximum tack time in small ponds!

@@ -20,7 +20,7 @@ void Navigator::sailto(waypoint destination) {
   while (!arrived(current_gps.pos, destination.pos)) {
     uangle direction = globe->bearing(&current_gps.pos, &destination.pos);
     double unlimited_steer_time_ms = ((globe->distance_between(&current_gps.pos, &destination.pos))/current_gps.avg_mps) * 1000;
-    long steer_time = round(max1(MIN_STEER_TIME,min1(unlimited_steer_time_ms/2.0, MAX_STEER_TIME)));
+    long steer_time = round(constrain(unlimited_steer_time_ms/2.0, MIN_STEER_TIME,MAX_STEER_TIME));
     tacker->steer(direction, steer_time);
     gps->data(MAX_GPS_WAIT_FOR_FIX, &current_gps);
     sprintf(logmsg, "To %s", destination.label);
