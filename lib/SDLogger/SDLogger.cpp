@@ -8,11 +8,11 @@ using namespace Utility;
 
 SDLogger::SDLogger() {}
 
-SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp):
-  gps(gpsp), compass(compassp), windsensor(windsensorp), battery(batteryp) {}
+SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, long ofilenamep):
+  gps(gpsp), compass(compassp), windsensor(windsensorp), battery(batteryp), ofilename(ofilenamep) {}
 
 void SDLogger::calculate_filename(char *filename, long unix_ts) {
-    long filenameint = 2025; //max1(unix_ts / 100000, JAN1_2000_TS);
+    long filenameint = ofilename == 0 ? max1(unix_ts / 100000, JAN1_2000_TS) : ofilename;
     itoa(filenameint, filename, BASE10);
     strcat(filename,".csv");
 }

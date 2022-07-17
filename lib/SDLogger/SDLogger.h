@@ -18,7 +18,7 @@
 class SDLogger : public Logger {
     public:
       SDLogger();
-      SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp);
+      SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, long ofilename=0);
       virtual void begin();
       virtual void msg(char *message);
       virtual void banner(char *message);
@@ -41,6 +41,8 @@ class SDLogger : public Logger {
       char banner_msg[LOG_BANNER_LENGTH];
       int banner_space;
       unsigned long sd_last_log_time;
+      long ofilename;
+
 };
 
 #endif

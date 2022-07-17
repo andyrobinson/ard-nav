@@ -72,7 +72,7 @@ MServo servo_control;
 Compass compass(&i2c, &timer);
 Gps gps(&timer);
 
-SDLogger logger(&gps, &windsensor, &compass, &battery);
+SDLogger logger(&gps, &windsensor, &compass, &battery, 3000);
 //SerialLogger logger(&gps, &windsensor, &compass, &battery);
 
 Sail sail(&servo_control);
