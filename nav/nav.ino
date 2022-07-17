@@ -60,15 +60,14 @@ char logmsg[22];
 
 // Dependency injection
 
-WindSensor windsensor;
 Timer timer;
 Globe globe;
 Switches switches;
 I2C i2c;
 Battery battery(&analogRead);
-
 MServo servo_control;
 
+WindSensor windsensor(&i2c);
 Compass compass(&i2c, &timer);
 Gps gps(&timer);
 
