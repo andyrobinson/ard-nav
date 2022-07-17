@@ -1,5 +1,5 @@
-#ifndef Helm_h
-#define Helm_h
+#ifndef TankHelm_h
+#define TankHelm_h
 
 #include "IHelm.h"
 #include "Rudder.h"
@@ -13,14 +13,16 @@
 
 using namespace Windrange;
 
-#define STEER_INTERVAL 400
+#define STEER_INTERVAL 800
+#define RUDDER_VALUE 30
+#define SAIL_MAX 60
 
-class Helm : public IHelm
+class TankHelm : public IHelm
 {
   public:
-    Helm();
-    Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, Logger *loggerp);
-    virtual void steer(uangle direction, long steer_time, windrange range);
+    TankHelm();
+    TankHelm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, Logger *loggerp);
+    virtual  steer(uangle direction, long steer_time, windrange range);
 
   private:
     Rudder *rudder;
@@ -35,7 +37,6 @@ class Helm : public IHelm
 
     void set_rudder(angle new_position, uangle current_heading);
     long rot(uangle direction, uangle current_heading, long steer_interval);
-    bool wind_in_range(windrange range);
 
 };
 

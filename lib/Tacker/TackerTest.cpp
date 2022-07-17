@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include "math.h"
 #include "StubLogger.h"
+#include "Helm.h"
 
 namespace {
 

@@ -4,15 +4,16 @@
 #include "Angle.h"
 #include "Utility.h"
 #include "Windrange.h"
+#include "IHelm.h"
 
 using namespace Angle;
 using namespace Windrange;
 
-class Helm
+class Helm : public IHelm
 {
   public:
     Helm();
-    void steer(uangle direction, long steer_time, windrange range);
+    virtual void steer(uangle direction, long steer_time, windrange range);
     uangle steering(int index);
     long steer_time(int index);
     windrange wind_range(int index);

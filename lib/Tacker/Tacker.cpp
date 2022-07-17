@@ -8,7 +8,7 @@ using namespace Windrange;
 
 Tacker::Tacker() {}
 
-Tacker::Tacker(Helm *helmp, Compass *compassp, WindSensor *windsensorp, Logger *loggerp):
+Tacker::Tacker(IHelm *helmp, Compass *compassp, WindSensor *windsensorp, Logger *loggerp):
   helm(helmp), compass(compassp), windsensor(windsensorp), logger(loggerp) {}
 
 void Tacker::steer(uangle direction, long steer_time) {
