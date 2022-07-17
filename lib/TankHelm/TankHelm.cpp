@@ -13,8 +13,8 @@ TankHelm::TankHelm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor
 void TankHelm::steer(uangle direction, long steer_time, windrange range) {
     long remaining = steer_time;
     angle new_rudder_position;
-    angle sail_position = 0;
-    uangle sail_increment = 10;
+    angle wind_position = 0;
+    uangle wind_increment = 10;
 
     char logmsg[50];
     sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
@@ -31,9 +31,9 @@ void TankHelm::steer(uangle direction, long steer_time, windrange range) {
 
       timer->wait(STEER_INTERVAL/2);
 
-      sail->set_position(sail_position);
-      sail_position = sail_position + sail_increment;
-      if (abs1(sail_position) >= SAIL_MAX) sail_increment = -sail_increment;
+      sail->set_position(wind_position);
+      wind_position = wind_position + wind_increment;
+      if (abs1(wind_position) >= RELATIVE_WIND_MAX) wind_increment = -wind_increment;
 
       timer->wait(STEER_INTERVAL/2);
 

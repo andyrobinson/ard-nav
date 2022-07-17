@@ -15,7 +15,7 @@ using namespace Windrange;
 
 #define STEER_INTERVAL 800
 #define RUDDER_VALUE 30
-#define SAIL_MAX 60
+#define RELATIVE_WIND_MAX 120
 
 class TankHelm : public IHelm
 {
