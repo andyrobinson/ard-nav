@@ -22,7 +22,7 @@ class TankHelm : public IHelm
   public:
     TankHelm();
     TankHelm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, Logger *loggerp);
-    virtual  steer(uangle direction, long steer_time, windrange range);
+    virtual void steer(uangle direction, long steer_time, windrange range);
 
   private:
     Rudder *rudder;

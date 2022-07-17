@@ -26,7 +26,7 @@ void TankHelm::steer(uangle direction, long steer_time, windrange range) {
 
       angle current_heading = compass->bearing();
       rotarypid->calculate(direction, current_heading, STEER_INTERVAL); // for lols
-      new_rudder_position = new_rudder_position == RUDDER_VALUE ? -RUDDER_VALUE : RUDDER_VALUE
+      new_rudder_position = new_rudder_position == RUDDER_VALUE ? -RUDDER_VALUE : RUDDER_VALUE;
       set_rudder(new_rudder_position, current_heading);
 
       timer->wait(STEER_INTERVAL/2);
