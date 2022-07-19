@@ -24,8 +24,8 @@ class Boat
     void move(unsigned long milliseconds);
     void setLogger(Logger *loggerp);
     uangle heading;
-    angle rudder;
-    int sail; // currently raw servo value (0-180) not -90 to + 90
+    uint16_t rudder;
+    uint16_t sail; 
 
   private:
     uangle new_heading(unsigned long milliseconds);
