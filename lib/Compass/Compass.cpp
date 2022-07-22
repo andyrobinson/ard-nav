@@ -110,6 +110,7 @@ void Compass::reset() {
   // Seems to recover better WITHOUT a Wire reset
 
   reset_count++;
+  reset_count = constrain(reset_count,0l,COMPASS_MAX_RESETS * COMPASS_SECONDS_PER_HOUR);
   begin();
 
   // once we have reached the limit, don't increase the pause further or reset errors
