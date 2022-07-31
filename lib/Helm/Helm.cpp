@@ -58,6 +58,6 @@ bool Helm::wind_in_range(windrange range) {
     char logmsg[22];
     uangle abs_wind = windsensor->absolute(compass->bearing());
     if (in_range(abs_wind, range.lower, range.upper) || abs_wind == ANGLE_ERROR) return true;
-    sprintf(logmsg, "Abandon: %3d,%3d,%3d", abs_wind, range.lower, range.upper); logger->banner(logmsg);
+    sprintf(logmsg, "Abandon: %3d|%3d|%3d", abs_wind, range.lower, range.upper); logger->banner(logmsg);
     return false;
 }

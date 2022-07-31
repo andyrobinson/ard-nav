@@ -15,8 +15,8 @@
 #include <Routes.h>
 #include <RotaryPID.h>
 #include <Switches.h>
-#include <SDLogger.h>
-//#include <SerialLogger.h>
+//#include <SDLogger.h>
+#include <SerialLogger.h>
 #include <Battery.h>
 #include <version.h>
 #include <MServo.h>
@@ -71,8 +71,8 @@ WindSensor windsensor(&i2c);
 Compass compass(&i2c, &timer);
 Gps gps(&timer);
 
-SDLogger logger(&gps, &windsensor, &compass, &battery);
-//SerialLogger logger(&gps, &windsensor, &compass, &battery);
+//SDLogger logger(&gps, &windsensor, &compass, &battery);
+SerialLogger logger(&gps, &windsensor, &compass, &battery);
 
 Sail sail(&servo_control);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);

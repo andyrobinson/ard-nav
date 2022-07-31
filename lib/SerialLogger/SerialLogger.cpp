@@ -35,7 +35,7 @@ void SerialLogger::msg(char *message) {
   int compasserr = compass->err_percent();
   long compass_resets = compass->resets_per_hour();
   int mem=dispFreeMemory();
-  float voltage = battery->lipo1maxv();  // CRASHES HERE
+  float voltage = battery->lipo1maxv();
 
   Serial.print(gpsReading.unixTime); Serial.print(",");
   Serial.print(millis()/1000); Serial.print(",");
