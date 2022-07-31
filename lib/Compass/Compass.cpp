@@ -23,7 +23,10 @@ void Compass::begin() {
 
 uangle Compass::bearing() {
 
-   if ((timer->milliseconds() - last_read_time) < COMPASS_CACHE_TTL_MS) return tiltadjust;
+   if ((timer->milliseconds() - last_read_time) < COMPASS_CACHE_TTL_MS){
+     Serial.print("Cached ");Serial.println(tildadjust);
+     return tiltadjust;
+   }
 
    if (i2c->err_percent() >= COMPASS_RESET_ERROR_THRESHOLD) reset();
 
@@ -46,6 +49,8 @@ uangle Compass::bearing() {
    tiltadjust = (360 + (short) round(57.2958 * (atan2(y_final,x_final)))) % 360;
 
    last_read_time = timer->milliseconds();
+
+   Serial.print("Fresh ");Serial.println(tildadjust);
 
    return tiltadjust;
 }

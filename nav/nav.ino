@@ -72,7 +72,7 @@ WindSensor windsensor(&i2c);
 Compass compass(&i2c, &timer);
 Gps gps(&timer);
 
-SDLogger logger(&gps, &windsensor, &compass, &battery);
+SDLogger logger(&gps, &windsensor, &compass, &battery, 4000);
 // SerialLogger logger(&gps, &windsensor, &compass, &battery);
 
 Sail sail(&servo_control);
@@ -113,14 +113,17 @@ void setup() {
   gps.begin();
   switches.begin();
   logger.begin();
-  timer.wait(5000); // don't do anything, give it all a chance to settle
+//  timer.wait(5000); // don't do anything, give it all a chance to settle
 }
 
 void loop() {
+  while (!Serial); // wait for Serial to be ready
+  Serial.begin(19200);
+
   // a little indicator that we're starting
   rudder.set_position(-45);
   sail.set_position(0);
-  timer.wait(5000);
+//  timer.wait(5000);
 
   // try and get a GPS fix before logging so that it goes in the same file
   gpsResult gps_data_ignored = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0};
