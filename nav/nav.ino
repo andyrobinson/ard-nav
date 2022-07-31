@@ -15,8 +15,8 @@
 #include <Routes.h>
 #include <RotaryPID.h>
 #include <Switches.h>
-//#include <SDLogger.h>
-#include <SerialLogger.h>
+#include <SDLogger.h>
+// #include <SerialLogger.h>
 #include <Battery.h>
 #include <version.h>
 #include <MServo.h>
@@ -72,8 +72,8 @@ WindSensor windsensor(&i2c);
 Compass compass(&i2c, &timer);
 Gps gps(&timer);
 
-//SDLogger logger(&gps, &windsensor, &compass, &battery);
-SerialLogger logger(&gps, &windsensor, &compass, &battery);
+SDLogger logger(&gps, &windsensor, &compass, &battery);
+// SerialLogger logger(&gps, &windsensor, &compass, &battery);
 
 Sail sail(&servo_control);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
@@ -120,13 +120,14 @@ void loop() {
   // a little indicator that we're starting
   rudder.set_position(-45);
   sail.set_position(0);
+  timer.wait(5000);
 
   // try and get a GPS fix before logging so that it goes in the same file
   gpsResult gps_data_ignored = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0};
-  gps->data(STARTUP_WAIT_FOR_FIX_MS, &gps_data_ignored);
+  gps.data(STARTUP_WAIT_FOR_FIX_MS, &gps_data_ignored);
 
   // and we're off
-  rudder.set_position(0)
+  rudder.set_position(0);
 
   sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
   sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
