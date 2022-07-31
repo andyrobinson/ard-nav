@@ -21,7 +21,8 @@
 #include <version.h>
 #include <MServo.h>
 
-#define MAJOR_VERSION 2 // for test
+#define MAJOR_VERSION 2
+#define STARTUP_WAIT_FOR_FIX_MS 60000
 
 /*
 
@@ -116,22 +117,22 @@ void setup() {
 }
 
 void loop() {
+  // a little indicator that we're starting
+  rudder.set_position(-45);
+  sail.set_position(0);
+
+  // try and get a GPS fix before logging so that it goes in the same file
+  gpsResult gps_data_ignored = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0};
+  gps->data(STARTUP_WAIT_FOR_FIX_MS, &gps_data_ignored);
+
+  // and we're off
+  rudder.set_position(0)
 
   sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
-  // selftest.test();
-
-  //int countdownMS = Watchdog.enable(4000);
-  //sprintf(logmsg, "Watchdog at %3d", countdownMS); logger.banner(logmsg);
   sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
 
   uint8_t sw = switches.value() & 3; // four routes configurable
   route journey = plattfields[sw];
-
-  // a little indicator that we're starting
-  rudder.set_position(-45);
-  timer.wait(4000);
-  sail.set_position(0);
-  timer.wait(4000);
 
   captain.voyage(journey.waypoints, journey.length);
   logger.banner("Finished Navigation :-)");
