@@ -24,7 +24,7 @@ void Compass::begin() {
 uangle Compass::bearing() {
 
    if ((timer->milliseconds() - last_read_time) < COMPASS_CACHE_TTL_MS){
-     Serial.print("Cached ");Serial.println(tildadjust);
+     Serial.print("Cached ");Serial.println(tiltadjust);
      return tiltadjust;
    }
 
@@ -50,7 +50,7 @@ uangle Compass::bearing() {
 
    last_read_time = timer->milliseconds();
 
-   Serial.print("Fresh ");Serial.println(tildadjust);
+   Serial.print("Fresh ");Serial.println(tiltadjust);
 
    return tiltadjust;
 }

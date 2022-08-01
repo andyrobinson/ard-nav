@@ -28,7 +28,7 @@ boolean SDLogger::sd_time_to_log() {
 void SDLogger::begin() {
   if (!SD.begin(CHIP_SELECT)) {
     // need to do something else?
-    //Serial.println("Card failed, or not present");
+    Serial.println("Card failed, or not present");
   }
   logfile[0] = '\0';
   unsigned long sd_last_log_time = 0;
@@ -88,7 +88,7 @@ void SDLogger::print_line(char *message) {
     File dataFile = SD.open(logfile, FILE_WRITE);
 
     if (dataFile) {
-
+      Serial.println ("Logging ...");
       dataFile.print(gpsReading.unixTime); dataFile.print(",");
       dataFile.print(millis()/1000); dataFile.print(",");
       dataFile.print(gpsReading.pos.latitude,5); dataFile.print(",");

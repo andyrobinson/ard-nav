@@ -119,6 +119,7 @@ void setup() {
 void loop() {
   while (!Serial); // wait for Serial to be ready
   Serial.begin(19200);
+  Serial.println("Starting");
 
   // a little indicator that we're starting
   rudder.set_position(-45);
@@ -126,8 +127,8 @@ void loop() {
 //  timer.wait(5000);
 
   // try and get a GPS fix before logging so that it goes in the same file
-  gpsResult gps_data_ignored = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0};
-  gps.data(STARTUP_WAIT_FOR_FIX_MS, &gps_data_ignored);
+  // gpsResult gps_data_ignored = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0};
+  // gps.data(STARTUP_WAIT_FOR_FIX_MS, &gps_data_ignored);
 
   // and we're off
   rudder.set_position(0);
