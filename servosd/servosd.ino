@@ -13,6 +13,11 @@ MServo servo;
 
 void setup() {
     servo.begin();
+
+    while (!Serial); // wait for Serial to be ready
+    Serial.begin(19200);
+    Serial.println("Starting");
+
     if (!SD.begin(CHIP_SELECT)) {
       // need to do something else?
       Serial.println("Card failed, or not present");

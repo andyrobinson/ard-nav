@@ -1,10 +1,7 @@
 #include <version.h>
-#include <wiring_private.h>
 #include <Wire.h>
 
 #define MAJOR_VERSION         111
-#define PIN_SERIAL3_RX       (3ul)
-#define PIN_SERIAL3_TX       (2ul)
 
 #define COMPASS_COMPASS_I2C_ADDRESS 0x1E
 #define COMPASS_ACCEL_I2C_ADDRESS 0x19
@@ -13,6 +10,7 @@
 #define ACCEL_REGISTER_OUT_X_L_A       0x28
 #define COMPASS_ACCEL_CTRL_REG1_A      0x20
 #define COMPASS_X_CORRECTION           -100
+#define COMPASS_POWER_PIN 13
 
 struct MagResult {
   int x;
@@ -25,18 +23,13 @@ MagResult rbearing;
 int tol;
 int errors;
 
-// Serial3 on SERCOM 2, TX = pin 2, RX = pin 3
-Uart Serial3(&sercom2, PIN_SERIAL3_RX, PIN_SERIAL3_TX, SERCOM_RX_PAD_1, UART_TX_PAD_2);
-
-void SERCOM2_Handler()
-{
-  Serial3.IrqHandler();
-}
 
 void setup() {
-  pinPeripheral(PIN_SERIAL3_TX, PIO_SERCOM);
-  pinPeripheral(PIN_SERIAL3_RX, PIO_SERCOM_ALT);
-  Serial3.begin(9600);
+
+  pinMode(COMPASS_POWER_PIN, OUTPUT);
+  digitalWrite(COMPASS_POWER_PIN, HIGH);
+
+  delay(1000);
 
   while (!Serial);
   Serial.begin(19200);
@@ -66,7 +59,7 @@ MagResult raw_bearing() {
     return {0,0,0};
   }
 
-  Wire.requestFrom((byte) COMPASS_ACCEL_I2C_ADDRESS, (byte) 6);
+  Wire.requestFrom((byte) COMPASS_COMPASS_I2C_ADDRESS, (byte) 6);
 
   long start = millis();
   while (Wire.available() < 6 && ((millis() - start) < 20));
@@ -115,29 +108,22 @@ int hilow_toint(byte high, byte low) {
 
 void loop() {
 
-    int TEMP_RUDDER = 25;
-
     // lots of exercise for I2C
     for (int i=0; i< 200;i++) {
       rbearing = raw_bearing();
       delay(5);
     }
 
-    Serial3.write(TEMP_RUDDER);
-
+    Serial.print("HIGH ");
     Serial.print(millis()/1000); Serial.print(",(");
     Serial.print(rbearing.x); Serial.print(",");
     Serial.print(rbearing.y); Serial.print(",");
     Serial.print(rbearing.z); Serial.print("),");
-    Serial.print(errors); Serial.print(",");
-    Serial.print(tol); Serial.print(",");
-    Serial.println("logging");
+    Serial.println(errors);
 
     if (errors >= 10000) {
       Serial.println("** I2C Failure **");
       while (true) {};
     }
-
-    TEMP_RUDDER = -TEMP_RUDDER;
 
 }
