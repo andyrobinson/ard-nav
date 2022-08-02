@@ -74,7 +74,7 @@ MagResult Compass::raw_accel() {
 
   if (endTransResult) return {0,0,0,false};
 
-  i2c->requestFrom((uint8_t) COMPASS_COMPASS_I2C_ADDRESS, (uint8_t) 6);
+  i2c->requestFrom((uint8_t) COMPASS_ACCEL_I2C_ADDRESS, (uint8_t) 6);
 
   if (!i2c->wait_for_data(6)) return {0,0,0,false};
 
