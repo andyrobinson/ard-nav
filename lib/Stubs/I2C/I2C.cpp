@@ -5,14 +5,18 @@ I2C::I2C():errors(0),trans_result(0) {}
 void I2C::begin() {}
 
 uint8_t I2C::write_register_value(uint8_t address, uint8_t reg, uint8_t value) {
+  last_address = address;
   return trans_result;
 }
 
 uint8_t I2C::write_register(uint8_t address, uint8_t reg) {
+  last_address = address;
   return trans_result;
 }
 
-void I2C::requestFrom(uint8_t address, uint8_t num_bytes) {}
+void I2C::requestFrom(uint8_t address, uint8_t num_bytes) {
+  last_address = address;
+}
 
 bool I2C::wait_for_data(uint8_t num_bytes) {
   return (list_size - current_position) >= num_bytes;

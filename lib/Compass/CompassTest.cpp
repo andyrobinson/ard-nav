@@ -88,6 +88,25 @@ TEST_F(CompassTest, should_use_the_tilt_to_calculate_the_bearing) {
   EXPECT_EQ(bearing2, 225);
 }
 
+TEST_F(CompassTest, mag_readings_should_use_the_mag_I2C_address) {
+  uint8_t readings[] = {150,20,35,40,55,60,70,80,90,10,110,120};
+  stub_i2c.set_results(readings,12);
+
+  MagResult result = compass.raw_bearing();
+
+  EXPECT_EQ(stub_i2c.last_address, COMPASS_COMPASS_I2C_ADDRESS);
+}
+
+TEST_F(CompassTest, accel_readings_should_use_the_accel_I2C_address) {
+  uint8_t readings[] = {150,20,35,40,55,60,70,80,90,10,110,120};
+  stub_i2c.set_results(readings,12);
+
+  MagResult result = compass.raw_accel();
+
+  EXPECT_EQ(stub_i2c.last_address, COMPASS_ACCEL_I2C_ADDRESS);
+}
+
+
 }  //namespace
 
 int main(int argc, char **argv) {
