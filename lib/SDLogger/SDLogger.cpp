@@ -31,7 +31,7 @@ void SDLogger::begin() {
     //Serial.println("Card failed, or not present");
   }
   logfile[0] = '\0';
-  unsigned long sd_last_log_time = 0;
+  sd_last_log_time = 0;
   destination = ' ';
   tack = '0';
   banner_msg[0] = '\0';

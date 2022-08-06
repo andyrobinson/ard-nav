@@ -16,6 +16,7 @@ void Navigator::sailto(waypoint destination) {
 
   gpsResult current_gps = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0};
   gps->data(MAX_GPS_WAIT_FOR_FIX, &current_gps);
+  // gpsResult current_gps = {{53.44048, -2.27279, 4.42}, FIX_GPS, 1.0, 1659806127};
 
   while (!arrived(current_gps.pos, destination.pos)) {
     uangle direction = globe->bearing(&current_gps.pos, &destination.pos);
@@ -24,7 +25,7 @@ void Navigator::sailto(waypoint destination) {
     tacker->steer(direction, steer_time);
     gps->data(MAX_GPS_WAIT_FOR_FIX, &current_gps);
     sprintf(logmsg, "To %s", destination.label);
-    logger->banner(logmsg);      
+    logger->banner(logmsg);
   }
 
   sprintf(logmsg, "At %s", destination.label); logger->banner(logmsg);

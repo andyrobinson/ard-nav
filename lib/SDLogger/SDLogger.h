@@ -11,7 +11,7 @@
 #define JAN1_2000_TS 15778l
 #define CHIP_SELECT 4
 #define BASE10 10
-#define LOG_INTERVAL 5000ul // may affect battery life
+#define LOG_INTERVAL 1000ul // may affect battery life
 #define GPS_WAIT_MILLIS 10
 #define LOG_BANNER_LENGTH 200
 
