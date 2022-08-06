@@ -21,13 +21,14 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
 
     while (remaining > 0 && wind_in_range(range)) {
 
-      angle current_heading = compass->bearing();
+      uangle current_heading = compass->bearing();
       if (current_heading == ANGLE_ERROR) {
           rudder_position = 0;
           rudder->set_position(rudder_position);
       } else {
           rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
           rudder->set_position(rudder_position);
+          sprintf(logmsg, "%3d %3d %3d", direction, current_heading, rudder); logger->msg(logmsg);
       }
       timer->wait(STEER_INTERVAL/2);
 
