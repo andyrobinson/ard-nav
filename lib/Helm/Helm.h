@@ -13,7 +13,7 @@
 
 using namespace Windrange;
 
-#define STEER_INTERVAL 400
+#define STEER_INTERVAL 300
 
 class Helm : public IHelm
 {
