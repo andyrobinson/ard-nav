@@ -31,10 +31,7 @@ class Helm : public IHelm
     RotaryPID *rotarypid;
     Logger *logger;
     angle rudder_position;
-    uangle old_heading;
 
-    void set_rudder(angle new_position, uangle current_heading);
-    long rot(uangle direction, uangle current_heading, long steer_interval);
     bool wind_in_range(windrange range);
 
 };

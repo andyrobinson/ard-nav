@@ -106,7 +106,7 @@ TEST_F(HelmTest, Should_abort_the_tack_if_the_wind_is_not_in_the_range) {
 
   helm.steer(30, 1, {65, 355});
 
-  EXPECT_STREQ(logger.last_message(), "Abandon:  50, 65,355");
+  EXPECT_STREQ(logger.last_message(), "Abandon:  50| 65|355");
 }
 
  TEST_F(HelmTest, Should_steer_straight_passing_sail_error_value_if_wind_sensor_in_error) {
