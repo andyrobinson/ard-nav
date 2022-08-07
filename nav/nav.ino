@@ -129,11 +129,11 @@ void loop() {
   // and we're off
   rudder.set_position(0);
 
-  sprintf(logmsg, "Starting v%3d.%4d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
-  sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
-
   uint8_t sw = switches.value() & 3; // four routes configurable
   route journey = plattfields[sw];
+
+  sprintf(logmsg, "Starting v%3d.%4d, route [%1d]", MAJOR_VERSION, MINOR_VERSION, sw); logger.banner(logmsg);
+  sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
 
   captain.voyage(journey.waypoints, journey.length);
   logger.banner("Finished Navigation :-)");
