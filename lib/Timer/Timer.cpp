@@ -6,9 +6,9 @@
 // Also potentially we could do useful work while waiting in the future
 Timer::Timer() {}
 
-void Timer::wait(unsigned long milliseconds) {
+void Timer::wait(unsigned long millisecs) {
   //Watchdog.reset(); // note we need to call the timer from the GPS module as well
-  delay(milliseconds);
+  delay(millisecs);
 }
 
 long Timer::milliseconds() {

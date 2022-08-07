@@ -5,7 +5,7 @@ class Timer
 {
   public:
     Timer();
-    void wait(unsigned long milliseconds);
+    void wait(unsigned long millisecs);
     long milliseconds();
 };
 
