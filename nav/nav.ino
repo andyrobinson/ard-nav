@@ -57,7 +57,7 @@ A = SERCOM ALT
 EDBG
 */
 
-char logmsg[22];
+char logmsg[40];
 
 // Dependency injection
 
@@ -132,7 +132,7 @@ void loop() {
   uint8_t sw = switches.value() & 3; // four routes configurable
   route journey = plattfields[sw];
 
-  sprintf(logmsg, "Starting v%3d.%4d, route [%1d]", MAJOR_VERSION, MINOR_VERSION, sw); logger.banner(logmsg);
+  sprintf(logmsg, "Starting v%2d.%2d: route [%1d]", MAJOR_VERSION, MINOR_VERSION, sw); logger.banner(logmsg);
   sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
 
   captain.voyage(journey.waypoints, journey.length);
