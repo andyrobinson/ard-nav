@@ -13,6 +13,22 @@
 #define ACCEL_REGISTER_OUT_X_L_A       0x28
 #define COMPASS_ACCEL_CTRL_REG1_A      0x20
 
+#define LSM303_REGISTER_ACCEL_OUT_X_L_A 0x28
+#define LSM303_REGISTER_ACCEL_OUT_X_H_A 0x29
+#define LSM303_REGISTER_ACCEL_OUT_Y_L_A 0x2A
+#define LSM303_REGISTER_ACCEL_OUT_Y_H_A 0x2B
+#define LSM303_REGISTER_ACCEL_OUT_Z_L_A 0x2C
+#define LSM303_REGISTER_ACCEL_OUT_Z_H_A 0x2D
+
+
+byte read_register(uint8_t address, uint8_t reg) {
+  Wire.beginTransmission(address);
+  Wire.write(reg);
+  Wire.requestFrom(address,1);
+  while (Wire.available() < 1) {}
+  return Wire.read();
+  return Wire.endTransmission(false);
+}
 
 uint8_t write_register_value(uint8_t address, uint8_t reg, uint8_t value) {
   Wire.beginTransmission(address);
@@ -64,8 +80,12 @@ void loop() {
     int y = hilow_toint(yhi,ylo);
     int z = hilow_toint(zhi,zlo);
 
+    Wire.endTransmission();
+
     Wire.beginTransmission(COMPASS_ACCEL_I2C_ADDRESS);
+
     Wire.write(ACCEL_REGISTER_OUT_X_L_A | 0x80);
+    Wire.endTransmission(false);
     Wire.requestFrom(COMPASS_ACCEL_I2C_ADDRESS,6);
 
     while (Wire.available() < 6) { }
@@ -77,13 +97,20 @@ void loop() {
     zlo = Wire.read();
     zhi = Wire.read();
 
-    int xmag = hilow_toint(xhi,xlo);
-    int ymag = hilow_toint(yhi,ylo);
-    int zmag = hilow_toint(zhi,zlo);
+    // xlo = read_register(COMPASS_ACCEL_I2C_ADDRESS,LSM303_REGISTER_ACCEL_OUT_X_L_A);
+    // xhi = read_register(COMPASS_ACCEL_I2C_ADDRESS,LSM303_REGISTER_ACCEL_OUT_X_H_A);
+    // ylo = read_register(COMPASS_ACCEL_I2C_ADDRESS,LSM303_REGISTER_ACCEL_OUT_Y_L_A);
+    // yhi = read_register(COMPASS_ACCEL_I2C_ADDRESS,LSM303_REGISTER_ACCEL_OUT_Y_H_A);
+    // zlo = read_register(COMPASS_ACCEL_I2C_ADDRESS,LSM303_REGISTER_ACCEL_OUT_Z_L_A);
+    // zhi = read_register(COMPASS_ACCEL_I2C_ADDRESS,LSM303_REGISTER_ACCEL_OUT_Z_H_A);
 
-    Serial.print(xmag); Serial.print(",");
-    Serial.print(ymag); Serial.print(",");
-    Serial.print(zmag); Serial.print(" | ");
+    int xacc = hilow_toint(xhi,xlo);
+    int yacc = hilow_toint(yhi,ylo);
+    int zacc = hilow_toint(zhi,zlo);
+
+    Serial.print(xacc); Serial.print(",");
+    Serial.print(yacc); Serial.print(",");
+    Serial.print(zacc); Serial.print(" | ");
     // note change in sign because of reversed Y compared to LSM303DLHC
     short bearing = (360 - (short) round(57.2958 * (atan2((float) y, (float) x)))) % 360;
 
