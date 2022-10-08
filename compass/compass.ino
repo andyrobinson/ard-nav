@@ -74,18 +74,19 @@ void loop() {
     byte yhi = Wire.read();
     byte zlo = Wire.read();
     byte zhi = Wire.read();
+
     Wire.endTransmission();
 
     int x = hilow_toint(xhi,xlo);
     int y = hilow_toint(yhi,ylo);
     int z = hilow_toint(zhi,zlo);
 
-    Wire.endTransmission();
+    Serial.print(x); Serial.print(",");
+    Serial.print(y); Serial.print(",");
+    Serial.print(z); Serial.print(" | ");
 
     Wire.beginTransmission(COMPASS_ACCEL_I2C_ADDRESS);
-
     Wire.write(ACCEL_REGISTER_OUT_X_L_A | 0x80);
-    Wire.endTransmission(false);
     Wire.requestFrom(COMPASS_ACCEL_I2C_ADDRESS,6);
 
     while (Wire.available() < 6) { }
@@ -96,6 +97,8 @@ void loop() {
     yhi = Wire.read();
     zlo = Wire.read();
     zhi = Wire.read();
+
+    Wire.endTransmission(false);
 
     // xlo = read_register(COMPASS_ACCEL_I2C_ADDRESS,LSM303_REGISTER_ACCEL_OUT_X_L_A);
     // xhi = read_register(COMPASS_ACCEL_I2C_ADDRESS,LSM303_REGISTER_ACCEL_OUT_X_H_A);
