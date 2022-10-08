@@ -117,7 +117,20 @@ void loop() {
     // note change in sign because of reversed Y compared to LSM303DLHC
     short bearing = (360 - (short) round(57.2958 * (atan2((float) y, (float) x)))) % 360;
 
-    Serial.println(bearing);
+    Serial.print(bearing); Serial.print(" | ");
+
+    double roll = atan2((double) yacc, (double) zacc);
+    double pitch = atan2((double) -xacc, (double) zacc); // reversing x accel makes it work
+    double sin_roll = sin(roll);
+    double cos_roll = cos(roll);
+    double cos_pitch = cos(pitch);
+    double sin_pitch = sin(pitch);
+
+    double x_final = ((double) x) * cos_pitch + ((double) y)*sin_roll*sin_pitch+((double) z)*cos_roll*sin_pitch;
+    double y_final = ((double) y) * cos_roll-((double) z) * sin_roll;
+    short tiltadjust = (360 + (short) round(57.2958 * (atan2(y_final,x_final)))) % 360;
+
+    Serial.print("[[");Serial.print(tiltadjust); Serial.println("]]");
 
     delay(1000);
 }
