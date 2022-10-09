@@ -126,6 +126,15 @@ void loop() {
     double cos_pitch = cos(pitch);
     double sin_pitch = sin(pitch);
 
+    // adjustments
+    //test
+    y = -y;
+    // observations
+    // * mag readings are very variable, causing wild fluctuations
+    // * good correlation between flat and tilt adjust readings on the flat
+    // Y tilt correction is poor - tilt left is +40, tilt right seems OK
+    // X tilt correction is poor - tilt back is +180 - actually very little correction seems to be going on
+
     double x_final = ((double) x) * cos_pitch + ((double) y)*sin_roll*sin_pitch+((double) z)*cos_roll*sin_pitch;
     double y_final = ((double) y) * cos_roll-((double) z) * sin_roll;
     short tiltadjust = (360 + (short) round(57.2958 * (atan2(y_final,x_final)))) % 360;
