@@ -12,6 +12,7 @@
 #include "Compass.h"
 #include "Sail.h"
 #include "Switches.h"
+#include "MServo.h"
 
 //NEUTRAL
 #include "Position.h"

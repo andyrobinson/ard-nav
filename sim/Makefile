@@ -1,7 +1,7 @@
-CLASSES := Boat Timer ConsoleLogger Rudder Gps Compass Sail Switches WindSensor
+CLASSES := Boat Timer ConsoleLogger Rudder Gps Compass Sail Switches WindSensor MServo Arduino
 INCLUDES := Logger
 LIB_CLASSES := Angle Globe Helm Tacker Navigator Captain Utility RotaryPID
-LIB_INCLUDES := Position Utility Routes Windrange Waypoint
+LIB_INCLUDES := Position Utility Routes Windrange Waypoint IHelm
 INC_PARAMS = $(foreach d, $(LIB_INCLUDES), -I../lib/$d) $(foreach e, $(INCLUDES), -I./$e)
 CLASS_PARAMS = $(foreach p, $(CLASSES), ./$(p)/$(p).cpp -I./$(p))
 LIB_CLASS_PARAMS = $(foreach p, $(LIB_CLASSES), ../lib/$(p)/$(p).cpp -I../lib/$(p))
