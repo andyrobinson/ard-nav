@@ -33,12 +33,13 @@ char logmsg[22];
 // Dependency injection
 position start_point = pfF.pos;
 Boat boat(&start_point);
+MServo mservo(&boat);
 Timer timer(&boat);
 WindSensor windsensor(&boat);
 Compass compass(&boat);
 Gps gps(&boat,&timer);
-Sail sail(&boat);
-Rudder rudder(&boat);
+Sail sail(&mservo);
+Rudder rudder(&mservo);
 ConsoleLogger logger(&boat, &timer);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
 Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &logger);

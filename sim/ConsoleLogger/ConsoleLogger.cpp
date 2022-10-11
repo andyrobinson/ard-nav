@@ -32,5 +32,6 @@ void ConsoleLogger::msg(char *message) {
   std::cout << destination << ",";
   std::cout << tack << ",";
   std::cout << message;
+  std::cout << "[" << boat->rudder << "]";
   std::cout << "\n";
 }
