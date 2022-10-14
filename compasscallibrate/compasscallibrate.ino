@@ -5,8 +5,6 @@
 #include <I2C.h>
 
 #define CHIP_SELECT 4
-#define RUDDER_CHANNEL 0
-#define SAIL_CHANNEL 1
 
 int pos = 0;    // variable to store the servo position
 File dataFile;
