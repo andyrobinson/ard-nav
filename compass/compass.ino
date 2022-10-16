@@ -157,11 +157,11 @@ void loop() {
     dataFile = SD.open("callib.csv", FILE_WRITE);
 
     if (dataFile) {
-        dataFile.print(x_final);
+        dataFile.print(x);
         dataFile.print(",");
-        dataFile.println(y_final);
+        dataFile.println(y);
         dataFile.close();
     }
 
-    delay(1000);
+    delay(100);
 }
