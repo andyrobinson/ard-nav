@@ -1,7 +1,7 @@
 #include "Boat.h"
 
 Boat::Boat(position *start):
-    heading(STARTING_HEADING),rudder(0),speed_ms(STARTING_SPEED),absolute_wind(STARTING_WIND),globe(Globe()),
+    heading(STARTING_HEADING),rudder(90),speed_ms(STARTING_SPEED),absolute_wind(STARTING_WIND),globe(Globe()),
     current_position({start->latitude, start->longitude, start->error}),sail(90) {}
 
 position Boat::location() {
@@ -37,6 +37,9 @@ void Boat::move(unsigned long milliseconds) {
 uangle Boat::new_heading(unsigned long milliseconds) {
   // TODO: make speed of rotation depend upon speed
   // TODO: add angular momentum, with short decay
-  angle delta = - (angle)(((double) rudder * milliseconds) / 1000.0);
+  // Note that rudder deflection is from 0 to 180, with 90 in the middle
+  // not sure which way round it is, given the servoe is backwards
+
+  angle delta = - (angle)(((double) (90 - rudder) * milliseconds) / 1000.0);
   return uadd(heading, delta);
 }

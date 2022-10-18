@@ -24,6 +24,9 @@ namespace {
         return -deflection;
     }
 
+    void set_rudder(Boat *boat, angle deflection) {
+        boat->rudder = 90-deflection;
+    }
     };
 
     TEST_F(BoatTest, Should_start_at_provided_location) {
@@ -40,9 +43,9 @@ namespace {
 
     TEST_F(BoatTest, Should_change_heading_based_on_rudder) {
       Boat boat(&kynance_cove);
-      boat.rudder = 20;
+      set_rudder(&boat, 20);
       boat.move(1000);
-      uangle expected_heading = uadd(STARTING_HEADING,rudder_effect(boat.rudder));
+      uangle expected_heading = uadd(STARTING_HEADING,rudder_effect(20));
       position expected_position = globe.new_position(&kynance_cove, expected_heading, 1.0);
       EXPECT_EQ(boat.location(), expected_position);
     }
@@ -60,17 +63,14 @@ namespace {
 
       boat.rudder = -30; boat.move(1000);
       angle expected_wind = add(start_wind, -rudder_effect(boat.rudder));
-      std::cout << expected_wind << "\n";
       EXPECT_EQ(boat.relative_wind(), expected_wind);
 
       boat.rudder = 20; boat.move(1000);
       expected_wind = add(expected_wind, -rudder_effect(boat.rudder));
-      std::cout << expected_wind << "\n";
       EXPECT_EQ(boat.relative_wind(), expected_wind);
 
       boat.rudder = 20; boat.move(1000);
       expected_wind = add(expected_wind, -rudder_effect(boat.rudder));
-      std::cout << expected_wind << "\n";
       EXPECT_EQ(boat.relative_wind(), expected_wind);
     }
 
