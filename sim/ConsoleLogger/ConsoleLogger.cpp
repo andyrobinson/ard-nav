@@ -1,8 +1,9 @@
 #include <iostream>
+#include <iomanip>
 #include "ConsoleLogger.h"
 
 ConsoleLogger::ConsoleLogger() {}
-ConsoleLogger::ConsoleLogger(Boat *boatp, Timer *timerp):boat(boatp),timer(timerp){}
+ConsoleLogger::ConsoleLogger(Boat *boatp, Timer *timerp):boat(boatp),timer(timerp),last_logged(0){}
 
 void ConsoleLogger::begin() {
 }
@@ -17,15 +18,25 @@ void ConsoleLogger::settack(char tackletter) {
 
 void ConsoleLogger::banner(char *message) {
   char line[] = "==========================================";
-  msg(line);
-  msg(message);
-  msg(line);
+  logmsg(line);
+  logmsg(message);
+  logmsg(line);
 }
 
 void ConsoleLogger::msg(char *message) {
+    long time_now = timer->elapsed();
+    if (last_logged + LOGGING_INTERVAL < time_now) {
+        last_logged = time_now;
+        logmsg(message);
+    }
+}
+
+void ConsoleLogger::logmsg(char * message) {
+  std::setprecision(6);
   std::cout << timer->elapsed() << ",";
-  std::cout << boat->location().latitude  << ",";
-  std::cout << boat->location().longitude << ",";
+  // need 5 decimal places (at least 7 digits) for metres
+  std::cout << std::setprecision(8) << boat->location().latitude  << ",";
+  std::cout << std::setprecision(8) << boat->location().longitude << ",";
   std::cout << boat->speed() << "ms,";
   std::cout << boat->relative_wind() << ",";
   std::cout << boat->bearing() << ",";

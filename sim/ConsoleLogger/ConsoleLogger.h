@@ -5,6 +5,8 @@
 #include "Boat.h"
 #include "Timer.h"
 
+#define LOGGING_INTERVAL 5000
+
 class ConsoleLogger : public Logger {
     public:
       ConsoleLogger();
@@ -17,10 +19,12 @@ class ConsoleLogger : public Logger {
       virtual void settack(char tackletter);
 
     private:
+      void logmsg(char * message);
       Boat *boat;
       Timer *timer;
       char destination;
       char tack;
+      long last_logged;
 };
 
 #endif
