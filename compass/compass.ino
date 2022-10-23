@@ -24,6 +24,9 @@
 #define LSM303_REGISTER_ACCEL_OUT_Z_L_A 0x2C
 #define LSM303_REGISTER_ACCEL_OUT_Z_H_A 0x2D
 
+#define X_CORRECTION -50
+#define Y_CORRECTION -85
+
 
 byte read_register(uint8_t address, uint8_t reg) {
   Wire.beginTransmission(address);
@@ -140,9 +143,13 @@ void loop() {
     // correlation on the flat between tilt and flat remains good
     // x and y correction remain poor, but general compass behaviour is also poor
 
-    // original code
+    // third adjustment
+    // xacc = -xacc;  done by removing from the pitch calculation
+    yacc = -yacc;
+
     double roll = atan2((double) yacc, (double) zacc);
-    double pitch = atan2((double) -xacc, (double) zacc); // reversing x accel makes it work
+    double pitch = atan2((double) xacc, (double) zacc);
+
     double sin_roll = sin(roll);
     double cos_roll = cos(roll);
     double cos_pitch = cos(pitch);
@@ -157,9 +164,15 @@ void loop() {
     dataFile = SD.open("callib.csv", FILE_WRITE);
 
     if (dataFile) {
-        dataFile.print(x);
-        dataFile.print(",");
-        dataFile.println(y);
+        dataFile.print(x);dataFile.print(",");
+        dataFile.print(y);dataFile.print(",");
+        dataFile.print(z);dataFile.print(",");
+        dataFile.print(xacc);dataFile.print(",");
+        dataFile.print(yacc);dataFile.print(",");
+        dataFile.print(zacc);dataFile.print(",");
+        dataFile.print(x_final);dataFile.print(",");
+        dataFile.print(y_final);
+        dataFile.println("");
         dataFile.close();
     }
 
