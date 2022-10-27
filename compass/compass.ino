@@ -24,8 +24,9 @@
 #define LSM303_REGISTER_ACCEL_OUT_Z_L_A 0x2C
 #define LSM303_REGISTER_ACCEL_OUT_Z_H_A 0x2D
 
-#define X_CORRECTION -50
-#define Y_CORRECTION -85
+#define X_CORRECTION -60
+#define Y_CORRECTION -90
+#define Z_CORRECTION 300
 
 
 byte read_register(uint8_t address, uint8_t reg) {
@@ -92,9 +93,9 @@ void loop() {
 
     Wire.endTransmission();
 
-    int x = hilow_toint(xhi,xlo);
-    int y = hilow_toint(yhi,ylo);
-    int z = hilow_toint(zhi,zlo);
+    int x = hilow_toint(xhi,xlo) + X_CORRECTION;
+    int y = hilow_toint(yhi,ylo) + Y_CORRECTION;
+    int z = -(hilow_toint(zhi,zlo) + Z_CORRECTION);
 
     // Serial.print(x); Serial.print(",");
     // Serial.print(y); Serial.print(",");
@@ -127,26 +128,6 @@ void loop() {
 
     // Serial.print(bearing); Serial.print(" | ");
 
-
-    // adjustments
-    // first adjustment
-    y = -y;
-    // observations
-    // * mag readings are very variable, causing wild fluctuations
-    // * good correlation between flat and tilt adjust readings on the flat
-    // Y tilt correction is poor - tilt left is +40, tilt right seems OK
-    // X tilt correction is poor - tilt back is +180 - actually very little correction seems to be going on
-
-    // second adjustment
-    // xacc = -xacc;
-    //observations
-    // correlation on the flat between tilt and flat remains good
-    // x and y correction remain poor, but general compass behaviour is also poor
-
-    // third adjustment
-    // xacc = -xacc;  done by removing from the pitch calculation
-    yacc = -yacc;
-
     double roll = atan2((double) yacc, (double) zacc);
     double pitch = atan2((double) xacc, (double) zacc);
 
@@ -171,7 +152,8 @@ void loop() {
         dataFile.print(yacc);dataFile.print(",");
         dataFile.print(zacc);dataFile.print(",");
         dataFile.print(x_final);dataFile.print(",");
-        dataFile.print(y_final);
+        dataFile.print(y_final);dataFile.print(",");
+        dataFile.print(tiltadjust);
         dataFile.println("");
         dataFile.close();
     }
