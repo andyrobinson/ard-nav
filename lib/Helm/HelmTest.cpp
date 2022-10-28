@@ -96,7 +96,7 @@ TEST_F(HelmTest, Should_set_the_sail_every_time_we_steer) {
   EXPECT_EQ(sail_calls[1],wind[3]);
 }
 
-TEST_F(HelmTest, Should_abort_the_tack_if_the_wind_is_not_in_the_range) {
+TEST_F(HelmTest, Should_abort_the_tack_if_the_wind_is_not_in_the_range_after_grace_period) {
   uangle bearing = 0;
   angle result[] = {-10};
   angle wind_sample[] = {50};
@@ -104,10 +104,24 @@ TEST_F(HelmTest, Should_abort_the_tack_if_the_wind_is_not_in_the_range) {
   stub_compass.set_bearings(&bearing,1);
   stub_rotaryPID.set_results(result,1);
 
-  helm.steer(30, 1, {65, 355});
+  helm.steer(30, WIND_RANGE_GRACE_PERIOD+STEER_INTERVAL+1, {65, 355});
 
   EXPECT_STREQ(logger.last_message(), "Abandon:  50| 65|355");
 }
+
+TEST_F(HelmTest, Should__not_abort_the_tack_for_the_grace_period) {
+  uangle bearing = 0;
+  angle result[] = {-10};
+  angle wind_sample[] = {50};
+  stub_windsensor.set_relative(wind_sample, 1);
+  stub_compass.set_bearings(&bearing,1);
+  stub_rotaryPID.set_results(result,1);
+
+  helm.steer(30, WIND_RANGE_GRACE_PERIOD-1, {65, 355});
+
+  EXPECT_STRNE(logger.last_message(), "Abandon:  50| 65|355");
+}
+
 
  TEST_F(HelmTest, Should_steer_straight_passing_sail_error_value_if_wind_sensor_in_error) {
    uangle bearings[] = {0, 3, 8};

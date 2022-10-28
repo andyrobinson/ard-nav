@@ -14,6 +14,7 @@
 using namespace Windrange;
 
 #define STEER_INTERVAL 300
+#define WIND_RANGE_GRACE_PERIOD 5000
 
 class Helm : public IHelm
 {
