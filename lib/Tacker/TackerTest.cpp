@@ -159,10 +159,13 @@ TEST_F(TackerTest, Should_tack_if_heading_and_wind_direction_identical_edge_case
   angle wind_and_steer = 200;
   stub_windsensor.set_relative(&wind_and_steer, 1);
   uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
+  uangle expectedDirection = uadd(wind_and_steer, TACKER_NO_GO_LIMIT);
 
   tacker.steer(wind_and_steer, 2000);
 
-  EXPECT_EQ(stub_helm.steering(0), uadd(wind_and_steer, TACKER_NO_GO_LIMIT));
+  EXPECT_EQ(stub_helm.steering(0), expectedDirection);
+  EXPECT_EQ(stub_helm.wind_range(0).lower, uadd(expectedDirection,180));
+  EXPECT_EQ(stub_helm.wind_range(0).upper, uadd(expectedDirection,-WIND_RANGE_NO_GO_LIMIT));
 }
 
 

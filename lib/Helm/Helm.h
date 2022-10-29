@@ -14,7 +14,7 @@
 using namespace Windrange;
 
 #define STEER_INTERVAL 300
-#define WIND_RANGE_GRACE_PERIOD 5000
+#define WIND_RANGE_GRACE_PERIOD 0
 
 class Helm : public IHelm
 {
@@ -33,7 +33,8 @@ class Helm : public IHelm
     Logger *logger;
     angle rudder_position;
 
-    bool wind_in_range(windrange range);
+    bool wind_check_in_grace_period(long time_left, long total_time);
+    bool wind_in_range(windrange range, bool in_grace_period);
 
 };
 

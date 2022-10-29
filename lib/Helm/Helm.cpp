@@ -19,8 +19,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
       sprintf(logmsg, "** I2C Failure **"); logger->banner(logmsg);
     }
 
-    while (remaining > 0 && (wind_in_range(range) || remaining + WIND_RANGE_GRACE_PERIOD > steer_time)) {
-
+    while (remaining > 0 && (wind_in_range(range, wind_check_in_grace_period(remaining, steer_time)))) {
       uangle current_heading = compass->bearing();
       if (current_heading == ANGLE_ERROR) {
           rudder_position = 0;
@@ -36,15 +35,17 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
       timer->wait(STEER_INTERVAL/2);
 
       remaining = remaining - STEER_INTERVAL;
-
     }
-
 }
 
-bool Helm::wind_in_range(windrange range) {
+bool Helm::wind_check_in_grace_period(long time_left, long total_time) {
+  return time_left + WIND_RANGE_GRACE_PERIOD > total_time;
+}
+
+bool Helm::wind_in_range(windrange range, bool in_grace_period) {
     char logmsg[22];
     uangle abs_wind = windsensor->absolute(compass->bearing());
-    if (in_range(abs_wind, range.lower, range.upper) || abs_wind == ANGLE_ERROR) return true;
+    if (in_range(abs_wind, range.lower, range.upper) || abs_wind == ANGLE_ERROR || in_grace_period) return true;
     sprintf(logmsg, "Abandon: %3d|%3d|%3d", abs_wind, range.lower, range.upper); logger->banner(logmsg);
     return false;
 }
