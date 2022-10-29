@@ -3,6 +3,7 @@
 #include "Position.h"
 #include "Globe.h"
 #include "Utility.h"
+#include "math.h"
 
 using namespace Position;
 using namespace Utility;
@@ -20,8 +21,14 @@ namespace {
       void SetUp() override {
       }
 
+      double percentage_diff(double x, double y) {
+        double diff = (100.0 * (x-y))/x;
+        return fabs(diff);
+      }
+
+
     angle rudder_effect(angle deflection) {
-        return -deflection;
+      return 90 - deflection;
     }
 
     void set_rudder(Boat *boat, angle deflection) {
@@ -38,7 +45,8 @@ namespace {
       Boat boat(&kynance_cove);
       boat.move(1000);
       position expected_position = globe.new_position(&kynance_cove, STARTING_HEADING, 1.0);
-      EXPECT_EQ(boat.location(), expected_position);
+      EXPECT_LT(percentage_diff(boat.location().latitude, expected_position.latitude),0.1);
+      EXPECT_LT(percentage_diff(boat.location().longitude, expected_position.longitude),0.1);
     }
 
     TEST_F(BoatTest, Should_change_heading_based_on_rudder) {
@@ -47,7 +55,8 @@ namespace {
       boat.move(1000);
       uangle expected_heading = uadd(STARTING_HEADING,rudder_effect(20));
       position expected_position = globe.new_position(&kynance_cove, expected_heading, 1.0);
-      EXPECT_EQ(boat.location(), expected_position);
+      EXPECT_LT(percentage_diff(boat.location().latitude, expected_position.latitude),0.1);
+      EXPECT_LT(percentage_diff(boat.location().longitude, expected_position.longitude),0.1);
     }
 
     TEST_F(BoatTest, Should_report_stats) {
@@ -61,17 +70,10 @@ namespace {
       angle start_wind = add(STARTING_WIND, -STARTING_HEADING);
       EXPECT_EQ(boat.relative_wind(), start_wind);
 
-      boat.rudder = -30; boat.move(1000);
-      angle expected_wind = add(start_wind, -rudder_effect(boat.rudder));
+      set_rudder(&boat,-30); boat.move(1000);
+      angle expected_wind = add(STARTING_WIND, -boat.bearing());
       EXPECT_EQ(boat.relative_wind(), expected_wind);
 
-      boat.rudder = 20; boat.move(1000);
-      expected_wind = add(expected_wind, -rudder_effect(boat.rudder));
-      EXPECT_EQ(boat.relative_wind(), expected_wind);
-
-      boat.rudder = 20; boat.move(1000);
-      expected_wind = add(expected_wind, -rudder_effect(boat.rudder));
-      EXPECT_EQ(boat.relative_wind(), expected_wind);
     }
 
 }  //namespace
