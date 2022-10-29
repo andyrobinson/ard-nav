@@ -155,6 +155,17 @@ TEST_F(TackerTest, Attempt_to_steer_straight_if_windsensor_in_error) {
   EXPECT_EQ(stub_helm.steering_calls(),1);
 }
 
+TEST_F(TackerTest, Should_tack_if_heading_and_wind_direction_identical_edge_case) {
+  angle wind_and_steer = 200;
+  stub_windsensor.set_relative(&wind_and_steer, 1);
+  uangle bearing = 0; stub_compass.set_bearings(&bearing,1);
+
+  tacker.steer(wind_and_steer, 2000);
+
+  EXPECT_EQ(stub_helm.steering(0), uadd(wind_and_steer, TACKER_NO_GO_LIMIT));
+}
+
+
 }  //namespace
 
 int main(int argc, char **argv) {
