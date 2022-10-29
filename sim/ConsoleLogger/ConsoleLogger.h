@@ -5,7 +5,7 @@
 #include "Boat.h"
 #include "Timer.h"
 
-#define LOGGING_INTERVAL 5000
+#define LOGGING_INTERVAL 1000
 
 class ConsoleLogger : public Logger {
     public:

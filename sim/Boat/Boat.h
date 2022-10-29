@@ -7,7 +7,7 @@
 #include "Globe.h"
 
 #define STARTING_SPEED 1.0
-#define STARTING_WIND 180
+#define STARTING_WIND 237
 #define STARTING_HEADING 0
 
 using namespace Position;
@@ -25,7 +25,7 @@ class Boat
     void setLogger(Logger *loggerp);
     uangle heading;
     uint16_t rudder;
-    uint16_t sail; 
+    uint16_t sail;
 
   private:
     uangle new_heading(unsigned long milliseconds);

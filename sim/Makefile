@@ -2,7 +2,7 @@ CLASSES := Boat Timer ConsoleLogger Gps Compass Switches WindSensor MServo Ardui
 INCLUDES := Logger
 LIB_CLASSES := Angle Globe Helm Tacker Navigator Captain Utility RotaryPID Sail Rudder
 LIB_INCLUDES := Position Utility Routes Windrange Waypoint IHelm
-CLASS_FILES := $(foreach p, $(CLASSES), ./$(p)/$(p).cpp)
+CLASS_FILES := $(foreach p, $(CLASSES), ./$(p)/$(p).cpp) $(foreach p, $(LIB_CLASSES), ../lib/$(p)/$(p).cpp ../lib/$(p)/$(p).h)
 INCLUDE_FILES := $(foreach p, $(CLASSES), ./$(p)/$(p).h)
 INC_PARAMS = $(foreach d, $(LIB_INCLUDES), -I../lib/$d) $(foreach e, $(INCLUDES), -I./$e)
 CLASS_PARAMS = $(foreach p, $(CLASSES), ./$(p)/$(p).cpp -I./$(p))
@@ -10,7 +10,6 @@ LIB_CLASS_PARAMS = $(foreach p, $(LIB_CLASSES), ../lib/$(p)/$(p).cpp -I../lib/$(
 
 SRCS := sim.cpp $(CLASS_FILES) $(INCLUDE_FILES)
 OBJS = sim.o
-EXE := sim.o
 
 .SHELLFLAGS = -ec
 
@@ -24,11 +23,11 @@ else
 	GCC = g++
 endif
 
-$(EXE): $(SRCS)
-	$(GCC) -std=c++11 -isystem /usr/local/lib/include sim.cpp $(CLASS_PARAMS) $(LIB_CLASS_PARAMS) $(INC_PARAMS) -include stdint.h -lstdc++ -o $(EXE)
+$(OBJS): $(SRCS)
+	$(GCC) -std=c++11 -isystem /usr/local/lib/include sim.cpp $(CLASS_PARAMS) $(LIB_CLASS_PARAMS) $(INC_PARAMS) -include stdint.h -lstdc++ -o $(OBJS)
 
-run: $(EXE)
-	./$(EXE)
+run: $(OBJS)
+	./$(OBJS)
 
 .PHONY: clean run
 

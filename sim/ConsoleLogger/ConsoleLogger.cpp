@@ -33,16 +33,16 @@ void ConsoleLogger::msg(char *message) {
 
 void ConsoleLogger::logmsg(char * message) {
   std::setprecision(6);
-  std::cout << timer->elapsed() << ",";
+  std::cout << timer->elapsed()/1000 << ",";
   // need 5 decimal places (at least 7 digits) for metres
   std::cout << std::setprecision(8) << boat->location().latitude  << ",";
   std::cout << std::setprecision(8) << boat->location().longitude << ",";
   std::cout << boat->speed() << "ms,";
   std::cout << boat->relative_wind() << ",";
   std::cout << boat->bearing() << ",";
+  std::cout << boat->rudder << ",";
   std::cout << destination << ",";
   std::cout << tack << ",";
   std::cout << message;
-  std::cout << "[" << boat->rudder << "]";
   std::cout << "\n";
 }
