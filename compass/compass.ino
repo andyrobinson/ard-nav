@@ -26,7 +26,7 @@
 
 #define X_CORRECTION -60
 #define Y_CORRECTION -90
-#define Z_CORRECTION 300
+#define Z_CORRECTION -300
 
 
 byte read_register(uint8_t address, uint8_t reg) {
@@ -93,13 +93,13 @@ void loop() {
 
     Wire.endTransmission();
 
-    int x = hilow_toint(xhi,xlo) + X_CORRECTION;
-    int y = hilow_toint(yhi,ylo) + Y_CORRECTION;
-    int z = -(hilow_toint(zhi,zlo) + Z_CORRECTION);
+    int raw_x = hilow_toint(xhi,xlo);
+    int raw_y = -hilow_toint(yhi,ylo);
+    int raw_z = -hilow_toint(zhi,zlo);
 
-    // Serial.print(x); Serial.print(",");
-    // Serial.print(y); Serial.print(",");
-    // Serial.print(z); Serial.print(" | ");
+    int x = raw_x + X_CORRECTION;
+    int y = -raw_y + Y_CORRECTION;
+    int z = -raw_z + Z_CORRECTION);
 
     Wire.beginTransmission(COMPASS_ACCEL_I2C_ADDRESS);
     Wire.write(ACCEL_REGISTER_OUT_X_L_A | 0x80);
@@ -120,13 +120,7 @@ void loop() {
     int yacc = hilow_toint(yhi,ylo);
     int zacc = hilow_toint(zhi,zlo);
 
-    // Serial.print(xacc); Serial.print(",");
-    // Serial.print(yacc); Serial.print(",");
-    // Serial.print(zacc); Serial.print(" | ");
-    // note change in sign because of reversed Y compared to LSM303DLHC
     short bearing = (360 - (short) round(57.2958 * (atan2((float) y, (float) x)))) % 360;
-
-    // Serial.print(bearing); Serial.print(" | ");
 
     double roll = atan2((double) yacc, (double) zacc);
     double pitch = atan2((double) xacc, (double) zacc);
@@ -140,11 +134,12 @@ void loop() {
     double y_final = ((double) y) * cos_roll-((double) z) * sin_roll;
     short tiltadjust = (360 + (short) round(57.2958 * (atan2(y_final,x_final)))) % 360;
 
-    // Serial.print("[[");Serial.print(tiltadjust); Serial.println("]]");
-
-    dataFile = SD.open("callib.csv", FILE_WRITE);
+    dataFile = SD.open("callib2.csv", FILE_WRITE);
 
     if (dataFile) {
+        dataFile.print(raw_x);dataFile.print(",");
+        dataFile.print(raw_y);dataFile.print(",");
+        dataFile.print(raw_z);dataFile.print(",");
         dataFile.print(x);dataFile.print(",");
         dataFile.print(y);dataFile.print(",");
         dataFile.print(z);dataFile.print(",");
