@@ -33,9 +33,7 @@ class Helm : public IHelm
     Logger *logger;
     angle rudder_position;
 
-    bool wind_check_in_grace_period(long time_left, long total_time);
-    bool wind_in_range(windrange range, bool in_grace_period);
-
+    bool ok_to_continue(long time_left, long total_time, windrange range);
 };
 
 #endif
