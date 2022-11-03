@@ -99,7 +99,7 @@ void loop() {
 
     int x = raw_x + X_CORRECTION;
     int y = -raw_y + Y_CORRECTION;
-    int z = -raw_z + Z_CORRECTION);
+    int z = -raw_z + Z_CORRECTION;
 
     Wire.beginTransmission(COMPASS_ACCEL_I2C_ADDRESS);
     Wire.write(ACCEL_REGISTER_OUT_X_L_A | 0x80);
