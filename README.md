@@ -53,12 +53,10 @@ The other folders represent Arduino applications.  Again each folder has a makef
 
 ## Current concerns
 
-* Main concern is occasional crashes caused by problems with I2C communication - this can lock up the whole processor requiring
-a power off.  Need to both improve the reliability of I2C and provide a hardware watchdog for recovery should this happen
+* Replaced the compass, need to callibrate it properly and validate that it will correctly show the orientation
   
 * The rotary PID appears to deal with steering satisfactorily, but needs tuning
 
-* Still working on solar power.  Once this is complete only satellite communications remain.
 
 ### Plan for addressing crashing
 
