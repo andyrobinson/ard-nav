@@ -24,9 +24,9 @@
 #define LSM303_REGISTER_ACCEL_OUT_Z_L_A 0x2C
 #define LSM303_REGISTER_ACCEL_OUT_Z_H_A 0x2D
 
-#define X_CORRECTION -60
-#define Y_CORRECTION -90
-#define Z_CORRECTION -300
+#define X_CORRECTION -70
+#define Y_CORRECTION -80
+#define Z_CORRECTION 300
 
 
 byte read_register(uint8_t address, uint8_t reg) {
@@ -98,8 +98,8 @@ void loop() {
     int raw_z = -hilow_toint(zhi,zlo);
 
     int x = raw_x + X_CORRECTION;
-    int y = -raw_y + Y_CORRECTION;
-    int z = -raw_z + Z_CORRECTION;
+    int y = raw_y + Y_CORRECTION;
+    int z = raw_z + Z_CORRECTION;
 
     Wire.beginTransmission(COMPASS_ACCEL_I2C_ADDRESS);
     Wire.write(ACCEL_REGISTER_OUT_X_L_A | 0x80);
