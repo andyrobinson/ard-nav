@@ -21,8 +21,21 @@ class CompassTest : public ::testing::Test {
   }
 };
 
-TEST_F(CompassTest, should_return_a_valid_bearing) {
-  uint8_t readings[] = {50,0,50,0,50,0,0,0,0,0,50,0};
+TEST_F(CompassTest, should_produce_minus_250) {
+  int16_t expected = -250;
+  uint8_t high = expected >= 0 ? 0 : 255;
+  uint8_t low = (uint8_t) expected >=0 ? expected : 256 + expected;
+  int16_t result = (int16_t)((uint16_t) low | ((uint16_t) high << 8));
+  EXPECT_EQ(result, expected);
+}
+
+TEST_F(CompassTest, should_use_corrections_when_calculating_bearing) {
+  // all 50s produces angle of 45 degrees
+  uint8_t xlow = 50 - COMPASS_X_CORRECTION;
+  uint8_t ylow = 50 - COMPASS_Y_CORRECTION;
+  uint8_t zlow = 6; // 50 + 256 + COMPASS_Z_CORRECTION;
+  uint8_t zhigh = 255; // 2s comp negative
+  uint8_t readings[] = {xlow,0,ylow,0,zlow,zhigh,0,0,0,0,0,50};
   stub_i2c.set_results(readings,12);
   uangle bearing = compass.bearing();
 
@@ -30,7 +43,7 @@ TEST_F(CompassTest, should_return_a_valid_bearing) {
 }
 
 TEST_F(CompassTest, should_cache_the_value_for_10_ms) {
-  uint8_t readings[] = {50,0,50,0,50,0,0,0,0,0,50,0,10,10,0,0,110,110,0,0,0,0,0,50,0};
+  uint8_t readings[] = {0,50,0,50,0,50,0,0,0,0,0,50,10,10,110,110,0,0,0,0,0,0,0,0,50};
   stub_i2c.set_results(readings,24);
   uangle bearing = compass.bearing();
   uangle bearing2 = compass.bearing(); // should be identical
@@ -78,14 +91,14 @@ TEST_F(CompassTest, should_return_an_error_reading_if_accelerometer_fails) {
 }
 
 TEST_F(CompassTest, should_use_the_tilt_to_calculate_the_bearing) {
-  uint8_t readings[] = {50,0,50,0,50,0,0,0,0,0,50,0,50,0,50,0,50,0,100,0,200,0,0,0,};
+  uint8_t readings[] = {0,50,0,50,0,50,0,0,0,0,0,50,0,50,0,50,0,50,100,0,200,0,0,0};
   stub_i2c.set_results(readings,24);
   uangle bearing = compass.bearing();
   stub_timer.wait(11);
   uangle bearing2 = compass.bearing();
 
   EXPECT_EQ(bearing, 45);
-  EXPECT_EQ(bearing2, 225);
+  EXPECT_EQ(bearing2, 226);
 }
 
 TEST_F(CompassTest, mag_readings_should_use_the_mag_I2C_address) {
@@ -94,7 +107,7 @@ TEST_F(CompassTest, mag_readings_should_use_the_mag_I2C_address) {
 
   MagResult result = compass.raw_bearing();
 
-  EXPECT_EQ(stub_i2c.last_address, COMPASS_COMPASS_I2C_ADDRESS);
+  EXPECT_EQ(stub_i2c.last_address, LIS2MDL_ADDRESS);
 }
 
 TEST_F(CompassTest, accel_readings_should_use_the_accel_I2C_address) {
