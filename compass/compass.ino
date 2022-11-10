@@ -81,6 +81,8 @@ void loop() {
     Wire.beginTransmission(LIS2MDL_ADDRESS);
 
     Wire.write(LIS2MDL_OUTX_L_REG);
+    Wire.endTransmission();
+
     Wire.requestFrom(LIS2MDL_ADDRESS,6);
     while (Wire.available() < 6) { }
 
@@ -90,8 +92,6 @@ void loop() {
     byte yhi = Wire.read();
     byte zlo = Wire.read();
     byte zhi = Wire.read();
-
-    Wire.endTransmission();
 
     int raw_x = hilow_toint(xhi,xlo);
     int raw_y = -hilow_toint(yhi,ylo);
@@ -103,6 +103,8 @@ void loop() {
 
     Wire.beginTransmission(COMPASS_ACCEL_I2C_ADDRESS);
     Wire.write(ACCEL_REGISTER_OUT_X_L_A | 0x80);
+    Wire.endTransmission(false);
+
     Wire.requestFrom(COMPASS_ACCEL_I2C_ADDRESS,6);
 
     while (Wire.available() < 6) { }
@@ -113,8 +115,6 @@ void loop() {
     yhi = Wire.read();
     zlo = Wire.read();
     zhi = Wire.read();
-
-    Wire.endTransmission(false);
 
     int xacc = hilow_toint(xhi,xlo);
     int yacc = hilow_toint(yhi,ylo);
