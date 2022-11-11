@@ -44,8 +44,8 @@ uangle Compass::bearing() {
    double sin_pitch = sin(pitch);
 
    double x = (double) (bearing.x + COMPASS_X_CORRECTION);
-   double y = (double) (bearing.y + COMPASS_Y_CORRECTION);
-   double z = (double) (bearing.z + COMPASS_Z_CORRECTION);
+   double y = (double) (-bearing.y + COMPASS_Y_CORRECTION);
+   double z = (double) (-bearing.z + COMPASS_Z_CORRECTION);
 
    double x_final = (x * cos_pitch) + (y*sin_roll*sin_pitch) + (z*cos_roll*sin_pitch);
    double y_final = (y * cos_roll) - (z * sin_roll);
@@ -73,8 +73,6 @@ MagResult Compass::raw_bearing() {
   uint8_t zlo = i2c->read();
   uint8_t zhi = i2c->read();
 
-  //Wire.endTransmission(); in original
-
   return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo), true};
 }
 
@@ -93,8 +91,6 @@ MagResult Compass::raw_accel() {
   uint8_t yhi = i2c->read();
   uint8_t zlo = i2c->read();
   uint8_t zhi = i2c->read();
-
-  //Wire.endTransmission(); in original
 
   return {hilow_toint(xhi,xlo), hilow_toint(yhi,ylo), hilow_toint(zhi,zlo),true};
 }

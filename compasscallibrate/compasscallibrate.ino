@@ -6,9 +6,12 @@
 
 #define CHIP_SELECT 4
 
+#define CALLIB_X_CORRECTION -70
+#define CALLIB_Y_CORRECTION -80
+#define CALLIB_Z_CORRECTION 300
+
 int pos = 0;    // variable to store the servo position
 File dataFile;
-char dataString[20] = "callib.csv";
 
 I2C i2c;
 Timer timer;
@@ -43,19 +46,23 @@ void loop() {
         tiltadjust = -1;
     } else {
         roll = atan2((double)accel.y, (double)accel.z);
-        pitch = atan2((double) -accel.x, (double) accel.z); // reversing x accel makes it work
+        pitch = atan2((double) accel.x, (double) accel.z);
         sin_roll = sin(roll);
         cos_roll = cos(roll);
         cos_pitch = cos(pitch);
         sin_pitch = sin(pitch);
 
-        x_final = ((double) bearing.x) * cos_pitch + ((double) bearing.y)*sin_roll*sin_pitch+((double) bearing.z)*cos_roll*sin_pitch;
-        y_final = ((double) bearing.y) * cos_roll-((double) bearing.z) * sin_roll;
+        double x = (double) (bearing.x + CALLIB_X_CORRECTION);
+        double y = (double) (bearing.y + CALLIB_Y_CORRECTION);
+        double z = (double) (bearing.z + CALLIB_Z_CORRECTION);
+
+        x_final = x * cos_pitch + y*sin_roll*sin_pitch + z*cos_roll*sin_pitch;
+        y_final = y * cos_roll - z*sin_roll;
         tiltadjust = (360 + (short) round(57.2958 * (atan2(y_final,x_final)))) % 360;
 
     }
 
-    dataFile = SD.open("callib.csv", FILE_WRITE);
+    dataFile = SD.open("callib3.csv", FILE_WRITE);
 
     if (dataFile) {
       dataFile.print(bearing.x);dataFile.print(",");
@@ -66,11 +73,10 @@ void loop() {
       dataFile.print(accel.z);dataFile.print(",");
       dataFile.print(final_bearing);
 
-      dataFile.print(" [");
+      dataFile.print(",,");
       dataFile.print(x_final);dataFile.print(",");
       dataFile.print(y_final);dataFile.print(",");
-      dataFile.print(tiltadjust);
-      dataFile.println("]");
+      dataFile.println(tiltadjust);
       dataFile.close();
     }
 

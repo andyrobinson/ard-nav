@@ -3,6 +3,7 @@
 #include "Timer.h"
 #include "Angle.h"
 #include "gtest/gtest.h"
+#include <iostream>
 
 namespace {
 
@@ -32,10 +33,18 @@ TEST_F(CompassTest, should_produce_minus_250) {
 TEST_F(CompassTest, should_use_corrections_when_calculating_bearing) {
   // all 50s produces angle of 45 degrees
   uint8_t xlow = 50 - COMPASS_X_CORRECTION;
-  uint8_t ylow = 50 - COMPASS_Y_CORRECTION;
+  uint8_t ylow = 46 - COMPASS_Y_CORRECTION;
+  uint8_t yhigh = 255;
   uint8_t zlow = 6; // 50 + 256 + COMPASS_Z_CORRECTION;
   uint8_t zhigh = 255; // 2s comp negative
-  uint8_t readings[] = {xlow,0,ylow,0,zlow,zhigh,0,0,0,0,0,50};
+
+  int16_t result = (int16_t)((uint16_t) ylow | ((uint16_t) yhigh << 8));
+  std::cout << "[" << result << "]";
+
+  result = (int16_t)((uint16_t) zlow | ((uint16_t) zhigh << 8));
+  std::cout << "[" << result << "]";
+
+  uint8_t readings[] = {xlow,0,ylow,yhigh,zlow,zhigh,0,0,0,0,0,50};
   stub_i2c.set_results(readings,12);
   uangle bearing = compass.bearing();
 
