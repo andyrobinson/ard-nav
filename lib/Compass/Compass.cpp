@@ -36,8 +36,8 @@ uangle Compass::bearing() {
 
    if(!bearing.valid || !accel.valid) return ANGLE_ERROR;
 
-   double roll = atan2((double)accel.y, (double)accel.z);
-   double pitch = atan2((double) -accel.x, (double) accel.z); // reversing x accel makes it work
+   double roll = atan2((double) accel.y, (double) accel.z);
+   double pitch = atan2((double) accel.x, (double) accel.z);
    double sin_roll = sin(roll);
    double cos_roll = cos(roll);
    double cos_pitch = cos(pitch);
