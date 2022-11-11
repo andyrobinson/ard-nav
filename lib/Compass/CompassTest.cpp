@@ -91,14 +91,14 @@ TEST_F(CompassTest, should_return_an_error_reading_if_accelerometer_fails) {
 }
 
 TEST_F(CompassTest, should_use_the_tilt_to_calculate_the_bearing) {
-  uint8_t readings[] = {0,50,0,50,0,50,0,0,0,0,0,50,0,50,0,50,0,50,100,0,200,0,0,0};
+  uint8_t readings[] = {0,50,0,50,0,50,0,0,0,0,0,50,0,50,0,50,0,50,0,0,100,100,100,0};
   stub_i2c.set_results(readings,24);
   uangle bearing = compass.bearing();
   stub_timer.wait(11);
   uangle bearing2 = compass.bearing();
 
   EXPECT_EQ(bearing, 45);
-  EXPECT_EQ(bearing2, 226);
+  EXPECT_EQ(bearing2, 314);
 }
 
 TEST_F(CompassTest, mag_readings_should_use_the_mag_I2C_address) {
