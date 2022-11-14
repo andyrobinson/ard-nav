@@ -33,16 +33,10 @@ TEST_F(CompassTest, should_produce_minus_250) {
 TEST_F(CompassTest, should_use_corrections_when_calculating_bearing) {
   // all 50s produces angle of 45 degrees
   uint8_t xlow = 50 - COMPASS_X_CORRECTION;
-  uint8_t ylow = 46 - COMPASS_Y_CORRECTION;
+  uint8_t ylow = 126; // -ve 130
   uint8_t yhigh = 255;
-  uint8_t zlow = 6; // 50 + 256 + COMPASS_Z_CORRECTION;
+  uint8_t zlow = 6; // -ve 250
   uint8_t zhigh = 255; // 2s comp negative
-
-  int16_t result = (int16_t)((uint16_t) ylow | ((uint16_t) yhigh << 8));
-  std::cout << "[" << result << "]";
-
-  result = (int16_t)((uint16_t) zlow | ((uint16_t) zhigh << 8));
-  std::cout << "[" << result << "]";
 
   uint8_t readings[] = {xlow,0,ylow,yhigh,zlow,zhigh,0,0,0,0,0,50};
   stub_i2c.set_results(readings,12);
@@ -52,7 +46,7 @@ TEST_F(CompassTest, should_use_corrections_when_calculating_bearing) {
 }
 
 TEST_F(CompassTest, should_cache_the_value_for_10_ms) {
-  uint8_t readings[] = {0,50,0,50,0,50,0,0,0,0,0,50,10,10,110,110,0,0,0,0,0,0,0,0,50};
+  uint8_t readings[] = {120,0,126,255,6,255,0,0,0,0,50,0,75,0,120,255,6,255,0,0,0,0,50,0,};
   stub_i2c.set_results(readings,24);
   uangle bearing = compass.bearing();
   uangle bearing2 = compass.bearing(); // should be identical
@@ -100,14 +94,14 @@ TEST_F(CompassTest, should_return_an_error_reading_if_accelerometer_fails) {
 }
 
 TEST_F(CompassTest, should_use_the_tilt_to_calculate_the_bearing) {
-  uint8_t readings[] = {0,50,0,50,0,50,0,0,0,0,0,50,0,50,0,50,0,50,0,0,100,100,100,0};
+  uint8_t readings[] = {120,0,126,255,6,255,0,0,0,0,50,120,0,126,255,6,255,0,0,100,100,100,0};
   stub_i2c.set_results(readings,24);
   uangle bearing = compass.bearing();
   stub_timer.wait(11);
   uangle bearing2 = compass.bearing();
 
   EXPECT_EQ(bearing, 45);
-  EXPECT_EQ(bearing2, 314);
+  EXPECT_EQ(bearing2, 181);
 }
 
 TEST_F(CompassTest, mag_readings_should_use_the_mag_I2C_address) {
