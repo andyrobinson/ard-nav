@@ -53,8 +53,8 @@ void loop() {
         sin_pitch = sin(pitch);
 
         double x = (double) (bearing.x + CALLIB_X_CORRECTION);
-        double y = (double) (bearing.y + CALLIB_Y_CORRECTION);
-        double z = (double) (bearing.z + CALLIB_Z_CORRECTION);
+        double y = (double) (-bearing.y + CALLIB_Y_CORRECTION);
+        double z = (double) (-bearing.z + CALLIB_Z_CORRECTION);
 
         x_final = x * cos_pitch + y*sin_roll*sin_pitch + z*cos_roll*sin_pitch;
         y_final = y * cos_roll - z*sin_roll;
