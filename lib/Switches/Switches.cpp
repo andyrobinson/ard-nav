@@ -17,6 +17,6 @@ uint8_t Switches::value() {
 
 float Switches::dial_percent() {
   int pin_voltage = analogRead(RCINPUT);
-  float result = 100.0 * ((float) pin_voltage - RCLOWER)/(RCUPPER - RCLOWER);
+  float result = constrain(100.0 * ((float) pin_voltage - RCLOWER)/(RCUPPER - RCLOWER),0.0,100.0);
   return result;
 }
