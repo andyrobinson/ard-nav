@@ -40,6 +40,9 @@ void Boat::move(unsigned long milliseconds) {
 // TODO:  Force resistance on the hull (s = speed) = k * s * s / (hull_speed * 1.1 - s)
 // I think hull_speed is 2 m/s, k represents the cross sectional area of the hull * Cd
 // But also needs to take into account wetted area and hull smoothness, so a bit of a fudge factor
+double Boat::drag() {
+    return 0.0;
+}
 
 uangle Boat::new_heading(unsigned long milliseconds) {
   // TODO: make speed of rotation depend upon speed

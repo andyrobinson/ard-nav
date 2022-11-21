@@ -9,6 +9,7 @@
 #define STARTING_SPEED 1.0
 #define STARTING_WIND 237
 #define STARTING_HEADING 0
+#define HULL_SPEED_MS 2.0
 
 using namespace Position;
 using namespace Angle;
@@ -23,6 +24,7 @@ class Boat
     uangle bearing();
     void move(unsigned long milliseconds);
     void setLogger(Logger *loggerp);
+    double drag();
     uangle heading;
     uint16_t rudder;
     uint16_t sail;
