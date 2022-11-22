@@ -21,7 +21,6 @@ void Tacker::steer(uangle direction, long steer_time) {
   if (abs1(wind_diff) >= TACKER_NO_GO_LIMIT || current_heading == ANGLE_ERROR || abs_wind == ANGLE_ERROR) {
     // no tack
     logger->settack('0');
-    logger->msg(logmsg);
     helm->steer(direction, steer_time,
         {uadd(direction, (angle) WIND_RANGE_NO_GO_LIMIT),
          uadd(direction, (angle) -WIND_RANGE_NO_GO_LIMIT)});
