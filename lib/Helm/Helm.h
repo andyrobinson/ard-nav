@@ -10,11 +10,12 @@
 #include "Logger.h"
 #include "RotaryPID.h"
 #include "Windrange.h"
+#include "Arduino.h"
 
 using namespace Windrange;
 
 #define STEER_INTERVAL 300
-#define WIND_RANGE_GRACE_PERIOD 10000
+#define MAX_OUT_OF_RANGE 30
 
 class Helm : public IHelm
 {
@@ -32,6 +33,7 @@ class Helm : public IHelm
     RotaryPID *rotarypid;
     Logger *logger;
     angle rudder_position;
+    int out_of_range_count;
 
     bool ok_to_continue(long time_left, long total_time, windrange range);
 };
