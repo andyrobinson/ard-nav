@@ -1,4 +1,6 @@
   #include "Boat.h"
+  // #include <iostream>
+  // #include <iomanip>
 
 Boat::Boat(position *start, double start_speed):
     heading(STARTING_HEADING),rudder(90),speed_ms(start_speed),absolute_wind(STARTING_WIND),globe(Globe()),
@@ -26,7 +28,7 @@ void Boat::setLogger(Logger *loggerp) {
 
 void Boat::move(unsigned long milliseconds) {
   for (long t=0; t < milliseconds; t+=TIME_INCREMENT) {
-    double distance = speed_ms * ((double) TIME_INCREMENT) / 1000.0;
+    double distance = speed_ms * (((double) TIME_INCREMENT) / 1000.0);
     speed_ms = new_speed(speed_ms, sail_force(), drag(speed_ms), TIME_INCREMENT);
     heading = new_heading(TIME_INCREMENT);
     current_position = globe.new_position(&current_position, heading, distance);
@@ -83,8 +85,8 @@ double Boat::drag(double speed) {
 
 uangle Boat::new_heading(unsigned long milliseconds) {
   // TODO: add angular momentum, with short decay
-  // Note that rudder deflection is -90 to + 90, but the heading movement is opposite
+  // Note that rudder is based on the servo value (0-180) and that delta is opposide to rudder
 
-  angle delta = - (angle) round((speed_ms * ((double) rudder * milliseconds)) / 1000.0);
+  angle delta = - (angle) round((speed_ms * ((double) (rudder - 90) * milliseconds)) / 1000.0);
   return uadd(heading, delta);
 }

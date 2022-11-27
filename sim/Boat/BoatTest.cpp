@@ -39,19 +39,20 @@ namespace {
       EXPECT_EQ(boat.location(), kynance_cove);
     }
 
-    TEST_F(BoatTest, Should_move_in_initial_direction) {
-      Boat boat(&kynance_cove);
-      boat.move(1000);
-      position expected_position = globe.new_position(&kynance_cove, STARTING_HEADING, 1.0);
-      EXPECT_LT(percentage_diff(boat.location().latitude, expected_position.latitude),0.1);
-      EXPECT_LT(percentage_diff(boat.location().longitude, expected_position.longitude),0.1);
+    TEST_F(BoatTest, Should_move_in_initial_direction_about_2m) {
+      Boat boat(&kynance_cove, 1.0);
+      boat.move(2000);
+      position expected_position = globe.new_position(&kynance_cove, STARTING_HEADING, 2.0);
+      EXPECT_LT(percentage_diff(boat.location().latitude, expected_position.latitude),0.0001);
+      EXPECT_LT(percentage_diff(boat.location().longitude, expected_position.longitude),0.0001);
     }
 
     TEST_F(BoatTest, Should_change_heading_based_on_rudder) {
       Boat boat(&kynance_cove, 1.0);
-      boat.rudder=20;
+      int rudder_deflection = 20;
+      boat.rudder=90 + rudder_deflection;
       boat.move(1000);
-      uangle expected_heading = uadd(STARTING_HEADING,rudder_effect(20));
+      uangle expected_heading = uadd(STARTING_HEADING,rudder_effect(rudder_deflection));
       EXPECT_EQ(boat.heading,expected_heading);
     }
 

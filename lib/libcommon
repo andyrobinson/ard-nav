@@ -23,8 +23,7 @@ $(TEST_RUNNER): $(SRCS)
 	$(GCC) -isystem ${GTEST_DIR}/include $(INC_PARAMS)  -include stdint.h -pthread $(SRCS) $(GTEST_DIR)/libgtest.a -o $(TEST_RUNNER)
 
 test: $(TEST_RUNNER)
-
-	$(TEST_RUNNER)
+	$(TEST_RUNNER) $(TEST_OPTS)
 
 .PHONY: clean
 

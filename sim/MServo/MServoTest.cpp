@@ -12,9 +12,9 @@ class MServoTest : public ::testing::Test {
   MServoTest() {}
 };
 
-TEST_F(MServoTest, should_set_rudder_opposite_on_boat_on_channel_0) {
+TEST_F(MServoTest, should_set_rudder_on_boat_on_channel_0) {
     mservo.write(RUDDER_CHANNEL,23);
-    EXPECT_EQ(boat.rudder, 180-23);
+    EXPECT_EQ(boat.rudder, 23);
 }
 
 TEST_F(MServoTest, should_set_sail_on_boat_on_channel_1) {
