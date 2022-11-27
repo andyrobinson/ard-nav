@@ -77,6 +77,13 @@ TEST_F(GlobeTest, should_calculate_new_position_from_bearing_and_distance) {
   ASSERT_LT(percentage_diff(new_york.latitude, NewYork.latitude),1);
 }
 
+TEST_F(GlobeTest, should_calculate_small_distances) {
+  position moved = globe.new_position(&Manchester,200,0.9);
+  double distance = globe.distance_between(&Manchester, &moved);
+
+  ASSERT_LT(distance, 0.90001);
+  ASSERT_GT(distance, 0.89999);
+}
 
 }  //namespace
 
