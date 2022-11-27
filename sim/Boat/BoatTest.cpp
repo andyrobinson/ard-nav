@@ -76,6 +76,28 @@ namespace {
 
     }
 
+    TEST_F(BoatTest, Drag_should_increase_with_speed) {
+      Boat boat(&kynance_cove);
+      EXPECT_LT(percentage_diff(boat.drag(0.2),1.0),0.1);
+      EXPECT_LT(percentage_diff(boat.drag(0.4),1.0),0.1);
+    }
+
+    TEST_F(BoatTest, Drag_should_increase_with_massively_near_hull_speed) {
+      Boat boat(&kynance_cove);
+      EXPECT_EQ(boat.drag(HULL_SPEED_MS - 0.2),100.0);
+      EXPECT_EQ(boat.drag(HULL_SPEED_MS - 0.1),100.0);
+      EXPECT_EQ(boat.drag(HULL_SPEED_MS - 0.01),100.0);
+    }
+
+
+    TEST_F(BoatTest, Drag_should_never_overflow_or_go_negative) {
+      Boat boat(&kynance_cove);
+      EXPECT_EQ(boat.drag(HULL_SPEED_MS - 0.01),100.0);
+      EXPECT_EQ(boat.drag(HULL_SPEED_MS),100.0);
+      EXPECT_EQ(boat.drag(HULL_SPEED_MS + 0.01),100.0);
+      EXPECT_EQ(boat.drag(HULL_SPEED_MS * 2),100.0);
+    }
+
 }  //namespace
 
 int main(int argc, char **argv) {

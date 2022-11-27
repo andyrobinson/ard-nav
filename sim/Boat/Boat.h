@@ -5,14 +5,17 @@
 #include "Position.h"
 #include "Angle.h"
 #include "Globe.h"
+#include "Utility.h"
 
 #define STARTING_SPEED 1.0
 #define STARTING_WIND 237
 #define STARTING_HEADING 0
-#define HULL_SPEED_MS 2.0
+#define HULL_SPEED_MS 1.2
+#define HULL_DRAG_CONSTANT 2.6
 
 using namespace Position;
 using namespace Angle;
+using namespace Utility;
 
 class Boat
 {
@@ -24,7 +27,7 @@ class Boat
     uangle bearing();
     void move(unsigned long milliseconds);
     void setLogger(Logger *loggerp);
-    double drag();
+    double drag(double speed);
     uangle heading;
     uint16_t rudder;
     uint16_t sail;

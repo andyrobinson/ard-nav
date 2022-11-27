@@ -37,11 +37,41 @@ void Boat::move(unsigned long milliseconds) {
 }
 
 
-// TODO:  Force resistance on the hull (s = speed) = k * s * s / (hull_speed * 1.1 - s)
-// I think hull_speed is 2 m/s, k represents the cross sectional area of the hull * Cd
-// But also needs to take into account wetted area and hull smoothness, so a bit of a fudge factor
-double Boat::drag() {
-    return 0.0;
+// wind speed_ms
+// f = 0.5 * p * v ^2 * A
+// p = density of air = 1.2
+// v = wind speed m/s
+// A = area of surface
+// ignored the drag coefficient (i.e. flat surface)
+
+// Area of sail = 0.14m ^ 2
+
+// example 10m/s wind from behind (=20mph) produces a force of 8.4 newtons.  With no drag this produces an acceleration of 0.62 m/s
+// a 20m/s wind (=40mph) produces a force of 33.6 newtons
+// These are good values for stress testing the sail
+
+
+// Mass of boat = 13.4kg
+
+// 1 mph = 0.447 m/s
+
+
+double Boat::drag(double speed) {
+  // for the hull the calculation is
+  // f = 0.5 * Cd * p * A * v^2
+  // Cd = drag coefficient (somewhere between 0.01 and 0.1, let's say 0.1)
+  // p = density of water = 1000
+  // A = cross sectional Area of boat = 0.04m^2
+  // v = velocity
+
+  // or combining all the constants simply 2 * v^2
+  // example travelling at 0.5 m/s produces a drag of 0.5 newtons.  Travelling at 1m/s produces a drag of 2 newtons
+  // At low speeds this formula should work, but at higher speeds the bow and stern wave come into effect.  Thus
+  // HULL_DRAG_CONSTANT = HULL_SPEED_MS * 1.1 * [combined constants] = 1.32 * 2 = 2.6
+  //
+  // we also limit speed in this calculation to avoid possible negative numbers or overflow
+
+    return (HULL_DRAG_CONSTANT * speed * speed)/(HULL_SPEED_MS * 1.1 - min1(speed,HULL_SPEED_MS * 1.099));
 }
 
 uangle Boat::new_heading(unsigned long milliseconds) {
