@@ -37,7 +37,7 @@ void ConsoleLogger::logmsg(char * message) {
   // need 5 decimal places (at least 7 digits) for metres
   std::cout << std::setprecision(8) << boat->location().latitude  << ",";
   std::cout << std::setprecision(8) << boat->location().longitude << ",";
-  std::cout << boat->speed() << "ms,";
+  std::cout << std::setprecision(4) <<boat->speed() << "ms,";
   std::cout << boat->relative_wind() << ",";
   std::cout << boat->bearing() << ",";
   std::cout << boat->rudder << ",";

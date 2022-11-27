@@ -4,6 +4,7 @@
 #include "Globe.h"
 #include "Utility.h"
 #include "math.h"
+#include <iostream>
 
 using namespace Position;
 using namespace Utility;
@@ -28,12 +29,9 @@ namespace {
 
 
     angle rudder_effect(angle deflection) {
-      return 90 - deflection;
+      return -deflection;
     }
 
-    void set_rudder(Boat *boat, angle deflection) {
-        boat->rudder = 90-deflection;
-    }
     };
 
     TEST_F(BoatTest, Should_start_at_provided_location) {
@@ -50,13 +48,11 @@ namespace {
     }
 
     TEST_F(BoatTest, Should_change_heading_based_on_rudder) {
-      Boat boat(&kynance_cove);
-      set_rudder(&boat, 20);
+      Boat boat(&kynance_cove, 1.0);
+      boat.rudder=20;
       boat.move(1000);
       uangle expected_heading = uadd(STARTING_HEADING,rudder_effect(20));
-      position expected_position = globe.new_position(&kynance_cove, expected_heading, 1.0);
-      EXPECT_LT(percentage_diff(boat.location().latitude, expected_position.latitude),0.1);
-      EXPECT_LT(percentage_diff(boat.location().longitude, expected_position.longitude),0.1);
+      EXPECT_EQ(boat.heading,expected_heading);
     }
 
     TEST_F(BoatTest, Should_report_stats) {
@@ -70,7 +66,7 @@ namespace {
       angle start_wind = add(STARTING_WIND, -STARTING_HEADING);
       EXPECT_EQ(boat.relative_wind(), start_wind);
 
-      set_rudder(&boat,-30); boat.move(1000);
+      boat.rudder = -30; boat.move(1000);
       angle expected_wind = add(STARTING_WIND, -boat.bearing());
       EXPECT_EQ(boat.relative_wind(), expected_wind);
 

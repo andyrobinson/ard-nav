@@ -6,6 +6,7 @@
 #include "Angle.h"
 #include "Globe.h"
 #include "Utility.h"
+#include "Math.h"
 
 #define STARTING_SPEED 0.0
 #define STARTING_WIND 237
@@ -13,6 +14,7 @@
 #define HULL_SPEED_MS 1.2
 #define HULL_DRAG_CONSTANT 2.6
 #define BOAT_MASS_KG 13.4
+#define TIME_INCREMENT 100
 
 using namespace Position;
 using namespace Angle;
@@ -21,7 +23,7 @@ using namespace Utility;
 class Boat
 {
   public:
-    Boat(position *start);
+    Boat(position *start, double starting_speed = STARTING_SPEED);
     position location();
     double speed();
     angle relative_wind();
