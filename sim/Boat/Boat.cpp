@@ -25,10 +25,6 @@ void Boat::setLogger(Logger *loggerp) {
 }
 
 void Boat::move(unsigned long milliseconds) {
-
-  // speed should use this wind factor =(MAX((190-X*0.7)  -EXP((190-X*0.7)*0.03),0))/90
-  // where X is the ABS(relative wind)
-  // this should give a zero value up to 30, then maxes out at around 90 or 100
   for (long t=100; t < milliseconds; t+=100) {
     double distance = speed_ms * ((double) t) / 1000.0;
     heading = new_heading(t);
@@ -36,20 +32,31 @@ void Boat::move(unsigned long milliseconds) {
   }
 }
 
+double Boat::new_speed(double speed, double impetus, double drag, long millis) {
+  double accel_mss = (impetus-drag) / BOAT_MASS_KG;
+  return speed + (accel_mss * ((double) millis)/1000.0);
+}
 
-// wind speed_ms
-// f = 0.5 * p * v ^2 * A
-// p = density of air = 1.2
-// v = wind speed m/s
-// A = area of surface
-// ignored the drag coefficient (i.e. flat surface)
+double Boat::sail_force() {
+  // forces due to drag
+  // f = 0.5 * p * v ^2 * A
+  // p = density of air = 1.2
+  // v = wind speed m/s
+  // A = area of surface
+  // ignored the drag coefficient (i.e. flat surface)
 
-// Area of sail = 0.14m ^ 2
+  // Area of sail = 0.14m ^ 2
 
-// example 10m/s wind from behind (=20mph) produces a force of 8.4 newtons.  With no drag this produces an acceleration of 0.62 m/s
-// a 20m/s wind (=40mph) produces a force of 33.6 newtons
-// These are good values for stress testing the sail
+  // example 10m/s wind from behind (=20mph) produces a force of 8.4 newtons.  With no drag this produces an acceleration of 0.62 m/s
+  // a 20m/s wind (=40mph) produces a force of 33.6 newtons
+  // These are good values for stress testing the sail
 
+  // forces due to lift
+  // TBC
+
+  // currently just a constant
+  return 8.0;
+}
 
 // Mass of boat = 13.4kg
 

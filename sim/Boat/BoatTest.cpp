@@ -78,7 +78,6 @@ namespace {
 
     TEST_F(BoatTest, Drag_should_increase_with_speed) {
       Boat boat(&kynance_cove);
-
       EXPECT_LT(percentage_diff(boat.drag(0.2),0.0928571),0.1);
       EXPECT_LT(percentage_diff(boat.drag(0.4),0.452174),0.1);
     }
@@ -90,13 +89,33 @@ namespace {
       EXPECT_LT(percentage_diff(boat.drag(HULL_SPEED_MS - 0.01), 28.322),0.1);
     }
 
-
     TEST_F(BoatTest, Drag_should_never_overflow_or_go_negative) {
       Boat boat(&kynance_cove);
       EXPECT_LT(percentage_diff(boat.drag(HULL_SPEED_MS - 0.01), 28.322),0.1);
       EXPECT_LT(percentage_diff(boat.drag(HULL_SPEED_MS), 31.2),0.1);
       EXPECT_LT(percentage_diff(boat.drag(HULL_SPEED_MS + 0.01), 34.606),0.1);
       EXPECT_LT(percentage_diff(boat.drag(HULL_SPEED_MS * 2), 12480),0.1);
+    }
+
+    TEST_F(BoatTest, Speed_should_increase_if_impetus_is_greater_than_drag) {
+      Boat boat(&kynance_cove);
+      double speed = 0.5;
+      double result = boat.new_speed(speed, 4.34, 3.0, 1000); // 1.34 newtons should give 0.1 mss
+      EXPECT_LT(percentage_diff(result, 0.6), 0.1);
+    }
+
+    TEST_F(BoatTest, Speed_should_increase_according_to_interval) {
+      Boat boat(&kynance_cove);
+      double speed = 0.5;
+      double result = boat.new_speed(speed, 4.34, 3.0, 2000); // 1.34 newtons should give 0.1 mss
+      EXPECT_LT(percentage_diff(result, 0.7), 0.1);
+    }
+
+    TEST_F(BoatTest, Speed_should_decrease_if_drag_greater_than_impetus) {
+      Boat boat(&kynance_cove);
+      double speed = 0.5;
+      double result = boat.new_speed(speed, 3.0, 4.34, 1000); // 1.34 newtons should give 0.1 mss
+      EXPECT_LT(percentage_diff(result, 0.4), 0.1);
     }
 
 }  //namespace

@@ -7,11 +7,12 @@
 #include "Globe.h"
 #include "Utility.h"
 
-#define STARTING_SPEED 1.0
+#define STARTING_SPEED 0.0
 #define STARTING_WIND 237
 #define STARTING_HEADING 0
 #define HULL_SPEED_MS 1.2
 #define HULL_DRAG_CONSTANT 2.6
+#define BOAT_MASS_KG 13.4
 
 using namespace Position;
 using namespace Angle;
@@ -28,6 +29,8 @@ class Boat
     void move(unsigned long milliseconds);
     void setLogger(Logger *loggerp);
     double drag(double speed);
+    double sail_force();
+    double new_speed(double speed, double force, double drag, long millis);
     uangle heading;
     uint16_t rudder;
     uint16_t sail;
