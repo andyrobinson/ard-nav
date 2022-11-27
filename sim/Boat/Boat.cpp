@@ -40,6 +40,7 @@ double Boat::new_speed(double speed, double impetus, double drag, long millis) {
   return speed + (accel_mss * ((double) millis)/1000.0);
 }
 
+// TODO: Change this from a constant to something that works for different wind directions, calculating drag and lift
 double Boat::sail_force() {
   // forces due to drag
   // f = 0.5 * p * v ^2 * A
