@@ -35,7 +35,7 @@ clean:
 	$(RM) $(OBJS)
 
 # for the sub projects
-SUB_PROJECTS = Boat Compass Gps Rudder Sail WindSensor
+SUB_PROJECTS = Boat Compass Gps WindSensor
 
 test:
 	@for subdir in $(SUB_PROJECTS) ; do \
