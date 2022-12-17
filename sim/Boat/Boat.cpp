@@ -43,13 +43,14 @@ double Boat::new_speed(double speed, double impetus, double drag, long millis) {
 // TODO: Change this from a constant to something that works for different wind directions, calculating drag and lift
 double Boat::sail_force() {
   // forces due to drag
-  // f = 0.5 * p * v ^2 * A
+  // f = Cd * 0.5 * p * v ^2 * A
   // p = density of air = 1.2
   // v = wind speed m/s
   // A = area of surface
-  // ignored the drag coefficient (i.e. flat surface)
+  // Cd varies with angle of attack, from 0.2 to 1.6?
 
   // Area of sail = 0.14m ^ 2
+  // p = density of air = 1.3 grams/litre
 
   // example 10m/s wind from behind (=20mph) produces a force of 8.4 newtons.  With no drag this produces an acceleration of 0.62 m/s
   // a 20m/s wind (=40mph) produces a force of 33.6 newtons
@@ -70,18 +71,19 @@ double Boat::drag(double speed) {
   // for the hull the calculation is
   // f = 0.5 * Cd * p * A * v^2
   // Cd = drag coefficient (somewhere between 0.01 and 0.1, let's say 0.1)
-  // p = density of water = 1000
+  // p = density of water = 1000 grams/litre
   // A = cross sectional Area of boat = 0.04m^2
   // v = velocity
 
   // or combining all the constants simply 2 * v^2
   // example travelling at 0.5 m/s produces a drag of 0.5 newtons.  Travelling at 1m/s produces a drag of 2 newtons
-  // At low speeds this formula should work, but at higher speeds the bow and stern wave come into effect.  Thus
+  // At low speeds this formula should work, but at higher speeds the bow and stern wave come into effect, and the drag
+  // is asymptotic on the hull speed.  We simulate this by adding a factor of HULL_SPEED * 1.1/(HULL_SPEED * 1.1 - speed),
+  // not allowing the speed to exceed the HULL_SPEED in the calculation or for there to be a danger of divide by zero
+  //
   // HULL_DRAG_CONSTANT = HULL_SPEED_MS * 1.1 * [combined constants] = 1.32 * 2 = 2.6
   //
-  // we also limit speed in this calculation to avoid possible negative numbers or overflow
-
-    return (HULL_DRAG_CONSTANT * speed * speed)/(HULL_SPEED_MS * 1.1 - min1(speed,HULL_SPEED_MS * 1.099));
+  return (HULL_DRAG_CONSTANT * speed * speed)/(HULL_SPEED_MS * 1.1 - min1(speed,HULL_SPEED_MS * 1.099));
 }
 
 uangle Boat::new_heading(unsigned long milliseconds) {
