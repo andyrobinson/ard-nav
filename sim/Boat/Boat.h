@@ -7,9 +7,11 @@
 #include "Globe.h"
 #include "Utility.h"
 #include "Math.h"
+#include "LiftDrag.h"
 
 #define STARTING_SPEED 0.0
-#define STARTING_WIND 237
+#define STARTING_WIND_DIRECTION 237
+#define STARTING_WIND_SPEED 10.0
 #define STARTING_HEADING 0
 #define HULL_SPEED_MS 1.2
 #define HULL_DRAG_CONSTANT 2.6
@@ -19,6 +21,7 @@
 using namespace Position;
 using namespace Angle;
 using namespace Utility;
+using namespace LiftDrag;
 
 class Boat
 {
@@ -30,10 +33,11 @@ class Boat
     uangle bearing();
     void move(unsigned long milliseconds);
     void setLogger(Logger *loggerp);
-    double drag(double speed);
+    double hull_drag(double speed);
     double sail_force();
     double new_speed(double speed, double force, double drag, long millis);
     uangle heading;
+    uangle absolute_wind;
     uint16_t rudder;
     uint16_t sail;
 
@@ -42,7 +46,7 @@ class Boat
     Logger *logger;
     position current_position;
     double speed_ms;
-    uangle absolute_wind;
+    double wind_speed;
     Globe globe;
 };
 

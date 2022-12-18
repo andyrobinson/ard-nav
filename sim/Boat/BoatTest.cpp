@@ -5,6 +5,7 @@
 #include "Utility.h"
 #include "math.h"
 #include <iostream>
+//#include <cmath>
 
 using namespace Position;
 using namespace Utility;
@@ -19,14 +20,11 @@ namespace {
       BoatTest() {
       }
 
+      double roundto(double value, int places) {
+        return ((double) round(value * pow(10, places)))/pow(10, places);
+      }
       void SetUp() override {
       }
-
-      double percentage_diff(double x, double y) {
-        double diff = (100.0 * (x-y))/x;
-        return fabs(diff);
-      }
-
 
     angle rudder_effect(angle deflection) {
       return -deflection;
@@ -43,8 +41,8 @@ namespace {
       Boat boat(&kynance_cove, 1.0);
       boat.move(2000);
       position expected_position = globe.new_position(&kynance_cove, STARTING_HEADING, 2.0);
-      EXPECT_LT(percentage_diff(boat.location().latitude, expected_position.latitude),0.0001);
-      EXPECT_LT(percentage_diff(boat.location().longitude, expected_position.longitude),0.0001);
+      ASSERT_DOUBLE_EQ(roundto(boat.location().latitude,5), roundto(expected_position.latitude,5));
+      ASSERT_DOUBLE_EQ(boat.location().longitude, expected_position.longitude);
     }
 
     TEST_F(BoatTest, Should_change_heading_based_on_rudder) {
@@ -64,55 +62,69 @@ namespace {
 
     TEST_F(BoatTest, Should_return_relative_wind) {
       Boat boat(&kynance_cove);
-      angle start_wind = add(STARTING_WIND, -STARTING_HEADING);
+      angle start_wind = add(STARTING_WIND_DIRECTION, -STARTING_HEADING);
       EXPECT_EQ(boat.relative_wind(), start_wind);
 
       boat.rudder = -30; boat.move(1000);
-      angle expected_wind = add(STARTING_WIND, -boat.bearing());
+      angle expected_wind = add(STARTING_WIND_DIRECTION, -boat.bearing());
       EXPECT_EQ(boat.relative_wind(), expected_wind);
-
     }
 
     TEST_F(BoatTest, Drag_should_increase_with_speed) {
       Boat boat(&kynance_cove);
-      EXPECT_LT(percentage_diff(boat.drag(0.2),0.0928571),0.1);
-      EXPECT_LT(percentage_diff(boat.drag(0.4),0.452174),0.1);
+      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(0.2),6),0.092857);
+      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(0.4),6),0.452174);
     }
 
     TEST_F(BoatTest, Drag_should_increase_with_massively_near_hull_speed) {
       Boat boat(&kynance_cove);
-      EXPECT_LT(percentage_diff(boat.drag(HULL_SPEED_MS - 0.2), 8.125),0.1);
-      EXPECT_LT(percentage_diff(boat.drag(HULL_SPEED_MS - 0.1), 14.3),0.1);
-      EXPECT_LT(percentage_diff(boat.drag(HULL_SPEED_MS - 0.01), 28.322),0.1);
+      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS - 0.2),4), 8.125);
+      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS - 0.1),4), 14.3);
+      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS - 0.01),4), 28.322);
     }
 
     TEST_F(BoatTest, Drag_should_never_overflow_or_go_negative) {
       Boat boat(&kynance_cove);
-      EXPECT_LT(percentage_diff(boat.drag(HULL_SPEED_MS - 0.01), 28.322),0.1);
-      EXPECT_LT(percentage_diff(boat.drag(HULL_SPEED_MS), 31.2),0.1);
-      EXPECT_LT(percentage_diff(boat.drag(HULL_SPEED_MS + 0.01), 34.606),0.1);
-      EXPECT_LT(percentage_diff(boat.drag(HULL_SPEED_MS * 2), 12480),0.1);
+      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS - 0.01),4), 28.322);
+      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS),4), 31.2);
+      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS + 0.01),4), 34.606);
+      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS * 2),4), 12480);
     }
 
     TEST_F(BoatTest, Speed_should_increase_if_impetus_is_greater_than_drag) {
       Boat boat(&kynance_cove);
       double speed = 0.5;
       double result = boat.new_speed(speed, 4.34, 3.0, 1000); // 1.34 newtons should give 0.1 mss
-      EXPECT_LT(percentage_diff(result, 0.6), 0.1);
+      ASSERT_DOUBLE_EQ(result, 0.6);
     }
 
     TEST_F(BoatTest, Speed_should_increase_according_to_interval) {
       Boat boat(&kynance_cove);
       double speed = 0.5;
       double result = boat.new_speed(speed, 4.34, 3.0, 2000); // 1.34 newtons should give 0.1 mss
-      EXPECT_LT(percentage_diff(result, 0.7), 0.1);
+      ASSERT_DOUBLE_EQ(result, 0.7);
     }
 
     TEST_F(BoatTest, Speed_should_decrease_if_drag_greater_than_impetus) {
       Boat boat(&kynance_cove);
       double speed = 0.5;
       double result = boat.new_speed(speed, 3.0, 4.34, 1000); // 1.34 newtons should give 0.1 mss
-      EXPECT_LT(percentage_diff(result, 0.4), 0.1);
+      ASSERT_DOUBLE_EQ(result, 0.4);
+    }
+
+    TEST_F(BoatTest, Sail_force_should_vary_with_wind_maximum_on_broad_reach) {
+      Boat boat(&kynance_cove);
+      boat.heading = 0;
+      int sail_positions[] = {180,172,165,157,150,150,150,150,150,150,140,130,120,110,100,90,90,90,90,90,90,90,80,70,60,50,40,30,30,30,30,30,30,23,15,8,0};
+      double expected_force[] = {12.1078,12.2165,12.1106,12.0551,11.9108,12.2490,12.9782,13.7714,14.3242,14.3815,13.6507,12.5050,10.9795,9.1203,6.984,
+      4.6354,2.4575,-0.8062,-1.806,-0.8062,2.4575,4.6354,6.9839,9.1202,10.9794,12.5050,13.6507,14.3815,14.3242,13.7714,12.9782,12.2490,11.9108,12.0551,
+      12.1106,12.2165,12.1078};
+      for (int i=-180; i <=180; i+=10) {
+        int index =i/10 + 18;
+        boat.absolute_wind = i;
+        boat.sail = sail_positions[index]; // sail normally set by Sail class
+        ASSERT_DOUBLE_EQ(roundto(boat.sail_force(),4),expected_force[index]);
+      }
     }
 
 }  //namespace

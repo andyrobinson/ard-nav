@@ -22,6 +22,12 @@ namespace LiftDrag {
     return result;
  }
 
+// lift and drag
+// f = C * 0.5 * p * v ^2 * A
+// p = density of air = 1.29
+// v = wind speed m/s
+// A = area of sail
+// C is different for lift and drag, and varies with angle of attack
   double liftdrag(double coefficient, double wind_speed) {
     return 0.5 * coefficient * SAIL_AREA * AIR_DENSITY * (wind_speed * wind_speed);
   }

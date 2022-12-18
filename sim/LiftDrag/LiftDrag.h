@@ -23,7 +23,6 @@ namespace LiftDrag {
  double Cl(angle attack);
  double drag(angle attack, double wind_speed);
  double lift(angle attack, double wind_speed);
-// double liftdrag(double coefficient, double wind_speed);
 }
 
 #endif

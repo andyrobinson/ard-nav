@@ -1,6 +1,6 @@
 STUBS = StubLogger Logger
-INCLUDES = ../../lib/Position/ ../../lib/Globe/ ../../lib/Angle/ ../../lib/Utility/
-SOURCES = ../../lib/Globe/Globe.cpp ../../lib/Angle/Angle.cpp
+INCLUDES = ../../lib/Position/ ../../lib/Globe/ ../../lib/Angle/ ../../lib/Utility/ ../LiftDrag/
+SOURCES = ../../lib/Globe/Globe.cpp ../../lib/Angle/Angle.cpp ../LiftDrag/LiftDrag.cpp
 LIST_TEST_OPTS = --gtest_list_tests
-TEST_ONLY_TEST_OPTS = --gtest_filter=BoatTest.Should_move_in_initial_direction_about_2m
+TEST_ONLY_TEST_OPTS = --gtest_filter=BoatTest.Sail_force_should_vary_with_wind_maximum_on_broad_reach
 include ../../lib/libcommon

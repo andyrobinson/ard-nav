@@ -1,18 +1,15 @@
 #include <iostream>
+// SIMULATION ONLY
 #include "Boat.h"
 #include "ConsoleLogger.h"
 
-// TODO
-#include "WindSensor.h"
-
 // SIMULATION STUBS
 #include "Timer.h"
-#include "Rudder.h"
 #include "Gps.h"
 #include "Compass.h"
-#include "Sail.h"
 #include "Switches.h"
 #include "MServo.h"
+#include "WindSensor.h"
 
 //NEUTRAL
 #include "Position.h"
@@ -24,6 +21,8 @@
 #include "Utility.h"
 #include "Routes.h"
 #include "RotaryPID.h"
+#include "Sail.h"
+#include "Rudder.h"
 
 Globe globe;
 

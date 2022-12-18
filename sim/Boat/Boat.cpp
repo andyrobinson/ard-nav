@@ -1,10 +1,11 @@
-  #include "Boat.h"
-  // #include <iostream>
+#include "Boat.h"
+  #include <iostream>
   // #include <iomanip>
 
 Boat::Boat(position *start, double start_speed):
-    heading(STARTING_HEADING),rudder(90),speed_ms(start_speed),absolute_wind(STARTING_WIND),globe(Globe()),
-    current_position({start->latitude, start->longitude, start->error}),sail(90) {}
+    heading(STARTING_HEADING),rudder(90),speed_ms(start_speed),absolute_wind(STARTING_WIND_DIRECTION),globe(Globe()),
+    current_position({start->latitude, start->longitude, start->error}),sail(90),
+     wind_speed(STARTING_WIND_SPEED){}
 
 position Boat::location() {
   return current_position;
@@ -29,7 +30,7 @@ void Boat::setLogger(Logger *loggerp) {
 void Boat::move(unsigned long milliseconds) {
   for (long t=0; t < milliseconds; t+=TIME_INCREMENT) {
     double distance = speed_ms * (((double) TIME_INCREMENT) / 1000.0);
-    speed_ms = new_speed(speed_ms, sail_force(), drag(speed_ms), TIME_INCREMENT);
+    speed_ms = new_speed(speed_ms, sail_force(), hull_drag(speed_ms), TIME_INCREMENT);
     heading = new_heading(TIME_INCREMENT);
     current_position = globe.new_position(&current_position, heading, distance);
   }
@@ -40,34 +41,18 @@ double Boat::new_speed(double speed, double impetus, double drag, long millis) {
   return speed + (accel_mss * ((double) millis)/1000.0);
 }
 
-// TODO: Change this from a constant to something that works for different wind directions, calculating drag and lift
+// TODO: Take into account heeling forces which reduce sail force as wind speed increases
 double Boat::sail_force() {
-  // forces due to drag
-  // f = Cd * 0.5 * p * v ^2 * A
-  // p = density of air = 1.2
-  // v = wind speed m/s
-  // A = area of surface
-  // Cd varies with angle of attack, from 0.2 to 1.6?
-
-  // Area of sail = 0.14m ^ 2
-  // p = density of air = 1.3 grams/litre
-
-  // example 10m/s wind from behind (=20mph) produces a force of 8.4 newtons.  With no drag this produces an acceleration of 0.62 m/s
-  // a 20m/s wind (=40mph) produces a force of 33.6 newtons
-  // These are good values for stress testing the sail
-
-  // forces due to lift
-  // TBC
-
-  // currently just a constant
-  return 8.0;
+  angle wind = relative_wind();
+  angle angle_of_attack = add(add(90,-sail),-wind);
+  double lift_force = lift(angle_of_attack, wind_speed);
+  double drag_force = drag(angle_of_attack, wind_speed);
+  double total_force = (lift_force * cos(to_radians((double) wind + 90)) * sign(angle_of_attack)) -
+                       (drag_force * sin(to_radians((double) wind + 90)));
+  return total_force;
 }
 
-// Mass of boat = 13.4kg
-// 1 mph = 0.447 m/s
-
-
-double Boat::drag(double speed) {
+double Boat::hull_drag(double speed) {
   // for the hull the calculation is
   // f = 0.5 * Cd * p * A * v^2
   // Cd = drag coefficient (somewhere between 0.01 and 0.1, let's say 0.1)
