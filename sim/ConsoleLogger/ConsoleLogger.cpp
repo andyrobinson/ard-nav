@@ -38,9 +38,9 @@ void ConsoleLogger::logmsg(char * message) {
   std::cout << std::setprecision(8) << boat->location().latitude  << ",";
   std::cout << std::setprecision(8) << boat->location().longitude << ",";
   std::cout << std::setprecision(4) <<boat->speed() << "ms,";
-  std::cout << boat->relative_wind() << ",";
-  std::cout << boat->bearing() << ",";
-  std::cout << boat->rudder << ",";
+  std::cout << boat->relative_wind() << "wd,";
+  std::cout << boat->bearing() << "bg,";
+  std::cout << boat->rudder << "rd,";
   std::cout << destination << ",";
   std::cout << tack << ",";
   std::cout << message;
