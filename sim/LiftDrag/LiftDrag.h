@@ -12,12 +12,18 @@
 #define B_HIGH 0.01422
 #define C_HIGH 1.422
 
+#define SAIL_AREA 0.14
+#define AIR_DENSITY 1.29
+
 using namespace Angle;
 using namespace Utility;
 
 namespace LiftDrag {
  double Cd(angle attack);
  double Cl(angle attack);
+ double drag(angle attack, double wind_speed);
+ double lift(angle attack, double wind_speed);
+// double liftdrag(double coefficient, double wind_speed);
 }
 
 #endif

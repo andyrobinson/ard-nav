@@ -9,7 +9,6 @@ namespace LiftDrag {
  }
 
  double Cl(angle attack) {
-
     // we use two quadratics, (a.x^2 + b.x + c) one for up to max lift, one for afterwards
     double at = (double) attack;
     double result;
@@ -22,4 +21,17 @@ namespace LiftDrag {
 
     return result;
  }
+
+  double liftdrag(double coefficient, double wind_speed) {
+    return 0.5 * coefficient * SAIL_AREA * AIR_DENSITY * (wind_speed * wind_speed);
+  }
+
+  double drag(angle attack, double wind_speed) {
+    return liftdrag(Cd(abs1(attack)),wind_speed);
+  }
+
+  double lift(angle attack, double wind_speed) {
+    return liftdrag(Cl(abs1(attack)),wind_speed);
+  }
+
 }
