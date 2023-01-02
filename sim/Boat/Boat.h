@@ -6,7 +6,7 @@
 #include "Angle.h"
 #include "Globe.h"
 #include "Utility.h"
-#include "Math.h"
+#include "math.h"
 #include "LiftDrag.h"
 
 #define STARTING_SPEED 0.0

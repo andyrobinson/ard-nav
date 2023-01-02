@@ -12,6 +12,10 @@ ifeq ($(UNAME), Darwin)
   GCC = g++-9 -std=c++11
 	GTEST_DIR = /usr/local/lib
 	GTEST_INCLUDE = /usr/local/include
+else ifeq ($(UNAME), Linux)
+  GCC = g++ -std=c++11 -lm
+	GTEST_DIR = /usr/local/lib
+	GTEST_INCLUDE = /usr/local/include
 else
 	GCC = g++
 	GTEST_DIR = /home/Andy/googletest-1.10.x/googletest

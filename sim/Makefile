@@ -19,12 +19,14 @@ include ../lib/detectos
 
 ifeq ($(UNAME), Darwin)
     GCC = g++-9 -std=c++11
+else ifeq ($(UNAME), Linux)
+    GCC = g++
 else
 	GCC = g++
 endif
 
 $(OBJS): $(SRCS)
-	$(GCC) -std=c++11 -isystem /usr/local/lib/include sim.cpp $(CLASS_PARAMS) $(LIB_CLASS_PARAMS) $(INC_PARAMS) -include stdint.h -lstdc++ -o $(OBJS)
+	$(GCC) sim.cpp $(CLASS_PARAMS) $(LIB_CLASS_PARAMS) $(INC_PARAMS) -include stdint.h -lstdc++ -o $(OBJS)
 
 run: $(OBJS)
 	./$(OBJS)
