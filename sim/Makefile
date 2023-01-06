@@ -20,7 +20,7 @@ include ../lib/detectos
 ifeq ($(UNAME), Darwin)
     GCC = g++-9 -std=c++11
 else ifeq ($(UNAME), Linux)
-    GCC = g++
+    GCC = g++ -std=c++11
 else
 	GCC = g++
 endif

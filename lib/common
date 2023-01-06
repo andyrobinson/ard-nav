@@ -8,6 +8,8 @@ BUILD_NUMBER_FILE = version
 
 ifeq ($(UNAME), Darwin)
 	ARDUINO_LIB_DIR = ~/Documents/Arduino/libraries
+else ifeq ($(UNAME), Linux)
+	ARDUINO_LIB_DIR = ~/Arduino/libraries
 else
 	ARDUINO_LIB_DIR = ../../../Arduino/libraries
 endif

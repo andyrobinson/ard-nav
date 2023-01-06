@@ -127,6 +127,27 @@ namespace {
       }
     }
 
+    TEST_F(BoatTest, Heel_angle_should_increase_with_wind_speed_but_never_reach_90) {
+      Boat boat(&kynance_cove);
+      double expected_heel[] = {0.0,24.4762,15.2768,22.279,28.6464,34.3267,39.3313,43.7105,47.5321, 50.8682};
+      for (int i=0; i<10; i++) {
+        ASSERT_DOUBLE_EQ(roundto(boat.heel((double) i),4),expected_heel[i]);
+      }
+      ASSERT_DOUBLE_EQ(roundto(boat.heel(100.0),4),77.6105);
+    }
+
+    TEST_F(BoatTest, Heel_angle_should_vary_with_point_of_sail_max_at_close_hauled) {
+      GTEST_SKIP();
+    }
+
+    TEST_F(BoatTest, Useful_sail_force_should_reach_maximum_then_decrease_because_of_heel) {
+      GTEST_SKIP();
+    }
+
+    TEST_F(BoatTest, Rudder_effectiveness_should_decrease_with_heel) {
+      GTEST_SKIP();
+    }
+
 }  //namespace
 
 int main(int argc, char **argv) {

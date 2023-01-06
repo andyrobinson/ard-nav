@@ -52,6 +52,10 @@ double Boat::sail_force() {
   return total_force;
 }
 
+double Boat::heel(double lateral_force) {
+  return to_degrees(atan((SAIL_COE_TO_COG - METACENTRE) * lateral_force / (BOAT_MASS_KG * METACENTRE)));
+}
+
 double Boat::hull_drag(double speed) {
   // for the hull the calculation is
   // f = 0.5 * Cd * p * A * v^2

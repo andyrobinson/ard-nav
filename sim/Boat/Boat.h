@@ -17,6 +17,8 @@
 #define HULL_DRAG_CONSTANT 2.6
 #define BOAT_MASS_KG 13.4
 #define TIME_INCREMENT 100
+#define SAIL_COE_TO_COG 0.71
+#define METACENTRE 0.1 // compromise, actually alters with heel
 
 using namespace Position;
 using namespace Angle;
@@ -36,17 +38,18 @@ class Boat
     double hull_drag(double speed);
     double sail_force();
     double new_speed(double speed, double force, double drag, long millis);
+    double heel(double lateral_force);
     uangle heading;
     uangle absolute_wind;
     uint16_t rudder;
     uint16_t sail;
+    double wind_speed;
 
   private:
     uangle new_heading(unsigned long milliseconds);
     Logger *logger;
     position current_position;
     double speed_ms;
-    double wind_speed;
     Globe globe;
 };
 
