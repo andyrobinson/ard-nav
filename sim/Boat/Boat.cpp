@@ -41,7 +41,6 @@ double Boat::new_speed(double speed, double impetus, double drag, long millis) {
   return speed + (accel_mss * ((double) millis)/1000.0);
 }
 
-// TODO: Take into account heeling forces which reduce sail force as wind speed increases
 double Boat::sail_force() {
   angle wind = relative_wind();
   angle angle_of_attack = add(add(90,-sail),-wind);
@@ -49,10 +48,12 @@ double Boat::sail_force() {
   double drag_force = drag(angle_of_attack, wind_speed);
   double medial_force = (lift_force * cos(to_radians((double) wind + 90)) * sign(angle_of_attack)) -
                        (drag_force * sin(to_radians((double) wind + 90)));
-  double lateral_force = (lift_force * sin(to_radians((double) wind + 90)) * sign(angle_of_attack)) -
+
+  // TODO: this is wrong and needs thinking about
+  double lateral_force = (lift_force * sin(to_radians((double) wind + 90))) -
                        (drag_force * cos(to_radians((double) wind + 90)));
   heel_angle = heel(lateral_force);
-  std::cout << "m: " << medial_force << " l: " << lateral_force << " heel: " << heel_angle << "\n";
+  std::cout << "w: " << wind << " s: " << sail << " m: " << medial_force << " l: " << lateral_force << " heel: " << heel_angle << "\n";
   return medial_force * cos(to_radians(heel_angle));
 }
 
@@ -81,6 +82,7 @@ double Boat::hull_drag(double speed) {
 
 uangle Boat::new_heading(unsigned long milliseconds) {
   // TODO: add angular momentum, with short decay
+  // TODO: reduce rudder effectiveness with heel.  Above about 70 degrees we can consider the rudder useless
   // Note that rudder is based on the servo value (0-180) and that delta is opposide to rudder
 
   angle delta = - (angle) round((speed_ms * ((double) (rudder - 90) * milliseconds)) / 1000.0);
