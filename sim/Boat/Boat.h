@@ -44,6 +44,7 @@ class Boat
     uint16_t rudder;
     uint16_t sail;
     double wind_speed;
+    double heel_angle;
 
   private:
     uangle new_heading(unsigned long milliseconds);

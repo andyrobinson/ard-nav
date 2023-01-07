@@ -47,9 +47,13 @@ double Boat::sail_force() {
   angle angle_of_attack = add(add(90,-sail),-wind);
   double lift_force = lift(angle_of_attack, wind_speed);
   double drag_force = drag(angle_of_attack, wind_speed);
-  double total_force = (lift_force * cos(to_radians((double) wind + 90)) * sign(angle_of_attack)) -
+  double medial_force = (lift_force * cos(to_radians((double) wind + 90)) * sign(angle_of_attack)) -
                        (drag_force * sin(to_radians((double) wind + 90)));
-  return total_force;
+  double lateral_force = (lift_force * sin(to_radians((double) wind + 90)) * sign(angle_of_attack)) -
+                       (drag_force * cos(to_radians((double) wind + 90)));
+  heel_angle = heel(lateral_force);
+  std::cout << "m: " << medial_force << " l: " << lateral_force << " heel: " << heel_angle << "\n";
+  return medial_force * cos(to_radians(heel_angle));
 }
 
 double Boat::heel(double lateral_force) {
