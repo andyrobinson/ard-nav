@@ -36,7 +36,7 @@ waypoint pfB = {"B", {53.44530, -2.22550, 3.0}};
 waypoint pfC = {"C", {53.44552, -2.22630, 3.0}};
 waypoint pfD = {"D", {53.44550, -2.22570, 3.0}};
 waypoint pfE = {"E", {53.44525, -2.22600, 3.0}};
-waypoint pfF = {"F", {53.44546, -2.22508, 3.0}};
+waypoint pfF = {"F", {53.44546, -2.22510, 4.0}};
 waypoint pfG = {"G", {53.44541, -2.22589, 3.0}};
 
 waypoint pf1route[] = {pfA,pfB,pfA,pfB,pfF};
