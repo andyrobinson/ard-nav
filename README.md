@@ -73,6 +73,26 @@ The other folders represent Arduino applications.  Again each folder has a makef
 
 ## Observations from field tests
 
+### 8 Jan 2023, Platt Fields Park
+
+Restarts
+* There were 3 unplanned restarts in the first 212 seconds.  Note the timestamp for the first start is longer as the GPS has to get a fix.
+* Timings were after 36 seconds, then 40 seconds, then 36 seconds.
+* Other restarts at 1107, 3000 (intentional, change of route), 3103, 5023, 5114
+* This is NOT consistent with a low battery problem - you would expect that after the initial restarts it would settle down
+* Could it be temperature related?  It was a very cold day
+* It may help to record minimum voltages as well as maximum, to see if brown-out is causing this issue
+* Note also this is different from the original crash problems - the system restarts and functions without problems, for up to 50 minutes, but it's worth re-reading the notes from this time.
+* Given the number of resets in the initial phase it should be easy to reproduct(?!)
+
+Number of abandons, approach to tacking
+
+
+Steering constants
+* A 0 percent adjustment was found to be most effective
+* See if this can be adjusted further, i.e. move the 0 percent up to the 50 percent
+
+
 ### 13 May, Land based
 * The rudder seems to make for weaving navigation - in part due to the unresponsiveness of a human vessel
 * We need a better estimate of speed (and therefore time to destination).  If we underestimate the speed then we will overshoot the target.  Points towards moving averages for both speed and absolute wind direction (and therefore a regular update to both, probably via the GPS interrupt timer)
