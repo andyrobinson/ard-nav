@@ -69,14 +69,23 @@ Restarts
 * Could it be temperature related?  It was a very cold day
 * It may help to record minimum voltages as well as maximum, to see if brown-out is causing this issue
 * Note also this is different from the original crash problems - the system restarts and functions without problems, for up to 50 minutes, but it's worth re-reading the notes from this time.
-* Given the number of resets in the initial phase it should be easy to reproduct(?!)
+* Given the number of resets in the initial phase it should be easy to reproduce(?!)
 
 Number of abandons, approach to tacking
-
+* There are significant numbers of abandons, even though the strategy of moving to the second tack should give a good angle on the wind if the first tack fails
+* Typically the infringement is only a few degrees - if we relax both the angle of tack and the wind range this should reduce this
+* There's no evidence that the wind direction used to decide on the tack is wildly out (suggesting the need for an average wind) 
+* It may also reflect a slightly unresponsive wind direction sensor, so it doesn't fully swing round to reflect the new wind direction
 
 Steering constants
 * A 0 percent adjustment was found to be most effective
 * See if this can be adjusted further, i.e. move the 0 percent up to the 50 percent
+
+#### Actions
+* Investigate the voltage behaviour on start-up using the scope
+* Calculate and log minimum voltage values as well as max
+* Relax the tack and the wind range
+* Adjust the steering constant range
 
 
 ### 13 May, Land based
