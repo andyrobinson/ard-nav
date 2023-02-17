@@ -8,7 +8,7 @@
 #include "Battery.h"
 #include "Utility.h"
 
-#define JAN1_2000_TS 15778l
+#define PRE_JAN1_2000_TS 15000l
 #define CHIP_SELECT 4
 #define BASE10 10
 #define LOG_INTERVAL 5000ul // may affect battery life
