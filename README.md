@@ -86,6 +86,10 @@ Steering constants
   This does NOT appear to be a problem with voltage fluctuation - the solar power seems to be completely stable.
 
 - resetting software and trying repeated runs of 5 minutes, inside and outside (with working compass and solar
+  - inside (battery only) OK
+  - inside (solar active 1) - no logs after 85 seconds, no sign of a restart - actually OK, logged elsewhere
+  - inside (solar active 2) - accesses SD card every 10 seconds.  All logs are fine - somehow it's figured out the time even though it has no fix
+
 * Calculate and log minimum voltage values as well as max
 * Relax the tack and the wind range
 * Adjust the steering constant range

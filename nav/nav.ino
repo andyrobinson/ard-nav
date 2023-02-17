@@ -65,7 +65,7 @@ Timer timer;
 Globe globe;
 Switches switches;
 I2C i2c;
-Battery battery(&analogRead);
+Battery battery(&analogRead, &timer);
 MServo servo_control;
 
 WindSensor windsensor(&i2c);

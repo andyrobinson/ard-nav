@@ -1,4 +1,4 @@
-STUBS =
+STUBS = Timer
 INCLUDES =
 SOURCES = 
 
