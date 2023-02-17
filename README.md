@@ -83,6 +83,9 @@ Steering constants
 
 #### Actions
 * Investigate the voltage behaviour on start-up using the scope
+  This does NOT appear to be a problem with voltage fluctuation - the solar power seems to be completely stable.
+
+- resetting software and trying repeated runs of 5 minutes, inside and outside (with working compass and solar
 * Calculate and log minimum voltage values as well as max
 * Relax the tack and the wind range
 * Adjust the steering constant range
