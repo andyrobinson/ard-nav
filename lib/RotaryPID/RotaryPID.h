@@ -7,8 +7,8 @@
 #include "Logger.h"
 #include "Arduino.h"
 
-#define KP 0.5
-#define KI 2.3
+#define KP 0.3
+#define KI 3.0
 #define KD 0.3
 #define MAX_DEFLECTION_PER_SECOND 40 // depends upon rudder speed set in Rudder.h
 
