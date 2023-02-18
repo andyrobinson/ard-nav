@@ -65,14 +65,14 @@ Timer timer;
 Globe globe;
 Switches switches;
 I2C i2c;
-Battery battery(&analogRead, &timer);
 MServo servo_control;
 
+Battery battery(&analogRead, &timer);
 WindSensor windsensor(&i2c);
 Compass compass(&i2c, &timer);
 Gps gps(&timer);
 
-SDLogger logger(&gps, &windsensor, &compass, &battery);
+SDLogger logger(&gps, &windsensor, &compass, &battery, 0);
 // SerialLogger logger(&gps, &windsensor, &compass, &battery);
 
 Sail sail(&servo_control);

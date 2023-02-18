@@ -26,7 +26,7 @@ class SDLogger : public Logger {
       virtual void settack(char tackletter);
 
     private:
-      void print_line(char *message);
+      void print_line(char *message, char* prefix);
       void calculate_filename(char *filename, long unix_ts);
       boolean sd_time_to_log();
 

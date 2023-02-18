@@ -1,0 +1,52 @@
+# Field Reports
+
+### 8 Jan 2023, Platt Fields Park
+
+Restarts
+* There were 3 unplanned restarts in the first 212 seconds.  Note the timestamp for the first start is longer as the GPS has to get a fix.
+* Timings were after 36 seconds, then 40 seconds, then 36 seconds.
+* Other restarts at 1107, 3000 (intentional, change of route), 3103, 5023, 5114
+* This is NOT consistent with a low battery problem - you would expect that after the initial restarts it would settle down
+* Could it be temperature related?  It was a very cold day
+* It may help to record minimum voltages as well as maximum, to see if brown-out is causing this issue
+* Note also this is different from the original crash problems - the system restarts and functions without problems, for up to 50 minutes, but it's worth re-reading the notes from this time.
+* Given the number of resets in the initial phase it should be easy to reproduce(?!)
+
+Number of abandons, approach to tacking
+* There are significant numbers of abandons, even though the strategy of moving to the second tack should give a good angle on the wind if the first tack fails
+* Typically the infringement is only a few degrees - if we relax both the angle of tack and the wind range this should reduce this
+* There's no evidence that the wind direction used to decide on the tack is wildly out (suggesting the need for an average wind) 
+* It may also reflect a slightly unresponsive wind direction sensor, so it doesn't fully swing round to reflect the new wind direction
+
+Steering constants
+* A 0 percent adjustment was found to be most effective
+* See if this can be adjusted further, i.e. move the 0 percent up to the 50 percent
+
+#### Actions
+* Investigate the voltage behaviour on start-up using the scope
+  This does NOT appear to be a problem with voltage fluctuation - the solar power seems to be completely stable.
+
+- resetting software and trying repeated runs of 5 minutes, inside and outside (with working compass and solar
+  - inside (battery only) OK
+  - inside (solar active 1) - no logs after 85 seconds, no sign of a restart - actually OK, logged elsewhere
+  - inside (solar active 2) - accesses SD card every 10 seconds.  All logs are fine - somehow it's figured out the time even though it has no fix
+
+  - outside (solar)
+    - does NOT work.  Only first value is logged, suggests software problem with logger - also erratic behaviour suggests buffer overrun problem.  Have changed the itoa call to ltoa (as this is correct), and removed buffering of log messages
+
+* Calculate and log minimum voltage values as well as max
+* Relax the tack and the wind range
+* Adjust the steering constant range
+
+
+### 13 May, Land based
+* The rudder seems to make for weaving navigation - in part due to the unresponsiveness of a human vessel
+* We need a better estimate of speed (and therefore time to destination).  If we underestimate the speed then we will overshoot the target.  Points towards moving averages for both speed and absolute wind direction (and therefore a regular update to both, probably via the GPS interrupt timer)
+* the logging could be better - where are we heading, how long before next review, are we tacking, and is it tack1 or tack2?
+* compass is much better outside
+* broadly speaking the software appears to work(!)
+
+### 25 April 2021, on the water
+* Seems very keen to tack
+* Steering makes the boat weave
+* Logging stopped after 10 mins of second run - will add capacitor to try and remove spikes, but need to monitor
