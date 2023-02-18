@@ -6,8 +6,9 @@ Garden test allows testing with GPS and Solar panel working.  Inside neither of 
 * System consistently crashes.  Initially it would just crash after the first log message.
 * Removed buffering of banner log messages (writing them straight to file), meant that the system would run for about 2 mins before crash
 * Reverted to 21 November version of software, which previously ran in a field test for 50 mins without problem, but still crashes after approximately 40 seconds
-* Turning on the RC unit (which gives a more predictable analog input for the Rotary PID module) resulted in a longer run of 
+* Turning on the RC unit (which gives a more predictable analog input for the Rotary PID module) resulted in a longer run of 2 mins
 * Running inside resulted in 7.51 run before crash.  Interestingly perhaps rotating the boat left 90 degrees (so that the steering changed) seemed to precipitate the crash.  Will try that again.
+* Working fine after 5 minutes, now try changing direction ....  rotation through 90 degrees immediately precipitates a crash.   Could be compass, rotary PID or rudder servo.
 
 
 ### 8 Jan 2023, Platt Fields Park
