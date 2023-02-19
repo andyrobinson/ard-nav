@@ -13,6 +13,7 @@ Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windse
 void Helm::steer(uangle direction, long steer_time, windrange range) {
     long remaining = steer_time;
     out_of_range_count = 0;
+    short increment = 5;
 
     char logmsg[50];
     sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
@@ -26,7 +27,9 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
           rudder_position = 0;
           rudder->set_position(rudder_position);
       } else {
-          rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
+//          rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
+          rudder_position = rudder_position + increment;
+          if (abs1(rudder_position) > 45) increment = -increment;
           rudder->set_position(rudder_position);
           sprintf(logmsg, ":%3d %3d %3d", direction, current_heading, rudder_position); logger->msg(logmsg);
       }
