@@ -135,7 +135,16 @@ void loop() {
   sprintf(logmsg, "Starting v%2d.%2d: route [%1d]", MAJOR_VERSION, MINOR_VERSION, sw); logger.banner(logmsg);
   sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
 
-  captain.voyage(journey.waypoints, journey.length);
+  rudder.set_position(0);
+  angle increment = 1;
+  angle rudder_position = 0;
+  for (short i = 0; i < 10000; i++) {
+    rudder_position = rudder_position + increment;
+    if (abs1(rudder_position) > 35) increment = -increment;
+    rudder.set_position(rudder_position);
+    delay(500);
+  }
+//  captain.voyage(journey.waypoints, journey.length);
   logger.banner("Finished Navigation :-)");
 
   while(true){};
