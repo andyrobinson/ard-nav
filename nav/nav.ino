@@ -22,7 +22,7 @@
 #include <MServo.h>
 
 #define MAJOR_VERSION 2
-#define STARTUP_WAIT_FOR_FIX_MS 60000
+#define STARTUP_WAIT_FOR_FIX_MS 1000
 
 /*
 
