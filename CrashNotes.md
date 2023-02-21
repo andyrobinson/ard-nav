@@ -22,6 +22,11 @@
 
 ## Run 6
 * Modifications: Try 20 iterations
+* Seems to work past the limit - perhaps the logging is helping it?
+
+## Run 7
+* Modifications: Shorter pauses, so quicker, no logging of pulse widths
+* 
 
 
 

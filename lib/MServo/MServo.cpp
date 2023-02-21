@@ -23,7 +23,7 @@ void MServo::write(uint8_t channel, uint16_t angle) {
 
   uint16_t pulse_width = map(angle, 0, 180, SERVO_MIN, SERVO_MAX);
   // pulse_width = constrain(pulse_width, 4010, 7990);
-  Serial.print(" p");Serial.print(pulse_width);Serial.print(" ");
+  // Serial.print(" p");Serial.print(pulse_width);Serial.print(" ");
   maestro.setTarget(channel, pulse_width);
 }
 

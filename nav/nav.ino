@@ -142,17 +142,17 @@ void loop() {
   rudder.set_position(limit);
 
   for (short i = 1; i < 20; i++) {
-    Serial.print("trying ");Serial.print(limit);
+    Serial.print("trying ");Serial.print(limit);Serial.println("");
+
     for (short j = limit; j >= -limit; j--) {
       rudder.set_position(j);
-      delay(200);
+      delay(100);
     }
     for (short j = -limit; j <= limit; j++) {
       rudder.set_position(j);
-      delay(200);
+      delay(100);
     }
     limit++;
-    Serial.println("");
   }
 //  captain.voyage(journey.waypoints, journey.length);
   logger.banner("Finished Navigation :-)");
