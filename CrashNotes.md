@@ -26,7 +26,32 @@
 
 ## Run 7
 * Modifications: Shorter pauses, so quicker, no logging of pulse widths
-* 
+* Still works up to 49 degrees - need to go back to something that doesn't work
+
+## Run 8 
+* Return to failing scenario, run 3
+* Still works with a 100ms delay, but there is an odd twitch at the RH end - longer delay - trying 500ms
+* Still works
+
+## Run 9
+* Modifications: Reduce pause time to 50ms but with a long wait at the limit, gradually increasing limit
+* Twitch at RH end, after some time appears to crash, but need to confirm with more definite start-up routine.
+* Strange cross-over with the sail servo
+
+## Run 10
+* Modifications: Reduce pause time in sweep again, keep limit increase, do sail movement at start
+* Maybe multiple crashes, got sail position wrong - it responds to the wind
+
+## Run 10
+* Modifications: Clear startup signal
+* Does not crash, however the servo behaves erratically and there appears to be some cross-over between rudder and sail
+
+## Run 11
+* Modifications: Return to Rudder sweep in Helm
+* System no longer crashes, running with USB plugged in
+* System immediately crashes if the USB is not plugged in (suggests that something is causing a power glitch - probably the twitch)
+* All future tests must be without the USB plugged in
+
 
 
 

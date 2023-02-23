@@ -1,1 +1,1 @@
-#define MINOR_VERSION 50
+#define MINOR_VERSION 59

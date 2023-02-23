@@ -114,7 +114,7 @@ void setup() {
   switches.begin();
   logger.begin();
   Serial.begin(19200);
-  timer.wait(5000); // don't do anything, give it all a chance to settle
+  timer.wait(1000); // don't do anything, give it all a chance to settle
 }
 
 void loop() {
@@ -136,25 +136,41 @@ void loop() {
   sprintf(logmsg, "Starting v%2d.%2d: route [%1d]", MAJOR_VERSION, MINOR_VERSION, sw); logger.banner(logmsg);
   sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
 
-  angle increment = 1;
-  angle rudder_position = 0;
-  angle limit = 42;
-  rudder.set_position(limit);
+  // rudder.set_position(20);
+  // sail.set_position(90);
+  // delay(500);
 
-  for (short i = 1; i < 20; i++) {
-    Serial.print("trying ");Serial.print(limit);Serial.println("");
+  // rudder.set_position(-20);
+  // sail.set_position(0);
+  // delay(500);
 
-    for (short j = limit; j >= -limit; j--) {
-      rudder.set_position(j);
-      delay(100);
-    }
-    for (short j = -limit; j <= limit; j++) {
-      rudder.set_position(j);
-      delay(100);
-    }
-    limit++;
-  }
-//  captain.voyage(journey.waypoints, journey.length);
+  // angle increment = 1;
+  // angle rudder_position = 0;
+  // angle limit = 42;
+
+  // while(true) {
+  //   rudder.set_position(rudder_position);
+  //   rudder_position = rudder_position + increment;
+  //   if (abs1(rudder_position) == limit) {
+  //     increment = - increment;
+  //     delay(1000);
+  //     if (rudder_position == limit) limit++;
+  //   }
+  //   delay(30);
+  // }
+  // for (short i = 1; i < 20; i++) {
+
+  //   for (short j = limit; j >= -limit; j--) {
+  //     rudder.set_position(j);
+  //     delay(100);
+  //   }
+  //   for (short j = -limit; j <= limit; j++) {
+  //     rudder.set_position(j);
+  //     delay(100);
+  //   }
+  //   limit++;
+  // }
+  captain.voyage(journey.waypoints, journey.length);
   logger.banner("Finished Navigation :-)");
 
   while(true){};
