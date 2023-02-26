@@ -47,7 +47,7 @@ Steering constants
 
 * Calculate and log minimum voltage values as well as max (/)
 * Relax the tack and the wind range
-* Adjust the steering constant range
+* Adjust the steering constant range (/)
 
 
 ### 13 May, Land based
