@@ -46,7 +46,7 @@ Steering constants
     - does NOT work.  Only first value is logged, suggests software problem with logger - also erratic behaviour suggests buffer overrun problem.  Have changed the itoa call to ltoa (as this is correct), and removed buffering of log messages
 
 * Calculate and log minimum voltage values as well as max (/)
-* Relax the tack and the wind range
+* Relax the tack and the wind range (/)
 * Adjust the steering constant range (/)
 
 
