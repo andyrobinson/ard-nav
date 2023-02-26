@@ -136,28 +136,30 @@ void loop() {
   sprintf(logmsg, "Starting v%2d.%2d: route [%1d]", MAJOR_VERSION, MINOR_VERSION, sw); logger.banner(logmsg);
   sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
 
-  // rudder.set_position(20);
-  // sail.set_position(90);
-  // delay(500);
+  rudder.set_position(20);
+  sail.set_position(90);
+  delay(500);
 
-  // rudder.set_position(-20);
-  // sail.set_position(0);
-  // delay(500);
+  rudder.set_position(-20);
+  sail.set_position(0);
+  delay(500);
 
-  // angle increment = 1;
-  // angle rudder_position = 0;
-  // angle limit = 42;
+  angle increment = 1;
+  angle rudder_position = 0;
+  angle limit = 40;
 
-  // while(true) {
-  //   rudder.set_position(rudder_position);
-  //   rudder_position = rudder_position + increment;
-  //   if (abs1(rudder_position) == limit) {
-  //     increment = - increment;
-  //     delay(1000);
-  //     if (rudder_position == limit) limit++;
-  //   }
-  //   delay(30);
-  // }
+  while(true) {
+    rudder.set_position(rudder_position);
+    rudder_position = rudder_position + increment;
+    if (abs1(rudder_position) == limit) {
+      increment = - increment;
+      sail.set_position(180);
+      sail.set_position(0);
+      delay(1000);
+//      if (rudder_position == limit) limit++;
+    }
+    delay(30);
+  }
   // for (short i = 1; i < 20; i++) {
 
   //   for (short j = limit; j >= -limit; j--) {

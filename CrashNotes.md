@@ -52,6 +52,18 @@
 * System immediately crashes if the USB is not plugged in (suggests that something is causing a power glitch - probably the twitch)
 * All future tests must be without the USB plugged in
 
+## Run 12
+* Modifications: Return to sweep in main loop, but test without USB power
+* Program crashes at 43 degrees (negative side)
+
+## Run 13
+* Modifications: Sweep at 42 degrees
+* Program crashes on first sweep (oops), although actually what it's doing is recycling constantly.
+* Program consistently fails on the first negative sweep - maybe 42 is the magic number
+
+## Run 13
+* Modifications: Sweep at 40 degrees
+* Runs for 45 mins without problems.  
 
 
 
