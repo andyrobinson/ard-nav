@@ -9,7 +9,7 @@ Garden test allows testing with GPS and Solar panel working.  Inside neither of 
 * Turning on the RC unit (which gives a more predictable analog input for the Rotary PID module) resulted in a longer run of 2 mins
 * Running inside resulted in 7.51 run before crash.  Interestingly perhaps rotating the boat left 90 degrees (so that the steering changed) seemed to precipitate the crash.  Will try that again.
 * Working fine after 5 minutes, now try changing direction ....  rotation through 90 degrees immediately precipitates a crash.   Could be compass, rotary PID or rudder servo.
-
+* Tracked this down to a servo glitch at the far range of the rudder, reduced rudder to eliminate
 
 ### 8 Jan 2023, Platt Fields Park
 
@@ -45,7 +45,7 @@ Steering constants
   - outside (solar)
     - does NOT work.  Only first value is logged, suggests software problem with logger - also erratic behaviour suggests buffer overrun problem.  Have changed the itoa call to ltoa (as this is correct), and removed buffering of log messages
 
-* Calculate and log minimum voltage values as well as max
+* Calculate and log minimum voltage values as well as max (/)
 * Relax the tack and the wind range
 * Adjust the steering constant range
 
