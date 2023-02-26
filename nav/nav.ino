@@ -118,7 +118,7 @@ void setup() {
 
 void loop() {
   // a little indicator that we're starting
-  rudder.set_position(-45);
+  rudder.set_position(RUDDER_MAX_DISPLACEMENT);
   sail.set_position(0);
   timer.wait(5000);
 
