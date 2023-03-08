@@ -1,5 +1,15 @@
 # Field Reports
 
+### 8 March 2023, Workshop
+* This is with Solar charging working ...
+* Still getting problems with crashing and the Rudder.  Always happens at the right-hand end of travel (most negative)
+* Crashing patterns not consistent, but there could be interaction between Sail and Rudder
+* Rotary PID does not seem to be implicated ... however I thought this worked if we ignored all navigation
+* Removing the Speed and Accel from Rudder does not help
+* Try reducing Rudder range to 20 degrees [seems to fix, but rudder sweep is not symmetrical]
+* Try moving loop to outer nav, at 40 degrees [consistently resets, but keeps going, seems to also activate sails]
+* Try using rotary PID at 20 degrees
+
 
 ### 8 Jan 2023, Garden
 Garden test allows testing with GPS and Solar panel working.  Inside neither of these elements is working correctly

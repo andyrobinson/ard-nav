@@ -22,7 +22,7 @@
 #include <MServo.h>
 
 #define MAJOR_VERSION 2
-#define STARTUP_WAIT_FOR_FIX_MS 60000
+#define STARTUP_WAIT_FOR_FIX_MS 1000
 
 /*
 
@@ -134,6 +134,15 @@ void loop() {
 
   sprintf(logmsg, "Starting v%2d.%2d: route [%1d]", MAJOR_VERSION, MINOR_VERSION, sw); logger.banner(logmsg);
   sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
+
+  // angle increment = -1;
+  // angle rudderpos = 0;
+  // while(true) {
+  //   rudderpos = rudderpos + increment;
+  //   rudder.set_position(rudderpos);
+  //   if (abs1(rudderpos) >= RUDDER_MAX_DISPLACEMENT) increment = -increment;
+  //   delay(100);
+  // }
 
   captain.voyage(journey.waypoints, journey.length);
   logger.banner("Finished Navigation :-)");

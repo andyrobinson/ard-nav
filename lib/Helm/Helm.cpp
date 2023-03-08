@@ -20,6 +20,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
       sprintf(logmsg, "** I2C Failure **"); logger->banner(logmsg);
     }
 
+    angle increment = -1;
     while (ok_to_continue(remaining, steer_time, range)) {
       uangle current_heading = compass->bearing();
       if (current_heading == ANGLE_ERROR) {
@@ -27,6 +28,8 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
           rudder->set_position(rudder_position);
       } else {
           rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
+          // rudder_position = rudder_position + increment;
+          // if (abs1(rudder_position) >= RUDDER_MAX_DISPLACEMENT ) increment = -increment;
           rudder->set_position(rudder_position);
           sprintf(logmsg, ":%3d %3d %3d", direction, current_heading, rudder_position); logger->msg(logmsg);
       }
