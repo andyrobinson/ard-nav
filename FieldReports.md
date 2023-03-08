@@ -8,7 +8,8 @@
 * Removing the Speed and Accel from Rudder does not help
 * Try reducing Rudder range to 20 degrees [seems to fix, but rudder sweep is not symmetrical]
 * Try moving loop to outer nav, at 40 degrees [consistently resets, but keeps going, seems to also activate sails]
-* Try using rotary PID at 20 degrees
+* Try using rotary PID at 20 degrees [does NOT crash]
+[Conclusion - there's something up with the rudder control, could be software or hardware]
 
 
 ### 8 Jan 2023, Garden
