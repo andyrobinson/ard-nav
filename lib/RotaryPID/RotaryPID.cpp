@@ -36,10 +36,9 @@ angle RotaryPID::calculate(uangle desired_heading, uangle current_heading, long 
 void RotaryPID::set_constants() {
   char logmsg[22];
   float percent = switches->dial_percent();
-  uint8_t sw3 = (switches->value() & 4) >> 2;
 
-  Kp = KP * (1 + max1((percent - 50.0), 0.0)/25.0);
-  Ki = KI * (1 + max1((50.0 - percent), 0.0)/25.0) ;
+  Kp = KP * (0.5 + max1((percent - 25.0), 0.0)/50.0);
+  Ki = KI * (2 + max1((50.0 - percent), 0.0)/12.0) ;
   Kd = Ki/8;
 
   sprintf(logmsg, "K percent %3d", (int) percent);
