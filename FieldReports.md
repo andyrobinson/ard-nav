@@ -1,5 +1,13 @@
 # Field Reports
 
+### 11 March 2023, Workshop
+* Software - try to isolate the problem - means using the outer loop, binary chop on rudder limit
+- slightly noisy?
+** Good 20, 30, 35
+** Bad 40
+* Hardware - try a different channel (if possible)
+
+
 ### 8 March 2023, Workshop
 * This is with Solar charging working ...
 * Still getting problems with crashing and the Rudder.  Always happens at the right-hand end of travel (most negative)
