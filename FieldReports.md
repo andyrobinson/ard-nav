@@ -7,6 +7,7 @@
 ** Bad 40, confirmed
 ** Fix at 38, see if this work with everything
 * Hardware - try a different channel (if possible)
+* Tried channel 3 for the rudder - makes no difference
 
 
 ### 8 March 2023, Workshop
