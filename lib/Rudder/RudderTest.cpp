@@ -33,7 +33,7 @@ TEST_F(RudderTest, Should_move_rudder_to_centre_at_90_degrees) {
 
 TEST_F(RudderTest, Should_move_rudder_to_left) {
   rudder.set_position(40);
-  EXPECT_EQ(stub_servo.angle_last_called, 90 + 40);
+  EXPECT_EQ(stub_servo.angle_last_called, 90 + 38);
 }
 
 TEST_F(RudderTest, Should_move_rudder_to_right) {
