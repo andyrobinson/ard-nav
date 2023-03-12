@@ -20,7 +20,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
       sprintf(logmsg, "** I2C Failure **"); logger->banner(logmsg);
     }
 
-    angle increment = -1;
+    // angle increment = -1;
     while (ok_to_continue(remaining, steer_time, range)) {
       uangle current_heading = compass->bearing();
       if (current_heading == ANGLE_ERROR) {

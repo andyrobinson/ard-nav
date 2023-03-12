@@ -3,8 +3,9 @@
 ### 11 March 2023, Workshop
 * Software - try to isolate the problem - means using the outer loop, binary chop on rudder limit
 - slightly noisy?
-** Good 20, 30, 35
-** Bad 40
+** Good 20, 30, 35, 38, 39
+** Bad 40, confirmed
+** Fix at 38, see if this work with everything
 * Hardware - try a different channel (if possible)
 
 
