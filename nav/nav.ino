@@ -120,7 +120,6 @@ void loop() {
   // a little indicator that we're starting
   rudder.set_position(RUDDER_MAX_DISPLACEMENT);
   sail.set_position(0);
-  timer.wait(5000);
 
   // try and get a GPS fix before logging so that it goes in the same file
   gpsResult gps_data_ignored = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0};
@@ -128,6 +127,7 @@ void loop() {
 
   // and we're off
   rudder.set_position(0);
+  timer.wait(5000);
 
   uint8_t sw = switches.value() & 3; // four routes configurable
   route journey = plattfields[sw];
