@@ -143,3 +143,8 @@ void DisplayLogger::msg(char *message) {
       }
   }
 }
+
+void DisplayLogger::write_version(int major, int minor) {
+  // not implemented
+}
+

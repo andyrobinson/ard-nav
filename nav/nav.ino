@@ -132,6 +132,7 @@ void loop() {
   uint8_t sw = switches.value() & 3; // four routes configurable
   route journey = plattfields[sw];
 
+  logger.write_version(MAJOR_VERSION,MINOR_VERSION);
   sprintf(logmsg, "Starting v%2d.%2d: route [%1d]", MAJOR_VERSION, MINOR_VERSION, sw); logger.banner(logmsg);
   sprintf(logmsg, "Watchdog disabled"); logger.banner(logmsg);
 

@@ -56,3 +56,11 @@ void SerialLogger::msg(char *message) {
   Serial.print(message);
   Serial.println();
 }
+
+void SerialLogger::write_version(int major, int minor) {
+  Serial.print("Version: ");
+  Serial.print(major);
+  Serial.print(".");
+  Serial.print(minor);
+  Serial.println();
+}

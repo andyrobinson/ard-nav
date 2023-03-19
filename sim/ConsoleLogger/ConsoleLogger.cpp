@@ -46,3 +46,7 @@ void ConsoleLogger::logmsg(char * message) {
   std::cout << message;
   std::cout << "\n";
 }
+
+void ConsoleLogger::write_version(int major, int minor) {
+  std::cout << "Version: " << major << "." << minor << "\n";
+}

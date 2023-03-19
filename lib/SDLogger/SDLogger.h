@@ -24,6 +24,7 @@ class SDLogger : public Logger {
       virtual void banner(char *message);
       virtual void setdest(char destletter);
       virtual void settack(char tackletter);
+      virtual void write_version(int major, int minor);
 
     private:
       void print_line(char *message, char* prefix);

@@ -93,11 +93,11 @@ void SDLogger::print_line(char *message, char *prefix) {
       dataFile.print(tack); dataFile.print(",");
       dataFile.print(prefix);
       dataFile.print(message);
-      // if (banner_msg[0] != '\0') {
-      //   dataFile.print(" **** "), dataFile.print(banner_msg);
-      //   banner_msg[0]='\0';
-      //   banner_space = LOG_BANNER_LENGTH-1;
-      // }
+      if (banner_msg[0] != '\0') {
+        dataFile.print(" **** "), dataFile.print(banner_msg);
+        banner_msg[0]='\0';
+        banner_space = LOG_BANNER_LENGTH-1;
+      }
       dataFile.println("");
       dataFile.close();
     }
@@ -109,3 +109,17 @@ void SDLogger::msg(char *message) {
     print_line(message,"");
   }
 }
+
+void SDLogger::write_version(int major, int minor) {
+    File dataFile = SD.open("version.txt", FILE_WRITE);
+
+    if (dataFile) {
+
+      dataFile.print(major);
+      dataFile.print(".");
+      dataFile.print(minor);
+      dataFile.println("");
+      dataFile.close();
+    }  
+}
+

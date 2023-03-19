@@ -35,3 +35,10 @@ void MultiLogger::msg(char *message) {
     loggers[i]->msg(message);
   }
 }
+
+void MultiLogger::write_version(int major, int minor) {
+  for (int i; i < numLoggers; i++) {
+    loggers[i]->write_version(int major, int minor);
+  }
+}
+

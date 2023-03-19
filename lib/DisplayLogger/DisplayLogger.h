@@ -22,6 +22,7 @@ class DisplayLogger : public Logger {
       virtual void banner(char *message);
       virtual void setdest(char destletter);
       virtual void settack(char tackletter);
+      virtual void write_version(int major, int minor);
 
     private:
       void messageAt(int y, char *msg);
