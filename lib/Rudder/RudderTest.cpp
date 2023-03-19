@@ -21,7 +21,7 @@ TEST_F(RudderTest, Stub_servo_should_record_last_position) {
 
 TEST_F(RudderTest, Should_initialise_speeed_and_accel) {
   rudder.begin();
-  EXPECT_EQ(stub_servo.channel_last_called, 0);
+  EXPECT_EQ(stub_servo.channel_last_called, 3);
   EXPECT_EQ(stub_servo.speed_last_called, RUDDER_SPEED);
   EXPECT_EQ(stub_servo.accel_last_called, RUDDER_ACCEL);
 }
@@ -33,7 +33,7 @@ TEST_F(RudderTest, Should_move_rudder_to_centre_at_90_degrees) {
 
 TEST_F(RudderTest, Should_move_rudder_to_left) {
   rudder.set_position(40);
-  EXPECT_EQ(stub_servo.angle_last_called, 90 + 38);
+  EXPECT_EQ(stub_servo.angle_last_called, 90 + 36);
 }
 
 TEST_F(RudderTest, Should_move_rudder_to_right) {

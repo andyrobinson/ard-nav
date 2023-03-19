@@ -3,7 +3,7 @@
 
 #include "Angle.h"
 
-#define RUDDER_MAX_DISPLACEMENT 45
+#define RUDDER_MAX_DISPLACEMENT 36
 
 using namespace Angle;
 

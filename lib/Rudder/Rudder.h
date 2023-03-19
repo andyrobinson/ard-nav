@@ -5,7 +5,7 @@
 #include "Angle.h"
 #include "MServo.h"
 
-#define RUDDER_MAX_DISPLACEMENT 38 // any more risks servo glitch and restarts
+#define RUDDER_MAX_DISPLACEMENT 36 // any more risks servo glitch and causes restarts
 #define RUDDER_CENTRE 90
 #define RUDDER_CHANNEL 3
 #define RUDDER_SPEED 15

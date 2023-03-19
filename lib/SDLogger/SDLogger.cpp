@@ -48,14 +48,13 @@ void SDLogger::settack(char tackletter) {
 
 void SDLogger::banner(char *message) {
     // keep hold of banner messages until we can print
-    // if (banner_space > strlen(message)) {
-    //   strcat(banner_msg, message);
-    //   strcat(banner_msg, " ");
-    //   banner_space = banner_space - (strlen(message) + 1);
-    // }
-    // banner_msg[LOG_BANNER_LENGTH-1]='\0'; // belt and braces
-    // msg("");
-    print_line(message,"*** ");
+    if (banner_space > strlen(message)) {
+      strcat(banner_msg, message);
+      strcat(banner_msg, " ");
+      banner_space = banner_space - (strlen(message) + 1);
+    }
+    banner_msg[LOG_BANNER_LENGTH-1]='\0'; // belt and braces
+    msg("");
 }
 
 void SDLogger::print_line(char *message, char *prefix) {
