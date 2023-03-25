@@ -28,7 +28,7 @@ void Helm::steer(uangle direction, long steer_time, windrange range) {
       } else {
           rudder_position = rotarypid->calculate(direction, current_heading, STEER_INTERVAL);
           rudder->set_position(rudder_position);
-          if(abs1(rudder_position) >= RUDDER_MAX_DISPLACEMENT) logger-> banner("rudder max");
+          if(abs1(rudder_position) >= RUDDER_MAX_DISPLACEMENT) logger-> banner("+");
           sprintf(logmsg, ":%3d %3d %3d", direction, current_heading, rudder_position); logger->msg(logmsg);
       }
       timer->wait(STEER_INTERVAL/2);
