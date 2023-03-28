@@ -27,16 +27,21 @@ The other folders represent Arduino applications.  Again each folder has a makef
 ## Current libraries
 
 * Angle - utilities for dealing with angles and signed -180 to +180 (angle) and unsigned 0 - 359 (uangle) types.
+* Battery - collects voltage readings and returns max and min values (assumes single LIPO with voltage halved)
 * Captain - follows a route consisting of a number of waypoints, using Navigator
 * Compass - wrapper for the Adafruit LSM303DLHC compass module, with tilt adjustment
 * DisplayLogger - logs to the OLED display
 * Globe - lat/long calculations  
 * Gps - wrapper for the Adafruit GPS Library which enables/disables the GPS, and gets a reading within a specified time (if possible)
 * Helm - Steer a direct course and adjust the sail
+* I2C - wrapper for the Wire library, with error handling
 * Logger - Abstract class for logging (implemented by specific loggers)
+* MServo - wrapper for the Pololu Maestro servo board library
 * MultiLogger - logs simultaneously to the given list of loggers
 * Navigator - Navigate to a destination lat/long by repeatedly steering
 * Position - lat/long struct with error values
+* RotaryPID - a PID controller for the rudder using angles rather than a linear scale (see https://en.wikipedia.org/wiki/PID_controller)
+* Routes - waypoint data for navigating
 * Rudder - wrapper around servo to limit deflection
 * Sail - sailing logic; set sail angle according to relative wind, only gybe when necessary
 * SDLogger - logs to an SD card
@@ -45,10 +50,12 @@ The other folders represent Arduino applications.  Again each folder has a makef
 * Stubs - home grown stubs for use in unit testing
 * Switches - reads three switches for in-the-field configuration changes
 * Tacker - steer directly or do a tack, using Helm
+* TankHelm - a version of Helm for tank testing
 * TestEg - example of using Gtest (google C++ test library)
 * Timer - wrapper around delay function, for testing and possible multi-tasking
 * Utility - templates for common functions, unix time
 * Waypoint - waypoint definition
+* Windrange - data structure to hold ranges of acceptable wind direction, to determine if the current course should be abandoned
 * WindSensor - wrapper around the AS5048B 14 bit rotary position sensor, to return a relative wind angle between -180 and +180
 
 ## Current concerns
@@ -108,27 +115,44 @@ Steering constants
 * Logging stopped after 10 mins of second run - will add capacitor to try and remove spikes, but need to monitor
 
 ## Planned development
+Need to think about how to handle at sea restarts, which will be inevitable
+- should we preserve state on the SD card?  
+  SD card reading is pretty crude, so would need to read until the end-of-line
+  The issues are
+  - How to reset the state at a legitimate restart - does this mean doing something to the SD card which will be
+    very inconvenient in the field
+  - fallback if the SD card is not available - a restart with a failed card should
+    not be catastrophic
+  - How to manage the periodical sending of satellite information with a failed
+    SD card and possible frequent restarts - probably the only thing we should
+    rely on is the GPS clock, and perhaps not even this.  We need some system
+    that guarantees we communicate, but not too often as this will drain the
+    battery
+    
+- need to calculate the next nearest waypoint, not start from the beginning again every time!  This is not
+as simple as the nearest in distance, we also need to think about the bearings of
+  the nearest waypoint and the one after that.
 
+## Future checks
 1. Should introduce a deliberate memory leak to check that the memory measure works
-2. It would be good to use the analog inputs to measure the battery voltage.  Note that once we have a proper power supply this will require a connection directly from the battery
-3. In the final attempt we need to disable self test (probably completely), to take account of the fact that the system may restart during navigation.  Also the navigation needs to identify the nearest waypoint when it starts, and determine if it has passed this waypoint before selecting a waypoint to navigate towards.
-4. Compass is highly influenced by electric motors - need to check in-situ and potentially isolate - much better outdoors, still perhaps 5 degrees out in the box, so we need to check in the boat
-5. Need some kind of integration testing
-6.  We need follow-on code for failed sensors - wind direction (can we find out by steering?), compass (use GPS), gps (use dead reckoning).  Maybe ultimately we need more than one sensor.
-7.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to 
+2. Need some kind of integration testing
+3.  We need follow-on code for failed sensors - wind direction (can we find out by steering?), compass (use GPS), gps (use dead reckoning).  Maybe ultimately we need more than one sensor.
+4.  Note that when the input voltage falls below 6v that spikes caused by servo operation cause the Arduino to 
     crash - this may have happened during recent OTW testing.  We need to ensure that the Arduino power supply is protected, and there is a fall-back reset.  Ideally when the batteries get low we shut down until they regain some charge (I guess this could be never ...).  There are voltage regulators 
     that will ensure a stable voltage for as long as possible.
-8.  Don't forget fallback (watchdog) timer which reboots the arduino after a period of inactivity (aka crash)
-9.  Need to review all limits (e.g. max steer time) before attempting longer journeys
-10. Consider between navigation checks:
-- To abandon a tack, or start tacking if wind requires it
-11. Other checks to Consider
+5.  Don't forget fallback (watchdog) timer which reboots the arduino after a period of inactivity (aka crash)
+6.  Need to review all limits (e.g. max steer time) before attempting longer journeys
+7. Other checks to Consider
 - in irons
 - becalmed (ensure preservation of battery)
 - in a storm (ditto)
 
 ## Done (for reference)
 
+-  In the final attempt we need to disable self test (probably completely), to take account of the fact that the system may restart during navigation.  Also the navigation needs to identify the nearest waypoint when it starts, and determine if it has passed this waypoint before selecting a waypoint to navigate towards.
+- To abandon a tack, or start tacking if wind requires it
+- Compass is highly influenced by electric motors - need to check in-situ and potentially isolate - much better outdoors, still perhaps 5 degrees out in the box, so we need to check in the boat
+- It would be good to use the analog inputs to measure the battery voltage.  Note that once we have a proper power supply this will require a connection directly from the battery
 - Logging now includes memory
 - Need better indication from selftest that everything is well, so that we can be sure that nav has started when we no longer have the display
 - Rewrite functions which return structs to using pointer arguments, for efficiency and
