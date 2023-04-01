@@ -10,6 +10,11 @@ typedef struct {
    position pos;
 } waypoint;
 
+typedef struct {
+   int length;
+   waypoint *waypoints;
+} route;
+
 inline bool operator==(const waypoint& lhs, const waypoint& rhs) {
     return (
       lhs.pos.latitude == rhs.pos.latitude &&

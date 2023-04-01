@@ -24,12 +24,6 @@
 //                    {"D",     {53.43742, -2.24842, 5}},  //53 26' 15", -2 14' 54"
 //                    {"Hough", {53.43772, -2.24809, 5}}}; //53 26' 18", -2 14' 53"
 
-typedef struct {
-   int length;
-   waypoint *waypoints;
-} route;
-
-
 // Platt fields pond
 waypoint pfA = {"A", {53.44580, -2.22515, 3.0}};
 waypoint pfB = {"B", {53.44530, -2.22550, 3.0}};

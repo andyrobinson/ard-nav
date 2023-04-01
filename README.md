@@ -129,6 +129,15 @@ Need to think about how to handle at sea restarts, which will be inevitable
     that guarantees we communicate, but not too often as this will drain the
     battery
     
+## Further notes on error handling/recovery
+- where possible the system should function if a single component fails, with the exeption of essential components:
+  - Non recoverable:
+    Rudder, Sail, Arduino, Battery & Solar charging
+  - Recoverable
+    Arduino crash, arduino restart
+    SD Card, Satellite comms (although boat is now lost), compass, GPS (head on fixed bearing), Windsensor (tricky)
+- where there is multiple component failure the behaviour is undefined (otherwise this is going to be very mad to code around)
+    
 - need to calculate the next nearest waypoint, not start from the beginning again every time!  This is not
 as simple as the nearest in distance, we also need to think about the bearings of
   the nearest waypoint and the one after that.
