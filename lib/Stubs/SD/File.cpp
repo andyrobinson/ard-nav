@@ -11,3 +11,4 @@ int File::read(){return 0;};
 int File::peek(){return 0;};
 int File::available(){return 0;};
 void File::flush(){};
+void File::close(){};

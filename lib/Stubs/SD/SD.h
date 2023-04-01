@@ -1,6 +1,9 @@
 #ifndef SDStub_h
 #define SDStub_h
 
+#include "cstdio"
+#include "cstring"
+
 uint8_t const O_READ = 0X01;
 uint8_t const O_WRITE = 0X02;
 uint8_t const O_APPEND = 0X04;
@@ -21,6 +24,7 @@ namespace SDLib {
       virtual int peek();
       virtual int available();
       virtual void flush();
+      virtual void close();
 
       // using Print::write;
   };
@@ -33,9 +37,20 @@ namespace SDLib {
       bool exists(const char *filepath);
       bool remove(const char *filepath);
 
+      // for test purposes
+      char *last_remove();
+      char *last_filepath();
+      char *file_contents();
+      void reset();
+
+     private:
+       char remove_filepath[50];
+       char readwrite_filepath[50];
+       char contents[1000];
+
   };
 
-  extern SDClass SD;
+  extern SDClass SDStub;
 
 };
 

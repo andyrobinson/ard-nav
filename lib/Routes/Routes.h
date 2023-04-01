@@ -38,10 +38,10 @@ waypoint pf2route[] = {pfB,pfG,pfB,pfG,pfF};
 waypoint pf3route[] = {pfB,pfC,pfD,pfE,pfB,pfC,pfD,pfE,pfF};
 waypoint pf4route[] = {pfA,pfB,pfC,pfB,pfA,pfF};
 
-route pf1 = {5, pf1route};
-route pf2 = {5, pf2route};
-route pf3 = {9, pf3route};
-route pf4 = {6, pf4route};
+route pf1 = {"Platt1", 5, pf1route};
+route pf2 = {"Platt2", 5, pf2route};
+route pf3 = {"Platt3", 9, pf3route};
+route pf4 = {"Platt4", 6, pf4route};
 
 route plattfields[] = {pf1,pf2,pf3,pf4};
 

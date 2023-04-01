@@ -11,6 +11,7 @@ typedef struct {
 } waypoint;
 
 typedef struct {
+   char label[9];
    int length;
    waypoint *waypoints;
 } route;
