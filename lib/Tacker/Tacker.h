@@ -11,9 +11,9 @@
 using namespace Angle;
 using namespace Windrange;
 
-#define TACKER_NO_GO_LIMIT 45
-#define WIND_RANGE_NO_GO_LIMIT 30 // give ourselves a little lee way, literally
-#define MIN_TACK_MS 5000
+#define TACKER_NO_GO_LIMIT 40
+#define WIND_RANGE_NO_GO_LIMIT 25 // give ourselves a little lee way, literally
+#define MIN_TACK_MS 10000
 
 class Tacker
 {
