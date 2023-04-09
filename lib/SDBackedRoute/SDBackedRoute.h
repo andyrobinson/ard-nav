@@ -3,6 +3,7 @@
 
 #include "Route.h"
 #include "SD.h"
+#include "Arduino.h"
 
 using namespace SDLib;
 
@@ -17,9 +18,11 @@ class SDBackedRoute : public Route {
 
     private:
       void twoDigitsToBuffer(int val);
+      void do_cold_start();
+      void do_warm_start();
 
       char filepath_buffer[13];
-      unsigned char digit_buffer[2];
+      uint8_t digit_buffer[2];
       SDClass *sd;
       waypoint *waypoints;
       int route_length;

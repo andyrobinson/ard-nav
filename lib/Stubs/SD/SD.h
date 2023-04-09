@@ -16,7 +16,7 @@ namespace SDLib {
 
   class File {
     public:
-      File(void);
+      File(char* content_ptr);
       virtual uint16_t write(uint8_t);
       virtual uint16_t write(const uint8_t *buf, uint16_t size);
       virtual int availableForWrite();
@@ -26,6 +26,13 @@ namespace SDLib {
       virtual void flush();
       virtual void close();
 
+      // for test purposes
+      virtual char* contents_as_string();
+      virtual void reset();
+
+    private:
+      char* file_buffer;
+      int buffer_index;
       // using Print::write;
   };
 
@@ -41,13 +48,14 @@ namespace SDLib {
       char *last_remove();
       char *last_filepath();
       char *file_contents();
+      void setup_file(char* filepath, char* initial_content);
       void reset();
 
      private:
        char remove_filepath[50];
        char readwrite_filepath[50];
-       char contents[1000];
-
+       char existing_file[50];
+       char file_chars[1000];
   };
 
   extern SDClass SDStub;

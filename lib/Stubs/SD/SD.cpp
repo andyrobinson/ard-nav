@@ -6,11 +6,11 @@ namespace SDLib {
 
   File SDClass::open(const char *filepath, uint8_t mode) {
       strcpy(readwrite_filepath,filepath);
-      return File();
+      return File(file_chars);
   }
 
   bool SDClass::exists(const char *filepath) {
-    return true;
+    return strcmp(filepath, existing_file) == 0;
   }
 
   bool SDClass::remove(const char *filepath) {
@@ -26,15 +26,20 @@ namespace SDLib {
     return readwrite_filepath;
   };
 
-  char *SDClass::file_contents() {
-    return contents;
-  };
+  void SDClass::setup_file(char* filepath, char* initial_content) {
+    strcpy(existing_file, filepath);
+    strcpy(file_chars, initial_content);
+  }
 
+  char *SDClass::file_contents() {
+    return file_chars;
+  };
 
   void SDClass::reset() {
     strcpy(remove_filepath,"");
     strcpy(readwrite_filepath,"");
-    strcpy(contents,"");
+    strcpy(existing_file,"");
+    strcpy(file_chars,"\0");
   }
 
   SDClass SDStub;
