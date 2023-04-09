@@ -24,6 +24,13 @@ The other folders represent Arduino applications.  Again each folder has a makef
 * All time measurements are in milliseconds
 * Speed is metres/sec (although this could be millimetres/millisecond!)
 
+## External libraries
+* Adafruit_GFX - graphics library for OLED display
+* Adafruit_GPS_Library - for GPS
+* Adafruit_SleepyDog_Library - provides sleep and watchdog functionality
+* Adafruit_SSD1306 - library for OLED display
+* PololuMaestro - servo controller
+
 ## Current libraries
 
 * Angle - utilities for dealing with angles and signed -180 to +180 (angle) and unsigned 0 - 359 (uangle) types.
@@ -35,15 +42,18 @@ The other folders represent Arduino applications.  Again each folder has a makef
 * Gps - wrapper for the Adafruit GPS Library which enables/disables the GPS, and gets a reading within a specified time (if possible)
 * Helm - Steer a direct course and adjust the sail
 * I2C - wrapper for the Wire library, with error handling
+* IHelm - interface for Helm implementations
 * Logger - Abstract class for logging (implemented by specific loggers)
 * MServo - wrapper for the Pololu Maestro servo board library
 * MultiLogger - logs simultaneously to the given list of loggers
 * Navigator - Navigate to a destination lat/long by repeatedly steering
 * Position - lat/long struct with error values
 * RotaryPID - a PID controller for the rudder using angles rather than a linear scale (see https://en.wikipedia.org/wiki/PID_controller)
+* Route - Interface for a route object (like an iterator for a route)
 * Routes - waypoint data for navigating
 * Rudder - wrapper around servo to limit deflection
 * Sail - sailing logic; set sail angle according to relative wind, only gybe when necessary
+* SDBackedRoute - Route which keeps progress in a file on the SD card
 * SDLogger - logs to an SD card
 * SelfTest - power-on self test routines
 * SerialLogger - log to the serial port (for Arduino Serial monitor)
@@ -58,61 +68,8 @@ The other folders represent Arduino applications.  Again each folder has a makef
 * Windrange - data structure to hold ranges of acceptable wind direction, to determine if the current course should be abandoned
 * WindSensor - wrapper around the AS5048B 14 bit rotary position sensor, to return a relative wind angle between -180 and +180
 
-## Current concerns
-
-* Replaced the compass, need to callibrate it properly and validate that it will correctly show the orientation
-  
-* The rotary PID appears to deal with steering satisfactorily, but needs tuning
-
-## Observations from field tests
-
-### 8 Jan 2023, Platt Fields Park
-
-Restarts
-* There were 3 unplanned restarts in the first 212 seconds.  Note the timestamp for the first start is longer as the GPS has to get a fix.
-* Timings were after 36 seconds, then 40 seconds, then 36 seconds.
-* Other restarts at 1107, 3000 (intentional, change of route), 3103, 5023, 5114
-* This is NOT consistent with a low battery problem - you would expect that after the initial restarts it would settle down
-* Could it be temperature related?  It was a very cold day
-* It may help to record minimum voltages as well as maximum, to see if brown-out is causing this issue
-* Note also this is different from the original crash problems - the system restarts and functions without problems, for up to 50 minutes, but it's worth re-reading the notes from this time.
-* Given the number of resets in the initial phase it should be easy to reproduce(?!)
-
-Number of abandons, approach to tacking
-* There are significant numbers of abandons, even though the strategy of moving to the second tack should give a good angle on the wind if the first tack fails
-* Typically the infringement is only a few degrees - if we relax both the angle of tack and the wind range this should reduce this
-* There's no evidence that the wind direction used to decide on the tack is wildly out (suggesting the need for an average wind) 
-* It may also reflect a slightly unresponsive wind direction sensor, so it doesn't fully swing round to reflect the new wind direction
-
-Steering constants
-* A 0 percent adjustment was found to be most effective
-* See if this can be adjusted further, i.e. move the 0 percent up to the 50 percent
-
-#### Actions
-* Investigate the voltage behaviour on start-up using the scope
-  This does NOT appear to be a problem with voltage fluctuation - the solar power seems to be completely stable.
-
-- resetting software and trying repeated runs of 5 minutes, inside and outside (with working compass and solar
-  - inside (battery only) OK
-  - inside (solar active 1) - no logs after 85 seconds, no sign of a restart - actually OK, logged elsewhere
-  - inside (solar active 2) - accesses SD card every 10 seconds.  All logs are fine - somehow it's figured out the time even though it has no fix
-
-* Calculate and log minimum voltage values as well as max
-* Relax the tack and the wind range
-* Adjust the steering constant range
-
-
-### 13 May, Land based
-* The rudder seems to make for weaving navigation - in part due to the unresponsiveness of a human vessel
-* We need a better estimate of speed (and therefore time to destination).  If we underestimate the speed then we will overshoot the target.  Points towards moving averages for both speed and absolute wind direction (and therefore a regular update to both, probably via the GPS interrupt timer)
-* the logging could be better - where are we heading, how long before next review, are we tacking, and is it tack1 or tack2?
-* compass is much better outside
-* broadly speaking the software appears to work(!)
-
-### 25 April 2021, on the water
-* Seems very keen to tack
-* Steering makes the boat weave
-* Logging stopped after 10 mins of second run - will add capacitor to try and remove spikes, but need to monitor
+## Field tests
+See the separate [field report page](https://github.com/andyrobinson/ard-nav/blob/master/FieldReports.md).
 
 ## Planned development
 Need to think about how to handle at sea restarts, which will be inevitable

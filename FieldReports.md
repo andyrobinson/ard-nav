@@ -1,5 +1,23 @@
 # Field Reports
 
+### 9 April 2023, Platt Fields Park
+The summary is that the system worked well.  It was able to complete two full navigations and start on a third before I
+ran out of time.
+* No crashes or restarts over 140 minutes of running time.  The runs were 30, 36 and 30 minutes.
+* Solar power resulted in the battery starting at 4.12v (90% charged) and rising to 4.2v (10% charged) at the end of the session
+* The steering was generally good on about an 80% setting, however when going downwind in a stiff breeze there was significant oscillation
+* The approach to tacking was much improved with many few abandons, however it could point more into wind
+* There appears to be a favouring of the starboard tack, but this is more likely to be wind conditions/route
+* As the boat approaches the waypoint it gets very fussy - this seems to indicate the minimum steer level is too short
+* In a stiff breeze it can travel a significant way on a single tack, so it would be better to route the waypoints more away from the island.
+
+Actions for next time:
+* Allow the boat to point 5 degrees more into wind
+* Fix current steering parameters at the 80% level and just vary the Kd value on the RC
+* Increase the minimum steer time
+* Add a round the island and bottom corner route, using the third switch
+* Move on to the next thing - satellite comms
+* Consider changing the servo controller
 
 ### 8 Jan 2023, Garden
 Garden test allows testing with GPS and Solar panel working.  Inside neither of these elements is working correctly
