@@ -95,7 +95,7 @@ namespace {
     EXPECT_EQ(stub_tacker.steer_time(0), MAX_STEER_TIME);
   }
 
-  TEST_F(NavigatorTest, Should_have_a_minimum_steer_time_of_5s) {
+  TEST_F(NavigatorTest, Should_have_a_minimum_steer_time_of_10s) {
     gpsResult gps_current = {{28.0, -16.0, 3.0}, 2, 2, 2, 12345675};
     waypoint destination = {"dest", {27.9999, -15.9999, 5.0}};
     gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6, 0.6,1}};
@@ -104,7 +104,7 @@ namespace {
     navigator.sailto(destination);
 
     EXPECT_EQ(stub_tacker.steering(0),139);
-    EXPECT_EQ(stub_tacker.steer_time(0), 5000);
+    EXPECT_EQ(stub_tacker.steer_time(0), 10000);
   }
 
   TEST_F(NavigatorTest, Should_steer_repeatedly_until_reached_destination) {
