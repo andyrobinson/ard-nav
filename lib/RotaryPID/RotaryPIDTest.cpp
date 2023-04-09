@@ -1,6 +1,5 @@
 #include "RotaryPID.h"
 #include "gtest/gtest.h"
-#include "StubLogger.h"
 //#include <iostream>
 
 // based on an examination of logs 16192
@@ -18,7 +17,6 @@ namespace {
 
 RotaryPID rotaryPID;
 Switches switches_stub;
-StubLogger stub_logger;
 
 class RotaryPIDTest : public ::testing::Test {
  protected:
@@ -27,7 +25,7 @@ class RotaryPIDTest : public ::testing::Test {
 
   void SetUp() override {
 
-    rotaryPID = RotaryPID(45, &switches_stub, &stub_logger);
+    rotaryPID = RotaryPID(45, &switches_stub);
     switches_stub.set(0);
     switches_stub.set_percent(50.0);
   }
