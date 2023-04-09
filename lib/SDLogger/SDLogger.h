@@ -7,6 +7,7 @@
 #include "Gps.h"
 #include "Battery.h"
 #include "Utility.h"
+#include "Switches.h"
 
 #define PRE_JAN1_2000_TS 15000l
 #define CHIP_SELECT 4
@@ -18,7 +19,7 @@
 class SDLogger : public Logger {
     public:
       SDLogger();
-      SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, long ofilename=0);
+      SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, Switches *switchesp, long ofilename=0);
       virtual void begin();
       virtual void msg(char *message);
       virtual void banner(char *message);
@@ -35,6 +36,7 @@ class SDLogger : public Logger {
       WindSensor *windsensor;
       Compass *compass;
       Battery *battery;
+      Switches *switches;
       gpsResult gpsReading;
       char destination;
       char tack;

@@ -72,11 +72,11 @@ WindSensor windsensor(&i2c);
 Compass compass(&i2c, &timer);
 Gps gps(&timer);
 
-SDLogger logger(&gps, &windsensor, &compass, &battery, 0);
+SDLogger logger(&gps, &windsensor, &compass, &battery, &switches, 0);
 // SerialLogger logger(&gps, &windsensor, &compass, &battery);
 
 Sail sail(&servo_control);
-RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
+RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches);
 Rudder rudder(&servo_control);
 Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &logger);
 Tacker tacker(&helm, &compass, &windsensor, &logger);

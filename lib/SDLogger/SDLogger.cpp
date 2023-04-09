@@ -8,8 +8,8 @@ using namespace Utility;
 
 SDLogger::SDLogger() {}
 
-SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, long ofilenamep):
-  gps(gpsp), compass(compassp), windsensor(windsensorp), battery(batteryp), ofilename(ofilenamep) {}
+SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, Switches *switchesp, long ofilenamep):
+  gps(gpsp), compass(compassp), windsensor(windsensorp), battery(batteryp), switches(switchesp), ofilename(ofilenamep) {}
 
 void SDLogger::calculate_filename(char *filename, long unix_ts) {
     long filenamelong = ofilename == 0 ? max1(unix_ts / 100000, PRE_JAN1_2000_TS) : ofilename;
@@ -90,6 +90,7 @@ void SDLogger::print_line(char *message, char *prefix) {
       dataFile.print(compass_resets); dataFile.print(",");
       dataFile.print(destination); dataFile.print(",");
       dataFile.print(tack); dataFile.print(",");
+      dataFile.print(switches->dial_percent(),1);dataFile.print(",");
       dataFile.print(prefix);
       dataFile.print(message);
       if (banner_msg[0] != '\0') {
@@ -119,6 +120,6 @@ void SDLogger::write_version(int major, int minor) {
       dataFile.print(minor);
       dataFile.println("");
       dataFile.close();
-    }  
+    }
 }
 

@@ -18,7 +18,7 @@ class RotaryPID
 {
   public:
       RotaryPID();
-      RotaryPID(float limit_param, Switches *switchesp, Logger *loggerp);
+      RotaryPID(float limit_param, Switches *switchesp);
       angle calculate(uangle desired_heading, uangle current_heading, long interval_ms);
 
   private:
