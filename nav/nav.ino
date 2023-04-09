@@ -129,7 +129,7 @@ void loop() {
   rudder.set_position(0);
   timer.wait(5000);
 
-  uint8_t sw = switches.value() & 3; // four routes configurable
+  uint8_t sw = switches.value(); // eight routes configurable
   route journey = plattfields[sw];
 
   logger.write_version(MAJOR_VERSION,MINOR_VERSION);

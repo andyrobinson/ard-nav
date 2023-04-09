@@ -32,17 +32,30 @@ waypoint pfD = {"D", {53.44550, -2.22570, 3.0}};
 waypoint pfE = {"E", {53.44525, -2.22600, 3.0}};
 waypoint pfF = {"F", {53.44546, -2.22510, 4.0}};
 waypoint pfG = {"G", {53.44541, -2.22589, 3.0}};
+waypoint pfH = {"H", {53.44580, -2.22695, 3.0}};
+waypoint pfI = {"I", {53.44626, -2.22675, 3.0}};
+waypoint pfJ = {"J", {53.44668, -2.22545, 3.0}};
+waypoint pfK = {"K", {53.44685, -2.22487, 3.0}};
+waypoint pfL = {"L", {53.44656, -2.22498, 3.0}};
 
 waypoint pf1route[] = {pfA,pfB,pfA,pfB,pfF};
 waypoint pf2route[] = {pfB,pfG,pfB,pfG,pfF};
 waypoint pf3route[] = {pfB,pfC,pfD,pfE,pfB,pfC,pfD,pfE,pfF};
 waypoint pf4route[] = {pfA,pfB,pfC,pfB,pfA,pfF};
+waypoint pf5route[] = {pfL,pfA,pfB,pfC,pfH,pfI,pfJ,pfL};
+waypoint pf6route[] = {pfB,pfC,pfH,pfI,pfJ,pfL,pfA,pfB,pfF};
+waypoint pf7route[] = {pfL,pfJ,pfK,pfL,pfJ,pfK};
+waypoint pf8route[] = {pfL,pfK,pfJ,pfL,pfK,pfJ};
 
-route pf1 = {"Platt1", 5, pf1route};
-route pf2 = {"Platt2", 5, pf2route};
-route pf3 = {"Platt3", 9, pf3route};
-route pf4 = {"Platt4", 6, pf4route};
+route pf1 = {"LeftRt", 5, pf1route};
+route pf2 = {"OutBack", 5, pf2route};
+route pf3 = {"Web", 9, pf3route};
+route pf4 = {"LShape", 6, pf4route};
+route pf5 = {"RoundL", 8, pf5route};
+route pf6 = {"RoundB", 9, pf6route};
+route pf7 = {"ThreeCW", 6, pf7route};
+route pf8 = {"ThreeAC", 6, pf8route};
 
-route plattfields[] = {pf1,pf2,pf3,pf4};
+route plattfields[] = {pf1,pf2,pf3,pf4,pf5,pf6,pf7,pf8};
 
 #endif

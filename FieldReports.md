@@ -15,7 +15,7 @@ Actions for next time:
 * Allow the boat to point 5 degrees more into wind (/)
 * Fix current steering parameters at the 80% level and just vary the Kd value on the RC (/)
 * Increase the minimum steer time (/)
-* Add a round the island and bottom corner route, using the third switch
+* Add a round the island and bottom corner route, using the third switch (/)
 * Move on to the next thing - satellite comms
 * Consider changing the servo controller
 
