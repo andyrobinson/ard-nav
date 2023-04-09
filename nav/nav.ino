@@ -21,7 +21,7 @@
 #include <version.h>
 #include <MServo.h>
 
-#define MAJOR_VERSION 2
+#define MAJOR_VERSION 3 // first successful reliable navigation
 #define STARTUP_WAIT_FOR_FIX_MS 60000
 
 /*
