@@ -20,6 +20,7 @@
 #include <Battery.h>
 #include <version.h>
 #include <MServo.h>
+#include <IridiumSBD.h>
 
 #define MAJOR_VERSION 3 // first successful reliable navigation
 #define STARTUP_WAIT_FOR_FIX_MS 60000
@@ -58,6 +59,12 @@ EDBG
 */
 
 char logmsg[40];
+
+#define IridiumSerial Serial1
+#define DIAGNOSTICS false // Change this to see diagnostics
+
+// Declare the IridiumSBD object
+IridiumSBD modem(IridiumSerial);
 
 // Dependency injection
 
