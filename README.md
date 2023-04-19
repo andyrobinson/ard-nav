@@ -72,6 +72,17 @@ The other folders represent Arduino applications.  Again each folder has a makef
 See the separate [field report page](https://github.com/andyrobinson/ard-nav/blob/master/FieldReports.md).
 
 ## Planned development
+
+What do we need to send back in satellite data?
+- GPS co-ordinates
+- Current waypoint we're sailing towards
+- Battery health (and history?)
+- GPS Fix
+- I2C errors
+- free memory (max/min)
+- last restart
+- any other health information? ideally hull breach
+
 Need to think about how to handle at sea restarts, which will be inevitable
 - should we preserve state on the SD card?  
   SD card reading is pretty crude, so would need to read until the end-of-line
