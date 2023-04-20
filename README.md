@@ -82,6 +82,48 @@ Implementation
 
 Begin
 - store the start-up time
+- zero all values
+- turn off module
+
+msg - call main
+banner - call main
+write_version - ignore
+setdest - store
+settack - ignore
+
+main
+* we have to match on a specific time, because if there are multiple restarts per hour then either we will log too often or not at all.  However care needs to be taken because of sleep periods - may require that there is a special signal for checking if it's time to log after sleep.
+* If real time is not available from the GPS then it should be from the satellite module - if not we can't transmit anyway!
+
+* let's assume that we specify
+** The hours that we want to log (in an array e.g [0,6,12,18])
+** The minutes of the hour that we want to log (in an array e.g. [15,45])
+** As a constant the logging window in minutes
+* Note that when we log we need to wait (sleep) out the remainder of the logging window before resuming, so that there's no possibility of double logging
+* If real time is not available from the GPS then it should be from the satellite module - if not we can't transmit anyway!
+
+if it's not time to log, then just update the values and carry on.  values to update:
+* min battery voltage
+* min available memory
+* GPS co-ordinates, in case not known at time of logging
+* timestamp of last good position
+
+otherwise
+- put the data in an array as binary data
+- attempt to send (I think this is on a 5 min timeout)
+- log the result
+- have a separate satellite log file on the SD card, and just comment out the actual send most of the time
+- zero the voltage and memory
+- wait until the end of the logging window
+- consider if we need to use the callback while transmitting (for what?).  The danger is that the power supply will be overwhelmed, causing a brownout
+
+A few notes on data
+* GPS co-ordinates as fixed point (4 byte integers)
+* Battery voltage as unsigned byte (2.00v - 4.55v)
+* memory should be possible in short or unsigned short
+* Last restart should be unix time which is a long
+
+Note 6 hourly reports are required.  If the battery is very low we might reduce this to every 12 or 24 hours, but this will result in disqualification; the problem with this is that two are required in the hours of darkness
 
 ## Planned development
 
