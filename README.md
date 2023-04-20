@@ -71,6 +71,18 @@ The other folders represent Arduino applications.  Again each folder has a makef
 ## Field tests
 See the separate [field report page](https://github.com/andyrobinson/ard-nav/blob/master/FieldReports.md).
 
+## Satellite Communications
+Questions:
+1.  Do we need an external ariel (garden test gave 0 signal strength)
+2.  Where are the satellites, and therefore which way do you need a clear line of sight
+3.  How much current does it draw generally
+4.  Check that turning it off works and that current is sufficiently reduced
+
+Implementation
+
+Begin
+- store the start-up time
+
 ## Planned development
 
 What do we need to send back in satellite data?

@@ -19,13 +19,14 @@
 // Declare the IridiumSBD object
 IridiumSBD modem(IridiumSerial);
 
+int signalQuality = -1;
+int err;
+
 void setup()
 {
-  int signalQuality = -1;
-  int err;
 
   // Start the console serial port
-  Serial.begin(115200);
+  Serial.begin(19200);
   while (!Serial);
 
   // Start the serial port connected to the satellite modem
@@ -69,6 +70,10 @@ void setup()
   Serial.print(IMEI);
   Serial.println(F("."));
 
+}
+
+void loop()
+{
   // Check the signal quality.
   // This returns a number between 0 and 5.
   // 2 or better is preferred.
@@ -83,10 +88,9 @@ void setup()
   Serial.print(F("On a scale of 0 to 5, signal quality is currently "));
   Serial.print(signalQuality);
   Serial.println(F("."));
-}
 
-void loop()
-{
+  delay(2000);
+
 }
 
 #if DIAGNOSTICS
