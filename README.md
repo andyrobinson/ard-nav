@@ -119,8 +119,8 @@ otherwise
 
 A few notes on data
 * GPS co-ordinates as fixed point (4 byte integers)
-* Battery voltage as unsigned byte (2.00v - 4.55v)
-* memory should be possible in short or unsigned short
+* Battery voltage as unsigned short (2 bytes) (2.00v - 4.55v) (/)
+* memory should be possible in short or unsigned short (/)
 * Last restart should be unix time which is a long
 
 Note 6 hourly reports are required.  If the battery is very low we might reduce this to every 12 or 24 hours, but this will result in disqualification; the problem with this is that two are required in the hours of darkness

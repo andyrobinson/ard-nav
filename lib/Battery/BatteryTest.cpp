@@ -93,7 +93,6 @@ namespace {
     EXPECT_EQ(max_reading,512);
   }
 
-
   TEST_F(BatteryTest, should_space_out_readings_by_given_delay) {
     pin_index = -1;
     int myvalues[10] = {102, 102, 512, 90, 400, 300, 10, 10, 10, 10};
