@@ -22,14 +22,14 @@ class Battery
     Battery(int (*analogPinFn)(uint8_t), Timer *timerp);
     float lipo1maxv();
     float lipo1minv();
+    uint16_t raw_max();
+    uint16_t raw_min();
     void add_reading();
 
   private:
-    int max_reading();
-    int min_reading();
-    float to_volts(int reading);
+    float to_volts(uint16_t reading);
     int (*readAnalogPin) (uint8_t);
-    int readings_buffer[SAMPLES];
+    uint16_t readings_buffer[SAMPLES];
     int buffer_index;
     unsigned long last_read;
     Timer *timer;

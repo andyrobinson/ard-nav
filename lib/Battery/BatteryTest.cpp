@@ -79,6 +79,21 @@ namespace {
     EXPECT_NEAR(reading2,0.966,0.001);
   }
 
+  TEST_F(BatteryTest, should_return_raw_values) {
+    pin_index = -1;
+    int myvalues[25] = {100, 512,300,400,300,300,400,300,300,99};
+    values = myvalues;
+    Battery battery(&pinFn, &stub_timer);
+
+    for (int j=0; j<10;j++) {battery.lipo1maxv();stub_timer.wait(DELAY_BETWEEN_READINGS);}
+    uint16_t min_reading = battery.raw_min();
+    uint16_t max_reading = battery.raw_max();
+
+    EXPECT_EQ(min_reading, 99);
+    EXPECT_EQ(max_reading,512);
+  }
+
+
   TEST_F(BatteryTest, should_space_out_readings_by_given_delay) {
     pin_index = -1;
     int myvalues[10] = {102, 102, 512, 90, 400, 300, 10, 10, 10, 10};

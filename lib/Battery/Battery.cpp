@@ -9,15 +9,15 @@ Battery::Battery(int (*analogPinFn)(uint8_t), Timer *timerp):
 
 float Battery::lipo1maxv() {
   add_reading();
-  return to_volts(max_reading());
+  return to_volts(raw_max());
 }
 
 float Battery::lipo1minv() {
   add_reading();
-  return to_volts(min_reading());
+  return to_volts(raw_min());
 }
 
-int Battery::min_reading() {
+uint16_t Battery::raw_min() {
   int min = MAX_ANALOG;
   for (int i=0; i < SAMPLES; i++) {
     int current = readings_buffer[i];
@@ -26,7 +26,7 @@ int Battery::min_reading() {
   return min;
 }
 
-int Battery::max_reading() {
+uint16_t Battery::raw_max() {
   int max = 0;
   for (int i=0; i < SAMPLES; i++) {
     max = (readings_buffer[i] > max) ? readings_buffer[i] : max;
@@ -36,14 +36,14 @@ int Battery::max_reading() {
 
 void Battery::add_reading() {
   if (timer->milliseconds() > last_read + READ_DELAY) {
-    int raw_reading = readAnalogPin((uint8_t) LIPO1);
+    uint16_t raw_reading = (uint16_t) readAnalogPin((uint8_t) LIPO1);
     readings_buffer[buffer_index] = raw_reading;
     buffer_index = (buffer_index + 1) % SAMPLES; // circular buffer
     last_read = timer->milliseconds();
   }
 }
 
-float Battery::to_volts(int reading) {
+float Battery::to_volts(uint16_t reading) {
   float result = 6.6 * ((float) reading)/MAX_ANALOG; // we have divided the voltage to get it below 3.3v
   return result;
 
