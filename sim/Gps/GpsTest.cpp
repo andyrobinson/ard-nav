@@ -22,6 +22,8 @@ TEST_F(GpsTest, should_return_gps_result_based_on_boat_data) {
 
   EXPECT_EQ(gpsresult.pos.latitude, chorlton.latitude);
   EXPECT_EQ(gpsresult.pos.longitude, chorlton.longitude);
+  EXPECT_EQ(gpsresult.fpLongitude, (int32_t) chorlton.longitude * 100000);
+  EXPECT_EQ(gpsresult.fpLatitude, (int32_t) chorlton.latitude * 100000);
   EXPECT_EQ(gpsresult.fix, FIX_DGPS);
   EXPECT_EQ(gpsresult.mps, boat.speed());
   EXPECT_EQ(gpsresult.avg_mps, expected_avg_speed);
