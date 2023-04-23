@@ -129,7 +129,7 @@ void loop() {
   sail.set_position(0);
 
   // try and get a GPS fix before logging so that it goes in the same file
-  gpsResult gps_data_ignored = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0};
+  gpsResult gps_data_ignored = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0,0,0};
   gps.data(STARTUP_WAIT_FOR_FIX_MS, &gps_data_ignored);
 
   // and we're off
