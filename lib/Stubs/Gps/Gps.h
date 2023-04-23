@@ -7,12 +7,15 @@ using namespace Position;
 
 #define FIX_NONE               -1
 
+
 typedef struct {
   position pos;
   short fix;
   float mps;
   float avg_mps;
   long unixTime;
+  int32_t fpLatitude;
+  int32_t fpLongitude;
 } gpsResult;
 
 class Gps
