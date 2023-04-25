@@ -7,6 +7,15 @@ namespace {
 
   class UtilityTest : public ::testing::Test {};
 
+  void hexprintln(uint8_t *buff, int size) {
+      char hex_string[3];
+      for (int i=0; i < size-1; i++) {
+          sprintf(hex_string, "%02X\0", buff[i]);
+          std::cout << hex_string;
+      }
+      std::cout << "\n";
+  }
+
   TEST_F(UtilityTest, Should_calculate_the_sign) {
     int a = -77;
     long b = 887685;
@@ -81,6 +90,27 @@ namespace {
     EXPECT_EQ(ARRAY_SIZE(arr),5);
     EXPECT_EQ(ARRAY_SIZE(darr),3);
   }
+
+  TEST_F(UtilityTest, Should_stuff_a_long_into_a_byte_array) {
+    long a = 1234L;
+    uint8_t buff[4];
+    stuff(a,buff,0,4);
+
+    long b = buff[3] << 24 | buff[2] << 16 | buff[1] << 8 | buff[0];
+    EXPECT_EQ(a,b);
+  }
+
+  TEST_F(UtilityTest, Should_stuff_into_the_middle_of_an_array) {
+    long a = 333L;
+    uint8_t buff[] = "ZZZZZZ";
+    stuff(a,buff,1,4);
+
+    long b = buff[4] << 24 | buff[3] << 16 | buff[2] << 8 | buff[1];
+    EXPECT_EQ(a,b);
+    EXPECT_EQ(buff[0],'Z');
+    EXPECT_EQ(buff[5],'Z');
+  }
+
 
 } // namespace
 

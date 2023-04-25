@@ -26,6 +26,11 @@ namespace Utility {
   }
 
   long unix_time(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t second);
+
+  void stuff(long val, uint8_t *buff, int start, int length);
+
+  void toHex(uint8_t *in, char *out, int length);
+
   int dispFreeMemory();
 }
 

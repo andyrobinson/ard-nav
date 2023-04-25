@@ -15,6 +15,21 @@ namespace Utility {
   return mktime(&now);
 }
 
+  void stuff(long val, uint8_t *buff, int start, int length) {
+    long val2 = val;
+    for (int i=start; (i - start) < length; i++) {
+        buff[i] = val2 & 0xFF;
+        val2 = val2 >> 8;
+    }
+  }
+
+  void toHex(uint8_t *in, char *out, int length) {
+    for (int i=0; i<length; i++) {
+        out[i*2+1] = (in[i] & 0x2) + '0';
+        out[i*2] = 7 + '0';
+    }
+  }
+
   extern "C" char* sbrk(int incr);
   int dispFreeMemory() {
     char top;
