@@ -9,7 +9,7 @@ namespace {
 
   void hexprintln(uint8_t *buff, int size) {
       char hex_string[3];
-      for (int i=0; i < size-1; i++) {
+      for (int i=0; i < size; i++) {
           sprintf(hex_string, "%02X\0", buff[i]);
           std::cout << hex_string;
       }
@@ -92,7 +92,7 @@ namespace {
   }
 
   TEST_F(UtilityTest, Should_stuff_a_long_into_a_byte_array) {
-    long a = 1234L;
+    long a = -1234L;
     uint8_t buff[4];
     stuff(a,buff,0,4);
 
@@ -109,6 +109,15 @@ namespace {
     EXPECT_EQ(a,b);
     EXPECT_EQ(buff[0],'Z');
     EXPECT_EQ(buff[5],'Z');
+  }
+
+  TEST_F(UtilityTest, Should_stuff_a_short_into_a_byte_array) {
+    short a = -5768;
+    uint8_t buff[2];
+    stuff(a,buff,0,2);
+
+    short b = buff[1] << 8 | buff[0];
+    EXPECT_EQ(a,b);
   }
 
 
