@@ -72,11 +72,26 @@ The other folders represent Arduino applications.  Again each folder has a makef
 See the separate [field report page](https://github.com/andyrobinson/ard-nav/blob/master/FieldReports.md).
 
 ## Satellite Communications
-Questions:
-1.  Do we need an external ariel (garden test gave 0 signal strength)
-2.  Where are the satellites, and therefore which way do you need a clear line of sight
-3.  How much current does it draw generally
-4.  Check that turning it off works and that current is sufficiently reduced
+Notes & Questions:
+
+1.  Currently no signal received under any circumstances.  In the process of debugging with RockBlock
+2.  The library by default tries to send a communication for 300 seconds (5 mins).  In between send attempts it waits on a loop for 10 seconds 
+    calling a predefined call back (returns a boolean to indicate cancelled) without delay.  The expectation is that the call back will be
+    overridden.
+3.  10 seconds is significant because this is about the time it should take for the capacitors to recharge at 0.5A
+
+Concerns
+
+* thirty (30) attempts with constant battery charging at 0.5A will take quite a lot of power.  The overall budget is 0.1A constant (2.4Ah @4v = 9.6Wh).  
+The batter capacity is 13Ah = 52Wh or about 5 days).  Each transmission event will take 0.5 x 0.0833 x 5 = 0.21Wh or approximately one tenth of the budget.  Given we are expecting
+  four logging events in 24 hours thats about 0.4 of the entire power budget.
+* If we implement exponential backup then we reduce this to 5 or 6 attempts in 5 minutes or about 1/5 of the budget, but increases the risk of a missed 
+  communication.  Given that the gap between satellites is about 9 minutes (11 satellites evenly spread around a 100 minute orbit) then 5 minutes is probably 
+  a reasonable transmission window.  We should do this as a minimum, probably by modifying the library.
+* there is an opportunity to use the callback for steering in the longer windows (and/or reducing power by sleeping).  We should wait for 15 seconds before 
+attempting to operate the servos so that the satellite module has recharged, so this probably means first time we do nothing
+* the tricky part is ensuring that the callback has enough information to perform the navigation - suggests that we redefine the callback in nav.ino
+* the need to define a single callback means that we shouldn't add satellite as a normal logger - we would need to insert it at a particular point
 
 Implementation
 
