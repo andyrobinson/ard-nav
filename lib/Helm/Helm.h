@@ -22,7 +22,8 @@ class Helm : public IHelm
   public:
     Helm();
     Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, Logger *loggerp);
-    virtual void steer(uangle direction, long steer_time, windrange range);
+    virtual void steer(uangle direction_param, long steer_time_param, windrange range_param);
+    virtual bool steer_and_continue();
 
   private:
     Rudder *rudder;
@@ -34,6 +35,12 @@ class Helm : public IHelm
     Logger *logger;
     angle rudder_position;
     int out_of_range_count;
+    long remaining;
+    char plus[2] = "+";
+    char logmsg[50];
+    uangle direction;
+    long steer_time;
+    windrange range;
 
     bool ok_to_continue(long time_left, long total_time, windrange range);
 };
