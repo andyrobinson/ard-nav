@@ -5,18 +5,16 @@ IridiumSBD Stub, with minimal functionality
 #ifndef STUB_IRIDIUM_SBD
 #define STUB_IRIDIUM_SBD
 
-#define ISBD_CLEAR_MO			0
+#define ISBD_CLEAR_MO			 0
+#define ISBD_SUCCESS             0
+#define ISBD_ALREADY_AWAKE       1
+#define ISBD_IS_ASLEEP           10
 
-// fake stream, doesn't do anthing will fall over if any methods called
-typedef struct {
-   char label;
-} Stream;
 
 class IridiumSBD
 {
     public:
        IridiumSBD();
-       IridiumSBD(Stream &str, int sleepPinNo = -1, int ringPinNo = -1);
 
        int begin();
        int sendSBDText(const char *message);
@@ -37,7 +35,7 @@ class IridiumSBD
        void endSerialPort() __attribute__((weak));
 
     private:
-       Stream * stream; // Communicating with the Iridium
+        bool sleeping;
 };
 
 #endif

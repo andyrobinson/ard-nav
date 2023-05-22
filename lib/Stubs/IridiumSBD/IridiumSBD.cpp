@@ -3,17 +3,40 @@ IridiumSBD Stub, with minimal functionality
 */
 #include "IridiumSBD.h"
 
-IridiumSBD::IridiumSBD(){};
-IridiumSBD::IridiumSBD(Stream &str, int sleepPinNo, int ringPinNo):stream(&str){};
+#define ISBD_CLEAR_MO			 0
+#define ISBD_SUCCESS             0
+#define ISBD_IS_ASLEEP           10
 
-int IridiumSBD::begin(){ return 0; };
-int IridiumSBD::sendSBDText(const char *message){ return 0; };
-int IridiumSBD::sendSBDBinary(const uint8_t *txData, uint16_t txDataSize){ return 0; };
-int IridiumSBD::getSystemTime(struct tm &tm){ return 0; };
-bool IridiumSBD::isAsleep(){ return false; };
-int IridiumSBD::sleep(){ return 0; };
+IridiumSBD::IridiumSBD():sleeping(false){};
 
-int IridiumSBD::clearBuffers(int buffers){ return 0; };
-int IridiumSBD::getIMEI(char *IMEI, uint16_t bufferSize){ return 0; };
+int IridiumSBD::begin(){
+    sleeping = false;
+    return ISBD_SUCCESS;
+};
+
+int IridiumSBD::sendSBDText(const char *message){
+    if (sleeping) return ISBD_IS_ASLEEP;
+    return ISBD_SUCCESS;
+};
+
+int IridiumSBD::sendSBDBinary(const uint8_t *txData, uint16_t txDataSize){
+    if (sleeping) return ISBD_IS_ASLEEP;
+    return ISBD_SUCCESS;
+};
+
+int IridiumSBD::getSystemTime(struct tm &tm){ return ISBD_SUCCESS; };
+
+bool IridiumSBD::isAsleep(){
+    return sleeping;
+};
+
+int IridiumSBD::sleep(){
+    if (sleeping) return ISBD_IS_ASLEEP;
+    sleeping = true;
+    return ISBD_SUCCESS;
+};
+
+int IridiumSBD::clearBuffers(int buffers){ return ISBD_SUCCESS; };
+int IridiumSBD::getIMEI(char *IMEI, uint16_t bufferSize){ return ISBD_SUCCESS; };
 
 

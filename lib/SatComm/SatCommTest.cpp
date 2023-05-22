@@ -3,17 +3,22 @@
 
 namespace {
 
+IridiumSBD stub_modem;
+SatComm satcomm(&stub_modem);
+
 class SatCommTest : public ::testing::Test {
  protected:
   SatCommTest() {
   }
   void SetUp() override {
+
   }
 
 };
 
-TEST_F(SatCommTest, Should_so_something) {
-    EXPECT_EQ(1,2);
+TEST_F(SatCommTest, should_sleep_on_begin) {
+    satcomm.begin();
+    EXPECT_TRUE(stub_modem.isAsleep());
 }
 
 }  //namespace
