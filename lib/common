@@ -5,6 +5,15 @@ include ../lib/detectos
 DEST_DIR = ./libraries
 LIB_DIR = ../lib
 BUILD_NUMBER_FILE = version
+PLATFORM = "zero" 
+
+ifeq ($(PLATFORM), feather)
+	FQBN = "adafruit:samd:adafruit_feather_m0"
+else
+	FQBN = "arduino:samd:arduino_zero_edbg"
+endif
+
+$(info Target platform is $(FQBN))
 
 ifeq ($(UNAME), Darwin)
 	ARDUINO_LIB_DIR = ~/Documents/Arduino/libraries
@@ -39,7 +48,7 @@ $(DEST_DIR)/$(BUILD_NUMBER_FILE)/$(BUILD_NUMBER_FILE).h: $(notdir $(CURDIR)).ino
 
 compile: $(notdir $(CURDIR)).ino $(DST_FILES) $(DEST_DIR)/$(BUILD_NUMBER_FILE)/$(BUILD_NUMBER_FILE).h
 	cp -rp $(DEST_DIR)/* $(ARDUINO_LIB_DIR)
-	arduino-cli compile --fqbn arduino:samd:arduino_zero_edbg ../$(notdir $(CURDIR))
+	arduino-cli compile --fqbn $(FQBN) ../$(notdir $(CURDIR))
 
 $(notdir $(CURDIR)).*.bin: $(notdir $(CURDIR)).ino $(DST_FILES)
 	$(MAKE) compile
