@@ -17,13 +17,16 @@
 #define DIAGNOSTICS false // Change this to see diagnostics
 
 // Declare the IridiumSBD object
-IridiumSBD modem(IridiumSerial);
+IridiumSBD modem(IridiumSerial,6);
 
 int signalQuality = -1;
 int err;
 
 void setup()
 {
+
+  pinMode(6, OUTPUT);
+  digitalWrite(6, HIGH); // turn the modem on
 
   // Start the console serial port
   Serial.begin(19200);

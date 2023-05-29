@@ -18,7 +18,7 @@
  */
 
 #define IridiumSerial Serial1
-#define SLEEP_PIN 4
+#define SLEEP_PIN 6
 #define DIAGNOSTICS false // Change this to see diagnostics
 
 // Declare the IridiumSBD object (note SLEEP pin)
@@ -27,7 +27,7 @@ IridiumSBD modem(IridiumSerial, SLEEP_PIN);
 void setup()
 {
   // Start the console serial port
-  Serial.begin(115200);
+  Serial.begin(19200);
   while (!Serial);
 
   // Start the serial port connected to the satellite modem

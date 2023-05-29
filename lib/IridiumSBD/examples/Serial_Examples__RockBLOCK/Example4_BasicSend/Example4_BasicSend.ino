@@ -20,15 +20,18 @@
 #define DIAGNOSTICS false // Change this to see diagnostics
 
 // Declare the IridiumSBD object
-IridiumSBD modem(IridiumSerial);
+IridiumSBD modem(IridiumSerial,6);
 
 void setup()
 {
   int signalQuality = -1;
   int err;
+  pinMode(6, OUTPUT);
+  digitalWrite(6, HIGH); // turn the modem on
+
 
   // Start the console serial port
-  Serial.begin(115200);
+  Serial.begin(19200);
   while (!Serial);
 
   // Start the serial port connected to the satellite modem
