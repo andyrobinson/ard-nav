@@ -21,6 +21,7 @@
 #include <version.h>
 #include <MServo.h>
 #include <IridiumSBD.h>
+#include <SatComm.h>
 
 #define MAJOR_VERSION 3 // first successful reliable navigation
 #define STARTUP_WAIT_FOR_FIX_MS 60000
@@ -60,11 +61,8 @@ EDBG
 
 char logmsg[40];
 
-#define IridiumSerial Serial1
-#define DIAGNOSTICS false // Change this to see diagnostics
-
-// Declare the IridiumSBD object
-IridiumSBD modem(IridiumSerial);
+#define IRIDIUM_SERIAL Serial1
+#define IRIDIUM_SLEEP_PIN 6
 
 // Dependency injection
 
@@ -78,6 +76,10 @@ Battery battery(&analogRead, &timer);
 WindSensor windsensor(&i2c);
 Compass compass(&i2c, &timer);
 Gps gps(&timer);
+
+// Declare the IridiumSBD object (note SLEEP pin)
+IridiumSBD modem(IRIDIUM_SERIAL, IRIDIUM_SLEEP_PIN);
+SatComm satcomm(&modem);
 
 SDLogger logger(&gps, &windsensor, &compass, &battery, &switches, 0);
 // SerialLogger logger(&gps, &windsensor, &compass, &battery);
@@ -112,6 +114,7 @@ void setup() {
   SYSCTRL->BOD33.bit.ENABLE = 1;
   while (!SYSCTRL->PCLKSR.bit.BOD33RDY) {}
 
+  satcomm.begin();
   i2c.begin();
   servo_control.begin();
   rudder.begin();
