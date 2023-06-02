@@ -14,13 +14,23 @@ int IridiumSBD::begin(){
     return ISBD_SUCCESS;
 };
 
-int IridiumSBD::sendSBDText(const char *message){
+int IridiumSBD::sendSBDText(const char *message) {
+    sent_length = 0;
+    while(message[sent_length] != '\0') {
+        sent[sent_length] = message[sent_length++];
+    }
+    sent[sent_length] = '\0';
     if (sleeping) return ISBD_IS_ASLEEP;
     send_attempts++;
     return ISBD_SUCCESS;
 };
 
 int IridiumSBD::sendSBDBinary(const uint8_t *txData, uint16_t txDataSize){
+    sent_length = 0;
+    for (int i=0; i < txDataSize; i++) {
+        sent[sent_length] = txData[sent_length++];
+    }
+
     if (sleeping) return ISBD_IS_ASLEEP;
     send_attempts++;
     return ISBD_SUCCESS;
