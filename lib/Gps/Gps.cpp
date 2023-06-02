@@ -53,9 +53,8 @@ void Gps::data(uint32_t max_millis, gpsResult *result) {
 
     result->fix = FIX_NONE;
     result->mps = 0.0;
-    setTime(AGPS.hour, AGPS.minute, AGPS.seconds, AGPS.day, AGPS.month, AGPS.year);
-    result->unixTime = now();
-//    result->unixTime = unix_time(AGPS.year, AGPS.month, AGPS.day, AGPS.hour, AGPS.minute, AGPS.seconds);
+    result->unixTime = unix_time(AGPS.year, AGPS.month, AGPS.day, AGPS.hour, AGPS.minute, AGPS.seconds);
+    timer->setTime(result->unixTime);
 
     if (AGPS.fix) {
       result->pos.latitude = AGPS.latitudeDegrees;
