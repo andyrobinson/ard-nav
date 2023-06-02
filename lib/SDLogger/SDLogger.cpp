@@ -8,8 +8,8 @@ using namespace Utility;
 
 SDLogger::SDLogger() {}
 
-SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, Switches *switchesp, long ofilenamep):
-  gps(gpsp), compass(compassp), windsensor(windsensorp), battery(batteryp), switches(switchesp), ofilename(ofilenamep) {}
+SDLogger::SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, Switches *switchesp, Timer *timerp, long ofilenamep):
+  gps(gpsp), compass(compassp), windsensor(windsensorp), battery(batteryp), switches(switchesp), timer(timerp), ofilename(ofilenamep) {}
 
 void SDLogger::calculate_filename(char *filename, long unix_ts) {
     long filenamelong = ofilename == 0 ? max1(unix_ts / 100000, PRE_JAN1_2000_TS) : ofilename;
@@ -67,14 +67,16 @@ void SDLogger::print_line(char *message, char *prefix) {
     int mem=dispFreeMemory();
     float max_voltage = battery->lipo1maxv();
     float min_voltage = battery->lipo1minv();
+    time_t time_now = timer->now();
 
-    calculate_filename(logfile, gpsReading.unixTime);
+    calculate_filename(logfile, time_now);
     File dataFile = SD.open(logfile, FILE_WRITE);
 
     if (dataFile) {
 
-      dataFile.print(gpsReading.unixTime); dataFile.print(",");
+      dataFile.print(time_now); dataFile.print(",");
       dataFile.print(millis()/1000); dataFile.print(",");
+      dataFile.print(gpsReading.unixTime); dataFile.print(",");
       dataFile.print(gpsReading.pos.latitude,5); dataFile.print(",");
       dataFile.print(gpsReading.pos.longitude,5); dataFile.print(",");
       dataFile.print(gpsReading.pos.error); dataFile.print(",");

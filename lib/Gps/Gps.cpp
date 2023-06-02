@@ -53,8 +53,7 @@ void Gps::data(uint32_t max_millis, gpsResult *result) {
 
     result->fix = FIX_NONE;
     result->mps = 0.0;
-    result->unixTime = unix_time(AGPS.year, AGPS.month, AGPS.day, AGPS.hour, AGPS.minute, AGPS.seconds);
-    timer->setTime(result->unixTime);
+    result->unixTime = 0;
 
     if (AGPS.fix) {
       result->pos.latitude = AGPS.latitudeDegrees;
@@ -66,6 +65,9 @@ void Gps::data(uint32_t max_millis, gpsResult *result) {
       result->mps = max1(MIN_SPEED, min1(AGPS.speed * KNOTS_TO_METRES_PER_SEC, MAX_POSSIBLE_SPEED));
       avg_speed = (0.9 * avg_speed) + (0.1 * result-> mps); // 10 point moving average
       result->avg_mps = avg_speed;
+
+      result->unixTime = unix_time(AGPS.year, AGPS.month, AGPS.day, AGPS.hour, AGPS.minute, AGPS.seconds);
+      if (AGPS.year > 0) timer->setTime(result->unixTime); // only set time if we have a valid value
 
       result->fix = AGPS.fixquality;
     }

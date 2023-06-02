@@ -79,13 +79,14 @@ We now need real time because we want to define real time windows when we attemp
 than intervals because it's robust in the face of a system restart (we don't miss windows if there are restarts and we don't attempt to send too
 frequently).
 
-* There are two sources of real time - the GPS and the Satellite modem.  We should prefer the Gps (because it's on most of the time and low power), but 
-fall back to the satellite.
-* We can extrapolate between time readings using the millis() function.  The Time library will do this, but it may not be worth it.
-* We should wrap real time in the Timer() object so that we can test time based functions (i.e. the SatComm logic).
-* Having a timestamp on GPS readings seems fine, we don't need to remove this
+* There are two sources of real time - the GPS and the Satellite modem.  
+  ** ~~We should prefer the Gps (because it's on most of the time and low power)~~
+  ** fall back to the satellite.
+* ~~We can extrapolate between time readings using the millis() function.  The Time library will do this, but it may not be worth it.~~
+* ~~We should wrap real time in the Timer() object so that we can test time based functions (i.e. the SatComm logic)~~
+* ~~Having a timestamp on GPS readings seems fine, we don't need to remove this~~
 * There are already built in time functions and datatypes in the base Arduino library, we should probably use these
-* Where time is needed, we should use the timer object and remove references to GPS time
+* ~~Where time is needed, we should use the timer object and remove references to GPS time~~
 
 ### power budget
 *  The library by default tries to send a communication for 300 seconds (5 mins).  In between send attempts it waits on a loop for 10 seconds 

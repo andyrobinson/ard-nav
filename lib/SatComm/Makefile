@@ -1,4 +1,4 @@
-STUBS = Arduino IridiumSBD
+STUBS = Arduino IridiumSBD Timer
 INCLUDES =
 SOURCES =
 

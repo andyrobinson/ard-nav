@@ -7,7 +7,7 @@ IridiumSBD Stub, with minimal functionality
 #define ISBD_SUCCESS             0
 #define ISBD_IS_ASLEEP           10
 
-IridiumSBD::IridiumSBD():sleeping(false){};
+IridiumSBD::IridiumSBD():sleeping(false),send_attempts(0){};
 
 int IridiumSBD::begin(){
     sleeping = false;
@@ -16,11 +16,13 @@ int IridiumSBD::begin(){
 
 int IridiumSBD::sendSBDText(const char *message){
     if (sleeping) return ISBD_IS_ASLEEP;
+    send_attempts++;
     return ISBD_SUCCESS;
 };
 
 int IridiumSBD::sendSBDBinary(const uint8_t *txData, uint16_t txDataSize){
     if (sleeping) return ISBD_IS_ASLEEP;
+    send_attempts++;
     return ISBD_SUCCESS;
 };
 
@@ -35,6 +37,10 @@ int IridiumSBD::sleep(){
     sleeping = true;
     return ISBD_SUCCESS;
 };
+
+void IridiumSBD::reset() {
+    send_attempts = 0;
+}
 
 int IridiumSBD::clearBuffers(int buffers){ return ISBD_SUCCESS; };
 int IridiumSBD::getIMEI(char *IMEI, uint16_t bufferSize){ return ISBD_SUCCESS; };

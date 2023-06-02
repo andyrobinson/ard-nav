@@ -7,10 +7,11 @@ class Timer
   public:
     Timer();
     void wait(unsigned long millisecs);
-    long milliseconds();
+    unsigned long milliseconds();
 
     // time functions
     time_t now(); // unix time
+    tm *nowTm(); // structured time
     void setTime(time_t t);
     bool isTimeSet();
 

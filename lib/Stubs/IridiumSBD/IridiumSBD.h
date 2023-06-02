@@ -34,6 +34,9 @@ class IridiumSBD
        void beginSerialPort() __attribute__((weak));
        void endSerialPort() __attribute__((weak));
 
+       void reset();
+
+       int send_attempts;
     private:
         bool sleeping;
 };
