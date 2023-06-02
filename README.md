@@ -74,24 +74,30 @@ See the separate [field report page](https://github.com/andyrobinson/ard-nav/blo
 ## Satellite Communications
 Notes & Questions:
 
-1.  Currently no signal received under any circumstances.  In the process of debugging with RockBlock
-2.  The library by default tries to send a communication for 300 seconds (5 mins).  In between send attempts it waits on a loop for 10 seconds 
+### Notes on time
+We now need real time because we want to define real time windows when we attempt to communicate via satellite.  We are using this approach rather
+than intervals because it's robust in the face of a system restart (we don't miss windows if there are restarts and we don't attempt to send too
+frequently).
+
+* There are two sources of real time - the GPS and the Satellite modem.  We should prefer the Gps (because it's on most of the time and low power), but 
+fall back to the satellite.
+* We can extrapolate between time readings using the millis() function.  The Time library will do this, but it may not be worth it.
+* We should wrap real time in the Timer() object so that we can test time based functions (i.e. the SatComm logic).
+* Having a timestamp on GPS readings seems fine, we don't need to remove this
+* There are already built in time functions and datatypes in the base Arduino library, we should probably use these
+* Where time is needed, we should use the timer object and remove references to GPS time
+
+### power budget
+*  The library by default tries to send a communication for 300 seconds (5 mins).  In between send attempts it waits on a loop for 10 seconds 
     calling a predefined call back (returns a boolean to indicate cancelled) without delay.  The expectation is that the call back will be
     overridden.
-3.  10 seconds is significant because this is about the time it should take for the capacitors to recharge at 0.5A
-
-Concerns
-
+*  10 seconds is significant because this is about the time it should take for the capacitors to recharge at 0.5A
 * thirty (30) attempts with constant battery charging at 0.5A will take quite a lot of power.  The overall budget is 0.1A constant (2.4Ah @4v = 9.6Wh).  
 The batter capacity is 13Ah = 52Wh or about 5 days).  Each transmission event will take 0.5 x 0.0833 x 5 = 0.21Wh or approximately one tenth of the budget.  Given we are expecting
   four logging events in 24 hours thats about 0.4 of the entire power budget.
 * If we implement exponential backup then we reduce this to 5 or 6 attempts in 5 minutes or about 1/5 of the budget, but increases the risk of a missed 
   communication.  Given that the gap between satellites is about 9 minutes (11 satellites evenly spread around a 100 minute orbit) then 5 minutes is probably 
   a reasonable transmission window.  We should do this as a minimum, probably by modifying the library.
-* there is an opportunity to use the callback for steering in the longer windows (and/or reducing power by sleeping).  We should wait for 15 seconds before 
-attempting to operate the servos so that the satellite module has recharged, so this probably means first time we do nothing
-* the tricky part is ensuring that the callback has enough information to perform the navigation - suggests that we redefine the callback in nav.ino
-* the need to define a single callback means that we shouldn't add satellite as a normal logger - we would need to insert it at a particular point
 
 Implementation
 
