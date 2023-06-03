@@ -7,6 +7,7 @@
 #include "Logger.h"
 #include "Utility.h"
 #include "Battery.h"
+#include "Compass.h"
 
 #define SAT_LOG_WINDOWS_MINS 5
 #define SAT_LOG_RECORD_SIZE 14
@@ -17,7 +18,7 @@ using namespace Utility;
 class SatComm {
     public:
       SatComm();
-      SatComm(IridiumSBD *modemp, Timer *timerp, Gps *gpsp, Battery *batteryp, Logger *loggerp);
+      SatComm(IridiumSBD *modemp, Timer *timerp, Gps *gpsp, Battery *batteryp, Compass *compassp, Logger *loggerp);
 
       virtual void begin();
       bool steer_log_or_continue();
@@ -37,6 +38,7 @@ class SatComm {
       Timer *timer;
       Gps *gps;
       Battery *battery;
+      Compass *compass;
       Logger *logger;
 
       uint8_t send_buffer[50];

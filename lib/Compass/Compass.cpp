@@ -104,7 +104,7 @@ int Compass::err_percent() {
 }
 
 long Compass::resets_per_hour() {
-  long seconds = constrain((timer->milliseconds() - reset_start)/1000,1l,timer->milliseconds());
+  long seconds = constrain((timer->milliseconds() - reset_start)/1000,1ul,timer->milliseconds());
   long resets_per_hour = (COMPASS_SECONDS_PER_HOUR * reset_count)/seconds;
   return constrain(resets_per_hour, 0l, COMPASS_MAX_RESETS);
 }

@@ -24,6 +24,7 @@ void loop()
   Serial.print("err ");Serial.print(gpsReading.pos.error); Serial.print(",");
   Serial.print("fix ");Serial.print(gpsReading.fix); Serial.print(",");
   Serial.print("m/s ");Serial.print(gpsReading.mps); Serial.println("");
+  Serial.print("cog ");Serial.print(gpsReading.cog); Serial.println("");
 
   timer.wait(1000);
 }

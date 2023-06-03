@@ -5,6 +5,7 @@
 #include "StubLogger.h"
 #include "Position.h"
 #include "Battery.h"
+#include "Compass.h"
 
 using namespace Position;
 
@@ -15,8 +16,9 @@ Timer stub_timer;
 StubLogger stub_logger;
 Gps stub_gps;
 Battery stub_battery;
+Compass stub_compass;
 
-SatComm satcomm(&stub_modem, &stub_timer, &stub_gps, &stub_battery, &stub_logger);
+SatComm satcomm(&stub_modem, &stub_timer, &stub_gps, &stub_battery, &stub_compass, &stub_logger);
 
 class SatCommTest : public ::testing::Test {
  protected:
@@ -85,7 +87,7 @@ TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_
 TEST_F(SatCommTest, steer_log_should_send_if_within_logging_window) {
     stub_modem.reset();
     satcomm.begin();
-    gpsResult gps_data = {{53.44580, -2.22515, 3.0},1,1.0,1.1,15000l,5344580,-222515};
+    gpsResult gps_data = {{53.44580, -2.22515, 3.0},1,1.0,1.1,170,15000l,5344580,-222515};
     stub_gps.set_data(&gps_data,1);
 
     struct tm test_time = {0,0,12,2,3,123,5,6}; // hour (12) a multiple of 3, but not within 5 mins of the hour
@@ -100,7 +102,7 @@ TEST_F(SatCommTest, steer_log_should_send_if_within_logging_window) {
 TEST_F(SatCommTest, steer_log_should_send_if_after_zero_but_within_window) {
     stub_modem.reset();
     satcomm.begin();
-    gpsResult gps_data = {{53.44580, -2.22515, 3.0},1,1.0,1.1,15000l,5344580,-222515};
+    gpsResult gps_data = {{53.44580, -2.22515, 3.0},1,1.0,1.1,180,15000l,5344580,-222515};
     stub_gps.set_data(&gps_data,1);
     struct tm test_time = {0,4,15,2,3,123,5,6}; // hour a multiple of 3, within 5 mins of the hour
     //printf("** Test date: %s", asctime(&test_time));
@@ -122,8 +124,10 @@ TEST_F(SatCommTest, steer_log_should_send_the_correct_data) {
 
     // ** Setup **
     // Gps data
-    gpsResult gps_data = {{53.44580, -2.22515, 3.0},1,1.0,1.1,15000l,5344580,-222515};
+    gpsResult gps_data = {{53.44580, -2.22515, 3.0},1,1.0,1.1,190,15000l,5344580,-222515};
     stub_gps.set_data(&gps_data,1);
+    // todo: sog, track
+
 
     // waypoint
     char wp_label[3]="A5";
@@ -131,6 +135,11 @@ TEST_F(SatCommTest, steer_log_should_send_the_correct_data) {
 
     // battery
     stub_battery.setMaxMin(638,527);
+
+    // compass
+    uangle bearing = 163;
+    stub_compass.set_err_percent(13);
+    stub_compass.set_bearings(&bearing,1);
 
     // ** Execute **
     satcomm.steer_log_or_continue();

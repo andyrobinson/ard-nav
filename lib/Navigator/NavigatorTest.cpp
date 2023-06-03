@@ -25,8 +25,8 @@ namespace {
   };
 
   TEST_F(NavigatorTest, Should_return_immediately_if_we_have_already_arrived) {
-    waypoint current = {"desired",{52.0, -2.2, 3.0}};
-    gpsResult gps_current = {current.pos, 1, 0.6, 0.6, 12345675, 5200000,-220000};
+    waypoint current = {"de",{52.0, -2.2, 3.0}};
+    gpsResult gps_current = {current.pos, 1, 0.6, 0.6, 120, 12345675, 5200000,-220000};
     stub_gps.set_data(&gps_current,1);
     navigator.sailto(current);
     EXPECT_EQ(stub_tacker.never_called(),true);
@@ -35,8 +35,8 @@ namespace {
   TEST_F(NavigatorTest, Should_return_immediately_if_we_have_already_arrived_within_tolerance) {
     double tolerance = 8.0;
     position current = {52.0, -2.2, 0.0};
-    waypoint desired = {"desired", {52.00005, -2.19995, tolerance}};
-    gpsResult gps_current = {current, 1, 0.6, 0.6, 12345675, 5200000,-220000};
+    waypoint desired = {"de", {52.00005, -2.19995, tolerance}};
+    gpsResult gps_current = {current, 1, 0.6, 0.6, 120, 12345675, 5200000,-220000};
     double dist = globe.distance_between(&current, &desired.pos);
     stub_gps.set_data(&gps_current,1);
 
@@ -47,18 +47,18 @@ namespace {
   }
 
   TEST_F(NavigatorTest, Should_steer_towards_destination) {
-    gpsResult gps_current = {{-20.0, -10.2, 3.0}, 1, 0.6, 0.6, 12345675, -2000000,-1020000};
-    waypoint destination = {"dest", {-21.0, -10.2, 5.0}};
-    gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6,0.6,1, -2100000, -1020000}};
+    gpsResult gps_current = {{-20.0, -10.2, 3.0}, 1, 0.6, 0.6, 120, 12345675, -2000000,-1020000};
+    waypoint destination = {"de", {-21.0, -10.2, 5.0}};
+    gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6,0.6,120, 1, -2100000, -1020000}};
     stub_gps.set_data(gpsData,2);
     navigator.sailto(destination);
     EXPECT_EQ(stub_tacker.steering(0),180);
   }
 
   TEST_F(NavigatorTest, Should_steer_for_time_based_on_an_estimated_half_remaining_distance_using_average_speed) {
-    gpsResult gps_current = {{10.0, 10.0, 3.0}, 1, 0.3, 1.0, 12345675, 1000000, 1000000};
-    waypoint destination = {"dest", {10.0002, 10.0002, 5.0}};
-    gpsResult gpsData[] = {gps_current, {destination.pos,1,0.3,0.6,1, 1000020, 1000020}};
+    gpsResult gps_current = {{10.0, 10.0, 3.0}, 1, 0.3, 1.0, 120, 12345675, 1000000, 1000000};
+    waypoint destination = {"de", {10.0002, 10.0002, 5.0}};
+    gpsResult gpsData[] = {gps_current, {destination.pos,1,0.3,0.6,120, 1, 1000020, 1000020}};
     double dist = globe.distance_between(&gps_current.pos, &destination.pos);
     long expected_time = round((dist * 1000)/2.0);
 
@@ -70,9 +70,9 @@ namespace {
   }
 
   TEST_F(NavigatorTest, Should_have_a_limit_on_steer_time) {
-    gpsResult gps_current = {{10.0, 10.0, 3.0}, 1, 1.0, 0.1, 12345675, 1000000, 1000000};
-    waypoint destination = {"dst", {30.0, -10.0, 5.0}};
-    gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6, 0.6,1, 3000000, -1000000}};
+    gpsResult gps_current = {{10.0, 10.0, 3.0}, 1, 1.0, 0.1, 120, 12345675, 1000000, 1000000};
+    waypoint destination = {"de", {30.0, -10.0, 5.0}};
+    gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6, 0.6,120, 1, 3000000, -1000000}};
 
     stub_gps.set_data(gpsData,2);
     navigator.sailto(destination);
@@ -85,9 +85,9 @@ namespace {
     position Moscow = {55.755826, 37.6173,0.0};
     position Santiago = {-33.4691199,-70.641997,5.0};
 
-    gpsResult gps_current = {Moscow, 1, 1.0, 0.01, 12345675, 5575582, 3761730};
-    waypoint destination = {"dst", Santiago};
-    gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6, 0.6,1, -3346912,-7064100}};
+    gpsResult gps_current = {Moscow, 1, 1.0, 0.01, 120, 12345675, 5575582, 3761730};
+    waypoint destination = {"de", Santiago};
+    gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6, 0.6,120, 1, -3346912,-7064100}};
 
     stub_gps.set_data(gpsData,2);
     navigator.sailto(destination);
@@ -96,9 +96,9 @@ namespace {
   }
 
   TEST_F(NavigatorTest, Should_have_a_minimum_steer_time_of_10s) {
-    gpsResult gps_current = {{28.0, -16.0, 3.0}, 2, 2, 2, 12345675, 2800000, -1600000};
-    waypoint destination = {"dest", {27.9999, -15.9999, 5.0}};
-    gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6, 0.6,1, 2799990, 1599990}};
+    gpsResult gps_current = {{28.0, -16.0, 3.0}, 2, 2, 2, 120, 12345675, 2800000, -1600000};
+    waypoint destination = {"de", {27.9999, -15.9999, 5.0}};
+    gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6, 0.6,120, 1, 2799990, 1599990}};
 
     stub_gps.set_data(gpsData,2);
     navigator.sailto(destination);
@@ -108,10 +108,10 @@ namespace {
   }
 
   TEST_F(NavigatorTest, Should_steer_repeatedly_until_reached_destination) {
-    gpsResult gps_current = {{30.0, 30.0, 3.0}, 2, 1.0, 3500.0, 12345675, 3000000, 3000000};
-    gpsResult gps_midpoint = {{29.5, 29.5, 3.0}, 2, 1.0, 2500.0, 12345675, 2950000, 2950000};
-    waypoint destination = {"dest", {29.0, 29.0, 5.0}};
-    gpsResult gpsData[] = {gps_current, gps_midpoint, {destination.pos,1,0.6,1, 2900000, 2900000}};
+    gpsResult gps_current = {{30.0, 30.0, 3.0}, 2, 1.0, 3500.0, 120, 12345675, 3000000, 3000000};
+    gpsResult gps_midpoint = {{29.5, 29.5, 3.0}, 2, 1.0, 2500.0, 120, 12345675, 2950000, 2950000};
+    waypoint destination = {"de", {29.0, 29.0, 5.0}};
+    gpsResult gpsData[] = {gps_current, gps_midpoint, {destination.pos,1,0.6,120, 1, 2900000, 2900000}};
 
     stub_gps.set_data(gpsData,3);
     navigator.sailto(destination);

@@ -14,8 +14,12 @@ void Compass::set_bearings(uangle *bearings, int size) {
   current_position = 0;
 }
 
+void Compass::set_err_percent(int err_percent) {
+    err = err_percent;
+}
+
 int Compass::err_percent() {
-    return 0;
+    return err;
 }
 
 long Compass::resets_per_hour() {

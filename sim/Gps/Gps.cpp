@@ -12,6 +12,7 @@ void Gps::data(uint32_t max_millis, gpsResult *result) {
 
   result->pos.error = MAX_ACCURACY_METRES;
   result->fix = FIX_DGPS;
+  result->cog = boat->heading;
   result->unixTime = timer->elapsed() / 1000;
 
   result->mps = boat->speed();

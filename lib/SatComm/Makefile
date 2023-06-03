@@ -1,4 +1,4 @@
-STUBS = Arduino IridiumSBD Timer Gps Logger StubLogger Battery
+STUBS = Arduino IridiumSBD Timer Gps Logger StubLogger Battery Compass
 INCLUDES = ../Angle/ ../Utility/ ../Position/
 SOURCES = ../Utility/Utility.cpp
 

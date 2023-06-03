@@ -9,6 +9,7 @@ void Gps::data(uint32_t max_millis, gpsResult *result) {
   result->fix = gps_data[current_position].fix;
   result->mps = gps_data[current_position].mps;
   result->avg_mps = gps_data[current_position].avg_mps;
+  result->cog = gps_data[current_position].cog;
   result->unixTime = gps_data[current_position].unixTime;
   result->fpLatitude = gps_data[current_position].fpLatitude;
   result->fpLongitude = gps_data[current_position].fpLongitude;

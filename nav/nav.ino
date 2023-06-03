@@ -83,7 +83,7 @@ IridiumSBD modem(IRIDIUM_SERIAL, IRIDIUM_SLEEP_PIN);
 SDLogger logger(&gps, &windsensor, &compass, &battery, &switches, &timer, 0);
 // SerialLogger logger(&gps, &windsensor, &compass, &battery);
 
-SatComm satcomm(&modem, &timer, &gps, &battery, &logger);
+SatComm satcomm(&modem, &timer, &gps, &battery, &compass, &logger);
 Sail sail(&servo_control);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches);
 Rudder rudder(&servo_control);
@@ -132,7 +132,7 @@ void loop() {
   sail.set_position(0);
 
   // try and get a GPS fix before logging so that it goes in the same file
-  gpsResult gps_data_ignored = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0, 0, 0};
+  gpsResult gps_data_ignored;
   gps.data(STARTUP_WAIT_FOR_FIX_MS, &gps_data_ignored);
 
   // and we're off

@@ -27,6 +27,7 @@ TEST_F(GpsTest, should_return_gps_result_based_on_boat_data) {
   EXPECT_EQ(gpsresult.fix, FIX_DGPS);
   EXPECT_EQ(gpsresult.mps, boat.speed());
   EXPECT_EQ(gpsresult.avg_mps, expected_avg_speed);
+  EXPECT_EQ(gpsresult.cog, boat.heading);
 
   timer.wait(expectedTimeInSeconds * 1000);
   gps.data(100, &gpsresult);
