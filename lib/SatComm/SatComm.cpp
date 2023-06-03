@@ -39,13 +39,16 @@ bool SatComm::steer_log_or_continue() {
 }
 
 void SatComm::setData() {
+        stuff(timer->now(),send_buffer,0,4);
         gps->data(SAT_GPS_WAIT_MILLIS, &gps_data);
-        stuff(gps_data.fpLatitude,send_buffer,0,4);
-        stuff(gps_data.fpLongitude,send_buffer,4,4);
-        send_buffer[8]=wp_label[0];
-        send_buffer[9]=wp_label[1];
-        stuff(battery->raw_max(),send_buffer,10,2);
-        stuff(battery->raw_min(),send_buffer,12,2);
+        stuff(gps_data.fpLatitude,send_buffer,4,4);
+        stuff(gps_data.fpLongitude,send_buffer,8,4);
+        stuff((long) (gps_data.avg_mps * 1000),send_buffer,12,4); // approximate, makes it much simpler
+        stuff(gps_data.cog,send_buffer,16,2);
+        send_buffer[18]=wp_label[0];
+        send_buffer[19]=wp_label[1];
+        stuff(battery->raw_max(),send_buffer,20,2);
+        stuff(battery->raw_min(),send_buffer,22,2);
 }
 
 void SatComm::set_dest(char *label) {

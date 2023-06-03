@@ -10,7 +10,7 @@
 #include "Compass.h"
 
 #define SAT_LOG_WINDOWS_MINS 5
-#define SAT_LOG_RECORD_SIZE 14
+#define SAT_LOG_RECORD_SIZE 24
 #define SAT_GPS_WAIT_MILLIS 30000
 
 using namespace Utility;

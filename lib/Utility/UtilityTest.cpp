@@ -129,7 +129,6 @@ namespace {
     EXPECT_EQ(a,b);
   }
 
-
 } // namespace
 
 int main(int argc, char **argv) {
