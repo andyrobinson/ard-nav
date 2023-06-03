@@ -1,9 +1,10 @@
 #include "SatComm.h"
 #include "gtest/gtest.h"
 #include "time.h"
-#include "gps.h"
+#include "Gps.h"
 #include "StubLogger.h"
 #include "Position.h"
+#include "Battery.h"
 
 using namespace Position;
 
@@ -13,24 +14,44 @@ IridiumSBD stub_modem;
 Timer stub_timer;
 StubLogger stub_logger;
 Gps stub_gps;
+Battery stub_battery;
 
-SatComm satcomm(&stub_modem, &stub_timer, &stub_gps, &stub_logger);
+SatComm satcomm(&stub_modem, &stub_timer, &stub_gps, &stub_battery, &stub_logger);
 
 class SatCommTest : public ::testing::Test {
  protected:
   SatCommTest() {}
   void SetUp() override {}
 
-  void extract32(int32_t *value, int offset, unsigned char *bin_data) {
-     *value = bin_data[offset+3] << 24 | bin_data[offset+2] << 16 | bin_data[offset+1] << 8 | bin_data[offset];
+  int32_t extract32(int offset, unsigned char *bin_data) {
+     int32_t value = bin_data[offset+3] << 24 | bin_data[offset+2] << 16 | bin_data[offset+1] << 8 | bin_data[offset];
+     return value;
+  }
+
+  uint16_t extractu16(int offset, unsigned char *bin_data) {
+     uint16_t value = bin_data[offset+1] << 8 | bin_data[offset];
+     return value;
   }
 
   void extractLatLong(position *pos, unsigned char *bin_data) {
     int32_t la,lo;
-    extract32(&la,0,bin_data);
-    extract32(&lo,4,bin_data);
+    la = extract32(0,bin_data);
+    lo = extract32(4,bin_data);
     pos->latitude = ((double)la)/100000.0;
     pos->longitude = ((double)lo)/100000.0;
+  }
+
+  void extractWpLabel(char *label, unsigned char *bin_data) {
+    int offset=8;
+    for (int i=0;i<2;i++) {
+        label[i] = bin_data[i+offset];
+    }
+    label[2] = '\0';
+  }
+
+  void extractBattery(uint16_t *max, uint16_t *min, unsigned char *bin_data) {
+    *max = extractu16(10, bin_data);
+    *min = extractu16(12, bin_data);
   }
 };
 
@@ -95,20 +116,41 @@ TEST_F(SatCommTest, steer_log_should_send_the_correct_data) {
     satcomm.begin();
     struct tm test_time = {0,4,21,3,4,123,5,6};
     stub_timer.setTime(mktime(&test_time));
-    position pos;
+    position result_pos;
+    char result_wp_label[3];
+    uint16_t result_batt_max, result_batt_min;
 
+    // ** Setup **
     // Gps data
     gpsResult gps_data = {{53.44580, -2.22515, 3.0},1,1.0,1.1,15000l,5344580,-222515};
     stub_gps.set_data(&gps_data,1);
 
+    // waypoint
+    char wp_label[3]="A5";
+    satcomm.set_dest(wp_label);
+
+    // battery
+    stub_battery.setMaxMin(638,527);
+
+    // ** Execute **
     satcomm.steer_log_or_continue();
+
+    // ** Verify **
     EXPECT_EQ(stub_modem.sent_length,SAT_LOG_RECORD_SIZE);
 
-    extractLatLong(&pos,stub_modem.sent);
-    EXPECT_NEAR(pos.latitude,gps_data.pos.latitude,0.000001);
-    EXPECT_NEAR(pos.longitude,gps_data.pos.longitude,0.000001);
+    // gps data
+    extractLatLong(&result_pos,stub_modem.sent);
+    EXPECT_NEAR(result_pos.latitude,gps_data.pos.latitude,0.000001);
+    EXPECT_NEAR(result_pos.longitude,gps_data.pos.longitude,0.000001);
 
+    //waypoint label
+    extractWpLabel(result_wp_label,stub_modem.sent);
+    EXPECT_STREQ(result_wp_label,wp_label);
 
+    //battery
+    extractBattery(&result_batt_max,&result_batt_min, stub_modem.sent);
+    EXPECT_EQ(result_batt_max, 638);
+    EXPECT_EQ(result_batt_min, 527);
 }
 //TEST_F(SatCommTest, steer_log_should_retry_if_no_success_and_still_within_window) {}
 //TEST_F(SatCommTest, steer_log_should_abandon_if_no_sucess_and_past_window) {}

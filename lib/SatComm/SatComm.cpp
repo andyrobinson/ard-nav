@@ -1,8 +1,8 @@
 #include "SatComm.h"
 
 SatComm::SatComm(){};
-SatComm::SatComm(IridiumSBD *modemp, Timer *timerp, Gps *gpsp, Logger *loggerp):
-    modem(modemp),timer(timerp),gps(gpsp),logger(loggerp){};
+SatComm::SatComm(IridiumSBD *modemp, Timer *timerp, Gps *gpsp, Battery *batteryp, Logger *loggerp):
+    modem(modemp),timer(timerp),gps(gpsp),battery(batteryp),logger(loggerp),wp_label("0"){};
 
 // every 15 mins, for test
 // static const uint8_t log_hours[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
@@ -21,9 +21,7 @@ bool SatComm::steer_log_or_continue() {
     if (inArray((uint8_t) t->tm_hour, log_hours, sizeof(log_hours))
         && inWindow((uint8_t) t-> tm_min, log_minutes, sizeof(log_minutes))) {
 
-        gps->data(SAT_GPS_WAIT_MILLIS, &gps_data);
-        stuff(gps_data.fpLatitude,send_buffer,0,4);
-        stuff(gps_data.fpLongitude,send_buffer,4,4);
+        setData();
 
         int err = modem->begin();
         err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
@@ -37,7 +35,26 @@ bool SatComm::steer_log_or_continue() {
 //          }
 
     }
-    return true; // needs to reflect the callback, which will be tricky
+    return true; // needs to reflect the callback, which will be tricky to test
+}
+
+void SatComm::setData() {
+        gps->data(SAT_GPS_WAIT_MILLIS, &gps_data);
+        stuff(gps_data.fpLatitude,send_buffer,0,4);
+        stuff(gps_data.fpLongitude,send_buffer,4,4);
+        send_buffer[8]=wp_label[0];
+        send_buffer[9]=wp_label[1];
+        stuff(battery->raw_max(),send_buffer,10,2);
+        stuff(battery->raw_min(),send_buffer,12,2);
+}
+
+void SatComm::set_dest(char *label) {
+    wp_label[0] = charOrSpace(label[0]);
+    wp_label[1] = charOrSpace(label[1]);
+}
+
+char SatComm::charOrSpace(char ch) {
+    return ch == '\0' ? ' ' : ch;
 }
 
 bool SatComm::inWindow(uint8_t val, const uint8_t *arr, int length) {
