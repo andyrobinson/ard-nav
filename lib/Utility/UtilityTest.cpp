@@ -120,6 +120,15 @@ namespace {
     EXPECT_EQ(a,b);
   }
 
+  TEST_F(UtilityTest, Should_stuff_a_signed_value_into_an_array) {
+    int32_t a = -57686767;
+    uint8_t buff[4];
+    stuff(a,buff,0,4);
+
+    int32_t b = buff[3] << 24 | buff[2] << 16 | buff[1] << 8 | buff[0];
+    EXPECT_EQ(a,b);
+  }
+
 
 } // namespace
 
