@@ -37,7 +37,7 @@ class IridiumSBD
        void reset();
 
        int send_attempts;
-       uint8_t sent[500];
+       unsigned char sent[500];
        int sent_length;
 
     private:
