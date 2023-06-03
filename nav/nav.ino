@@ -79,11 +79,11 @@ Gps gps(&timer);
 
 // Declare the IridiumSBD object (note SLEEP pin)
 IridiumSBD modem(IRIDIUM_SERIAL, IRIDIUM_SLEEP_PIN);
-SatComm satcomm(&modem, &timer);
 
 SDLogger logger(&gps, &windsensor, &compass, &battery, &switches, &timer, 0);
 // SerialLogger logger(&gps, &windsensor, &compass, &battery);
 
+SatComm satcomm(&modem, &timer, &gps, &logger);
 Sail sail(&servo_control);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches);
 Rudder rudder(&servo_control);
