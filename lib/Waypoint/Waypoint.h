@@ -6,7 +6,7 @@
 using namespace Position;
 
 typedef struct {
-   char label[10];
+   char label[3];
    position pos;
 } waypoint;
 
