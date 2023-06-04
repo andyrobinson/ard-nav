@@ -16,6 +16,8 @@ class Timer
     tm *nowTm(); // structured time
     void setTime(time_t t);
     bool isTimeSet();
+    time_t lastRestart;
+    void reset();
 
   private:
     unsigned long timer_millis;

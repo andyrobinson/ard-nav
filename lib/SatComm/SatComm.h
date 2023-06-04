@@ -8,9 +8,11 @@
 #include "Utility.h"
 #include "Battery.h"
 #include "Compass.h"
+#include "Arduino.h"
+#include "time.h"
 
 #define SAT_LOG_WINDOWS_MINS 5
-#define SAT_LOG_RECORD_SIZE 24
+#define SAT_LOG_RECORD_SIZE 35
 #define SAT_GPS_WAIT_MILLIS 30000
 
 using namespace Utility;

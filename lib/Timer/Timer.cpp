@@ -27,6 +27,7 @@ tm *Timer::nowTm() {
 }
 
 void Timer::setTime(time_t t) {
+    if (!isSet) lastRestart = t;
     lastSetMillis = millis();
     lastSetTime = t;
     isSet = true;

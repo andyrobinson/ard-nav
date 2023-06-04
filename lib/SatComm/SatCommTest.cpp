@@ -30,13 +30,17 @@ class SatCommTest : public ::testing::Test {
      return value;
   }
 
-  time_t extractTime(unsigned char *bin_data) {
-    return (time_t) extract32(0, bin_data);
-  }
-
   uint16_t extractu16(int offset, unsigned char *bin_data) {
      uint16_t value = bin_data[offset+1] << 8 | bin_data[offset];
      return value;
+  }
+
+  time_t extractTime(int offset, unsigned char *bin_data) {
+    return (time_t) extract32(offset, bin_data);
+  }
+
+  time_t extractLogTime(unsigned char *bin_data) {
+    return extractTime(0,bin_data);
   }
 
   void extractLatLong(position *pos, unsigned char *bin_data) {
@@ -71,6 +75,16 @@ class SatCommTest : public ::testing::Test {
     *max = extractu16(20, bin_data);
     *min = extractu16(22, bin_data);
   }
+
+  void extractCompass(unsigned short *bearing, uint8_t *errors, unsigned char *bin_data) {
+    *bearing = extractu16(24, bin_data);
+    *errors = bin_data[26];
+  }
+
+  time_t extractRestart(unsigned char *bin_data) {
+    return extractTime(31,bin_data);
+  }
+
 };
 
 TEST_F(SatCommTest, should_sleep_on_begin) {
@@ -105,6 +119,9 @@ TEST_F(SatCommTest, steer_log_should_send_if_within_logging_window) {
     satcomm.begin();
     gpsResult gps_data = {{53.44580, -2.22515, 3.0},1,1.0,1.1,170,15000l,5344580,-222515};
     stub_gps.set_data(&gps_data,1);
+    uangle bearing = 221;
+    stub_compass.set_bearings(&bearing,1);
+
 
     struct tm test_time = {0,0,12,2,3,123,5,6}; // hour (12) a multiple of 3, but not within 5 mins of the hour
     //printf("** Test date: %s", asctime(&test_time));
@@ -123,6 +140,9 @@ TEST_F(SatCommTest, steer_log_should_send_if_after_zero_but_within_window) {
     struct tm test_time = {0,4,15,2,3,123,5,6}; // hour a multiple of 3, within 5 mins of the hour
     //printf("** Test date: %s", asctime(&test_time));
     stub_timer.setTime(mktime(&test_time));
+    uangle bearing = 221;
+    stub_compass.set_bearings(&bearing,1);
+
     bool result = satcomm.steer_log_or_continue();
 
     EXPECT_TRUE(result);
@@ -131,13 +151,17 @@ TEST_F(SatCommTest, steer_log_should_send_if_after_zero_but_within_window) {
 
 TEST_F(SatCommTest, steer_log_should_send_the_correct_data_in_binary) {
     stub_modem.reset();
+    stub_timer.reset();
     satcomm.begin();
     position result_pos;
     char result_wp_label[3];
-    uint16_t result_batt_max, result_batt_min;
+    uint16_t result_batt_max, result_batt_min, result_bearing;
+    uint8_t result_errors;
 
     // ** Setup **
     // time
+    time_t first_time_set = 150890; // should be recorded as restart time
+    stub_timer.setTime(first_time_set);
     struct tm test_time = {0,4,21,3,4,123,5,6};
     stub_timer.setTime(mktime(&test_time));
 
@@ -164,7 +188,7 @@ TEST_F(SatCommTest, steer_log_should_send_the_correct_data_in_binary) {
     EXPECT_EQ(stub_modem.sent_length,SAT_LOG_RECORD_SIZE);
 
     // time
-    time_t logtime = extractTime(stub_modem.sent);
+    time_t logtime = extractLogTime(stub_modem.sent);
     EXPECT_EQ(logtime, stub_timer.now());
 
     // gps data
@@ -185,10 +209,16 @@ TEST_F(SatCommTest, steer_log_should_send_the_correct_data_in_binary) {
     EXPECT_EQ(result_batt_max, 638);
     EXPECT_EQ(result_batt_min, 527);
 
-    //todo:
-    // - Compass heading and I2C errors,
-    // - Free memory
+    //compass
+    extractCompass(&result_bearing,&result_errors, stub_modem.sent);
+    EXPECT_EQ(result_bearing, 163);
+    EXPECT_EQ(result_errors, 13);
+
+    // Free memory - cannot test
+
     // - last restart (unix timestamp, stored in Timer)
+    time_t result_restart = extractRestart(stub_modem.sent);
+    EXPECT_EQ(result_restart,first_time_set);
 }
 //TEST_F(SatCommTest, steer_log_should_retry_if_no_success_and_still_within_window) {}
 //TEST_F(SatCommTest, steer_log_should_abandon_if_no_sucess_and_past_window) {}

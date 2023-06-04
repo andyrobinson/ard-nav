@@ -27,11 +27,18 @@ tm *Timer::nowTm() {
 }
 
 void Timer::setTime(time_t t) {
+    if (!is_set) lastRestart = t;
     set_time = t;
     is_set = true;
 }
 
 bool Timer::isTimeSet()  {
     return is_set;
+}
+
+void Timer::reset() {
+    timer_millis = 0;
+    lastRestart = 0;
+    is_set = false;
 }
 
