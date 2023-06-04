@@ -18,32 +18,25 @@ void SatComm::begin(){
 
 bool SatComm::steer_log_or_continue() {
     tm *t = timer->nowTm();
-    if (inArray((uint8_t) t->tm_hour, log_hours, sizeof(log_hours))
-        && inWindow((uint8_t) t-> tm_min, log_minutes, sizeof(log_minutes))
-        && (last_log == 0
-            || ((timer->milliseconds() - last_log) > (SAT_LOG_WINDOWS_MINS * 60000)))) {
 
-        setData();
+    if (isHourtoLog((uint8_t) t->tm_hour, log_hours, sizeof(log_hours))
+        && isMinutetoLog((uint8_t) t-> tm_min, log_minutes, sizeof(log_minutes))
+        && haveNotLoggedRecently()) {
 
-        int err = modem->begin();
-        err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
+        insertLogDataIntoBuffer();
+
+        modem->begin();
+        int err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
 
         if (err == ISBD_SUCCESS) {
             last_log = timer->milliseconds(); // prevent retry if successful
         }
-//          if (err != ISBD_SUCCESS)
-//          {
-//            Serial.print(F("sendSBDText failed: error "));
-//            Serial.println(err);
-//            if (err == ISBD_SENDRECEIVE_TIMEOUT)
-//              Serial.println(F("Try again with a better view of the sky."));
-//          }
-
+        modem->sleep();
     }
     return true; // needs to reflect the callback, which will be tricky to test
 }
 
-void SatComm::setData() {
+void SatComm::insertLogDataIntoBuffer() {
         stuff(timer->now(),send_buffer,0,4);
         gps->data(SAT_GPS_WAIT_MILLIS, &gps_data);
         stuff(gps_data.fpLatitude,send_buffer,4,4);
@@ -69,16 +62,21 @@ char SatComm::charOrSpace(char ch) {
     return ch == '\0' ? ' ' : ch;
 }
 
-bool SatComm::inWindow(uint8_t val, const uint8_t *arr, int length) {
+bool SatComm::isMinutetoLog(uint8_t val, const uint8_t *arr, int length) {
     for (int i=0;i<length;i++) {
         if (arr[i] <= val && (arr[i] + SAT_LOG_WINDOWS_MINS) >= val) return true;
     }
     return false;
 }
 
-bool SatComm::inArray(uint8_t val, const uint8_t *arr, int length) {
+bool SatComm::isHourtoLog(uint8_t val, const uint8_t *arr, int length) {
     for (int i=0;i<length;i++) {
         if (arr[i] == val) return true;
     }
     return false;
+}
+
+bool SatComm::haveNotLoggedRecently() {
+    return (last_log == 0
+            || ((timer->milliseconds() - last_log) > (SAT_LOG_WINDOWS_MINS * SAT_MILLIS_IN_MINUTE)));
 }

@@ -14,6 +14,7 @@
 #define SAT_LOG_WINDOWS_MINS 5
 #define SAT_LOG_RECORD_SIZE 35
 #define SAT_GPS_WAIT_MILLIS 30000
+#define SAT_MILLIS_IN_MINUTE 60000
 
 using namespace Utility;
 
@@ -32,9 +33,10 @@ class SatComm {
     private:
 
       char charOrSpace(char ch);
-      bool inArray(uint8_t val, const uint8_t *arr, int length);
-      bool inWindow(uint8_t val, const uint8_t *arr, int length);
-      void setData();
+      bool isHourtoLog(uint8_t val, const uint8_t *arr, int length);
+      bool isMinutetoLog(uint8_t val, const uint8_t *arr, int length);
+      void insertLogDataIntoBuffer();
+      bool haveNotLoggedRecently();
 
       IridiumSBD *modem;
       Timer *timer;
