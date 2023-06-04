@@ -46,6 +46,7 @@ class SatComm {
       uint8_t send_buffer[50];
       gpsResult gps_data;
       char wp_label[2];
+      unsigned long last_log;
 };
 
 #endif

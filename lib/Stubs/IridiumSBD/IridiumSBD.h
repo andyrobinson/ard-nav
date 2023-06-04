@@ -6,9 +6,22 @@ IridiumSBD Stub, with minimal functionality
 #define STUB_IRIDIUM_SBD
 
 #define ISBD_CLEAR_MO			 0
+
+// response codes
 #define ISBD_SUCCESS             0
 #define ISBD_ALREADY_AWAKE       1
+#define ISBD_SERIAL_FAILURE      2
+#define ISBD_PROTOCOL_ERROR      3
+#define ISBD_CANCELLED           4
+#define ISBD_NO_MODEM_DETECTED   5
+#define ISBD_SBDIX_FATAL_ERROR   6
+#define ISBD_SENDRECEIVE_TIMEOUT 7
+#define ISBD_RX_OVERFLOW         8
+#define ISBD_REENTRANT           9
 #define ISBD_IS_ASLEEP           10
+#define ISBD_NO_SLEEP_PIN        11
+#define ISBD_NO_NETWORK          12
+#define ISBD_MSG_TOO_LONG        13
 
 
 class IridiumSBD
@@ -26,15 +39,9 @@ class IridiumSBD
        int clearBuffers(int buffers = ISBD_CLEAR_MO);
        int getIMEI(char *IMEI, uint16_t bufferSize);
 
-       // Weak functions to configure and set the sleep pin - user can overwrite with a custom functions if required
-       void configureSleepPin() __attribute__((weak));
-       void setSleepPin(uint8_t enable) __attribute__((weak));
-
-       // Weak functions to begin and end the Serial port after power(true) and before power(false)
-       void beginSerialPort() __attribute__((weak));
-       void endSerialPort() __attribute__((weak));
-
+       // stub methods for test
        void reset();
+       void set_response(int code);
 
        int send_attempts;
        unsigned char sent[500];
@@ -42,6 +49,7 @@ class IridiumSBD
 
     private:
         bool sleeping;
+        int response;
 };
 
 #endif

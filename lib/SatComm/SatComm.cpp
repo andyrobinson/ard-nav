@@ -2,7 +2,7 @@
 
 SatComm::SatComm(){};
 SatComm::SatComm(IridiumSBD *modemp, Timer *timerp, Gps *gpsp, Battery *batteryp, Compass *compassp, Logger *loggerp):
-    modem(modemp),timer(timerp),gps(gpsp),battery(batteryp),compass(compassp),logger(loggerp),wp_label("0"){};
+    modem(modemp),timer(timerp),gps(gpsp),battery(batteryp),compass(compassp),logger(loggerp),wp_label("0"),last_log(0){};
 
 // every 15 mins, for test
 // static const uint8_t log_hours[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
@@ -19,13 +19,18 @@ void SatComm::begin(){
 bool SatComm::steer_log_or_continue() {
     tm *t = timer->nowTm();
     if (inArray((uint8_t) t->tm_hour, log_hours, sizeof(log_hours))
-        && inWindow((uint8_t) t-> tm_min, log_minutes, sizeof(log_minutes))) {
+        && inWindow((uint8_t) t-> tm_min, log_minutes, sizeof(log_minutes))
+        && (last_log == 0
+            || ((timer->milliseconds() - last_log) > (SAT_LOG_WINDOWS_MINS * 60000)))) {
 
         setData();
 
         int err = modem->begin();
         err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
 
+        if (err == ISBD_SUCCESS) {
+            last_log = timer->milliseconds(); // prevent retry if successful
+        }
 //          if (err != ISBD_SUCCESS)
 //          {
 //            Serial.print(F("sendSBDText failed: error "));
