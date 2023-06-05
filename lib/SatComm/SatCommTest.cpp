@@ -291,8 +291,49 @@ TEST_F(SatCommTest, steer_log_should_not_send_again_after_success_in_window) {
     EXPECT_EQ(stub_modem.send_attempts,1);
 }
 
-//TEST_F(SatCommTest, steer_log_should_not_send_again_after_success_in_window) {}
-//TEST_F(SatCommTest, steer_log_should_send_again_when_the_next_window_is_reached) {}
+TEST_F(SatCommTest, steer_log_should_send_again_when_the_next_window_is_reached) {
+    stub_modem.reset();
+    stub_timer.reset();
+
+    gpsResult gps_data = {{53.44580, -2.22515, 3.0},1,1.0,1.1,180,15000l,5344580,-222515};
+    stub_gps.set_data(&gps_data,1);
+    struct tm test_time = {0,0,15,2,3,123,5,6}; // hour a multiple of 3, within 5 mins of the hour
+    stub_timer.setTime(mktime(&test_time));
+    stub_timer.set_millis(10000);
+    uangle bearing = 221;
+    stub_compass.set_bearings(&bearing,1);
+    stub_modem.set_response(ISBD_SUCCESS);
+
+    satcomm.begin();
+    satcomm.steer_log_or_continue();
+    EXPECT_EQ(stub_modem.send_attempts,1);
+
+    // wait three hours until next window
+    stub_timer.set_millis (3 * 60 * SAT_MILLIS_IN_MINUTE);
+    test_time = {0,0,18,2,3,123,5,6};
+    stub_timer.setTime(mktime(&test_time));
+
+    satcomm.steer_log_or_continue();
+    EXPECT_EQ(stub_modem.send_attempts,2);
+}
+
+TEST_F(SatCommTest, steer_log_should_return_false_if_cancelled_by_callback) {
+    stub_modem.reset();
+    stub_timer.reset();
+
+    gpsResult gps_data = {{53.44580, -2.22515, 3.0},1,1.0,1.1,180,15000l,5344580,-222515};
+    stub_gps.set_data(&gps_data,1);
+    struct tm test_time = {0,0,6,2,3,123,5,6}; // hour a multiple of 3, within 5 mins of the hour
+    stub_timer.setTime(mktime(&test_time));
+    uangle bearing = 17;
+    stub_compass.set_bearings(&bearing,1);
+    stub_modem.set_response(ISBD_CANCELLED);
+
+    satcomm.begin();
+    bool result = satcomm.steer_log_or_continue();
+    EXPECT_EQ(stub_modem.send_attempts,1);
+    EXPECT_FALSE(result);
+}
 //TEST_F(SatCommTest, steer_log_should_return_false_if_cancelled_by_callback) {}
 //TEST_F(SatCommTest, steer_log_should_use_satellite_time_if_no_time_available) {}
 //TEST_F(SatCommTest, steer_log_should_not_log_if_no_time_or_satellite_time) {}

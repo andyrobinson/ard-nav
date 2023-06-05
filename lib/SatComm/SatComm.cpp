@@ -2,7 +2,7 @@
 
 SatComm::SatComm(){};
 SatComm::SatComm(IridiumSBD *modemp, Timer *timerp, Gps *gpsp, Battery *batteryp, Compass *compassp, Logger *loggerp):
-    modem(modemp),timer(timerp),gps(gpsp),battery(batteryp),compass(compassp),logger(loggerp),wp_label("0"),last_log(0){};
+    modem(modemp),timer(timerp),gps(gpsp),battery(batteryp),compass(compassp),logger(loggerp),wp_label("0"){};
 
 // every 15 mins, for test
 // static const uint8_t log_hours[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
@@ -14,9 +14,11 @@ const uint8_t SatComm::log_minutes[1] = {0};
 
 void SatComm::begin(){
     modem->sleep();
+    last_log = 0; // really for testing purposes
 };
 
 bool SatComm::steer_log_or_continue() {
+    bool result = true; // this is not success, this is just carry on steering
     tm *t = timer->nowTm();
 
     if (isHourtoLog((uint8_t) t->tm_hour, log_hours, sizeof(log_hours))
@@ -24,16 +26,16 @@ bool SatComm::steer_log_or_continue() {
         && haveNotLoggedRecently()) {
 
         insertLogDataIntoBuffer();
-
         modem->begin();
         int err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
-
         if (err == ISBD_SUCCESS) {
-            last_log = timer->milliseconds(); // prevent retry if successful
+            last_log = timer->milliseconds(); // prevent duplicate
+        } else if (err == ISBD_CANCELLED) {
+            result = false;
         }
         modem->sleep();
     }
-    return true; // needs to reflect the callback, which will be tricky to test
+    return result;
 }
 
 void SatComm::insertLogDataIntoBuffer() {
