@@ -25,6 +25,17 @@ class SatCommTest : public ::testing::Test {
   SatCommTest() {}
   void SetUp() override {}
 
+  void initStubs(uangle bearing, int hour, int mins) {
+    stub_modem.reset();
+    stub_timer.reset();
+
+    gpsResult gps_data = {{53.44580, -2.22515, 3.0},1,1.0,1.1,180,15000l,5344580,-222515};
+    stub_gps.set_data(&gps_data,1);
+    struct tm test_time = {0,mins,hour,2,3,123,5,6};
+    stub_timer.setTime(mktime(&test_time));
+    stub_compass.set_bearings(&bearing,1);
+  }
+
   int32_t extract32(int offset, unsigned char *bin_data) {
      int32_t value = bin_data[offset+3] << 24 | bin_data[offset+2] << 16 | bin_data[offset+1] << 8 | bin_data[offset];
      return value;
@@ -93,10 +104,9 @@ TEST_F(SatCommTest, should_sleep_on_begin) {
 }
 
 TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_hour) {
+    initStubs(100,10,0); // hour (10) not a multiple of 3
     satcomm.begin();
-    struct tm test_time = {0,0,10,2,3,123,5,6}; // hour (10) not a multiple of 3
-    // printf("** Test date: %s", asctime(&test_time));
-    stub_timer.setTime(mktime(&test_time));
+
     bool result = satcomm.steer_log_or_continue();
 
     EXPECT_TRUE(result);
@@ -104,10 +114,9 @@ TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_
 }
 
 TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_minute_window) {
+    initStubs(120,12,30); // hour (12) a multiple of 3, but not within 5 mins of the hour
     satcomm.begin();
-    struct tm test_time = {0,30,12,2,3,123,5,6}; // hour (12) a multiple of 3, but not within 5 mins of the hour
-    // printf("** Test date: %s", asctime(&test_time));
-    stub_timer.setTime(mktime(&test_time));
+
     bool result = satcomm.steer_log_or_continue();
 
     EXPECT_TRUE(result);
@@ -115,6 +124,7 @@ TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_
 }
 
 TEST_F(SatCommTest, steer_log_should_send_if_within_logging_window) {
+    initStubs(120,9,0); // hour (6) a multiple of 3, and mins start of the hour
     stub_modem.reset();
     satcomm.begin();
     gpsResult gps_data = {{53.44580, -2.22515, 3.0},1,1.0,1.1,170,15000l,5344580,-222515};
@@ -222,18 +232,10 @@ TEST_F(SatCommTest, steer_log_should_send_the_correct_data_in_binary) {
 }
 
 TEST_F(SatCommTest, steer_log_should_retry_if_no_success_and_still_within_window) {
-    stub_modem.reset();
-    stub_timer.reset();
-
-    gpsResult gps_data = {{53.44580, -2.22515, 3.0},1,1.0,1.1,180,15000l,5344580,-222515};
-    stub_gps.set_data(&gps_data,1);
-    struct tm test_time = {0,0,15,2,3,123,5,6}; // hour a multiple of 3, within 5 mins of the hour
-    stub_timer.setTime(mktime(&test_time));
-    uangle bearing = 221;
-    stub_compass.set_bearings(&bearing,1);
+    initStubs(221,9,0);
     stub_modem.set_response(ISBD_SENDRECEIVE_TIMEOUT);
-
     satcomm.begin();
+
     satcomm.steer_log_or_continue();
     EXPECT_EQ(stub_modem.send_attempts,1);
 
@@ -334,8 +336,9 @@ TEST_F(SatCommTest, steer_log_should_return_false_if_cancelled_by_callback) {
     EXPECT_EQ(stub_modem.send_attempts,1);
     EXPECT_FALSE(result);
 }
-//TEST_F(SatCommTest, steer_log_should_return_false_if_cancelled_by_callback) {}
+
 //TEST_F(SatCommTest, steer_log_should_use_satellite_time_if_no_time_available) {}
+//TEST_F(SatCommTest, steer_log_should_pause_between_asking_for_satellite_time) {}
 //TEST_F(SatCommTest, steer_log_should_not_log_if_no_time_or_satellite_time) {}
 
 }  //namespace
