@@ -43,6 +43,8 @@ int IridiumSBD::sendSBDBinary(const uint8_t *txData, uint16_t txDataSize){
 };
 
 int IridiumSBD::getSystemTime(struct tm &tm){
+    memcpy(&tm, gmtime(&sat_time), sizeof tm);
+
     return ISBD_SUCCESS;
 };
 
@@ -66,6 +68,11 @@ void IridiumSBD::reset() {
 void IridiumSBD::set_response(int code){
     response = code;
 }
+
+void IridiumSBD::set_time(time_t t) {
+    sat_time = t;
+}
+
 
 int IridiumSBD::clearBuffers(int buffers){ return ISBD_SUCCESS; };
 int IridiumSBD::getIMEI(char *IMEI, uint16_t bufferSize){ return ISBD_SUCCESS; };

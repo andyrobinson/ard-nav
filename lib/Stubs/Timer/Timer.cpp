@@ -37,6 +37,7 @@ bool Timer::isTimeSet()  {
 }
 
 void Timer::reset() {
+    set_time = 0;
     timer_millis = 0;
     lastRestart = 0;
     is_set = false;

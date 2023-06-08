@@ -2,6 +2,10 @@
 IridiumSBD Stub, with minimal functionality
 
 */
+
+#include "time.h"
+#include "cstring"
+
 #ifndef STUB_IRIDIUM_SBD
 #define STUB_IRIDIUM_SBD
 
@@ -42,6 +46,7 @@ class IridiumSBD
        // stub methods for test
        void reset();
        void set_response(int code);
+       void set_time(time_t t);
 
        int send_attempts;
        unsigned char sent[500];
@@ -50,6 +55,7 @@ class IridiumSBD
     private:
         bool sleeping;
         int response;
+        time_t sat_time;
 };
 
 #endif

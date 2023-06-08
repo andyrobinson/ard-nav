@@ -15,6 +15,7 @@
 #define SAT_LOG_RECORD_SIZE 35
 #define SAT_GPS_WAIT_MILLIS 30000
 #define SAT_MILLIS_IN_MINUTE 60000
+#define SAT_TIME_SET_INTERVAL_MINS 15
 
 using namespace Utility;
 

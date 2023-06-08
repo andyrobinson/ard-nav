@@ -21,7 +21,8 @@ bool SatComm::steer_log_or_continue() {
     bool result = true; // this is not success, this is just carry on steering
     tm *t = timer->nowTm();
 
-    if (isHourtoLog((uint8_t) t->tm_hour, log_hours, sizeof(log_hours))
+    if (timer->isTimeSet()
+        && isHourtoLog((uint8_t) t->tm_hour, log_hours, sizeof(log_hours))
         && isMinutetoLog((uint8_t) t-> tm_min, log_minutes, sizeof(log_minutes))
         && haveNotLoggedRecently()) {
 
