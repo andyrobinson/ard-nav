@@ -306,11 +306,11 @@ TEST_F(SatCommTest, steer_log_should_not_log_if_no_time_available) {
 
 TEST_F(SatCommTest, steer_log_should_use_satellite_time_if_no_time_available_and_have_waited) {
     initStubs(33,21,0);
-    time_t test_time = 1672576130;
+    time_t test_time = 1686258005; // 8 June 2023 21.00
     tm modem_time;
     stub_timer.reset();
     stub_timer.set_millis (SAT_TIME_SET_INTERVAL_MINS * SAT_MILLIS_IN_MINUTE + 10);
-    stub_modem.set_time(test_time);
+    stub_modem.set_time(test_time - (SAT_TIME_SET_INTERVAL_MINS * 60));
 
     satcomm.begin();
     bool result = satcomm.steer_log_or_continue();
@@ -320,9 +320,6 @@ TEST_F(SatCommTest, steer_log_should_use_satellite_time_if_no_time_available_and
     EXPECT_EQ(stub_modem.send_attempts,1);
     EXPECT_TRUE(result);
 }
-
-//TEST_F(SatCommTest, steer_log_should_pause_between_asking_for_satellite_time) {}
-//TEST_F(SatCommTest, steer_log_should_not_log_if_no_time_or_satellite_time) {}
 
 }  //namespace
 

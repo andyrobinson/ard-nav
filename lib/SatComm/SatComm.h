@@ -38,6 +38,7 @@ class SatComm {
       bool isMinutetoLog(uint8_t val, const uint8_t *arr, int length);
       void insertLogDataIntoBuffer();
       bool haveNotLoggedRecently();
+      void tryModemTime();
 
       IridiumSBD *modem;
       Timer *timer;
@@ -50,6 +51,7 @@ class SatComm {
       gpsResult gps_data;
       char wp_label[2];
       unsigned long last_log;
+      unsigned long last_modem_attempt_time;
 };
 
 #endif
