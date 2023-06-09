@@ -8,7 +8,7 @@ IridiumSBD Stub, with minimal functionality
 #define ISBD_SUCCESS             0
 #define ISBD_IS_ASLEEP           10
 
-IridiumSBD::IridiumSBD():sleeping(false),send_attempts(0),response(ISBD_SUCCESS){};
+IridiumSBD::IridiumSBD():sleeping(false),send_attempts(0),response(ISBD_SUCCESS),retry_reset_count(0){};
 
 int IridiumSBD::begin(){
     sleeping = false;
@@ -58,10 +58,15 @@ int IridiumSBD::sleep(){
     return ISBD_SUCCESS;
 };
 
+void IridiumSBD::resetSBDRetry() {
+    retry_reset_count++;
+}
+
 void IridiumSBD::reset() {
     send_attempts = 0;
     sent_length = 0;
     for (int i=0; i < 500;i++) sent[i] = 0;
+    retry_reset_count = 0;
     response = ISBD_SUCCESS;
 }
 

@@ -114,6 +114,18 @@ TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_
     EXPECT_EQ(stub_modem.send_attempts,0);
 }
 
+TEST_F(SatCommTest, steer_log_should_reset_retry_interval_if_not_sending) {
+    initStubs(100,10,0); // hour (10) not a multiple of 3
+    satcomm.begin();
+    EXPECT_EQ(stub_modem.retry_reset_count,0);
+
+    bool result = satcomm.steer_log_or_continue();
+
+    EXPECT_TRUE(result);
+    EXPECT_EQ(stub_modem.send_attempts,0);
+    EXPECT_EQ(stub_modem.retry_reset_count,1);
+}
+
 TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_minute_window) {
     initStubs(120,12,30); // hour (12) a multiple of 3, but not within 5 mins of the hour
     satcomm.begin();
@@ -132,6 +144,7 @@ TEST_F(SatCommTest, steer_log_should_send_if_within_logging_window) {
 
     EXPECT_TRUE(result);
     EXPECT_GT(stub_modem.send_attempts,0);
+    EXPECT_EQ(stub_modem.retry_reset_count,0);
 }
 
 TEST_F(SatCommTest, steer_log_should_send_if_after_zero_but_within_window) {

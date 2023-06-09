@@ -39,6 +39,7 @@ class IridiumSBD
        int getSystemTime(struct tm &tm);
        bool isAsleep();
        int sleep();
+       void resetSBDRetry();
 
        int clearBuffers(int buffers = ISBD_CLEAR_MO);
        int getIMEI(char *IMEI, uint16_t bufferSize);
@@ -51,6 +52,7 @@ class IridiumSBD
        int send_attempts;
        unsigned char sent[500];
        int sent_length;
+       int retry_reset_count;
 
     private:
         bool sleeping;

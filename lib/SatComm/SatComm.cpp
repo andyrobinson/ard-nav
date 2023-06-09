@@ -38,6 +38,8 @@ bool SatComm::steer_log_or_continue() {
             result = false;
         }
         modem->sleep();
+    } else {
+        modem->resetSBDRetry();
     }
     return result;
 }
