@@ -17,6 +17,8 @@ Sail stub_sail;
 RotaryPID stub_rotaryPID;
 Helm helm;
 StubLogger logger;
+SatComm stub_satcomm;
+
 angle wind_sample[] = {180};
 
 class HelmTest : public ::testing::Test {
@@ -28,7 +30,7 @@ class HelmTest : public ::testing::Test {
     stub_rudder.reset();
     stub_sail.reset();
     stub_windsensor.set_relative(wind_sample, 1);
-    helm = Helm(&stub_rudder, &stub_compass, &stub_timer, &stub_windsensor, &stub_sail, &stub_rotaryPID, &logger);
+    helm = Helm(&stub_rudder, &stub_compass, &stub_timer, &stub_windsensor, &stub_sail, &stub_rotaryPID, &stub_satcomm, &logger);
   }
 
   angle rudder_position() {
@@ -166,6 +168,21 @@ TEST_F(HelmTest, Should_not_abort_the_tack_before_max_out_range_exceeded) {
    EXPECT_EQ(sail_calls[1],70);
    EXPECT_EQ(sail_calls[2],90);
  }
+
+  TEST_F(HelmTest, should_call_satcomm_steer_and_continue_on_true) {
+    uangle bearing = 0;
+    angle result[] = {-10};
+    stub_compass.set_bearings(&bearing,1);
+    stub_rotaryPID.set_results(result,1);
+
+    helm.steer(30, 1, {65, 355});
+
+    EXPECT_EQ(rudder_position(), -10);
+    EXPECT_EQ(stub_satcomm.steer_count,1);
+  }
+
+
+// TEST_F(HelmTest, should_call_satcomm_steer_and_finish_on_false) {}
 
 
 }  //namespace

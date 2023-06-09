@@ -7,8 +7,8 @@ using namespace Utility;
 
 Helm::Helm():rudder_position(0) {}
 
-Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, Logger *loggerp):
-  rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), windsensor(windsensorp), sail(sailp), rotarypid(rotarypidp), logger(loggerp) {}
+Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, SatComm satcommp, Logger *loggerp):
+  rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), windsensor(windsensorp), sail(sailp), rotarypid(rotarypidp), satcomm(satcommp), logger(loggerp) {}
 
 void Helm::steer(uangle direction_param, long steer_time_param, windrange range_param) {
     direction = direction_param;
