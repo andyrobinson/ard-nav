@@ -90,9 +90,11 @@ bool SatComm::haveNotLoggedRecently() {
 void SatComm::tryModemTime() {
     struct tm t;
     if ((timer->milliseconds() - last_modem_attempt_time) > (SAT_MILLIS_IN_MINUTE * SAT_TIME_SET_INTERVAL_MINS)) {
+        modem->begin();
         int err = modem->getSystemTime(t);
         if (err == ISBD_SUCCESS) {
             timer->setTime(mktime(&t));
         }
+        modem->sleep();
     }
 }
