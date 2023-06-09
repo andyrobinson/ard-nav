@@ -68,6 +68,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define ISBD_MSSTM_RETRY_INTERVAL       10
 #define ISBD_DEFAULT_SBDIX_INTERVAL     10
 #define ISBD_USB_SBDIX_INTERVAL         30
+#define ISBD_MAX_SBDIX_INTERVAL         80 // ARDNAV limit to exponential back-off
 #define ISBD_DEFAULT_SENDRECEIVE_TIME   300
 #define ISBD_STARTUP_MAX_TIME           240
 #define ISBD_MAX_MESSAGE_LENGTH         340
@@ -109,6 +110,7 @@ public:
    bool isAsleep();
    bool hasRingAsserted();
    int sleep();
+   void resetSBDRetry();
 
    typedef enum { DEFAULT_POWER_PROFILE = 0, USB_POWER_PROFILE = 1 } POWERPROFILE;
    void setPowerProfile(POWERPROFILE profile); // 0 = direct connect (default), 1 = USB

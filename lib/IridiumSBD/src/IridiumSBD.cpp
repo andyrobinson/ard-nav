@@ -165,6 +165,11 @@ void IridiumSBD::setPowerProfile(POWERPROFILE profile) // 0 = direct connect (de
    }
 }
 
+// ARDNAV reset for exponential back-off
+void IridiumSBD::resetSBDRetry() {
+      this->sbdixInterval = ISBD_DEFAULT_SBDIX_INTERVAL;
+}
+
 // Tweak AT timeout
 void IridiumSBD::adjustATTimeout(int seconds)
 {
@@ -784,6 +789,8 @@ int IridiumSBD::internalSendReceiveSBD(const char *txTxtMessage, const uint8_t *
             diagprint(F("Waiting for SBDIX retry...\r\n"));
             if (!noBlockWait(sbdixInterval))
                return ISBD_CANCELLED;
+            // ARDNAV making retry exponential up to limit.  Note we only extend if we didn't cancel
+            sbdixInterval += sbdixInterval < ISBD_MAX_SBDIX_INTERVAL ? sbdixInterval : 0;
          }
       }
 
