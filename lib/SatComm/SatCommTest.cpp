@@ -321,6 +321,28 @@ TEST_F(SatCommTest, steer_log_should_use_satellite_time_if_no_time_available_and
     EXPECT_TRUE(result);
 }
 
+TEST_F(SatCommTest, steer_log_should_not_repeatedly_query_the_satellite_for_time) {
+    initStubs(33,21,0);
+    time_t test_time = 1686258005; // 8 June 2023 21.00
+    tm modem_time;
+    stub_timer.reset();
+    stub_timer.set_millis (SAT_TIME_SET_INTERVAL_MINS * SAT_MILLIS_IN_MINUTE + 10);
+    stub_modem.set_time(test_time - (SAT_TIME_SET_INTERVAL_MINS * 60));
+    stub_modem.set_response(ISBD_NO_MODEM_DETECTED);
+
+    satcomm.begin();
+    satcomm.steer_log_or_continue();
+    EXPECT_FALSE(stub_timer.isTimeSet());
+
+    stub_modem.set_response(ISBD_SUCCESS);
+    stub_timer.set_millis (stub_timer.milliseconds() + 10000);
+    satcomm.steer_log_or_continue();
+
+    EXPECT_FALSE(stub_timer.isTimeSet()); // we didn't try again
+
+}
+
+
 }  //namespace
 
 int main(int argc, char **argv) {

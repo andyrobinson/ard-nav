@@ -43,8 +43,8 @@ int IridiumSBD::sendSBDBinary(const uint8_t *txData, uint16_t txDataSize){
 };
 
 int IridiumSBD::getSystemTime(struct tm &tm){
+    if (response != ISBD_SUCCESS) return response;
     memcpy(&tm, gmtime(&sat_time), sizeof tm);
-
     return ISBD_SUCCESS;
 };
 
