@@ -10,9 +10,8 @@ Helm::Helm():rudder_position(0) {}
 Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, SatComm *satcommp, Logger *loggerp):
   rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), windsensor(windsensorp), sail(sailp), rotarypid(rotarypidp), satcomm(satcommp), logger(loggerp) {}
 
-void Helm::steer(uangle direction_param, long steer_time_param, windrange range_param) {
+void Helm::steer(uangle direction_param, long steer_time, windrange range_param) {
     direction = direction_param;
-    steer_time = steer_time_param;
     range = range_param;
     remaining = steer_time;
     out_of_range_count = 0;
@@ -30,7 +29,7 @@ void Helm::steer(uangle direction_param, long steer_time_param, windrange range_
 
 bool Helm::steer_and_continue() {
 
-  if(!ok_to_continue(remaining, steer_time, range)) return false;
+  if(!ok_to_continue(remaining, range)) return false;
 
   uangle current_heading = compass->bearing();
   if (current_heading == ANGLE_ERROR) {
@@ -52,7 +51,7 @@ bool Helm::steer_and_continue() {
   return true;
 }
 
-bool Helm::ok_to_continue(long time_left, long total_time, windrange range) {
+bool Helm::ok_to_continue(long time_left, windrange range) {
     char logmsg[22];
     uangle abs_wind = windsensor->absolute(compass->bearing());
     bool is_in_range = in_range(abs_wind, range.lower, range.upper) || abs_wind == ANGLE_ERROR;

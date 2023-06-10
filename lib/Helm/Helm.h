@@ -41,11 +41,9 @@ class Helm : public IHelm
     char plus[2] = "+";
     char logmsg[50];
     uangle direction;
-    long steer_time;
     windrange range;
 
-
-    bool ok_to_continue(long time_left, long total_time, windrange range);
+    bool ok_to_continue(long time_left, windrange range);
 };
 
 #endif
