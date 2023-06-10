@@ -170,6 +170,7 @@ TEST_F(HelmTest, Should_not_abort_the_tack_before_max_out_range_exceeded) {
  }
 
   TEST_F(HelmTest, should_call_satcomm_steer_and_continue_on_true) {
+    stub_satcomm.reset();
     uangle bearing = 0;
     angle result[] = {-10};
     stub_compass.set_bearings(&bearing,1);
@@ -178,11 +179,27 @@ TEST_F(HelmTest, Should_not_abort_the_tack_before_max_out_range_exceeded) {
     helm.steer(30, 1, {65, 355});
 
     EXPECT_EQ(rudder_position(), -10);
-    EXPECT_EQ(stub_satcomm.steer_count,1);
+    EXPECT_GT(stub_satcomm.steer_count,0);
   }
 
 
-// TEST_F(HelmTest, should_call_satcomm_steer_and_finish_on_false) {}
+ TEST_F(HelmTest, should_call_satcomm_steer_and_finish_without_attempting_to_steer_on_false) {
+     stub_satcomm.reset();
+     stub_satcomm.result = false;
+     uangle bearing = 0;
+     angle result[] = {-10};
+     stub_compass.set_bearings(&bearing,1);
+     stub_rotaryPID.set_results(result,1);
+     stub_rudder.set_position(0);
+
+     helm.steer(30, 1, {65, 355});
+
+     angle *positions = stub_rudder.get_positions();
+
+     EXPECT_EQ(positions[0], 0);
+     EXPECT_EQ(positions[1], 0);
+     EXPECT_EQ(stub_satcomm.steer_count,1);
+ }
 
 
 }  //namespace

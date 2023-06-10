@@ -1,8 +1,6 @@
 #ifndef SatCommStub_h
 #define SatCommStub_h
 
-using namespace Utility;
-
 class SatComm {
     public:
       SatComm();
@@ -16,9 +14,9 @@ class SatComm {
       char dest[3];
       int steer_count;
       void reset();
+      bool result;
 
     private:
-       bool result;
 
 };
 

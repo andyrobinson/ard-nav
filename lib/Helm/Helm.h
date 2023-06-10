@@ -22,7 +22,7 @@ class Helm : public IHelm
 {
   public:
     Helm();
-    Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, SatComm satcommp, Logger *loggerp);
+    Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, SatComm *satcommp, Logger *loggerp);
     virtual void steer(uangle direction_param, long steer_time_param, windrange range_param);
     virtual bool steer_and_continue();
 

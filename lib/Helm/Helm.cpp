@@ -7,7 +7,7 @@ using namespace Utility;
 
 Helm::Helm():rudder_position(0) {}
 
-Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, SatComm satcommp, Logger *loggerp):
+Helm::Helm(Rudder *rudderp, Compass *compassp, Timer *timerp, WindSensor *windsensorp, Sail *sailp, RotaryPID *rotarypidp, SatComm *satcommp, Logger *loggerp):
   rudder_position(0),rudder(rudderp), compass(compassp), timer(timerp), windsensor(windsensorp), sail(sailp), rotarypid(rotarypidp), satcomm(satcommp), logger(loggerp) {}
 
 void Helm::steer(uangle direction_param, long steer_time_param, windrange range_param) {
@@ -23,7 +23,8 @@ void Helm::steer(uangle direction_param, long steer_time_param, windrange range_
     }
 
     // slightly odd arrangement required for satellite comms call back, which uses steer_and_continue()
-    while (steer_and_continue()) {};
+    while (satcomm->steer_log_or_continue() &&
+           steer_and_continue()) {};
 
 }
 

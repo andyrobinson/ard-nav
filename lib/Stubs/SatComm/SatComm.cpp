@@ -7,6 +7,7 @@ void SatComm::begin(){
 };
 
 bool SatComm::steer_log_or_continue() {
+    steer_count++;
     return result;
 }
 
