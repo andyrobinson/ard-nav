@@ -6,13 +6,15 @@
 #include "Compass.h"
 #include "Gps.h"
 #include "Battery.h"
+#include "Timer.h"
+#include "time.h"
 
 #define GPS_WAIT_MILLIS 10
 
 class SerialLogger : public Logger {
     public:
       SerialLogger();
-      SerialLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp);
+      SerialLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, Timer *timerp);
       virtual void begin();
       virtual void msg(char *message);
       virtual void banner(char *message);
@@ -25,6 +27,7 @@ class SerialLogger : public Logger {
       WindSensor *windsensor;
       Compass *compass;
       Battery *battery;
+      Timer *timer;
       gpsResult gpsReading;
       char destination;
       char tack;

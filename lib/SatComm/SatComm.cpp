@@ -29,12 +29,16 @@ bool SatComm::steer_log_or_continue() {
         && isMinutetoLog((uint8_t) t-> tm_min, log_minutes, sizeof(log_minutes))
         && haveNotLoggedRecently()) {
 
+        logger->msg("Satcomm log attempt");
+
         insertLogDataIntoBuffer();
         modem->begin();
         int err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
         if (err == ISBD_SUCCESS) {
+            logger->banner("Satcomm success!");
             last_log = timer->milliseconds(); // prevent retry after success
         } else if (err == ISBD_CANCELLED) {
+            logger->msg("Satcomm helm cancel");
             result = false;
         }
         modem->sleep();

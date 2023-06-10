@@ -1,0 +1,5 @@
+LIBS = Angle SerialLogger Globe Gps Helm Rudder RotaryPID Sail Timer Utility Switches MServo I2C Compass WindSensor Battery SatComm
+# For libs that require all files or only an .h file, not just the standard .cpp and .h
+LIBS_ALL = SD Adafruit_GPS_Library Logger Position Waypoint Windrange PololuMaestro IHelm IridiumSBD
+
+include ../lib/common

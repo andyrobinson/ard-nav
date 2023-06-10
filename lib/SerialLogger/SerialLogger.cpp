@@ -3,8 +3,8 @@
 
 SerialLogger::SerialLogger() {}
 
-SerialLogger::SerialLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp):
-  gps(gpsp), compass(compassp), windsensor(windsensorp), battery(batteryp) {}
+SerialLogger::SerialLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, Timer *timerp):
+  gps(gpsp), compass(compassp), windsensor(windsensorp), battery(batteryp), timer(timerp) {}
 
 void SerialLogger::begin() {
   while (!Serial); // wait for Serial to be ready
@@ -35,16 +35,20 @@ void SerialLogger::msg(char *message) {
   int compasserr = compass->err_percent();
   long compass_resets = compass->resets_per_hour();
   int mem=dispFreeMemory();
-  float voltage = battery->lipo1maxv();
+  float max_voltage = battery->lipo1maxv();
+  float min_voltage = battery->lipo1minv();
+  time_t time_now = timer->now();
 
-  Serial.print(gpsReading.unixTime); Serial.print(",");
+  Serial.print(time_now); Serial.print(",");
   Serial.print(millis()/1000); Serial.print(",");
+  Serial.print(gpsReading.unixTime); Serial.print(",");
   Serial.print(gpsReading.pos.latitude,5); Serial.print(",");
   Serial.print(gpsReading.pos.longitude,5); Serial.print(",");
   Serial.print("err ");Serial.print(gpsReading.pos.error); Serial.print(",");
   Serial.print("fix ");Serial.print(gpsReading.fix); Serial.print(",");
   Serial.print("m/s ");Serial.print(gpsReading.mps); Serial.print(",");
-  Serial.print(voltage,2); Serial.print(",");
+  Serial.print(max_voltage,2); Serial.print(",");
+  Serial.print(min_voltage,2); Serial.print(",");
   Serial.print(mem); Serial.print(",");
   Serial.print(wind); Serial.print(",");
   Serial.print(winderr); Serial.print(",");
