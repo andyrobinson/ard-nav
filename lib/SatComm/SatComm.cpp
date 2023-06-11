@@ -35,10 +35,10 @@ bool SatComm::steer_log_or_continue() {
         insertLogDataIntoBuffer();
 
         int err = modem->begin();
-        sprintf("Satcomm begin result %d", err);logger->msg(logmsg);
+        sprintf(logmsg,"Satcomm begin result %d", err);logger->msg(logmsg);
 
         err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
-        sprintf("Satcomm send result %d", err);logger->msg(logmsg);
+        sprintf(logmsg,"Satcomm send result %d", err);logger->msg(logmsg);
 
         if (err == ISBD_SUCCESS) {
             logger->banner("Satcomm success!");
