@@ -105,7 +105,7 @@ TEST_F(SatCommTest, should_sleep_on_begin) {
 }
 
 TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_hour) {
-    initStubs(100,10,0); // hour (10) not a multiple of 3
+    initStubs(100,4,0); // hour (10) not a multiple of 3
     satcomm.begin();
 
     bool result = satcomm.steer_log_or_continue();
@@ -115,7 +115,7 @@ TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_
 }
 
 TEST_F(SatCommTest, steer_log_should_reset_retry_interval_if_not_sending) {
-    initStubs(100,10,0); // hour (10) not a multiple of 3
+    initStubs(100,4,0); // hour (10) not a multiple of 3
     satcomm.begin();
     EXPECT_EQ(stub_modem.retry_reset_count,0);
 
@@ -127,7 +127,7 @@ TEST_F(SatCommTest, steer_log_should_reset_retry_interval_if_not_sending) {
 }
 
 TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_minute_window) {
-    initStubs(120,12,30); // hour (12) a multiple of 3, but not within 5 mins of the hour
+    initStubs(120,12,26); // hour (12) a multiple of 3, but not within 5 mins of the hour
     satcomm.begin();
 
     bool result = satcomm.steer_log_or_continue();
@@ -170,7 +170,7 @@ TEST_F(SatCommTest, steer_log_should_send_the_correct_data_in_binary) {
     // time
     time_t first_time_set = 150890; // should be recorded as restart time
     stub_timer.setTime(first_time_set);
-    struct tm test_time = {0,4,21,3,4,123,5,6};
+    struct tm test_time = {0,4,18,3,4,123,5,6};
     stub_timer.setTime(mktime(&test_time));
 
     // Gps data
@@ -245,7 +245,7 @@ TEST_F(SatCommTest, steer_log_should_retry_if_no_success_and_still_within_window
 }
 
 TEST_F(SatCommTest, steer_log_should_abandon_if_no_sucess_and_past_window) {
-    initStubs(221,15,0);
+    initStubs(221,9,0);
     stub_modem.set_response(ISBD_SENDRECEIVE_TIMEOUT);
 
     satcomm.begin();
@@ -260,7 +260,7 @@ TEST_F(SatCommTest, steer_log_should_abandon_if_no_sucess_and_past_window) {
 }
 
 TEST_F(SatCommTest, steer_log_should_not_send_again_after_success_in_window) {
-    initStubs(221,15,0);
+    initStubs(221,9,0);
 
     stub_timer.set_millis(10000);
     stub_modem.set_response(ISBD_SUCCESS);
@@ -277,7 +277,7 @@ TEST_F(SatCommTest, steer_log_should_not_send_again_after_success_in_window) {
 }
 
 TEST_F(SatCommTest, steer_log_should_send_again_when_the_next_window_is_reached) {
-    initStubs(305,3,0);
+    initStubs(305,9,0);
 
     stub_timer.set_millis(10000);
     stub_modem.set_response(ISBD_SUCCESS);
@@ -288,7 +288,7 @@ TEST_F(SatCommTest, steer_log_should_send_again_when_the_next_window_is_reached)
 
     // wait three hours until next window
     stub_timer.set_millis (3 * 60 * SAT_MILLIS_IN_MINUTE);
-    tm test_time = {0,0,18,2,3,123,5,6};
+    tm test_time = {0,0,12,2,3,123,5,6};
     stub_timer.setTime(mktime(&test_time));
 
     satcomm.steer_log_or_continue();
@@ -296,7 +296,7 @@ TEST_F(SatCommTest, steer_log_should_send_again_when_the_next_window_is_reached)
 }
 
 TEST_F(SatCommTest, steer_log_should_return_false_if_cancelled_by_callback) {
-    initStubs(33,21,0);
+    initStubs(33,18,0);
 
     stub_modem.set_response(ISBD_CANCELLED);
 
@@ -318,7 +318,7 @@ TEST_F(SatCommTest, steer_log_should_not_log_if_no_time_available) {
 }
 
 TEST_F(SatCommTest, steer_log_should_use_satellite_time_if_no_time_available_and_have_waited) {
-    initStubs(33,21,0);
+    initStubs(33,18,0);
     time_t test_time = 1686258005; // 8 June 2023 21.00
     tm modem_time;
     stub_timer.reset();
@@ -335,7 +335,7 @@ TEST_F(SatCommTest, steer_log_should_use_satellite_time_if_no_time_available_and
 }
 
 TEST_F(SatCommTest, steer_log_should_not_repeatedly_query_the_satellite_for_time) {
-    initStubs(33,21,0);
+    initStubs(33,15,0);
     time_t test_time = 1686258005; // 8 June 2023 21.00
     tm modem_time;
     stub_timer.reset();
