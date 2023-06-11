@@ -19,6 +19,7 @@ void SatComm::begin(){
 
 bool SatComm::steer_log_or_continue() {
     bool result = true; // this is not success, this is just carry on steering
+    char logmsg[50];
 
     if (!timer->isTimeSet()) tryModemTime();
 
@@ -32,8 +33,13 @@ bool SatComm::steer_log_or_continue() {
         logger->msg("Satcomm log attempt");
 
         insertLogDataIntoBuffer();
-        modem->begin();
-        int err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
+
+        int err = modem->begin();
+        sprintf("Satcomm begin result %d", err);logger->msg(logmsg);
+
+        err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
+        sprintf("Satcomm send result %d", err);logger->msg(logmsg);
+
         if (err == ISBD_SUCCESS) {
             logger->banner("Satcomm success!");
             last_log = timer->milliseconds(); // prevent retry after success
