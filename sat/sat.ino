@@ -53,11 +53,12 @@ Rudder rudder(&servo_control);
 Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &satcomm, &logger);
 
 // Iridium callback, used when no-block waiting
-bool ISBDCallback() {
-    return helm.steer_and_continue();
-}
+// bool ISBDCallback() {
+//     return helm.steer_and_continue();
+// }
 
 void setup() {
+  IRIDIUM_SERIAL.begin(19200);
   satcomm.begin();
   i2c.begin();
   servo_control.begin();

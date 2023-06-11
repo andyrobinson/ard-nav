@@ -47,7 +47,8 @@ bool SatComm::steer_log_or_continue() {
             logger->msg("Satcomm helm cancel");
             result = false;
         }
-        modem->sleep();
+        err = modem->sleep();
+        sprintf(logmsg,"Satcomm sleep result %d", err);logger->msg(logmsg);
     } else {
         modem->resetSBDRetry();
     }
