@@ -28,8 +28,8 @@ class SatComm {
       bool steer_log_or_continue();
       void set_dest(char *label);
 
-      static const uint8_t log_hours[8];
-      static const uint8_t log_minutes[1];
+      static const uint8_t log_hours[24];
+      static const uint8_t log_minutes[4];
 
     private:
 
