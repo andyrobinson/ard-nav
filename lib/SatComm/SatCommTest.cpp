@@ -355,6 +355,10 @@ TEST_F(SatCommTest, steer_log_should_not_repeatedly_query_the_satellite_for_time
 
 }
 
+// TEST_F(SatCommTest, steer_log_should_sleep_after_success) {}
+// TEST_F(SatCommTest, steer_log_should_not_sleep_after_failure) {}
+// TEST_F(SatCommTest, steer_log_should_sleep_if_not_time_to_log) {}
+// TEST_F(SatCommTest, steer_log_should_attempt_to_log_if_begin_fails) {}
 
 }  //namespace
 
