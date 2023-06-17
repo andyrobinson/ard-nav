@@ -27,6 +27,7 @@ IridiumSBD Stub, with minimal functionality
 #define ISBD_NO_NETWORK          12
 #define ISBD_MSG_TOO_LONG        13
 
+#define ISBD_MSSTM_RETRY_INTERVAL       10
 
 class IridiumSBD
 {

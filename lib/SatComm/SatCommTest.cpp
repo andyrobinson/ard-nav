@@ -138,6 +138,7 @@ TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_
 
 TEST_F(SatCommTest, steer_log_should_send_if_within_logging_window) {
     initStubs(120,6,0); // hour (6) a multiple of 3, and mins start of the hour
+    stub_timer.set_millis(20000);
     satcomm.begin();
 
     bool result = satcomm.steer_log_or_continue();
@@ -149,6 +150,7 @@ TEST_F(SatCommTest, steer_log_should_send_if_within_logging_window) {
 
 TEST_F(SatCommTest, steer_log_should_send_if_after_zero_but_within_window) {
     initStubs(120,18,4); // hour (18) a multiple of 3, and within 5 mins start of the hour
+    stub_timer.set_millis(20000);
     satcomm.begin();
 
     bool result = satcomm.steer_log_or_continue();

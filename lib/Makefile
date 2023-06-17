@@ -1,7 +1,7 @@
 .SHELLFLAGS = -ec
 .DEFAULT_GOAL = test
 
-PROJECTS = Angle Battery Captain Compass Helm Globe Navigator RotaryPID Rudder Sail Tacker Utility WindSensor
+PROJECTS = Angle Battery Captain Compass Helm Globe Navigator RotaryPID Rudder Sail Tacker Utility WindSensor SatComm
 
 test:
 	@for subdir in $(PROJECTS) ; do \
@@ -15,3 +15,4 @@ clean:
 	done
 
 .PHONY : clean test
+
