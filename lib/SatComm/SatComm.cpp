@@ -6,7 +6,7 @@ SatComm::SatComm(IridiumSBD *modemp, Timer *timerp, Gps *gpsp, Battery *batteryp
 
 // every 15 mins, for test
 const uint8_t SatComm::log_hours[] = {6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21};
-const uint8_t SatComm::log_minutes[] = {0,15,30,45};
+const uint8_t SatComm::log_minutes[] = {0,10,20,30,40,50};
 
 // every three hours, for live
 // const uint8_t SatComm::log_hours[] = {0,3,6,9,12,15,18,21};
@@ -15,6 +15,8 @@ const uint8_t SatComm::log_minutes[] = {0,15,30,45};
 void SatComm::begin(){
     modem->sleep();
     last_log = 0; // really for testing purposes
+    last_attempt = 0;
+    counter = 0;
 };
 
 bool SatComm::steer_log_or_continue() {
@@ -30,18 +32,25 @@ bool SatComm::steer_log_or_continue() {
         && isMinutetoLog((uint8_t) t-> tm_min, log_minutes, sizeof(log_minutes))
         && haveNotLoggedRecently()) {
 
+        counter++;
         int err = ISBD_SUCCESS;
+        logger->msg("Satcomm in log window");
 
-        logger->msg("Satcomm log attempt");
-
-        insertLogDataIntoBuffer();
-
-        if (modem->isAsleep()) {
+        if (modem->isAsleep() || (counter % 10) >= 10) { // Optional begin one third of time
             err = modem->begin();
             sprintf(logmsg,"Satcomm begin result %d", err);logger->msg(logmsg);
         }
 
         if (err == ISBD_SUCCESS) {
+            // Optional skip if it's too soon one third of time
+            if (((counter % 15) < 5) && timer->milliseconds() - last_attempt < (ISBD_MSSTM_RETRY_INTERVAL * 1000))
+                return true;
+
+            logger->msg("Satcomm log attempt");
+            last_attempt = timer->milliseconds();
+
+            insertLogDataIntoBuffer();
+
             err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
             sprintf(logmsg,"Satcomm send result %d", err);logger->msg(logmsg);
 
@@ -54,7 +63,6 @@ bool SatComm::steer_log_or_continue() {
                 result = false;
             }
         }
-
     } else {
         modem->resetSBDRetry();
         if (!modem->isAsleep()) modem->sleep();

@@ -29,7 +29,7 @@ class SatComm {
       void set_dest(char *label);
 
       static const uint8_t log_hours[24];
-      static const uint8_t log_minutes[4];
+      static const uint8_t log_minutes[6];
 
     private:
 
@@ -52,6 +52,9 @@ class SatComm {
       char wp_label[2];
       unsigned long last_log;
       unsigned long last_modem_attempt_time;
+      unsigned long last_attempt;
+      unsigned long counter;
+
 };
 
 #endif

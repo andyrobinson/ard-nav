@@ -582,7 +582,7 @@ int IridiumSBD::internalBegin()
    {
       send(strings[i]);
       if (!waitForATResponse())
-         return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR;
+         return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR_1;
    }
 
    // Enable or disable RING alerts as requested by user
@@ -596,7 +596,7 @@ int IridiumSBD::internalBegin()
 
    send(ringAlertsEnabled ? F("AT+SBDMTA=1\r") : F("AT+SBDMTA=0\r"));
    if (!waitForATResponse())
-      return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR;
+      return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR_2;
 
    // Decide whether the internal MSSTM workaround should be enforced on TX/RX
    // By default it is unless the firmware rev is >= TA13001
@@ -641,7 +641,7 @@ int IridiumSBD::internalSendReceiveSBD(const char *txTxtMessage, const uint8_t *
       send(txDataSize);
       send(F("\r"), false);
       if (!waitForATResponse(NULL, 0, NULL, "READY\r\n"))
-         return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR;
+         return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR_3;
 
       uint16_t checksum = 0;
 
@@ -698,7 +698,7 @@ int IridiumSBD::internalSendReceiveSBD(const char *txTxtMessage, const uint8_t *
       diagprint(F("\r\n"));
 
       if (!waitForATResponse(NULL, 0, NULL, "0\r\n\r\nOK\r\n"))
-         return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR;
+         return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR_4;
    }
 
    else // Text transmission
@@ -708,7 +708,7 @@ int IridiumSBD::internalSendReceiveSBD(const char *txTxtMessage, const uint8_t *
       {
          send(F("AT+SBDWT=\r"));
          if (!waitForATResponse())
-            return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR;
+            return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR_5;
       }
       else
       {
@@ -719,11 +719,11 @@ int IridiumSBD::internalSendReceiveSBD(const char *txTxtMessage, const uint8_t *
             return ISBD_MSG_TOO_LONG;
          send(F("AT+SBDWT\r"));
          if (!waitForATResponse(NULL, 0, NULL, "READY\r\n"))
-            return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR;
+            return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR_6;
          sendlong(txTxtMessage);
          send("\r");
          if (!waitForATResponse(NULL, 0, NULL, "0\r\n\r\nOK\r\n"))
-            return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR;
+            return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR_7;
       }
 #else
       send(F("AT+SBDWT="), true, false);
@@ -731,7 +731,7 @@ int IridiumSBD::internalSendReceiveSBD(const char *txTxtMessage, const uint8_t *
          sendlong(txTxtMessage);
       send(F("\r"), false);
       if (!waitForATResponse())
-         return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR;
+         return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR_8;
 #endif
    }
 
@@ -786,6 +786,7 @@ int IridiumSBD::internalSendReceiveSBD(const char *txTxtMessage, const uint8_t *
 
          else // retry
          {
+
             diagprint(F("Waiting for SBDIX retry...\r\n"));
             if (!noBlockWait(sbdixInterval))
                return ISBD_CANCELLED;
@@ -850,7 +851,7 @@ int IridiumSBD::internalMSSTMWorkaround(bool &okToProceed)
 
    send(F("AT-MSSTM\r"));
    if (!waitForATResponse(msstmResponseBuf, sizeof(msstmResponseBuf), "-MSSTM: "))
-      return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR;
+      return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR_9;
 
    // Response buf now contains either an 8-digit number or the string "no network service"
    okToProceed = isxdigit(msstmResponseBuf[0]);
@@ -861,14 +862,6 @@ int IridiumSBD::internalSleep()
 {
    if (this->asleep)
       return ISBD_IS_ASLEEP;
-
-#if false // recent research suggest this is not what you should do when just sleeping
-   // Best Practices Guide suggests this before shutdown
-   send(F("AT*F\r"));
-
-   if (!waitForATResponse())
-      return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR;
-#endif
 
    return ISBD_SUCCESS;
 }
@@ -977,14 +970,14 @@ int IridiumSBD::doSBDIX(uint16_t &moCode, uint16_t &moMSN, uint16_t &mtCode, uin
    char sbdixResponseBuf[32];
    send(F("AT+SBDIX\r"));
    if (!waitForATResponse(sbdixResponseBuf, sizeof(sbdixResponseBuf), "+SBDIX: "))
-      return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR;
+      return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR_10;
 
    uint16_t *values[6] = { &moCode, &moMSN, &mtCode, &mtMSN, &mtLen, &mtRemaining };
    for (int i=0; i<6; ++i)
    {
       char *p = strtok(i == 0 ? sbdixResponseBuf : NULL, ", ");
       if (p == NULL)
-         return ISBD_PROTOCOL_ERROR;
+         return ISBD_PROTOCOL_ERROR_11;
       *values[i] = atol(p);
    }
    return ISBD_SUCCESS;

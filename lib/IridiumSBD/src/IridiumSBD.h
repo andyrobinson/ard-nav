@@ -89,6 +89,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define ISBD_NO_NETWORK          12
 #define ISBD_MSG_TOO_LONG        13
 
+#define ISBD_PROTOCOL_ERROR_1      301
+#define ISBD_PROTOCOL_ERROR_2      302
+#define ISBD_PROTOCOL_ERROR_3      303
+#define ISBD_PROTOCOL_ERROR_4      304
+#define ISBD_PROTOCOL_ERROR_5      305
+#define ISBD_PROTOCOL_ERROR_6      306
+#define ISBD_PROTOCOL_ERROR_7      307
+#define ISBD_PROTOCOL_ERROR_8      308
+#define ISBD_PROTOCOL_ERROR_9      309
+#define ISBD_PROTOCOL_ERROR_10     310
+#define ISBD_PROTOCOL_ERROR_11     311
+#define ISBD_PROTOCOL_ERROR_12     312
+
 #define ISBD_CLEAR_MO			0
 #define ISBD_CLEAR_MT			1
 #define ISBD_CLEAR_BOTH			2
