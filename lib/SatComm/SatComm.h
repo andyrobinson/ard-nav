@@ -37,7 +37,8 @@ class SatComm {
       bool isHourtoLog(uint8_t val, const uint8_t *arr, int length);
       bool isMinutetoLog(uint8_t val, const uint8_t *arr, int length);
       void insertLogDataIntoBuffer();
-      bool haveNotLoggedRecently();
+      bool noRecentSuccess();
+      bool recentlyAttemptedToLog();
       void tryModemTime();
 
       IridiumSBD *modem;
