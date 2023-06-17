@@ -34,6 +34,7 @@ class SatCommTest : public ::testing::Test {
     stub_gps.set_data(&gps_data,1);
     struct tm test_time = {0,mins,hour,2,3,123,5,6};
     stub_timer.setTime(mktime(&test_time));
+    stub_timer.set_millis(20000);
     stub_compass.set_bearings(&bearing,1);
   }
 
@@ -138,7 +139,6 @@ TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_
 
 TEST_F(SatCommTest, steer_log_should_send_if_within_logging_window) {
     initStubs(120,6,0); // hour (6) a multiple of 3, and mins start of the hour
-    stub_timer.set_millis(20000);
     satcomm.begin();
 
     bool result = satcomm.steer_log_or_continue();
@@ -150,7 +150,6 @@ TEST_F(SatCommTest, steer_log_should_send_if_within_logging_window) {
 
 TEST_F(SatCommTest, steer_log_should_send_if_after_zero_but_within_window) {
     initStubs(120,18,4); // hour (18) a multiple of 3, and within 5 mins start of the hour
-    stub_timer.set_millis(20000);
     satcomm.begin();
 
     bool result = satcomm.steer_log_or_continue();
@@ -162,6 +161,8 @@ TEST_F(SatCommTest, steer_log_should_send_if_after_zero_but_within_window) {
 TEST_F(SatCommTest, steer_log_should_send_the_correct_data_in_binary) {
     stub_modem.reset();
     stub_timer.reset();
+    stub_timer.set_millis(20000);
+
     satcomm.begin();
     position result_pos;
     char result_wp_label[3];
@@ -255,7 +256,7 @@ TEST_F(SatCommTest, steer_log_should_abandon_if_no_sucess_and_past_window) {
     EXPECT_EQ(stub_modem.send_attempts,1);
 
     // wait past end of window
-    stub_timer.set_millis (600000);
+    stub_timer.set_millis (500000);
 
     satcomm.steer_log_or_continue();
     EXPECT_EQ(stub_modem.send_attempts,1);

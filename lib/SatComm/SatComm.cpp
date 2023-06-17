@@ -31,7 +31,7 @@ bool SatComm::steer_log_or_continue() {
         && isMinutetoLog((uint8_t) t-> tm_min, log_minutes, sizeof(log_minutes))
         && haveNotLoggedRecently()) {
 
-        if (timer->milliseconds() - last_attempt < (ISBD_MSSTM_RETRY_INTERVAL * 1000)) 
+        if (timer->milliseconds() - last_attempt < (ISBD_MSSTM_RETRY_INTERVAL * 1000))
             return true;
 
         int err = ISBD_SUCCESS;
@@ -44,7 +44,7 @@ bool SatComm::steer_log_or_continue() {
 
         if (err <= ISBD_ALREADY_AWAKE) {
 
-            logger->msg("Satcomm log attempt");
+            logger->msg(F("Satcomm log attempt"));
             last_attempt = timer->milliseconds();
 
             insertLogDataIntoBuffer();

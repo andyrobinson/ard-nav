@@ -9,3 +9,5 @@ const T& constrain(const T& x, const T& a, const T& b) {
     else
         return x;
 }
+
+#define F(a) a
