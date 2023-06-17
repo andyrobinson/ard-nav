@@ -21,6 +21,7 @@ void SatComm::begin(){
 bool SatComm::steer_log_or_continue() {
     bool result = true; // this is not success, this is just carry on steering
     char logmsg[50];
+    int err = ISBD_SUCCESS;
 
     if (!timer->isTimeSet()) tryModemTime();
 
@@ -31,10 +32,10 @@ bool SatComm::steer_log_or_continue() {
         && isMinutetoLog((uint8_t) t-> tm_min, log_minutes, sizeof(log_minutes))
         && haveNotLoggedRecently()) {
 
-        if (timer->milliseconds() - last_attempt < (ISBD_MSSTM_RETRY_INTERVAL * 1000))
+        if (timer->milliseconds() - last_attempt < (modem->getSBDRetryInterval() * 1000)) {
             return true;
+        }
 
-        int err = ISBD_SUCCESS;
         logger->msg("Satcomm in log window");
 
         if (modem->isAsleep()) {
@@ -42,26 +43,24 @@ bool SatComm::steer_log_or_continue() {
             sprintf(logmsg,"Satcomm begin result %d", err);logger->msg(logmsg);
         }
 
-        if (err <= ISBD_ALREADY_AWAKE) {
+        logger->msg(F("Satcomm log attempt"));
+        last_attempt = timer->milliseconds();
 
-            logger->msg(F("Satcomm log attempt"));
-            last_attempt = timer->milliseconds();
+        insertLogDataIntoBuffer();
 
-            insertLogDataIntoBuffer();
+        err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
+        sprintf(logmsg,"Satcomm send result %d", err);logger->msg(logmsg);
 
-            err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
-            sprintf(logmsg,"Satcomm send result %d", err);logger->msg(logmsg);
-
-            if (err == ISBD_SUCCESS) {
-                logger->banner("Satcomm success!");
-                logger->msg("Satcomm sleep1");
-                modem->sleep();
-                last_log = timer->milliseconds(); // prevent retry after success
-            } else if (err == ISBD_CANCELLED) {
-                logger->msg("Satcomm helm cancel");
-                result = false;
-            }
+        if (err == ISBD_SUCCESS) {
+            logger->banner("Satcomm success!");
+            logger->msg("Satcomm sleep1");
+            modem->sleep();
+            last_log = timer->milliseconds(); // prevent retry after success
+        } else if (err == ISBD_CANCELLED) {
+            logger->msg("Satcomm helm cancel");
+            result = false;
         }
+
     } else {
         modem->resetSBDRetry();
         if (!modem->isAsleep()) {

@@ -124,6 +124,7 @@ public:
    bool hasRingAsserted();
    int sleep();
    void resetSBDRetry();
+   int getSBDRetryInterval();
 
    typedef enum { DEFAULT_POWER_PROFILE = 0, USB_POWER_PROFILE = 1 } POWERPROFILE;
    void setPowerProfile(POWERPROFILE profile); // 0 = direct connect (default), 1 = USB

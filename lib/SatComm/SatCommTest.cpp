@@ -105,7 +105,7 @@ TEST_F(SatCommTest, should_sleep_on_begin) {
     EXPECT_TRUE(stub_modem.isAsleep());
 }
 
-TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_hour) {
+TEST_F(SatCommTest, steer_log_should_return_true_and_sleep_without_sending_if_not_logging_hour) {
     initStubs(100,4,0); // hour (10) not a multiple of 3
     satcomm.begin();
 
@@ -113,6 +113,7 @@ TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_
 
     EXPECT_TRUE(result);
     EXPECT_EQ(stub_modem.send_attempts,0);
+    EXPECT_TRUE(stub_modem.isAsleep());
 }
 
 TEST_F(SatCommTest, steer_log_should_reset_retry_interval_if_not_sending) {
@@ -135,6 +136,24 @@ TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_not_logging_
 
     EXPECT_TRUE(result);
     EXPECT_EQ(stub_modem.send_attempts,0);
+}
+
+TEST_F(SatCommTest, steer_log_should_return_true_without_sending_if_logged_within_modem_retry_interval) {
+    initStubs(120,6,0);
+    stub_timer.set_millis(20000);
+    satcomm.begin();
+    stub_modem.set_response(ISBD_CANCELLED);
+
+    bool result = satcomm.steer_log_or_continue();
+    EXPECT_FALSE(result);
+    EXPECT_EQ(stub_modem.send_attempts,1);
+
+    stub_modem.sbdixInterval = 13; // seconds
+    stub_timer.set_millis(32000); // 12 seconds later
+    result = satcomm.steer_log_or_continue();
+
+    EXPECT_TRUE(result);
+    EXPECT_EQ(stub_modem.send_attempts,1);
 }
 
 TEST_F(SatCommTest, steer_log_should_send_if_within_logging_window) {
@@ -265,7 +284,6 @@ TEST_F(SatCommTest, steer_log_should_abandon_if_no_sucess_and_past_window) {
 TEST_F(SatCommTest, steer_log_should_not_send_again_after_success_in_window) {
     initStubs(221,9,0);
 
-    stub_timer.set_millis(10000);
     stub_modem.set_response(ISBD_SUCCESS);
 
     satcomm.begin();
@@ -282,7 +300,7 @@ TEST_F(SatCommTest, steer_log_should_not_send_again_after_success_in_window) {
 TEST_F(SatCommTest, steer_log_should_send_again_when_the_next_window_is_reached) {
     initStubs(305,9,0);
 
-    stub_timer.set_millis(10000);
+    stub_timer.set_millis(30000);
     stub_modem.set_response(ISBD_SUCCESS);
 
     satcomm.begin();
@@ -358,10 +376,41 @@ TEST_F(SatCommTest, steer_log_should_not_repeatedly_query_the_satellite_for_time
 
 }
 
-// TEST_F(SatCommTest, steer_log_should_sleep_after_success) {}
-// TEST_F(SatCommTest, steer_log_should_not_sleep_after_failure) {}
-// TEST_F(SatCommTest, steer_log_should_sleep_if_not_time_to_log) {}
-// TEST_F(SatCommTest, steer_log_should_attempt_to_log_if_begin_fails) {}
+TEST_F(SatCommTest, steer_log_should_sleep_after_success) {
+   initStubs(305,9,0);
+
+    stub_modem.set_response(ISBD_SUCCESS);
+
+    satcomm.begin();
+    satcomm.steer_log_or_continue();
+    EXPECT_EQ(stub_modem.send_attempts,1);
+    EXPECT_TRUE(stub_modem.isAsleep());
+}
+
+
+TEST_F(SatCommTest, steer_log_should_not_sleep_after_failure) {
+    initStubs(305,9,0);
+
+    stub_modem.set_response(ISBD_SENDRECEIVE_TIMEOUT);
+
+    satcomm.begin();
+    satcomm.steer_log_or_continue();
+    EXPECT_EQ(stub_modem.send_attempts,1);
+    EXPECT_FALSE(stub_modem.isAsleep());
+}
+
+TEST_F(SatCommTest, steer_log_should_attempt_to_log_if_begin_fails) {
+   initStubs(305,9,0);
+
+    stub_modem.set_response(ISBD_SUCCESS);
+    stub_modem.set_begin_response(ISBD_PROTOCOL_ERROR);
+
+    satcomm.begin();
+    satcomm.steer_log_or_continue();
+    EXPECT_EQ(stub_modem.send_attempts,1);
+    EXPECT_TRUE(stub_modem.isAsleep());
+}
+
 
 }  //namespace
 

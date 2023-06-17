@@ -170,6 +170,11 @@ void IridiumSBD::resetSBDRetry() {
       this->sbdixInterval = ISBD_DEFAULT_SBDIX_INTERVAL;
 }
 
+// ARDNAV reset for exponential back-off
+int IridiumSBD::getSBDRetryInterval() {
+    return this->sbdixInterval;
+}
+
 // Tweak AT timeout
 void IridiumSBD::adjustATTimeout(int seconds)
 {

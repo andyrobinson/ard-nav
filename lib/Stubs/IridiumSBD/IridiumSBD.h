@@ -41,6 +41,7 @@ class IridiumSBD
        bool isAsleep();
        int sleep();
        void resetSBDRetry();
+       int getSBDRetryInterval();
 
        int clearBuffers(int buffers = ISBD_CLEAR_MO);
        int getIMEI(char *IMEI, uint16_t bufferSize);
@@ -48,16 +49,19 @@ class IridiumSBD
        // stub methods for test
        void reset();
        void set_response(int code);
+       void set_begin_response(int code);
        void set_time(time_t t);
 
        int send_attempts;
        unsigned char sent[500];
        int sent_length;
        int retry_reset_count;
+       int sbdixInterval;
 
     private:
         bool sleeping;
         int response;
+        int begin_response;
         time_t sat_time;
 };
 
