@@ -20,7 +20,7 @@
 #include <SatComm.h>
 
 #define MAJOR_VERSION 3 // first successful reliable navigation
-#define STARTUP_WAIT_FOR_FIX_MS 60000
+#define STARTUP_WAIT_FOR_FIX_MS 1000 // 60000 TEMP REDUCE BECAUSE WE'RE INDOOR
 
 char logmsg[40];
 
@@ -75,6 +75,9 @@ void loop() {
   // try and get a GPS fix before logging so that it goes in the same file
   gpsResult gps_data_ignored;
   gps.data(STARTUP_WAIT_FOR_FIX_MS, &gps_data_ignored);
+
+  //TEMP FOR INDOOR USE - 18 June 2023
+  timer.setTime(1687116232);
 
   uangle direction = 0;
 
