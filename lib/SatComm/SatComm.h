@@ -54,6 +54,8 @@ class SatComm {
       unsigned long last_log;
       unsigned long last_modem_attempt_time;
       unsigned long last_attempt;
+      bool in_window, recent_att;
+
 
 };
 

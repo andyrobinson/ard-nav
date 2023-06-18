@@ -13,9 +13,11 @@ const uint8_t SatComm::log_minutes[] = {0,10,20,30,40,50};
 // const uint8_t SatComm::log_minutes[] = {0};
 
 void SatComm::begin(){
+    logger->msg("Sat init sleep");
     modem->sleep();
     last_log = 0; // really for testing purposes
     last_attempt = 0;
+    in_window = recent_att = false;
 };
 
 bool SatComm::steer_log_or_continue() {
@@ -31,6 +33,10 @@ bool SatComm::steer_log_or_continue() {
         && isMinutetoLog((uint8_t) t-> tm_min, log_minutes, sizeof(log_minutes))
         && noRecentSuccess())) {
 
+        // log the transition
+        if (in_window) logger->msg("Sat out win");
+        in_window = false;
+
         // nope
         modem->resetSBDRetry();
         if (!modem->isAsleep()) {
@@ -40,10 +46,23 @@ bool SatComm::steer_log_or_continue() {
         return true;
     }
 
+    // log the transition
+    if (!in_window) logger->msg("Sat in win");
+    in_window = true;
+
     // check for a recent attempt to log
     if (recentlyAttemptedToLog()) {
+        // log the transition
+        if (!recent_att) {
+            sprintf(logmsg,"Sat in recent %d, %d", last_attempt, modem->getSBDRetryInterval() * 1000);logger->msg(logmsg);
+        }
+        recent_att = true;
         return true;
     }
+
+    // log the transition
+    if (recent_att) logger->msg("Sat out recent");
+    recent_att = false;
 
     if (modem->isAsleep()) {
         err = modem->begin();
