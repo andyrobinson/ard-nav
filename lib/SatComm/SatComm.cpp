@@ -50,7 +50,7 @@ bool SatComm::steer_log_or_continue() {
         sprintf(logmsg,"Sat begin %d", err);logger->msg(logmsg);
     }
 
-    logger->msg(F("Sat att"));
+    logger->msg("Sat att");
     last_attempt = timer->milliseconds();
 
     insertLogDataIntoBuffer();
@@ -66,7 +66,7 @@ bool SatComm::steer_log_or_continue() {
     }
 
     if (err == ISBD_CANCELLED) {
-        logger->msg("Satcomm helm cancel");
+        logger->msg("Sat cancel");
         return false;
     }
 
