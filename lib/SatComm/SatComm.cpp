@@ -13,7 +13,6 @@ const uint8_t SatComm::log_minutes[] = {0,10,20,30,40,50};
 // const uint8_t SatComm::log_minutes[] = {0};
 
 void SatComm::begin(){
-    logger->msg("Sat init sleep");
     modem->sleep();
     last_log = 0; // really for testing purposes
     last_attempt = 0;
