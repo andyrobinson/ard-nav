@@ -53,6 +53,7 @@ The other folders represent Arduino applications.  Again each folder has a makef
 * Routes - waypoint data for navigating
 * Rudder - wrapper around servo to limit deflection
 * Sail - sailing logic; set sail angle according to relative wind, only gybe when necessary
+* SatComm - satellite logging and control of the Iridium RockBlock modem
 * SDBackedRoute - Route which keeps progress in a file on the SD card
 * SDLogger - logs to an SD card
 * SelfTest - power-on self test routines
@@ -72,21 +73,20 @@ The other folders represent Arduino applications.  Again each folder has a makef
 See the separate [field report page](https://github.com/andyrobinson/ard-nav/blob/master/FieldReports.md).
 
 ## Satellite Communications
-Notes & Questions:
 
-### Notes on time
-We now need real time because we want to define real time windows when we attempt to communicate via satellite.  We are using this approach rather
-than intervals because it's robust in the face of a system restart (we don't miss windows if there are restarts and we don't attempt to send too
-frequently).
-
-* There are two sources of real time - the GPS and the Satellite modem.  
-  ** ~~We should prefer the Gps (because it's on most of the time and low power)~~
-  ** fall back to the satellite.
-* ~~We can extrapolate between time readings using the millis() function.  The Time library will do this, but it may not be worth it.~~
-* ~~We should wrap real time in the Timer() object so that we can test time based functions (i.e. the SatComm logic)~~
-* ~~Having a timestamp on GPS readings seems fine, we don't need to remove this~~
-* There are already built in time functions and datatypes in the base Arduino library, we should probably use these
-* ~~Where time is needed, we should use the timer object and remove references to GPS time~~
+### Notes on evaluating the current solution
+- [PASS] Logging attempts are limited to the prescribed logging windows, which relies on real time, but is robust in the face of restarts
+  - Can confirm there are periods of 5-6 minutes where no logging is attempted
+  - Strictly speaking the configuration is windows of 5 minutes every 10 minutes.  The reality is the windows are 6.5 minutes 
+    every 10 minutes, but this will be fine with longer gaps
+- [FAIL] Power consumption is managed through exponential back-off, and sleeping the device after success and between logging window
+  - Current solution only has two log periods, 30 and around 65 seconds - expecting 10 and 20 second periods as well
+- [FAIL] Navigation continues reliably during the logging window, in particular finishing periods of steering to re-evaluate progress 
+  towards the next waypoint, even when this is part way through an attempted communication
+  - Helm is set to 30 seconds.  Most navigation finishes in around 35 seconds, although sometimes it's 65 or 95 seconds.
+- [UNTESTED] The system is robust to changes in parameters such as the period of steering (which is calculated based on distance from the waypoint) and 
+  the frequency and length of the satellite logging windows
+  - Not yet tested
 
 ### power budget
 *  The library by default tries to send a communication for 300 seconds (5 mins).  In between send attempts it waits on a loop for 10 seconds 
