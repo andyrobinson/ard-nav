@@ -193,11 +193,6 @@ void IridiumSBD::adjustStartupTimeout(int seconds)
    this->startupTimeout = seconds;
 }
 
-void IridiumSBD::useMSSTMWorkaround(bool useWorkAround) // true to use workaround from Iridium Alert 5/7
-{
-   this->msstmWorkaroundRequested = useWorkAround;
-}
-
 void IridiumSBD::enableRingAlerts(bool enable) // true to enable SBDRING alerts and RING signal pin
 {
    this->ringAlertsEnabled = enable;
@@ -603,26 +598,6 @@ int IridiumSBD::internalBegin()
    if (!waitForATResponse())
       return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR_2;
 
-   // Decide whether the internal MSSTM workaround should be enforced on TX/RX
-   // By default it is unless the firmware rev is >= TA13001
-   char version[8];
-   int ret = getFirmwareVersion(version, sizeof(version));
-   if (ret != ISBD_SUCCESS)
-   {
-      diagprint(F("Unknown FW version\r\n"));
-      msstmWorkaroundRequested = true;
-   }
-   else
-   {
-      diagprint(F("Firmware version is ")); diagprint(version); diagprint(F("\r\n"));
-      if (version[0] == 'T' && version[1] == 'A')
-      {
-         unsigned long ver = strtoul(version + 2, NULL, 10);
-         msstmWorkaroundRequested = ver < ISBD_MSSTM_WORKAROUND_FW_VER;
-      }
-   }
-   diagprint(F("MSSTM workaround is")); diagprint(msstmWorkaroundRequested ? F("") : F(" NOT")); diagprint(F(" enforced.\r\n"));
-
    // Done!
    diagprint(F("InternalBegin: success!\r\n"));
    return ISBD_SUCCESS;
@@ -743,62 +718,51 @@ int IridiumSBD::internalSendReceiveSBD(const char *txTxtMessage, const uint8_t *
    // Long SBDIX loop begins here
    for (unsigned long start = millis(); millis() - start < 1000UL * this->sendReceiveTimeout;)
    {
-      bool okToProceed = true;
-      if (this->msstmWorkaroundRequested)
-      {
-         okToProceed = false;
-         int ret = internalMSSTMWorkaround(okToProceed);
-         if (ret != ISBD_SUCCESS)
-            return ret;
-      }
 
-      if (okToProceed)
-      {
-         uint16_t moCode = 0, moMSN = 0, mtCode = 0, mtMSN = 0, mtLen = 0, mtRemaining = 0;
-         int ret = doSBDIX(moCode, moMSN, mtCode, mtMSN, mtLen, mtRemaining);
-         if (ret != ISBD_SUCCESS)
-            return ret;
+     uint16_t moCode = 0, moMSN = 0, mtCode = 0, mtMSN = 0, mtLen = 0, mtRemaining = 0;
+     int ret = doSBDIX(moCode, moMSN, mtCode, mtMSN, mtLen, mtRemaining);
+     if (ret != ISBD_SUCCESS)
+        return ret;
 
-         diagprint(F("SBDIX MO code: "));
-         diagprint(moCode);
-         diagprint(F("\r\n"));
+     diagprint(F("SBDIX MO code: "));
+     diagprint(moCode);
+     diagprint(F("\r\n"));
 
-         if (moCode <= 4) // this range indicates successful return!
-         {
-            diagprint(F("SBDIX success!\r\n"));
+     if (moCode <= 4) // this range indicates successful return!
+     {
+        diagprint(F("SBDIX success!\r\n"));
 
-            this->remainingMessages = mtRemaining;
-            if (mtCode == 1 && rxBuffer) // retrieved 1 message
-            {
-               diagprint(F("Incoming message!\r\n"));
-               return doSBDRB(rxBuffer, prxBufferSize);
-            }
+        this->remainingMessages = mtRemaining;
+        if (mtCode == 1 && rxBuffer) // retrieved 1 message
+        {
+           diagprint(F("Incoming message!\r\n"));
+           return doSBDRB(rxBuffer, prxBufferSize);
+        }
 
-            else
-            {
-               // No data returned
-               if (prxBufferSize)
-                  *prxBufferSize = 0;
-            }
-            return ISBD_SUCCESS;
-         }
+        else
+        {
+           // No data returned
+           if (prxBufferSize)
+              *prxBufferSize = 0;
+        }
+        return ISBD_SUCCESS;
+     }
 
-         else if (moCode == 12 || moCode == 14 || moCode == 16) // fatal failure: no retry
-         {
-            diagprint(F("SBDIX fatal!\r\n"));
-            return ISBD_SBDIX_FATAL_ERROR;
-         }
+     else if (moCode == 12 || moCode == 14 || moCode == 16) // fatal failure: no retry
+     {
+        diagprint(F("SBDIX fatal!\r\n"));
+        return ISBD_SBDIX_FATAL_ERROR;
+     }
 
-         else // retry
-         {
+     else // retry
+     {
 
-            diagprint(F("Waiting for SBDIX retry...\r\n"));
-            if (!noBlockWait(sbdixInterval))
-               return ISBD_CANCELLED;
-            // ARDNAV making retry exponential up to limit.  Note we only extend if we didn't cancel
-            sbdixInterval += sbdixInterval < ISBD_MAX_SBDIX_INTERVAL ? sbdixInterval : 0;
-         }
-      }
+        diagprint(F("Waiting for SBDIX retry...\r\n"));
+        if (!noBlockWait(sbdixInterval))
+           return ISBD_CANCELLED;
+        // ARDNAV making retry exponential up to limit.  Note we only extend if we didn't cancel
+        sbdixInterval += sbdixInterval < ISBD_MAX_SBDIX_INTERVAL ? sbdixInterval : 0;
+     }
 
       else // MSSTM check fail
       {
@@ -830,37 +794,6 @@ int IridiumSBD::internalGetSignalQuality(int &quality)
    }
 
    return ISBD_PROTOCOL_ERROR;
-}
-
-int IridiumSBD::internalMSSTMWorkaround(bool &okToProceed)
-{
-   /*
-   According to Iridium 9602 Product Bulletin of 7 May 2013, to overcome a system erratum:
-
-   "Before attempting any of the following commands: +SBDDET, +SBDREG, +SBDI, +SBDIX, +SBDIXA the field application
-   should issue the AT command AT-MSSTM to the transceiver and evaluate the response to determine if it is valid or not:
-
-   Valid Response: "-MSSTM: XXXXXXXX" where XXXXXXXX is an eight-digit hexadecimal number.
-
-   Invalid Response: "-MSSTM: no network service"
-
-   If the response is invalid, the field application should wait and recheck system time until a valid response is
-   obtained before proceeding.
-
-   This will ensure that the Iridium SBD transceiver has received a valid system time before attempting SBD communication.
-   The Iridium SBD transceiver will receive the valid system time from the Iridium network when it has a good link to the
-   satellite. Ensuring that the received signal strength reported in response to AT command +CSQ and +CIER is above 2-3 bars
-   before attempting SBD communication will protect against lockout.
-   */
-   char msstmResponseBuf[24];
-
-   send(F("AT-MSSTM\r"));
-   if (!waitForATResponse(msstmResponseBuf, sizeof(msstmResponseBuf), "-MSSTM: "))
-      return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR_9;
-
-   // Response buf now contains either an 8-digit number or the string "no network service"
-   okToProceed = isxdigit(msstmResponseBuf[0]);
-   return ISBD_SUCCESS;
 }
 
 int IridiumSBD::internalSleep()

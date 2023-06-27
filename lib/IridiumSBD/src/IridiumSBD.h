@@ -72,7 +72,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define ISBD_DEFAULT_SENDRECEIVE_TIME   300
 #define ISBD_STARTUP_MAX_TIME           240
 #define ISBD_MAX_MESSAGE_LENGTH         340
-#define ISBD_MSSTM_WORKAROUND_FW_VER    13001
 
 #define ISBD_SUCCESS             0
 #define ISBD_ALREADY_AWAKE       1
@@ -131,7 +130,6 @@ public:
    void adjustATTimeout(int seconds);          // default value = 20 seconds
    void adjustSendReceiveTimeout(int seconds); // default value = 300 seconds
    void adjustStartupTimeout(int seconds); // default value = 240 seconds
-   void useMSSTMWorkaround(bool useMSSTMWorkAround); // true to use workaround from Iridium Alert 5/7/13
    void enableRingAlerts(bool enable);
 
    int clearBuffers(int buffers = ISBD_CLEAR_MO);
@@ -172,7 +170,6 @@ public:
       sleepPin = sleepPinNo;
       sleepPinConfigured = false;
       ringPin = ringPinNo;
-      msstmWorkaroundRequested = true;
       ringAlertsEnabled = {ringPinNo != -1};
       ringAsserted = false;
       lastPowerOnTime = 0UL;
@@ -202,7 +199,6 @@ public:
       sleepPin = -1;
       sleepPinConfigured = false;
       ringPin = -1;
-      msstmWorkaroundRequested = false;
       ringAlertsEnabled = true;
       ringAsserted = false;
       lastPowerOnTime = 0UL;
@@ -246,7 +242,6 @@ private:
    int  sleepPin;
    bool sleepPinConfigured;
    int  ringPin;
-   bool msstmWorkaroundRequested;
    bool ringAlertsEnabled;
    bool ringAsserted;
    unsigned long lastPowerOnTime;
@@ -258,7 +253,6 @@ private:
    int  internalBegin();
    int  internalSendReceiveSBD(const char *txTxtMessage, const uint8_t *txData, size_t txDataSize, uint8_t *rxBuffer, size_t *prxBufferSize);
    int  internalGetSignalQuality(int &quality);
-   int  internalMSSTMWorkaround(bool &okToProceed);
    int  internalSleep();
 
    int  doSBDIX(uint16_t &moCode, uint16_t &moMSN, uint16_t &mtCode, uint16_t &mtMSN, uint16_t &mtLen, uint16_t &mtRemaining);
