@@ -65,7 +65,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define ISBD_LIBRARY_REVISION           3 // Changed by Paul to reflect substantial update for I2C functions
 #define ISBD_DEFAULT_AT_TIMEOUT         30
-#define ISBD_MSSTM_RETRY_INTERVAL       10
 #define ISBD_DEFAULT_SBDIX_INTERVAL     10
 #define ISBD_USB_SBDIX_INTERVAL         30
 #define ISBD_MAX_SBDIX_INTERVAL         80 // ARDNAV limit to exponential back-off

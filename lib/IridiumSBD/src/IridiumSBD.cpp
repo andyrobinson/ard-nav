@@ -764,12 +764,6 @@ int IridiumSBD::internalSendReceiveSBD(const char *txTxtMessage, const uint8_t *
         sbdixInterval += sbdixInterval < ISBD_MAX_SBDIX_INTERVAL ? sbdixInterval : 0;
      }
 
-      else // MSSTM check fail
-      {
-         diagprint(F("Waiting for MSSTM retry...\r\n"));
-         if (!noBlockWait(ISBD_MSSTM_RETRY_INTERVAL))
-            return ISBD_CANCELLED;
-      }
    } // big wait loop
 
    diagprint(F("SBDIX timeout!\r\n"));
