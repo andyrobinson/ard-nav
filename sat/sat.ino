@@ -57,7 +57,13 @@ bool ISBDCallback() {
     return helm.steer_and_continue();
 }
 
+void ISBDDiagsCallback(IridiumSBD *device, char c) {
+    if (c == 'A') Serial.println(); // because we lose the line endings
+    Serial.print(c);
+}
+
 void setup() {
+  logger.begin();
   IRIDIUM_SERIAL.begin(19200);
   satcomm.begin();
   i2c.begin();
@@ -67,7 +73,6 @@ void setup() {
   compass.begin();
   gps.begin();
   switches.begin();
-  logger.begin();
   timer.wait(5000); // don't do anything, give it all a chance to settle
 }
 
