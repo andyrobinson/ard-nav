@@ -65,7 +65,6 @@ void ISBDDiagsCallback(IridiumSBD *device, char c) {
 
 void ISBDConsoleCallback(IridiumSBD *device, char c) {
     if (Serial) {
-      if (c == 'A') Serial.println(); // because we lose the line endings
       Serial.print(c);
     }
 }

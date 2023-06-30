@@ -823,11 +823,13 @@ bool IridiumSBD::waitForATResponse(char *response, int responseSize, const char 
    int matchTerminatorPos = 0; // Matches chars in terminator
    enum {LOOKING_FOR_PROMPT, GATHERING_RESPONSE, LOOKING_FOR_TERMINATOR};
    int promptState = prompt ? LOOKING_FOR_PROMPT : LOOKING_FOR_TERMINATOR;
-   consoleprint(F("<< "));
+   consoleprint(F("<<[ "));
    for (unsigned long start=millis(); millis() - start < 1000UL * atTimeout;)
    {
-      if (cancelled())
-         return false;
+      if (cancelled()) {
+           consoleprint(F("]1<<"));
+           return false;
+      }
 
       while (filteredavailable() > 0)
       {
@@ -870,8 +872,10 @@ bool IridiumSBD::waitForATResponse(char *response, int responseSize, const char 
          if (c == terminator[matchTerminatorPos])
          {
             ++matchTerminatorPos;
-            if (terminator[matchTerminatorPos] == '\0')
+            if (terminator[matchTerminatorPos] == '\0') {
+               consoleprint(F("]2<<"));
                return true;
+            }
          }
          else
          {
@@ -879,6 +883,7 @@ bool IridiumSBD::waitForATResponse(char *response, int responseSize, const char 
          }
       } // while (filteredavailable() > 0)
    } // timer loop
+   consoleprint(F("]3<<"));
    return false;
 }
 
@@ -1115,10 +1120,10 @@ void IridiumSBD::endSerialPort()
 void IridiumSBD::send(FlashString str, bool beginLine, bool endLine)
 {
    if (beginLine)
-      consoleprint(F(">> "));
+      consoleprint(F(">>[ "));
    consoleprint(str);
    if (endLine)
-      consoleprint(F("\r\n"));
+      consoleprint(F("]>>\r\n"));
    if (this->useSerial)
    {
       stream->print(str);
@@ -1136,9 +1141,9 @@ void IridiumSBD::send(FlashString str, bool beginLine, bool endLine)
 
 void IridiumSBD::send(const char *str)
 {
-   consoleprint(F(">> "));
+   consoleprint(F(">>[ "));
    consoleprint(str);
-   consoleprint(F("\r\n"));
+   consoleprint(F("]>>\r\n"));
    if (this->useSerial)
    {
       stream->print(str);
@@ -1157,9 +1162,9 @@ void IridiumSBD::send(const char *str)
 void IridiumSBD::sendlong(const char *str)
 // Send a long string that might need to be broken up for the I2C port
 {
-   consoleprint(F(">> "));
+   consoleprint(F(">>[ "));
    consoleprint(str);
-   consoleprint(F("\r\n"));
+   consoleprint(F("]>>\r\n"));
 
    if (this->useSerial)
    {
@@ -1199,10 +1204,12 @@ void IridiumSBD::sendlong(const char *str)
 
 void IridiumSBD::send(uint16_t n)
 {
-   consoleprint(n);
    if (this->useSerial)
    {
+      consoleprint(F(">>[\r\n"));
+      consoleprint(n);
       stream->print(n);
+      consoleprint(F("]>>\r\n"));
    }
    else
    {
