@@ -66,8 +66,7 @@ bool SatComm::steer_log_or_continue() {
     if (modem->isAsleep()) {
         err = modem->begin();
         sprintf(logmsg,"Sat begin %d", err);logger->msg(logmsg);
-
-        // TODO: exit on cancel here, but not a major issue
+        if (err != ISBD_SUCCESS) return true;
     }
 
     logger->msg("Sat att");
@@ -75,8 +74,6 @@ bool SatComm::steer_log_or_continue() {
 
     insertLogDataIntoBuffer();
 
-    // TODO: investigate why sometimes this does NOT return on cancel
-    // TODO: investigate why this always takes at least 30 seconds - is this an indoor only thing?
     err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
     sprintf(logmsg,"Sat send %d", err);logger->msg(logmsg);
 

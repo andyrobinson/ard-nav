@@ -57,17 +57,19 @@ bool ISBDCallback() {
     return helm.steer_and_continue();
 }
 
-void ISBDDiagsCallback(IridiumSBD *device, char c) {
-    if (Serial) {
-      Serial.print(c);
-    }
-}
+// for debug purposes
+//
+// void ISBDDiagsCallback(IridiumSBD *device, char c) {
+//     if (Serial) {
+//       Serial.print(c);
+//     }
+// }
 
-void ISBDConsoleCallback(IridiumSBD *device, char c) {
-    if (Serial) {
-      Serial.print(c);
-    }
-}
+// void ISBDConsoleCallback(IridiumSBD *device, char c) {
+//     if (Serial) {
+//       Serial.print(c);
+//     }
+// }
 
 void setup() {
   logger.begin();
@@ -95,7 +97,7 @@ void loop() {
 
   while(true){
     logger.banner("Helm steering loop");
-    helm.steer(direction, 30000L,{uadd(direction, (angle) 5),uadd(direction, (angle) -5)});
+    helm.steer(direction, 120000L,{uadd(direction, (angle) 5),uadd(direction, (angle) -5)});
     direction = uadd(direction,5);
   };
 }

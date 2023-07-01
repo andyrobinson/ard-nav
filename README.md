@@ -79,12 +79,10 @@ See the separate [field report page](https://github.com/andyrobinson/ard-nav/blo
   - Can confirm there are periods of 5-6 minutes where no logging is attempted
   - Strictly speaking the configuration is windows of 5 minutes every 10 minutes.  The reality is the windows are 6.5 minutes 
     every 10 minutes, but this will be fine with longer gaps
-- [FAIL] Power consumption is managed through exponential back-off, and sleeping the device after success and between logging window
-  - Current solution only has two log periods, 30 and around 65 seconds - expecting 10 and 20 second periods as well; there is a 
-  30 second delay on attempting to send, appears to be a problem with indoor operation.
-- [FAIL] Navigation continues reliably during the logging window, in particular finishing periods of steering to re-evaluate progress 
+- [PASS] Power consumption is managed through exponential back-off, and sleeping the device after success and between logging window
+  - Can see evidence of using retry interval.  Once log success device sleeps until next window.
+- [PASS] Navigation continues reliably during the logging window, in particular finishing periods of steering to re-evaluate progress 
   towards the next waypoint, even when this is part way through an attempted communication
-  - Helm is set to 30 seconds.  Most navigation finishes in around 35 seconds, although sometimes it's 65 or 95 seconds.
 - [UNTESTED] The system is robust to changes in parameters such as the period of steering (which is calculated based on distance from the waypoint) and 
   the frequency and length of the satellite logging windows
 

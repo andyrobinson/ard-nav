@@ -399,7 +399,7 @@ TEST_F(SatCommTest, steer_log_should_not_sleep_after_failure) {
     EXPECT_FALSE(stub_modem.isAsleep());
 }
 
-TEST_F(SatCommTest, steer_log_should_attempt_to_log_if_begin_fails) {
+TEST_F(SatCommTest, steer_log_should_not_attempt_to_log_if_begin_fails) {
    initStubs(305,9,0);
 
     stub_modem.set_response(ISBD_SUCCESS);
@@ -407,8 +407,8 @@ TEST_F(SatCommTest, steer_log_should_attempt_to_log_if_begin_fails) {
 
     satcomm.begin();
     satcomm.steer_log_or_continue();
-    EXPECT_EQ(stub_modem.send_attempts,1);
-    EXPECT_TRUE(stub_modem.isAsleep());
+    EXPECT_EQ(stub_modem.send_attempts,0);
+    EXPECT_FALSE(stub_modem.isAsleep());
 }
 
 
