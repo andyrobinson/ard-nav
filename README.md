@@ -148,6 +148,12 @@ A few notes on data
 
 Note 6 hourly reports are required.  If the battery is very low we might reduce this to every 12 or 24 hours, but this will result in disqualification; the problem with this is that two are required in the hours of darkness
 
+## Remaining tasks for Satellite
+
+* Log the binary data sent to the satellite in a banner statement
+* Add caching and sleeping to the GPS module, bypass when making navigation decisions
+* Remove additional logging logic from SatComm and tidy up logging
+
 ## Planned development
 
 What do we need to send back in satellite data?
