@@ -58,12 +58,12 @@ bool ISBDCallback() {
 }
 
 // for debug purposes
-//
-// void ISBDDiagsCallback(IridiumSBD *device, char c) {
-//     if (Serial) {
-//       Serial.print(c);
-//     }
-// }
+
+void ISBDDiagsCallback(IridiumSBD *device, char c) {
+    if (Serial) {
+      Serial.print(c);
+    }
+}
 
 // void ISBDConsoleCallback(IridiumSBD *device, char c) {
 //     if (Serial) {

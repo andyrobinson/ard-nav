@@ -757,7 +757,9 @@ int IridiumSBD::internalSendReceiveSBD(const char *txTxtMessage, const uint8_t *
      else // retry
      {
 
-        diagprint(F("Waiting for SBDIX retry...\r\n"));
+        diagprint(F("Sat Waiting for SBDIX retry for "));
+        diagprint(sbdixInterval);
+        diagprint(F("s\r\n"));
         if (!noBlockWait(sbdixInterval))
            return ISBD_CANCELLED;
         // ARDNAV making retry exponential up to limit.  Note we only extend if we didn't cancel
