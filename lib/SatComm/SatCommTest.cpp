@@ -36,6 +36,7 @@ class SatCommTest : public ::testing::Test {
     stub_timer.setTime(mktime(&test_time));
     stub_timer.set_millis(20000);
     stub_compass.set_bearings(&bearing,1);
+
   }
 
   int32_t extract32(int offset, unsigned char *bin_data) {
@@ -411,6 +412,18 @@ TEST_F(SatCommTest, steer_log_should_not_attempt_to_log_if_begin_fails) {
     EXPECT_FALSE(stub_modem.isAsleep());
 }
 
+TEST_F(SatCommTest, steer_log_should_adjust_send_timeout_at_end_of_window) {
+   initStubs(305,9,4);
+
+    stub_modem.set_response(ISBD_SUCCESS);
+
+    satcomm.begin();
+    satcomm.steer_log_or_continue();
+ 
+    EXPECT_EQ(stub_modem.send_attempts,1);
+    EXPECT_EQ(stub_modem.send_timeout,60);
+
+}
 
 }  //namespace
 

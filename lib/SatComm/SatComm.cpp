@@ -74,6 +74,7 @@ bool SatComm::steer_log_or_continue() {
 
     insertLogDataIntoBuffer();
 
+    modem->adjustSendReceiveTimeout(mins_left_in_window((uint8_t) t-> tm_min, log_minutes, sizeof(log_minutes)) * 60);
     err = modem->sendSBDBinary(send_buffer, SAT_LOG_RECORD_SIZE);
     sprintf(logmsg,"Sat send %d", err);logger->msg(logmsg);
 
@@ -119,10 +120,7 @@ char SatComm::charOrSpace(char ch) {
 }
 
 bool SatComm::isMinutetoLog(uint8_t val, const uint8_t *arr, int length) {
-    for (int i=0;i<length;i++) {
-        if (arr[i] <= val && (arr[i] + SAT_LOG_WINDOWS_MINS) >= val) return true;
-    }
-    return false;
+    return mins_left_in_window(val, arr, length) > 0;
 }
 
 bool SatComm::isHourtoLog(uint8_t val, const uint8_t *arr, int length) {
@@ -139,6 +137,14 @@ bool SatComm::noRecentSuccess() {
 
 bool SatComm::recentlyAttemptedToLog() {
     return (timer->milliseconds() - last_attempt) < (modem->getSBDRetryInterval() * 1000);
+}
+
+int SatComm::mins_left_in_window(uint8_t val, const uint8_t *arr, int length) {
+    for (int i=0;i<length;i++) {
+        int window_end = arr[i] + SAT_LOG_WINDOWS_MINS;
+        if (arr[i] <= val && window_end >= val) return (window_end - val);
+    }
+    return 0;
 }
 
 void SatComm::tryModemTime() {

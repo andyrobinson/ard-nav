@@ -40,6 +40,7 @@ class SatComm {
       bool noRecentSuccess();
       bool recentlyAttemptedToLog();
       void tryModemTime();
+      int mins_left_in_window(uint8_t val, const uint8_t *arr, int length);
 
       IridiumSBD *modem;
       Timer *timer;
