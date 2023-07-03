@@ -9,7 +9,7 @@ IridiumSBD Stub, with minimal functionality
 #define ISBD_IS_ASLEEP           10
 
 IridiumSBD::IridiumSBD():sleeping(false),send_attempts(0),response(ISBD_SUCCESS),
-    retry_reset_count(0),begin_response(ISBD_SUCCESS),sbdixInterval(10){};
+    retry_reset_count(0),begin_response(ISBD_SUCCESS),sbdixInterval(10),send_timeout(ISBD_DEFAULT_SENDRECEIVE_TIME){};
 
 int IridiumSBD::begin(){
     sleeping = false;
@@ -73,6 +73,8 @@ void IridiumSBD::reset() {
     for (int i=0; i < 500;i++) sent[i] = 0;
     retry_reset_count = 0;
     response = ISBD_SUCCESS;
+    begin_response = ISBD_SUCCESS;
+    send_timeout = ISBD_DEFAULT_SENDRECEIVE_TIME; 
 }
 
 void IridiumSBD::set_response(int code){
@@ -87,6 +89,9 @@ void IridiumSBD::set_time(time_t t) {
     sat_time = t;
 }
 
+void IridiumSBD::adjustSendReceiveTimeout(int seconds) {
+    send_timeout = seconds;
+}
 
 int IridiumSBD::clearBuffers(int buffers){ return ISBD_SUCCESS; };
 int IridiumSBD::getIMEI(char *IMEI, uint16_t bufferSize){ return ISBD_SUCCESS; };

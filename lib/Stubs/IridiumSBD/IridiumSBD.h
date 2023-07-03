@@ -29,6 +29,8 @@ IridiumSBD Stub, with minimal functionality
 
 #define ISBD_MSSTM_RETRY_INTERVAL       10
 
+#define ISBD_DEFAULT_SENDRECEIVE_TIME   300
+
 class IridiumSBD
 {
     public:
@@ -38,6 +40,8 @@ class IridiumSBD
        int sendSBDText(const char *message);
        int sendSBDBinary(const uint8_t *txData, uint16_t txDataSize);
        int getSystemTime(struct tm &tm);
+       void adjustSendReceiveTimeout(int seconds); // default value = 300 seconds
+
        bool isAsleep();
        int sleep();
        void resetSBDRetry();
@@ -57,6 +61,7 @@ class IridiumSBD
        int sent_length;
        int retry_reset_count;
        int sbdixInterval;
+       int send_timeout;
 
     private:
         bool sleeping;
