@@ -76,21 +76,22 @@ Battery battery(&analogRead, &timer);
 WindSensor windsensor(&i2c);
 Compass compass(&i2c, &timer);
 Gps gps(&timer);
-
-// Declare the IridiumSBD object (note SLEEP pin)
-IridiumSBD modem(IRIDIUM_SERIAL, IRIDIUM_SLEEP_PIN);
-
 SDLogger logger(&gps, &windsensor, &compass, &battery, &switches, &timer, 0);
 // SerialLogger logger(&gps, &windsensor, &compass, &battery);
-
+IridiumSBD modem(IRIDIUM_SERIAL, IRIDIUM_SLEEP_PIN);
 SatComm satcomm(&modem, &timer, &gps, &battery, &compass, &logger);
 Sail sail(&servo_control);
 RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches);
 Rudder rudder(&servo_control);
-Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &logger);
+Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &satcomm, &logger);
 Tacker tacker(&helm, &compass, &windsensor, &logger);
 Navigator navigator(&tacker, &gps, &globe, &logger);
 Captain captain(&navigator);
+
+//Iridium callback, used when no-block waiting
+bool ISBDCallback() {
+    return helm.steer_and_continue();
+}
 
 void setup() {
   /*  BROWN OUT CONFIGURATION
@@ -114,6 +115,8 @@ void setup() {
   SYSCTRL->BOD33.bit.ENABLE = 1;
   while (!SYSCTRL->PCLKSR.bit.BOD33RDY) {}
 
+  logger.begin();
+  IRIDIUM_SERIAL.begin(19200);
   satcomm.begin();
   i2c.begin();
   servo_control.begin();
@@ -122,7 +125,6 @@ void setup() {
   compass.begin();
   gps.begin();
   switches.begin();
-  logger.begin();
   timer.wait(5000); // don't do anything, give it all a chance to settle
 }
 

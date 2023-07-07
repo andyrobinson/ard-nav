@@ -16,8 +16,8 @@ class SerialLogger : public Logger {
       SerialLogger();
       SerialLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, Timer *timerp);
       virtual void begin();
-      virtual void msg(char *message);
-      virtual void banner(char *message);
+      virtual void msg(const char *message);
+      virtual void banner(const char *message);
       virtual void setdest(char destletter);
       virtual void settack(char tackletter);
       virtual void write_version(int major, int minor);

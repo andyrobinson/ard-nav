@@ -11,8 +11,8 @@ class MultiLogger : public Logger {
       MultiLogger();
       MultiLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Logger **loggersp, int num);
       virtual void begin();
-      virtual void msg(char *message);
-      virtual void banner(char *message);
+      virtual void msg(const char *message);
+      virtual void banner(const char *message);
       virtual void setdest(char destletter);
       virtual void settack(char tackletter);
       virtual void write_version(int major, int minor);

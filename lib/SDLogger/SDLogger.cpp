@@ -46,7 +46,7 @@ void SDLogger::settack(char tackletter) {
   tack = tackletter;
 }
 
-void SDLogger::banner(char *message) {
+void SDLogger::banner(const char *message) {
     // keep hold of banner messages until we can print
     if (banner_space > strlen(message)) {
       strcat(banner_msg, message);
@@ -57,7 +57,7 @@ void SDLogger::banner(char *message) {
     msg("");
 }
 
-void SDLogger::print_line(char *message, char *prefix) {
+void SDLogger::print_line(const char *message, char *prefix) {
     gps->data(GPS_WAIT_MILLIS, &gpsReading);
     angle wind = windsensor->relative();
     int winderr = windsensor->err_percent();
@@ -105,7 +105,7 @@ void SDLogger::print_line(char *message, char *prefix) {
     }
 }
 
-void SDLogger::msg(char *message) {
+void SDLogger::msg(const char *message) {
   battery->add_reading(); // rate limited, ensures population
   if (sd_time_to_log()) {
     print_line(message,"");

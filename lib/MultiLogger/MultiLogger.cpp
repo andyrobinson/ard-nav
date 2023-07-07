@@ -24,13 +24,13 @@ void MultiLogger::settack(char tackletter) {
   }
 }
 
-void MultiLogger::banner(char *message) {
+void MultiLogger::banner(const char *message) {
   for (int i; i < numLoggers; i++) {
     loggers[i]->banner(message);
   }
 }
 
-void MultiLogger::msg(char *message) {
+void MultiLogger::msg(const char *message) {
   for (int i; i < numLoggers; i++) {
     loggers[i]->msg(message);
   }

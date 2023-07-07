@@ -23,14 +23,14 @@ class SDLogger : public Logger {
       SDLogger();
       SDLogger(Gps *gpsp, WindSensor *windsensorp, Compass *compassp, Battery *batteryp, Switches *switchesp, Timer *timerp, long ofilename=0);
       virtual void begin();
-      virtual void msg(char *message);
-      virtual void banner(char *message);
+      virtual void msg(const char *message);
+      virtual void banner(const char *message);
       virtual void setdest(char destletter);
       virtual void settack(char tackletter);
       virtual void write_version(int major, int minor);
 
     private:
-      void print_line(char *message, char* prefix);
+      void print_line(const char *message, char* prefix);
       void calculate_filename(char *filename, long unix_ts);
       boolean sd_time_to_log();
 

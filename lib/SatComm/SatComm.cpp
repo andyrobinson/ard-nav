@@ -16,7 +16,6 @@ void SatComm::begin(){
     modem->sleep();
     last_log = 0; // really for testing purposes
     last_attempt = 0;
-    in_window = recent_att = false;
 };
 
 bool SatComm::steer_log_or_continue() {
@@ -32,11 +31,6 @@ bool SatComm::steer_log_or_continue() {
         && isMinutetoLog((uint8_t) t-> tm_min, log_minutes, sizeof(log_minutes))
         && noRecentSuccess())) {
 
-        // log the transition
-        if (in_window) logger->msg("Sat out win");
-        in_window = false;
-
-        // nope
         modem->resetSBDRetry();
         if (!modem->isAsleep()) {
             logger->msg("Sat sleep");
@@ -45,23 +39,8 @@ bool SatComm::steer_log_or_continue() {
         return true;
     }
 
-    // log the transition
-    if (!in_window) logger->msg("Sat in win");
-    in_window = true;
-
     // check for a recent attempt to log
-    if (recentlyAttemptedToLog()) {
-        // log the transition
-        if (!recent_att) {
-            sprintf(logmsg,"Sat in recent %d, %d", last_attempt, modem->getSBDRetryInterval() * 1000);logger->msg(logmsg);
-        }
-        recent_att = true;
-        return true;
-    }
-
-    // log the transition
-    if (recent_att) logger->msg("Sat out recent");
-    recent_att = false;
+    if (recentlyAttemptedToLog()) return true;
 
     if (modem->isAsleep()) {
         err = modem->begin();
@@ -69,7 +48,7 @@ bool SatComm::steer_log_or_continue() {
         if (err != ISBD_SUCCESS) return true;
     }
 
-    logger->msg("Sat att");
+    logger->msg("Sat log attempt");
     last_attempt = timer->milliseconds();
 
     insertLogDataIntoBuffer();
@@ -79,7 +58,7 @@ bool SatComm::steer_log_or_continue() {
     sprintf(logmsg,"Sat send %d", err);logger->msg(logmsg);
 
     if (err == ISBD_SUCCESS) {
-        logger->banner("Sat log!");
+        logger->banner("Sat logged");
         modem->sleep();
         last_log = timer->milliseconds(); // prevent retry after success
         return true;

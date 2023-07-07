@@ -21,13 +21,13 @@ void SerialLogger::settack(char tackletter) {
   tack = tackletter;
 }
 
-void SerialLogger::banner(char *message) {
+void SerialLogger::banner(const char *message) {
   Serial.println("======================");
   Serial.println(message);
   Serial.println("======================");
 }
 
-void SerialLogger::msg(char *message) {
+void SerialLogger::msg(const char *message) {
   gps->data(GPS_WAIT_MILLIS, &gpsReading);
   angle wind = windsensor->relative();
   int winderr = windsensor->err_percent();
