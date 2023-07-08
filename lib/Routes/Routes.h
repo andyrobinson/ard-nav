@@ -38,24 +38,24 @@ waypoint pfJ = {"J0", {53.44668, -2.22545, 3.0}};
 waypoint pfK = {"K0", {53.44685, -2.22487, 3.0}};
 waypoint pfL = {"L0", {53.44656, -2.22498, 3.0}};
 
-waypoint pf1route[] = {pfA,pfB,pfA,pfB,pfF};
-waypoint pf2route[] = {pfB,pfG,pfB,pfG,pfF};
-waypoint pf3route[] = {pfB,pfC,pfD,pfE,pfB,pfC,pfD,pfE,pfF};
-waypoint pf4route[] = {pfA,pfB,pfC,pfB,pfA,pfF};
-waypoint pf5route[] = {pfL,pfA,pfB,pfC,pfH,pfI,pfJ,pfL};
-waypoint pf6route[] = {pfB,pfC,pfH,pfI,pfJ,pfL,pfA,pfB,pfF};
-waypoint pf7route[] = {pfL,pfJ,pfK,pfL,pfJ,pfK};
-waypoint pf8route[] = {pfL,pfK,pfJ,pfL,pfK,pfJ};
+waypoint pf0route[] = {pfA,pfB,pfA,pfB,pfF};
+waypoint pf1route[] = {pfB,pfG,pfB,pfG,pfF};
+waypoint pf2route[] = {pfB,pfC,pfD,pfE,pfB,pfC,pfD,pfE,pfF};
+waypoint pf3route[] = {pfA,pfB,pfC,pfB,pfA,pfF};
+waypoint pf4route[] = {pfL,pfA,pfB,pfC,pfH,pfI,pfJ,pfL};
+waypoint pf5route[] = {pfB,pfC,pfH,pfI,pfJ,pfL,pfA,pfB,pfF};
+waypoint pf6route[] = {pfL,pfJ,pfK,pfL,pfJ,pfK};
+waypoint pf7route[] = {pfL,pfK,pfJ,pfL,pfK,pfJ};
 
-route pf1 = {"LeftRt", 5, pf1route};
-route pf2 = {"OutBack", 5, pf2route};
-route pf3 = {"Web", 9, pf3route};
-route pf4 = {"LShape", 6, pf4route};
-route pf5 = {"RoundL", 8, pf5route};
-route pf6 = {"RoundB", 9, pf6route};
-route pf7 = {"ThreeCW", 6, pf7route};
-route pf8 = {"ThreeAC", 6, pf8route};
+route pf0 = {"LeftRt", 5, pf0route};
+route pf1 = {"OutBack", 5, pf1route};
+route pf2 = {"Web", 9, pf2route};
+route pf3 = {"LShape", 6, pf3route};
+route pf4 = {"RoundL", 8, pf4route};
+route pf5 = {"RoundB", 9, pf5route};
+route pf6 = {"ThreeCW", 6, pf6route};
+route pf7 = {"ThreeAC", 6, pf7route};
 
-route plattfields[] = {pf1,pf2,pf3,pf4,pf5,pf6,pf7,pf8};
+route plattfields[] = {pf0,pf1,pf2,pf3,pf4,pf5,pf6,pf7};
 
 #endif
