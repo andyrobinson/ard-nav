@@ -70,7 +70,19 @@ The other folders represent Arduino applications.  Again each folder has a makef
 * WindSensor - wrapper around the AS5048B 14 bit rotary position sensor, to return a relative wind angle between -180 and +180
 
 ## Field tests
-See the separate [field report page](https://github.com/andyrobinson/ard-nav/blob/master/FieldReports.md).
+
+See the [blog](https://noahs-barque.blogspot.com/p/blog-page.html) for results from field tests.
+
+## Next Steps
+* Reduce satellite logging to every 30 mins.  Note that there is no need to remove it, when the monthly subscription expires it will not log again (I think - worth checking if credits are being consumed)
+* Still need to test steering on a stronger wind day, but otherwise we're good
+
+### Hardware upgrades required
+* Stronger mast and boom, new sail
+* Stronger rudder (change servo?)
+* Dual power supplies and solar panels
+* Make RC unit easily removable
+* Solid implementation for wind vane
 
 ## Satellite Communications
 
@@ -86,85 +98,7 @@ See the separate [field report page](https://github.com/andyrobinson/ard-nav/blo
 - [UNTESTED] The system is robust to changes in parameters such as the period of steering (which is calculated based on distance from the waypoint) and 
   the frequency and length of the satellite logging windows
 
-There is a 30 second delay between attempting to send and the next time that a log message appears, however this would appear to
-be an artifact of the indoor operation - looking at previous outdoor sessions this doesn't appear to happen
-
-### power budget
-*  The library by default tries to send a communication for 300 seconds (5 mins).  In between send attempts it waits on a loop for 10 seconds 
-    calling a predefined call back (returns a boolean to indicate cancelled) without delay.  The expectation is that the call back will be
-    overridden.
-*  10 seconds is significant because this is about the time it should take for the capacitors to recharge at 0.5A
-* thirty (30) attempts with constant battery charging at 0.5A will take quite a lot of power.  The overall budget is 0.1A constant (2.4Ah @4v = 9.6Wh).  
-The batter capacity is 13Ah = 52Wh or about 5 days).  Each transmission event will take 0.5 x 0.0833 x 5 = 0.21Wh or approximately one tenth of the budget.  Given we are expecting
-  four logging events in 24 hours thats about 0.4 of the entire power budget.
-* If we implement exponential backup then we reduce this to 5 or 6 attempts in 5 minutes or about 1/5 of the budget, but increases the risk of a missed 
-  communication.  Given that the gap between satellites is about 9 minutes (11 satellites evenly spread around a 100 minute orbit) then 5 minutes is probably 
-  a reasonable transmission window.  We should do this as a minimum, probably by modifying the library.
-
-Implementation
-
-Begin
-- store the start-up time
-- zero all values
-- turn off module
-
-msg - call main
-banner - call main
-write_version - ignore
-setdest - store
-settack - ignore
-
-main
-* we have to match on a specific time, because if there are multiple restarts per hour then either we will log too often or not at all.  However care needs to be taken because of sleep periods - may require that there is a special signal for checking if it's time to log after sleep.
-* If real time is not available from the GPS then it should be from the satellite module - if not we can't transmit anyway!
-
-* let's assume that we specify
-** The hours that we want to log (in an array e.g [0,6,12,18])
-** The minutes of the hour that we want to log (in an array e.g. [15,45])
-** As a constant the logging window in minutes
-* Note that when we log we need to wait (sleep) out the remainder of the logging window before resuming, so that there's no possibility of double logging
-* If real time is not available from the GPS then it should be from the satellite module - if not we can't transmit anyway!
-
-if it's not time to log, then just update the values and carry on.  values to update:
-* min battery voltage
-* min available memory
-* GPS co-ordinates, in case not known at time of logging
-* timestamp of last good position
-
-otherwise
-- put the data in an array as binary data
-- attempt to send (I think this is on a 5 min timeout)
-- log the result
-- have a separate satellite log file on the SD card, and just comment out the actual send most of the time
-- zero the voltage and memory
-- wait until the end of the logging window
-- consider if we need to use the callback while transmitting (for what?).  The danger is that the power supply will be overwhelmed, causing a brownout
-
-A few notes on data
-* GPS co-ordinates as fixed point (4 byte integers)
-* Battery voltage as unsigned short (2 bytes) (2.00v - 4.55v) (/)
-* memory should be possible in short or unsigned short (/)
-* Last restart should be unix time which is a long
-
-Note 6 hourly reports are required.  If the battery is very low we might reduce this to every 12 or 24 hours, but this will result in disqualification; the problem with this is that two are required in the hours of darkness
-
-## Remaining tasks for Satellite
-
-* Log the binary data sent to the satellite in a banner statement
-* Add caching and sleeping to the GPS module, bypass when making navigation decisions
-* Remove additional logging logic from SatComm and tidy up logging
-
-## Planned development
-
-What do we need to send back in satellite data?
-- GPS co-ordinates
-- Current waypoint we're sailing towards
-- Battery health (and history?)
-- GPS Fix
-- I2C errors
-- free memory (max/min)
-- last restart
-- any other health information? ideally hull breach
+## Error Handling
 
 Need to think about how to handle at sea restarts, which will be inevitable
 - should we preserve state on the SD card?  
