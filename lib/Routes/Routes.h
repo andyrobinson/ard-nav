@@ -25,18 +25,18 @@
 //                    {"Hough", {53.43772, -2.24809, 5}}}; //53 26' 18", -2 14' 53"
 
 // Platt fields pond
-waypoint pfA = {"A0", {53.44580, -2.22515, 3.0}};
-waypoint pfB = {"B0", {53.44530, -2.22550, 3.0}};
-waypoint pfC = {"C0", {53.44552, -2.22630, 3.0}};
-waypoint pfD = {"D0", {53.44550, -2.22570, 3.0}};
-waypoint pfE = {"E0", {53.44525, -2.22600, 3.0}};
-waypoint pfF = {"F0", {53.44546, -2.22510, 4.0}};
-waypoint pfG = {"G0", {53.44541, -2.22589, 3.0}};
-waypoint pfH = {"H0", {53.44580, -2.22695, 3.0}};
-waypoint pfI = {"I0", {53.44626, -2.22675, 3.0}};
-waypoint pfJ = {"J0", {53.44668, -2.22545, 3.0}};
-waypoint pfK = {"K0", {53.44685, -2.22487, 3.0}};
-waypoint pfL = {"L0", {53.44656, -2.22498, 3.0}};
+waypoint pfA = {'A', {53.44580, -2.22515, 3.0}};
+waypoint pfB = {'B', {53.44530, -2.22550, 3.0}};
+waypoint pfC = {'C', {53.44552, -2.22630, 3.0}};
+waypoint pfD = {'D', {53.44550, -2.22570, 3.0}};
+waypoint pfE = {'E', {53.44525, -2.22600, 3.0}};
+waypoint pfF = {'F', {53.44546, -2.22510, 4.0}};
+waypoint pfG = {'G', {53.44541, -2.22589, 3.0}};
+waypoint pfH = {'H', {53.44580, -2.22695, 3.0}};
+waypoint pfI = {'I', {53.44626, -2.22675, 3.0}};
+waypoint pfJ = {'J', {53.44668, -2.22545, 3.0}};
+waypoint pfK = {'K', {53.44685, -2.22487, 3.0}};
+waypoint pfL = {'L', {53.44656, -2.22498, 3.0}};
 
 waypoint pf0route[] = {pfA,pfB,pfA,pfB,pfF};
 waypoint pf1route[] = {pfB,pfG,pfB,pfG,pfF};

@@ -77,26 +77,22 @@ class SatCommTest : public ::testing::Test {
     return value;
   }
 
-  void extractWpLabel(char *label, unsigned char *bin_data) {
-    int offset=18;
-    for (int i=0;i<2;i++) {
-        label[i] = bin_data[i+offset];
-    }
-    label[2] = '\0';
+  void extractWpLabel(char& label, unsigned char *bin_data) {
+        label = bin_data[18];
   }
 
   void extractBattery(uint16_t *max, uint16_t *min, unsigned char *bin_data) {
-    *max = extractu16(20, bin_data);
-    *min = extractu16(22, bin_data);
+    *max = extractu16(19, bin_data);
+    *min = extractu16(21, bin_data);
   }
 
   void extractCompass(unsigned short *bearing, uint8_t *errors, unsigned char *bin_data) {
-    *bearing = extractu16(24, bin_data);
-    *errors = bin_data[26];
+    *bearing = extractu16(23, bin_data);
+    *errors = bin_data[25];
   }
 
   time_t extractRestart(unsigned char *bin_data) {
-    return extractTime(31,bin_data);
+    return extractTime(30,bin_data);
   }
 
 };
@@ -185,7 +181,7 @@ TEST_F(SatCommTest, steer_log_should_send_the_correct_data_in_binary) {
 
     satcomm.begin();
     position result_pos;
-    char result_wp_label[3];
+    char result_wp_label;
     uint16_t result_batt_max, result_batt_min, result_bearing;
     uint8_t result_errors;
 
@@ -201,7 +197,7 @@ TEST_F(SatCommTest, steer_log_should_send_the_correct_data_in_binary) {
     stub_gps.set_data(&gps_data,1);
 
     // waypoint
-    char wp_label[3]="A5";
+    char wp_label='Z';
     satcomm.set_dest(wp_label);
 
     // battery
@@ -233,7 +229,7 @@ TEST_F(SatCommTest, steer_log_should_send_the_correct_data_in_binary) {
 
     // next waypoint label
     extractWpLabel(result_wp_label,stub_modem.sent);
-    EXPECT_STREQ(result_wp_label,wp_label);
+    EXPECT_EQ(result_wp_label,wp_label);
 
     // battery
     extractBattery(&result_batt_max,&result_batt_min, stub_modem.sent);

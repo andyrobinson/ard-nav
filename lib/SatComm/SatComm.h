@@ -26,7 +26,7 @@ class SatComm {
 
       virtual void begin();
       bool steer_log_or_continue();
-      void set_dest(char *label);
+      void set_dest(char label);
 
       static const uint8_t log_hours[24];
       static const uint8_t log_minutes[6];
@@ -51,7 +51,7 @@ class SatComm {
 
       uint8_t send_buffer[50];
       gpsResult gps_data;
-      char wp_label[2];
+      char wp_label;
       unsigned long last_log;
       unsigned long last_modem_attempt_time;
       unsigned long last_attempt;

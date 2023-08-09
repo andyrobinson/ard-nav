@@ -2,7 +2,7 @@
 
 SatComm::SatComm(){};
 SatComm::SatComm(IridiumSBD *modemp, Timer *timerp, Gps *gpsp, Battery *batteryp, Compass *compassp, Logger *loggerp):
-    modem(modemp),timer(timerp),gps(gpsp),battery(batteryp),compass(compassp),logger(loggerp),wp_label("0"),last_modem_attempt_time(0){};
+    modem(modemp),timer(timerp),gps(gpsp),battery(batteryp),compass(compassp),logger(loggerp),wp_label(' '),last_modem_attempt_time(0){};
 
 // every 15 mins, for test
 const uint8_t SatComm::log_hours[] = {6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21};
@@ -79,19 +79,17 @@ void SatComm::insertLogDataIntoBuffer() {
         stuff(gps_data.fpLongitude,send_buffer,8,4);
         stuff((long) (gps_data.avg_mps * 1000),send_buffer,12,4); // scaled up as long, much easier to stuff
         stuff(gps_data.cog,send_buffer,16,2);
-        send_buffer[18]=wp_label[0];
-        send_buffer[19]=wp_label[1];
-        stuff(battery->raw_max(),send_buffer,20,2);
-        stuff(battery->raw_min(),send_buffer,22,2);
-        stuff(compass->bearing(),send_buffer,24,2);
-        send_buffer[26] = (uint8_t) constrain(compass->err_percent(),0,100);
-        stuff(dispFreeMemory(),send_buffer,27,4);
-        stuff(timer->lastRestart,send_buffer,31,4);
+        send_buffer[18]=wp_label;
+        stuff(battery->raw_max(),send_buffer,19,2);
+        stuff(battery->raw_min(),send_buffer,21,2);
+        stuff(compass->bearing(),send_buffer,23,2);
+        send_buffer[25] = (uint8_t) constrain(compass->err_percent(),0,100);
+        stuff(dispFreeMemory(),send_buffer,26,4);
+        stuff(timer->lastRestart,send_buffer,30,4);
 }
 
-void SatComm::set_dest(char *label) {
-    wp_label[0] = charOrSpace(label[0]);
-    wp_label[1] = charOrSpace(label[1]);
+void SatComm::set_dest(char label) {
+    wp_label = label;
 }
 
 char SatComm::charOrSpace(char ch) {

@@ -7,15 +7,6 @@ namespace {
 
   class UtilityTest : public ::testing::Test {};
 
-  void hexprintln(uint8_t *buff, int size) {
-      char hex_string[3];
-      for (int i=0; i < size; i++) {
-          sprintf(hex_string, "%02X\0", buff[i]);
-          std::cout << hex_string;
-      }
-      std::cout << "\n";
-  }
-
   TEST_F(UtilityTest, Should_calculate_the_sign) {
     int a = -77;
     long b = 887685;

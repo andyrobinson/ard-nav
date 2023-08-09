@@ -16,7 +16,7 @@ void Helm::steer(uangle direction_param, long steer_time, windrange range_param)
     remaining = steer_time;
     out_of_range_count = 0;
 
-    sprintf(logmsg, "Steer %4d %8d", direction, steer_time); logger->banner(logmsg);
+    sprintf(logmsg, "Steer %4d %8ld", direction, steer_time); logger->banner(logmsg);
     if (compass->err_percent() >= 100) {  // both the same underneath
       sprintf(logmsg, "** I2C Failure **"); logger->banner(logmsg);
     }

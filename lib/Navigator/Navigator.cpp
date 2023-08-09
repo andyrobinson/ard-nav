@@ -11,8 +11,8 @@ Navigator::Navigator(Tacker *tackerp, Gps *gpsp, Globe *globep, Logger *loggerp)
 void Navigator::sailto(waypoint destination) {
 
   char logmsg[40];
-  sprintf(logmsg, "Nav %s", destination.label); logger->banner(logmsg);
-  logger->setdest(destination.label[0]);
+  sprintf(logmsg, "Nav %c", destination.label); logger->banner(logmsg);
+  logger->setdest(destination.label);
 
   gpsResult current_gps = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0, 0, 0, 0};
   gps->data(MAX_GPS_WAIT_FOR_FIX, &current_gps);
@@ -21,7 +21,7 @@ void Navigator::sailto(waypoint destination) {
     uangle direction = globe->bearing(&current_gps.pos, &destination.pos);
     double distance = constrain(globe->distance_between(&current_gps.pos, &destination.pos),0.0,MAX_DISTANCE);
 
-    sprintf(logmsg, "To %s, %d, %dm", destination.label, direction, (long) round(distance));
+    sprintf(logmsg, "To %c, %d, %ldm", destination.label, direction, (long) round(distance));
     logger->banner(logmsg);
 
     double unlimited_steer_time_ms = (distance/current_gps.avg_mps) * 1000;
@@ -30,7 +30,7 @@ void Navigator::sailto(waypoint destination) {
     gps->data(MAX_GPS_WAIT_FOR_FIX, &current_gps);
   }
 
-  sprintf(logmsg, "At %s", destination.label); logger->banner(logmsg);
+  sprintf(logmsg, "At %c", destination.label); logger->banner(logmsg);
 }
 
 bool Navigator::arrived(position current, position dest_position) {
