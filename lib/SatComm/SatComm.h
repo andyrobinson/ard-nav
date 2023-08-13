@@ -12,7 +12,7 @@
 #include "time.h"
 
 #define SAT_LOG_WINDOWS_MINS 5
-#define SAT_LOG_RECORD_SIZE 35
+#define SAT_LOG_RECORD_SIZE 34
 #define SAT_GPS_WAIT_MILLIS 1000 // cannot wait for GPS
 #define SAT_MILLIS_IN_MINUTE 60000
 #define SAT_TIME_SET_INTERVAL_MINS 10
