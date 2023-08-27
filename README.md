@@ -74,6 +74,7 @@ The other folders represent Arduino applications.  Again each folder has a makef
 See the [blog](https://noahs-barque.blogspot.com/p/blog-page.html) for results from field tests.
 
 ## Next Steps
+* Current Waypoint is not being set the Navigator - need to fix
 * Reduce satellite logging to every 30 mins.  Note that there is no need to remove it, when the monthly subscription expires it will not log again (I think - worth checking if credits are being consumed)
 * Still need to test steering on a stronger wind day, but otherwise we're good
 
