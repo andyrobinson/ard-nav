@@ -8,6 +8,7 @@
 #include "Logger.h"
 #include "Utility.h"
 #include "Angle.h"
+#include "SatComm.h"
 #include "Arduino.h"
 
 #define MAX_GPS_WAIT_FOR_FIX 1000
@@ -21,7 +22,7 @@ class Navigator
 {
   public:
     Navigator();
-    Navigator(Tacker *tackerp, Gps *gpsp, Globe *globep, Logger *loggerp);
+    Navigator(Tacker *tackerp, Gps *gpsp, Globe *globep, SatComm *satcommp, Logger *loggerp);
     void sailto(waypoint destination);
 
   private:
@@ -29,6 +30,7 @@ class Navigator
     Gps *gps;
     Globe *globe;
     Logger *logger;
+    SatComm *satcomm;
     bool arrived(position destination, position current);
 };
 

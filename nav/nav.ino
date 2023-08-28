@@ -85,7 +85,7 @@ RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches);
 Rudder rudder(&servo_control);
 Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &satcomm, &logger);
 Tacker tacker(&helm, &compass, &windsensor, &logger);
-Navigator navigator(&tacker, &gps, &globe, &logger);
+Navigator navigator(&tacker, &gps, &globe, &satcomm, &logger);
 Captain captain(&navigator);
 
 //Iridium callback, used when no-block waiting

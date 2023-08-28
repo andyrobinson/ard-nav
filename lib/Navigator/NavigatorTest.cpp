@@ -3,6 +3,7 @@
 #include "math.h"
 #include "Utility.h"
 #include "StubLogger.h"
+#include "SatComm.h"
 
 using namespace Utility;
 
@@ -12,7 +13,8 @@ namespace {
   Gps stub_gps;
   Globe globe;
   StubLogger logger;
-  Navigator navigator(&stub_tacker, &stub_gps, &globe, &logger);
+  SatComm satcomm;
+  Navigator navigator(&stub_tacker, &stub_gps, &globe, &satcomm, &logger);
 
   class NavigatorTest : public ::testing::Test {
    protected:
@@ -121,6 +123,18 @@ namespace {
     EXPECT_EQ(stub_tacker.steering(1),221);
     EXPECT_EQ(stub_tacker.steer_time(1), 14757);
   }
+
+  TEST_F(NavigatorTest, Should_set_waypoint_in_logger_and_satcomm) {
+    gpsResult gps_current = {{-20.0, -10.2, 3.0}, 1, 0.6, 0.6, 120, 12345675, -2000000,-1020000};
+    waypoint destination = {'x', {-21.0, -10.2, 5.0}};
+    gpsResult gpsData[] = {gps_current, {destination.pos,1,0.6,0.6,120, 1, -2100000, -1020000}};
+    stub_gps.set_data(gpsData,2);
+    navigator.sailto(destination);
+
+    EXPECT_EQ(logger.waypoint, 'x');
+    EXPECT_EQ(satcomm.waypoint,'x');
+  }
+
   // should do something if there's no GPS fix; need some kind of dead reckoning
 
 }  //namespace

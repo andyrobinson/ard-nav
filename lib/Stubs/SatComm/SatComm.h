@@ -7,11 +7,11 @@ class SatComm {
 
       virtual void begin();
       bool steer_log_or_continue();
-      void set_dest(char *label);
+      void set_dest(char label);
 
       // for test
       void set_result(bool res);
-      char dest[3];
+      char waypoint;
       int steer_count;
       void reset();
       bool result;

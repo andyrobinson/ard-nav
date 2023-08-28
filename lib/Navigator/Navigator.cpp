@@ -5,14 +5,15 @@ using namespace Utility;
 
 Navigator::Navigator() {}
 
-Navigator::Navigator(Tacker *tackerp, Gps *gpsp, Globe *globep, Logger *loggerp):
-  tacker(tackerp), gps(gpsp), globe(globep), logger(loggerp) {}
+Navigator::Navigator(Tacker *tackerp, Gps *gpsp, Globe *globep, SatComm *satcommp, Logger *loggerp):
+  tacker(tackerp), gps(gpsp), globe(globep), satcomm(satcommp), logger(loggerp) {}
 
 void Navigator::sailto(waypoint destination) {
 
   char logmsg[40];
   sprintf(logmsg, "Nav %c", destination.label); logger->banner(logmsg);
   logger->setdest(destination.label);
+  satcomm->set_dest(destination.label);
 
   gpsResult current_gps = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0, 0, 0, 0};
   gps->data(MAX_GPS_WAIT_FOR_FIX, &current_gps);

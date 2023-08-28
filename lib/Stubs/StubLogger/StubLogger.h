@@ -12,6 +12,7 @@ class StubLogger : public Logger {
       virtual void setdest(char destletter);
       virtual void settack(char tackletter);
       char *last_message();
+      char waypoint;
 
     private:
       char last_msg[30];
