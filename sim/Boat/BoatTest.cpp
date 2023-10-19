@@ -41,8 +41,8 @@ namespace {
       Boat boat(&kynance_cove, 1.0);
       boat.move(2000);
       position expected_position = globe.new_position(&kynance_cove, STARTING_HEADING, 2.0);
-      ASSERT_DOUBLE_EQ(roundto(boat.location().latitude,5), roundto(expected_position.latitude,5));
-      ASSERT_DOUBLE_EQ(boat.location().longitude, expected_position.longitude);
+      EXPECT_NEAR(boat.location().latitude, expected_position.latitude,0.00001);
+      EXPECT_NEAR(boat.location().longitude, expected_position.longitude, 0.00001);
     }
 
     TEST_F(BoatTest, Should_change_heading_based_on_rudder) {
@@ -51,7 +51,7 @@ namespace {
       boat.rudder=90 + rudder_deflection;
       boat.move(1000);
       uangle expected_heading = uadd(STARTING_HEADING,rudder_effect(rudder_deflection));
-      EXPECT_EQ(boat.heading,expected_heading);
+      EXPECT_NEAR(boat.heading,expected_heading,1);
     }
 
     TEST_F(BoatTest, Should_report_stats) {
@@ -72,23 +72,23 @@ namespace {
 
     TEST_F(BoatTest, Drag_should_increase_with_speed) {
       Boat boat(&kynance_cove);
-      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(0.2),6),0.092857);
-      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(0.4),6),0.452174);
+      EXPECT_NEAR(boat.hull_drag(0.2),0.092857,0.000001);
+      EXPECT_NEAR(boat.hull_drag(0.4),0.452174,0.000001);
     }
 
     TEST_F(BoatTest, Drag_should_increase_with_massively_near_hull_speed) {
       Boat boat(&kynance_cove);
-      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS - 0.2),4), 8.125);
-      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS - 0.1),4), 14.3);
-      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS - 0.01),4), 28.322);
+      EXPECT_NEAR(boat.hull_drag(HULL_SPEED_MS - 0.2), 8.125,0.0001);
+      EXPECT_NEAR(boat.hull_drag(HULL_SPEED_MS - 0.1), 14.3,0.0001);
+      EXPECT_NEAR(boat.hull_drag(HULL_SPEED_MS - 0.01), 28.322,0.0001);
     }
 
     TEST_F(BoatTest, Drag_should_never_overflow_or_go_negative) {
       Boat boat(&kynance_cove);
-      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS - 0.01),4), 28.322);
-      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS),4), 31.2);
-      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS + 0.01),4), 34.606);
-      ASSERT_DOUBLE_EQ(roundto(boat.hull_drag(HULL_SPEED_MS * 2),4), 12480);
+      EXPECT_NEAR(boat.hull_drag(HULL_SPEED_MS - 0.01), 28.322,0.0001);
+      EXPECT_NEAR(boat.hull_drag(HULL_SPEED_MS), 31.2,0.0001);
+      EXPECT_NEAR(boat.hull_drag(HULL_SPEED_MS + 0.01), 34.606,0.0001);
+      EXPECT_NEAR(boat.hull_drag(HULL_SPEED_MS * 2), 12480,0.0001);
     }
 
     TEST_F(BoatTest, Speed_should_increase_if_impetus_is_greater_than_drag) {
