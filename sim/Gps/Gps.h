@@ -19,6 +19,7 @@ typedef struct {
   short fix;
   float mps;
   float avg_mps;
+  unsigned short cog;
   long unixTime;
   int32_t fpLatitude;
   int32_t fpLongitude;

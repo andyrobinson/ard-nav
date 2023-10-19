@@ -1,4 +1,4 @@
-CLASSES := Boat Timer ConsoleLogger Gps Compass Switches WindSensor MServo Arduino LiftDrag
+CLASSES := Boat Timer ConsoleLogger Gps Compass Switches WindSensor MServo Arduino LiftDrag SatComm
 INCLUDES := Logger
 LIB_CLASSES := Angle Globe Helm Tacker Navigator Captain Utility RotaryPID Sail Rudder
 LIB_INCLUDES := Position Utility Routes Windrange Waypoint IHelm

@@ -6,9 +6,9 @@ MServo::MServo(Boat *boatp):boat(boatp) {};
 void MServo::write(uint8_t channel, uint16_t angle) {
   angle = constrain(angle, (uint16_t) 0, (uint16_t) 180);
 
-  if (channel == RUDDER_CHANNEL) {
+  if (channel == SIM_RUDDER_CHANNEL) {
     boat->rudder = angle;
-  } else if (channel == SAIL_CHANNEL) {
+  } else if (channel == SIM_SAIL_CHANNEL) {
     boat->sail = angle;
   }
 }

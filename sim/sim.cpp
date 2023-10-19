@@ -10,6 +10,7 @@
 #include "Switches.h"
 #include "MServo.h"
 #include "WindSensor.h"
+#include "SatComm.h"
 
 //NEUTRAL
 #include "Position.h"
@@ -39,12 +40,14 @@ Compass compass(&boat);
 Gps gps(&boat,&timer);
 Sail sail(&mservo);
 Rudder rudder(&mservo);
+SatComm satcomm(&boat);
 ConsoleLogger logger(&boat, &timer);
-RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
-Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &logger);
+RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches);
+Helm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &satcomm, &logger);
 Tacker tacker(&helm, &compass, &windsensor, &logger);
-Navigator navigator(&tacker, &gps, &globe, &logger);
+Navigator navigator(&tacker, &gps, &globe, &satcomm, &logger);
 Captain captain(&navigator);
+
 
 int main() {
     switches.set(1); // simulation of switch

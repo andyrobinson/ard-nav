@@ -6,8 +6,8 @@
 
 #define SERVO_MIN 2000
 #define SERVO_MAX 10000
-#define RUDDER_CHANNEL 0
-#define SAIL_CHANNEL 1
+#define SIM_RUDDER_CHANNEL 3
+#define SIM_SAIL_CHANNEL 1
 
 class MServo
 {

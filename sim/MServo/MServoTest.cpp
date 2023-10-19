@@ -13,17 +13,17 @@ class MServoTest : public ::testing::Test {
 };
 
 TEST_F(MServoTest, should_set_rudder_on_boat_on_channel_0) {
-    mservo.write(RUDDER_CHANNEL,23);
+    mservo.write(SIM_RUDDER_CHANNEL,23);
     EXPECT_EQ(boat.rudder, 23);
 }
 
 TEST_F(MServoTest, should_set_sail_on_boat_on_channel_1) {
-    mservo.write(SAIL_CHANNEL,41);
+    mservo.write(SIM_SAIL_CHANNEL,41);
     EXPECT_EQ(boat.sail,41);
 }
 
 TEST_F(MServoTest, should_limit_to_less_than_180) {
-    mservo.write(SAIL_CHANNEL,200);
+    mservo.write(SIM_SAIL_CHANNEL,200);
     EXPECT_EQ(boat.sail,180);
 }
 
