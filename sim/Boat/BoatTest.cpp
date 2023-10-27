@@ -155,6 +155,7 @@ namespace {
       Boat boat(&kynance_cove);
       boat.heading = 0;
       boat.wind_speed = 5.0;
+      // to do compare these sail positions to the real ones - I think there could be a surprise
       int sail_positions[] = {180,172,165,157,150,150,150,150,150,150,140,130,120,110,100,90,90,90,90,90,90,90,80,70,60,50,40,30,30,30,30,30,30,23,15,8,0};
       double expected_heel[] = {0.0,0.0,0.0};
       for (int i=-180; i <=180; i+=10) {
