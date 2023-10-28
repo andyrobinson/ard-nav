@@ -74,28 +74,24 @@ The other folders represent Arduino applications.  Again each folder has a makef
 See the [blog](https://noahs-barque.blogspot.com/p/blog-page.html) for results from field tests.
 
 ## Next Steps
-* Current Waypoint is not being set the Navigator - need to fix
-* Reduce satellite logging to every 30 mins.  Note that there is no need to remove it, when the monthly subscription expires it will not log again (I think - worth checking if credits are being consumed)
-* Still need to test steering on a stronger wind day, but otherwise we're good
+* Still need to test longer navigation on a stronger wind day, but otherwise we're good
+* Move all constants which need to be updated for larger stretches of water into a single file for convenience
+* Handling restarts need two algorithms:
+  - for linear routes, we just calculate the nearest waypoint check if we have passed it and then navigate accordingly
+  - for circular routes we should probably make the current SD backed software work - requires distinguishing between warm and cold starts.
+* It's very annoying to try and find out the version - write it later on, or on every waypoint navigation
+* Need to think about power conservation and dynamically responding to battery state, but this requires us to understand what current power consumption looks like
+* Think about error handling/recovery and dealing with hardware failures
 
 ### Hardware upgrades required
 * Stronger mast and boom, new sail
 * Stronger rudder (change servo?)
 * Dual power supplies and solar panels
 * Make RC unit easily removable
-* Solid implementation for wind vane
 
 ## Satellite Communications
 
 ### Notes on evaluating the current solution
-- [PASS] Logging attempts are limited to the prescribed logging windows, which relies on real time, but is robust in the face of restarts
-  - Can confirm there are periods of 5-6 minutes where no logging is attempted
-  - Strictly speaking the configuration is windows of 5 minutes every 10 minutes.  The reality is the windows are 6.5 minutes 
-    every 10 minutes, but this will be fine with longer gaps
-- [PASS] Power consumption is managed through exponential back-off, and sleeping the device after success and between logging window
-  - Can see evidence of using retry interval.  Once log success device sleeps until next window.
-- [PASS] Navigation continues reliably during the logging window, in particular finishing periods of steering to re-evaluate progress 
-  towards the next waypoint, even when this is part way through an attempted communication
 - [UNTESTED] The system is robust to changes in parameters such as the period of steering (which is calculated based on distance from the waypoint) and 
   the frequency and length of the satellite logging windows
 
@@ -154,6 +150,7 @@ as simple as the nearest in distance, we also need to think about the bearings o
 more importantly memory conservation
 - software versioning
 - average speed
+* Solid implementation for wind vane
 
 ## Hot tips
 
