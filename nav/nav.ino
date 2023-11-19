@@ -25,6 +25,7 @@
 
 #define MAJOR_VERSION 3 // first successful reliable navigation
 #define STARTUP_WAIT_FOR_FIX_MS 60000
+#define STARTUP_ATTEMPTS 10
 
 /*
 
@@ -129,17 +130,23 @@ void setup() {
 }
 
 void loop() {
+
+  sprintf(logmsg, "System boot v%2d.%2d", MAJOR_VERSION, MINOR_VERSION); logger.banner(logmsg);
+
   // a little indicator that we're starting
-  rudder.set_position(RUDDER_MAX_DISPLACEMENT);
   sail.set_position(0);
+  gpsResult gps_data = {{0.0, 0.0, 0.0}, FIX_NONE, 0.0, 0, 0, 0, 0};
 
   // try and get a GPS fix before logging so that it goes in the same file
-  gpsResult gps_data_ignored;
-  gps.data(STARTUP_WAIT_FOR_FIX_MS, &gps_data_ignored);
+  short remaining_attempts = STARTUP_ATTEMPTS;
+  while (gps_data.fix <= FIX_NONE and remaining_attempts-- > 0) {
+    gps.data(STARTUP_WAIT_FOR_FIX_MS, &gps_data);
+    rudder.set_position(RUDDER_MAX_DISPLACEMENT);
+    rudder.set_position(0);
+    timer.wait(3000);
+  }
 
   // and we're off
-  rudder.set_position(0);
-  timer.wait(5000);
 
   uint8_t sw = switches.value(); // eight routes configurable
   route journey = plattfields[sw];
