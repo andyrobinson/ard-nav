@@ -3,6 +3,8 @@
 #include "Position.h"
 #include "Globe.h"
 #include "Utility.h"
+#include "MServo.h"
+#include "Sail.h"
 #include "math.h"
 #include <iostream>
 //#include <cmath>
@@ -153,16 +155,16 @@ namespace {
 
     TEST_F(BoatTest, Heel_angle_should_vary_with_point_of_sail_max_at_close_hauled) {
       Boat boat(&kynance_cove);
+      MServo mservo(&boat);
+      Sail sail(&mservo);
       boat.heading = 0;
       boat.wind_speed = 5.0;
-      // to do compare these sail positions to the real ones - I think there could be a surprise
-      int sail_positions[] = {180,172,165,157,150,150,150,150,150,150,140,130,120,110,100,90,90,90,90,90,90,90,80,70,60,50,40,30,30,30,30,30,30,23,15,8,0};
       double expected_heel[] = {0.0,0.0,0.0};
       for (int i=-180; i <=180; i+=10) {
         int index =i/10 + 18;
         boat.absolute_wind = i;
         boat.sail_force(); // called to set the heel angle
-        boat.sail = sail_positions[index]; // sail normally set by Sail class
+        sail.set_position(boat.relative_wind());
         //ASSERT_DOUBLE_EQ(roundto(boat.heel_angle,4),roundto(expected_heel[index],4));
       }
     }
