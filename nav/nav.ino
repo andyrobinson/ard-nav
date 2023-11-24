@@ -140,8 +140,8 @@ void loop() {
   // try and get a GPS fix before logging so that it goes in the same file
   short remaining_attempts = STARTUP_ATTEMPTS;
   while (gps_data.fix <= FIX_NONE and remaining_attempts-- > 0) {
-    gps.data(STARTUP_WAIT_FOR_FIX_MS, &gps_data);
     rudder.set_position(RUDDER_MAX_DISPLACEMENT);
+    gps.data(STARTUP_WAIT_FOR_FIX_MS, &gps_data);
     rudder.set_position(0);
     timer.wait(3000);
   }
