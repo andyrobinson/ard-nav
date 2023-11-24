@@ -46,14 +46,15 @@ double Boat::sail_force() {
   angle angle_of_attack = add(add(90,-sail),-wind);
   double lift_force = lift(angle_of_attack, wind_speed);
   double drag_force = drag(angle_of_attack, wind_speed);
-  double medial_force = (lift_force * cos(to_radians((double) wind + 90)) * sign(angle_of_attack)) -
-                       (drag_force * sin(to_radians((double) wind + 90)));
+  double medial_force = (lift_force * sin(to_radians((double) -wind)) * sign(angle_of_attack)) -
+                       (drag_force * cos(to_radians((double) -wind)));
 
   // TODO: this is wrong and needs thinking about
-  double lateral_force = (lift_force * sin(to_radians((double) wind + 90))) -
-                       (drag_force * cos(to_radians((double) wind + 90)));
+  double lateral_force = (drag_force * sin(to_radians((double) wind))) - 
+                        (lift_force * cos(to_radians((double) wind))) * sign(angle_of_attack);
   heel_angle = heel(lateral_force);
-  std::cout << "w: " << wind << " s: " << sail << " m: " << medial_force << " l: " << lateral_force << " heel: " << heel_angle << "\n";
+  std::cout << "a: " << angle_of_attack << " w: " << wind << " s: " << sail << " m: " << medial_force << " l: " << lateral_force << " heel: " << heel_angle;
+  std::cout << " dc: " << (drag_force * sin(to_radians((double) wind))) << " lc: " << - (lift_force * cos(to_radians((double) wind))) * sign(angle_of_attack) << " cos: " << cos(to_radians((double) wind)) << "\n";
   return medial_force * cos(to_radians(heel_angle));
 }
 

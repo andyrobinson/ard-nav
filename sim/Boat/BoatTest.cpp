@@ -161,10 +161,9 @@ namespace {
       boat.wind_speed = 5.0;
       double expected_heel[] = {0.0,0.0,0.0};
       for (int i=-180; i <=180; i+=10) {
-        int index =i/10 + 18;
         boat.absolute_wind = i;
-        boat.sail_force(); // called to set the heel angle
         sail.set_position(boat.relative_wind());
+        boat.sail_force(); // called to set the heel angle
         //ASSERT_DOUBLE_EQ(roundto(boat.heel_angle,4),roundto(expected_heel[index],4));
       }
     }
