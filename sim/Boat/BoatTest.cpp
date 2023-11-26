@@ -35,13 +35,11 @@ namespace {
     };
 
     TEST_F(BoatTest, Should_start_at_provided_location) {
-      GTEST_SKIP();
       Boat boat(&kynance_cove);
       EXPECT_EQ(boat.location(), kynance_cove);
     }
 
     TEST_F(BoatTest, Should_move_in_initial_direction_about_2m) {
-      GTEST_SKIP();
       Boat boat(&kynance_cove, 1.0);
       boat.move(2000);
       position expected_position = globe.new_position(&kynance_cove, STARTING_HEADING, 2.0);
@@ -50,7 +48,6 @@ namespace {
     }
 
     TEST_F(BoatTest, Should_change_heading_based_on_rudder) {
-      GTEST_SKIP();
       Boat boat(&kynance_cove, 1.0);
       int rudder_deflection = 20;
       boat.rudder=90 + rudder_deflection;
@@ -60,14 +57,12 @@ namespace {
     }
 
     TEST_F(BoatTest, Should_report_stats) {
-      GTEST_SKIP();
       Boat boat(&kynance_cove);
       EXPECT_EQ(boat.speed(),STARTING_SPEED);
       EXPECT_EQ(boat.bearing(),STARTING_HEADING);
     }
 
     TEST_F(BoatTest, Should_return_relative_wind) {
-      GTEST_SKIP();
       Boat boat(&kynance_cove);
       angle start_wind = add(STARTING_WIND_DIRECTION, -STARTING_HEADING);
       EXPECT_EQ(boat.relative_wind(), start_wind);
@@ -78,14 +73,12 @@ namespace {
     }
 
     TEST_F(BoatTest, Drag_should_increase_with_speed) {
-      GTEST_SKIP();
       Boat boat(&kynance_cove);
       EXPECT_NEAR(boat.hull_drag(0.2),0.092857,0.000001);
       EXPECT_NEAR(boat.hull_drag(0.4),0.452174,0.000001);
     }
 
     TEST_F(BoatTest, Drag_should_increase_massively_near_hull_speed) {
-      GTEST_SKIP();
       Boat boat(&kynance_cove);
       EXPECT_NEAR(boat.hull_drag(HULL_SPEED_MS - 0.2), 8.125,0.0001);
       EXPECT_NEAR(boat.hull_drag(HULL_SPEED_MS - 0.1), 14.3,0.0001);
@@ -93,7 +86,6 @@ namespace {
     }
 
     TEST_F(BoatTest, Drag_should_never_overflow_or_go_negative) {
-      GTEST_SKIP();
       Boat boat(&kynance_cove);
       EXPECT_NEAR(boat.hull_drag(HULL_SPEED_MS - 0.01), 28.322,0.0001);
       EXPECT_NEAR(boat.hull_drag(HULL_SPEED_MS), 31.2,0.0001);
@@ -102,7 +94,6 @@ namespace {
     }
 
     TEST_F(BoatTest, Speed_should_increase_if_impetus_is_greater_than_drag) {
-      GTEST_SKIP();
       Boat boat(&kynance_cove);
       double speed = 0.5;
       double result = boat.new_speed(speed, 4.34, 3.0, 1000); // 1.34 newtons should give 0.1 mss
@@ -110,7 +101,6 @@ namespace {
     }
 
     TEST_F(BoatTest, Speed_should_increase_according_to_interval) {
-      GTEST_SKIP();
       Boat boat(&kynance_cove);
       double speed = 0.5;
       double result = boat.new_speed(speed, 4.34, 3.0, 2000); // 1.34 newtons should give 0.1 mss
@@ -118,7 +108,6 @@ namespace {
     }
 
     TEST_F(BoatTest, Speed_should_decrease_if_drag_greater_than_impetus) {
-      GTEST_SKIP();
       Boat boat(&kynance_cove);
       double speed = 0.5;
       double result = boat.new_speed(speed, 3.0, 4.34, 1000); // 1.34 newtons should give 0.1 mss
@@ -126,7 +115,6 @@ namespace {
     }
 
     TEST_F(BoatTest, Sail_force_should_vary_with_wind_maximum_on_broad_reach) {
-      GTEST_SKIP();
       Boat boat(&kynance_cove);
       boat.heading = 0;
       int sail_positions[] = {180,172,165,157,150,150,150,150,150,150,140,130,120,110,100,90,90,90,90,90,90,90,80,70,60,50,40,30,30,30,30,30,30,23,15,8,0};

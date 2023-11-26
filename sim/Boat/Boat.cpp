@@ -4,7 +4,7 @@
 
 Boat::Boat(position *start, double start_speed):
     heading(STARTING_HEADING),rudder(90),speed_ms(start_speed),absolute_wind(STARTING_WIND_DIRECTION),globe(Globe()),
-    current_position({start->latitude, start->longitude, start->error}),sail(90),
+    current_position({start->latitude, start->longitude, start->error}),sail(STARTING_SAIL),
      wind_speed(STARTING_WIND_SPEED){}
 
 position Boat::location() {
@@ -42,20 +42,34 @@ double Boat::new_speed(double speed, double impetus, double drag, long millis) {
 }
 
 double Boat::sail_force() {
+  double heel_angle = 0.0;
+  double force_error = 1.0;
+  double medial_force = 0.0;
   angle wind = relative_wind();
   angle angle_of_attack = add(add(90,-sail),-wind);
+
   double lift_force = lift(angle_of_attack, wind_speed);
   double drag_force = drag(angle_of_attack, wind_speed);
-  double medial_force = (lift_force * sin(to_radians((double) -wind)) * sign(angle_of_attack)) -
-                       (drag_force * cos(to_radians((double) -wind)));
-
-  // TODO: this is wrong and needs thinking about
-  double lateral_force = (drag_force * sin(to_radians((double) wind))) - 
+  double upright_medial_force = (lift_force * sin(to_radians((double) -wind)) * sign(angle_of_attack)) -
+                      (drag_force * cos(to_radians((double) -wind)));
+  double upright_lateral_force = (drag_force * sin(to_radians((double) wind))) - 
                         (lift_force * cos(to_radians((double) wind))) * sign(angle_of_attack);
-  heel_angle = heel(lateral_force);
-  std::cout << "a: " << angle_of_attack << " w: " << wind << " s: " << sail << " m: " << medial_force << " l: " << lateral_force << " heel: " << heel_angle;
-  std::cout << " dc: " << (drag_force * sin(to_radians((double) wind))) << " lc: " << - (lift_force * cos(to_radians((double) wind))) * sign(angle_of_attack) << " cos: " << cos(to_radians((double) wind)) << "\n";
-  return medial_force * cos(to_radians(heel_angle));
+
+  double lateral_force = upright_lateral_force;
+  std::cout << "a: " << angle_of_attack << " w: " << wind << " s: " << sail << " um: " << upright_medial_force << " ul: " << upright_lateral_force;
+
+  // heel reduces lateral force, which then reduces heel - need to iterate to find stable point
+  while (force_error > 0.05) {
+   std::cout << " heel: " << heel_angle << " lf: " << lateral_force << " mf: " << medial_force << "\n";
+    heel_angle = heel(lateral_force);
+    //  used cos squared to calculate actual force
+    double new_lateral_force = upright_lateral_force * cos(to_radians(heel_angle)) * cos(to_radians(heel_angle));
+    force_error = abs1(new_lateral_force - lateral_force);
+    lateral_force = new_lateral_force;
+  }
+  medial_force = upright_medial_force * cos(to_radians(heel_angle)) * cos(to_radians(heel_angle));
+  // std::cout << " heel: " << heel_angle << " lf: " << lateral_force << " mf: " << medial_force << "\n";
+  return medial_force;
 }
 
 double Boat::heel(double lateral_force) {
