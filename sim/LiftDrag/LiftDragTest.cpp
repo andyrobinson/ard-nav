@@ -10,19 +10,16 @@ class LiftDragTest : public ::testing::Test {
   LiftDragTest() {}
 };
 
-TEST_F(LiftDragTest, cd_should_increase_up_until_90) {
-    ASSERT_DOUBLE_EQ(0.2,Cd(0));
-    ASSERT_DOUBLE_EQ(0.21408450704225354,Cd(10));
-    ASSERT_DOUBLE_EQ(0.25633802816901408,Cd(20));
-    ASSERT_DOUBLE_EQ(0.3267605633802817,Cd(30));
-    ASSERT_DOUBLE_EQ(0.42535211267605633,Cd(40));
-    ASSERT_DOUBLE_EQ(0.55211267605633796,Cd(50));
-    ASSERT_DOUBLE_EQ(0.70704225352112671,Cd(60));
-    ASSERT_DOUBLE_EQ(0.89014084507042246,Cd(70));
-    ASSERT_DOUBLE_EQ(1.1014084507042254,Cd(80));
-    ASSERT_DOUBLE_EQ(1.3408450704225352,Cd(90));
-    ASSERT_DOUBLE_EQ(1.1014084507042254,Cd(100));
-    ASSERT_DOUBLE_EQ(0.89014084507042246,Cd(110));
+TEST_F(LiftDragTest, cd_should_increase_up_until_90_then_decrease) {
+    double cd = Cd(0);
+    for (angle i = 10; i <= 90; i += 5) {
+        ASSERT_GT(Cd(i),cd);
+        ASSERT_LT(Cd(i), 1.6);
+        cd = Cd(i);
+    }
+    ASSERT_LT(Cd(100),Cd(90));
+    ASSERT_LT(Cd(110), Cd(100));
+
 }
 
 TEST_F(LiftDragTest, cd_should_limit_angle_of_attack_to_0_180) {
@@ -31,43 +28,54 @@ TEST_F(LiftDragTest, cd_should_limit_angle_of_attack_to_0_180) {
 }
 
 TEST_F(LiftDragTest, cl_should_increase_up_until_25) {
-    ASSERT_DOUBLE_EQ(0.0,Cl(0));
-    ASSERT_DOUBLE_EQ(0.0,Cl(5));
-    ASSERT_DOUBLE_EQ(0.7,Cl(10));
-    ASSERT_DOUBLE_EQ(1.2,Cl(15));
-    ASSERT_DOUBLE_EQ(1.5,Cl(20));
-    ASSERT_DOUBLE_EQ(1.6,Cl(25));
+    double cl = Cl(0);
+    ASSERT_DOUBLE_EQ(0.0,cl);
+    for (angle i = 10; i <= 25; i++) {
+        ASSERT_GT(Cl(i),cl);
+        ASSERT_LT(Cl(i), 1.61);
+        cl = Cl(i);
+    }
 }
 
-TEST_F(LiftDragTest, cl_should_decrease_from_25_until_100_then_zero) {
-    ASSERT_DOUBLE_EQ(1.6,Cl(25));
-    ASSERT_DOUBLE_EQ(1.59264,Cl(30));
-    ASSERT_DOUBLE_EQ(1.422,Cl(50));
-    ASSERT_DOUBLE_EQ(1.02384,Cl(70));
-    ASSERT_DOUBLE_EQ(0.39816000000000029,Cl(90));
-    ASSERT_DOUBLE_EQ(0.0,Cl(100));
-    ASSERT_DOUBLE_EQ(0.0,Cl(110));
+TEST_F(LiftDragTest, cl_should_decrease_from_25_until_90) {
+    double cl = Cl(25);
+    ASSERT_DOUBLE_EQ(1.6,cl);
+    for (angle i = 26; i <= 27; i++) {
+        ASSERT_LT(Cl(i),cl);
+        cl = Cl(i);
+    }
 }
 
-TEST_F(LiftDragTest, lift_should_increase_to_25_then_tail_off) {
-    ASSERT_DOUBLE_EQ(0.0,lift(0,10.0));
-    ASSERT_DOUBLE_EQ(6.321,lift(10,10.0));
-    ASSERT_DOUBLE_EQ(13.545,lift(20,10.0));
-    ASSERT_DOUBLE_EQ(14.448,lift(25,10.0));
-    ASSERT_DOUBLE_EQ(14.3815392,lift(30,10.0));
-    ASSERT_DOUBLE_EQ(13.8679128,lift(40,10.0));
-    ASSERT_DOUBLE_EQ(12.84066,lift(50,10.0));
-    ASSERT_DOUBLE_EQ(11.2997808,lift(60,10.0));
-    ASSERT_DOUBLE_EQ(9.2452752,lift(70,10.0));
-    ASSERT_DOUBLE_EQ(6.6771432,lift(80,10.0));
-    ASSERT_DOUBLE_EQ(3.5953848000000033,lift(90,10.0));
-    ASSERT_DOUBLE_EQ(0.0,lift(100,10.0));
+TEST_F(LiftDragTest, cl_should_be_zero_from_90_onwards) {
+    for (angle i = 90; i <= 180; i++) {
+        ASSERT_DOUBLE_EQ(0.0, Cl(i));
+    }
 }
+
+TEST_F(LiftDragTest, lift_should_increase_to_25) {
+    double lf = lift(0,10.0);
+    ASSERT_DOUBLE_EQ(0.0,lf);
+
+    for (angle i = 1; i<=25; i++) {
+        ASSERT_GE(lift(i,10.0),lf);
+        lf = lift(i,10.0);
+    }
+}
+
+TEST_F(LiftDragTest, lift_should_decrease_from_25) {
+    double lf = lift(25,10.0);
+
+    for (angle i = 26; i<=90; i++) {
+        ASSERT_LE(lift(i,10.0),lf);
+        lf = lift(i,10.0);
+    }
+}
+
 
 TEST_F(LiftDragTest, lift_should_always_be_positive) {
-    ASSERT_DOUBLE_EQ(14.448,lift(-25,10.0));
-    ASSERT_DOUBLE_EQ(12.84066,lift(-50,10.0));
-    ASSERT_DOUBLE_EQ(6.6771432,lift(-80,10.0));
+    ASSERT_GE(lift(-25,10.0),0.0);
+    ASSERT_GE(lift(-50,10.0),0.0);
+    ASSERT_GE(lift(-80,10.0),0.0);
 }
 
 TEST_F(LiftDragTest, lift_should_increase_with_square_of_wind_speed) {

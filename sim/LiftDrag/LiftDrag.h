@@ -8,9 +8,11 @@
 #define B_LOW 0.2
 #define C_LOW -0.9
 
-#define A_HIGH -0.0002844
-#define B_HIGH 0.01422
-#define C_HIGH 1.422
+#define X_OFFSET_HIGH -42
+#define A_HIGH 0.000012
+#define B_HIGH -0.00055
+#define C_HIGH -0.029
+#define D_HIGH 1.32
 
 #define SAIL_AREA 0.14
 #define AIR_DENSITY 1.29

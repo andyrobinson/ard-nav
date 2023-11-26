@@ -9,14 +9,17 @@ namespace LiftDrag {
  }
 
  double Cl(angle attack) {
-    // we use two quadratics, (a.x^2 + b.x + c) one for up to max lift, one for afterwards
+    // we use a quadratic initially, then a cubic, (a.x^2 + b.x + c) one for up to max lift, one for afterwards
     double at = (double) attack;
     double result;
     if (at < 25.0001) {
         result = A_LOW * (at * at) + B_LOW * at + C_LOW;
-    } else {
-        result = A_HIGH * (at * at) + B_HIGH * at + C_HIGH;
+    } else if (at < 90.0) {
+        double x = at + X_OFFSET_HIGH;
+        result = A_HIGH * (x * x * x) + B_HIGH * (x * x) + C_HIGH * x + D_HIGH;
     }
+    else result = 0.0;
+
     if (result < 0.0) result = 0.0;
 
     return result;
