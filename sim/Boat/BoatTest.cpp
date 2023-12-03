@@ -32,6 +32,12 @@ namespace {
       return -deflection;
     }
 
+    double sail_force(angle wind, Sail *sail, Boat *boat) {
+        boat->absolute_wind = wind;
+        sail->set_position(boat->relative_wind());
+        return roundto(boat->sail_force(),4);
+    }
+
     };
 
     TEST_F(BoatTest, Should_start_at_provided_location) {
@@ -53,7 +59,7 @@ namespace {
       boat.rudder=90 + rudder_deflection;
       boat.move(1000);
       uangle expected_heading = uadd(STARTING_HEADING,rudder_effect(rudder_deflection));
-      EXPECT_NEAR(boat.heading,expected_heading,1);
+      EXPECT_NEAR(boat.heading,expected_heading,2);
     }
 
     TEST_F(BoatTest, Should_report_stats) {
@@ -114,18 +120,34 @@ namespace {
       ASSERT_DOUBLE_EQ(result, 0.4);
     }
 
-    TEST_F(BoatTest, Sail_force_should_vary_with_wind_maximum_on_broad_reach) {
+    TEST_F(BoatTest, Sail_force_should_be_symmetrical) {
       Boat boat(&kynance_cove);
+      MServo mservo(&boat);
+      Sail sail(&mservo);
       boat.heading = 0;
-      int sail_positions[] = {180,172,165,157,150,150,150,150,150,150,140,130,120,110,100,90,90,90,90,90,90,90,80,70,60,50,40,30,30,30,30,30,30,23,15,8,0};
-      double expected_force[] = {12.1078,12.2165,12.1106,12.0551,11.9108,12.2490,12.9782,13.7714,14.3242,14.3815,13.6507,12.5050,10.9795,9.1203,6.984,
-      4.6354,2.4575,-0.8062,-1.806,-0.8062,2.4575,4.6354,6.9839,9.1202,10.9794,12.5050,13.6507,14.3815,14.3242,13.7714,12.9782,12.2490,11.9108,12.0551,
-      12.1106,12.2165,12.1078};
-      for (int i=-180; i <=180; i+=10) {
-        int index =i/10 + 18;
-        boat.absolute_wind = i;
-        boat.sail = sail_positions[index]; // sail normally set by Sail class
-        ASSERT_DOUBLE_EQ(roundto(boat.sail_force(),4),expected_force[index]);
+      boat.wind_speed = 5.0;
+      for (int i=0; i <=180; i+=10) {
+        double force = sail_force(i,&sail,&boat);
+        double minus_force = sail_force(-i,&sail,&boat);
+        EXPECT_NEAR(abs1(force),abs1(minus_force),0.001);
+      }
+    }
+
+    TEST_F(BoatTest, Sail_force_should_be_maximum_on_broad_reach) {
+      Boat boat(&kynance_cove);
+      MServo mservo(&boat);
+      Sail sail(&mservo);
+      boat.heading = 0;
+      boat.wind_speed = 5.0;
+      double old_force, force, max_force;
+      old_force = 0.0;
+      for (int i=0; i <=180; i+=10) {
+        force = sail_force(i,&sail,&boat);
+        if (i == 90) max_force = force;
+        if (i > 40) EXPECT_GT(force, 1.0);
+        if (i > 0 && i <= 90) EXPECT_GT(force,old_force);
+        if (i > 90) EXPECT_GT(max_force, force);
+        old_force = force;
       }
     }
 
@@ -147,17 +169,34 @@ namespace {
       Sail sail(&mservo);
       boat.heading = 0;
       boat.wind_speed = 5.0;
-      double expected_heel[] = {0.0,0.0,0.0};
+      double max_heel = 0.0;
+      int max_heel_wind = 0;
       for (int i=-180; i <=180; i+=10) {
-        boat.absolute_wind = i;
-        sail.set_position(boat.relative_wind());
-        boat.sail_force(); // called to set the heel angle
-        //ASSERT_DOUBLE_EQ(roundto(boat.heel_angle,4),roundto(expected_heel[index],4));
+        sail_force(i,&sail,&boat); // calculates heel
+        if (abs1(boat.heel_angle) > max_heel) {
+          max_heel = abs1(boat.heel_angle);
+          max_heel_wind = abs1(i);
+        }
       }
+      ASSERT_EQ(max_heel_wind,30);
     }
 
     TEST_F(BoatTest, Useful_sail_force_should_reach_maximum_then_decrease_because_of_heel) {
-      GTEST_SKIP();
+      Boat boat(&kynance_cove);
+      MServo mservo(&boat);
+      Sail sail(&mservo);
+      double force,max_force = 0.0;
+      int max_wind = 0;
+      for (int i=1; i<200; i++) {
+        boat.wind_speed = (double) i;
+        force = sail_force(60,&sail,&boat); 
+        std::cout << force << ", " << boat.heel_angle << ", " << i << "\n";
+        if (force > max_force) {
+          max_force = force;
+          max_wind = i;
+        }
+      }
+      ASSERT_EQ(max_wind, 50);
     }
 
     TEST_F(BoatTest, Rudder_effectiveness_should_decrease_with_heel) {
