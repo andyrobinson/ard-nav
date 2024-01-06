@@ -20,8 +20,12 @@
 #include <Battery.h>
 #include <version.h>
 #include <MServo.h>
+#include <IridiumSBD.h>
+#include <SatComm.h>
 
-#define MAJOR_VERSION 2 // for test
+#define MAJOR_VERSION 10 // for test
+#define IRIDIUM_SERIAL Serial1
+#define IRIDIUM_SLEEP_PIN 6
 
 char logmsg[22];
 
@@ -31,23 +35,27 @@ Timer timer;
 Globe globe;
 Switches switches;
 I2C i2c;
-Battery battery(&analogRead);
 MServo servo_control;
 
+Battery battery(&analogRead, &timer);
 WindSensor windsensor(&i2c);
 Compass compass(&i2c, &timer);
 Gps gps(&timer);
 
-SDLogger logger(&gps, &windsensor, &compass, &battery, 3000);
+SDLogger logger(&gps, &windsensor, &compass, &battery, &switches, &timer, 3000);
+
 //SerialLogger logger(&gps, &windsensor, &compass, &battery);
 
+IridiumSBD modem(IRIDIUM_SERIAL, IRIDIUM_SLEEP_PIN);
+SatComm satcomm(&modem, &timer, &gps, &battery, &compass, &logger);
 Sail sail(&servo_control);
-RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches,&logger);
+RotaryPID rotaryPID(RUDDER_MAX_DISPLACEMENT,&switches);
 Rudder rudder(&servo_control);
 TankHelm helm(&rudder, &compass, &timer, &windsensor, &sail, &rotaryPID, &logger);
 Tacker tacker(&helm, &compass, &windsensor, &logger);
-Navigator navigator(&tacker, &gps, &globe, &logger);
+Navigator navigator(&tacker, &gps, &globe, &satcomm, &logger);
 Captain captain(&navigator);
+
 
 void setup() {
   /*  BROWN OUT CONFIGURATION
