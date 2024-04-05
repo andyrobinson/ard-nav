@@ -7,17 +7,17 @@ Battery::Battery(int (*analogPinFn)(uint8_t), Timer *timerp):
   for (int i=0;i<SAMPLES;i++) readings_buffer[i]=0;
 }
 
-float Battery::lipo1maxv() {
+float Battery::lipomaxv(uint8_t batt) {
   add_reading();
-  return to_volts(raw_max());
+  return to_volts(raw_max(batt));
 }
 
-float Battery::lipo1minv() {
+float Battery::lipominv(uint8_t batt) {
   add_reading();
-  return to_volts(raw_min());
+  return to_volts(raw_min(batt));
 }
 
-uint16_t Battery::raw_min() {
+uint16_t Battery::raw_min(uint8_t batt) {
   int min = MAX_ANALOG;
   for (int i=0; i < SAMPLES; i++) {
     int current = readings_buffer[i];
@@ -26,7 +26,7 @@ uint16_t Battery::raw_min() {
   return min;
 }
 
-uint16_t Battery::raw_max() {
+uint16_t Battery::raw_max(uint8_t batt) {
   int max = 0;
   for (int i=0; i < SAMPLES; i++) {
     max = (readings_buffer[i] > max) ? readings_buffer[i] : max;

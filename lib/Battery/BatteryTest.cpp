@@ -33,9 +33,9 @@ namespace {
     values = myvalues;
     Battery battery(&pinFn, &stub_timer);
 
-    for (int j=0; j<3;j++) {battery.lipo1maxv(); stub_timer.wait(DELAY_BETWEEN_READINGS);}
+    for (int j=0; j<3;j++) {battery.lipomaxv(0); stub_timer.wait(DELAY_BETWEEN_READINGS);}
 
-    EXPECT_NEAR(battery.lipo1maxv(),3.3,0.001);
+    EXPECT_NEAR(battery.lipomaxv(0),3.3,0.001);
   }
 
   TEST_F(BatteryTest, should_return_min_reading_in_volts) {
@@ -44,9 +44,9 @@ namespace {
     values = myvalues;
     Battery battery(&pinFn, &stub_timer);
 
-    for (int j=0; j<3;j++) {battery.lipo1minv(); stub_timer.wait(DELAY_BETWEEN_READINGS);}
+    for (int j=0; j<3;j++) {battery.lipominv(0); stub_timer.wait(DELAY_BETWEEN_READINGS);}
 
-    EXPECT_NEAR(battery.lipo1minv(),(6.6 * 85.0)/1024.0,0.001);
+    EXPECT_NEAR(battery.lipominv(0),(6.6 * 85.0)/1024.0,0.001);
   }
 
   TEST_F(BatteryTest, new_maximum_should_replace_old_one_even_if_smaller) {
@@ -55,10 +55,10 @@ namespace {
     values = myvalues;
     Battery battery(&pinFn, &stub_timer);
 
-    for (int j=0; j<19;j++) {battery.lipo1maxv();stub_timer.wait(DELAY_BETWEEN_READINGS);}
-    float reading1 = battery.lipo1maxv();stub_timer.wait(DELAY_BETWEEN_READINGS);
-    for (int j=0; j<4;j++) {battery.lipo1maxv();stub_timer.wait(DELAY_BETWEEN_READINGS);}
-    float reading2 = battery.lipo1maxv();
+    for (int j=0; j<19;j++) {battery.lipomaxv(0);stub_timer.wait(DELAY_BETWEEN_READINGS);}
+    float reading1 = battery.lipomaxv(0);stub_timer.wait(DELAY_BETWEEN_READINGS);
+    for (int j=0; j<4;j++) {battery.lipomaxv(0);stub_timer.wait(DELAY_BETWEEN_READINGS);}
+    float reading2 = battery.lipomaxv(0);
 
     EXPECT_NEAR(reading1,3.3,0.001);
     EXPECT_NEAR(reading2,3.1,0.001);
@@ -70,10 +70,10 @@ namespace {
     values = myvalues;
     Battery battery(&pinFn, &stub_timer);
 
-    for (int j=0; j<19;j++) {battery.lipo1maxv();stub_timer.wait(DELAY_BETWEEN_READINGS);}
-    float reading1 = battery.lipo1minv();stub_timer.wait(DELAY_BETWEEN_READINGS);
-    for (int j=0; j<4;j++) {battery.lipo1minv();stub_timer.wait(DELAY_BETWEEN_READINGS);}
-    float reading2 = battery.lipo1minv();
+    for (int j=0; j<19;j++) {battery.lipomaxv(0);stub_timer.wait(DELAY_BETWEEN_READINGS);}
+    float reading1 = battery.lipominv(0);stub_timer.wait(DELAY_BETWEEN_READINGS);
+    for (int j=0; j<4;j++) {battery.lipominv(0);stub_timer.wait(DELAY_BETWEEN_READINGS);}
+    float reading2 = battery.lipominv(0);
 
     EXPECT_NEAR(reading1,0.644,0.001);
     EXPECT_NEAR(reading2,0.966,0.001);
@@ -85,9 +85,9 @@ namespace {
     values = myvalues;
     Battery battery(&pinFn, &stub_timer);
 
-    for (int j=0; j<10;j++) {battery.lipo1maxv();stub_timer.wait(DELAY_BETWEEN_READINGS);}
-    uint16_t min_reading = battery.raw_min();
-    uint16_t max_reading = battery.raw_max();
+    for (int j=0; j<10;j++) {battery.lipomaxv(0);stub_timer.wait(DELAY_BETWEEN_READINGS);}
+    uint16_t min_reading = battery.raw_min(0);
+    uint16_t max_reading = battery.raw_max(0);
 
     EXPECT_EQ(min_reading, 99);
     EXPECT_EQ(max_reading,512);
@@ -101,17 +101,17 @@ namespace {
     Battery battery(&pinFn, &stub_timer);
 
     for (int j=0; j<3;j++) { 
-      battery.lipo1minv();
-      battery.lipo1maxv();
+      battery.lipominv(0);
+      battery.lipomaxv(0);
     }
-    float max1 = battery.lipo1maxv(), min1 = battery.lipo1minv();
+    float max1 = battery.lipomaxv(0), min1 = battery.lipominv(0);
 
     for (int j=0; j<2;j++) { 
-      battery.lipo1minv();
-      battery.lipo1maxv();
+      battery.lipominv(0);
+      battery.lipomaxv(0);
       stub_timer.wait(DELAY_BETWEEN_READINGS);
     }
-    float max2 = battery.lipo1maxv(), min2 = battery.lipo1minv();
+    float max2 = battery.lipomaxv(0), min2 = battery.lipominv(0);
 
     EXPECT_NEAR(max1,0.657,0.001);
     EXPECT_NEAR(min1,0.657,0.001);

@@ -20,10 +20,10 @@ class Battery
   public:
     Battery();
     Battery(int (*analogPinFn)(uint8_t), Timer *timerp);
-    float lipo1maxv();
-    float lipo1minv();
-    uint16_t raw_max();
-    uint16_t raw_min();
+    float lipomaxv(uint8_t batt);
+    float lipominv(uint8_t batt);
+    uint16_t raw_max(uint8_t batt);
+    uint16_t raw_min(uint8_t batt);
     void add_reading();
 
   private:
