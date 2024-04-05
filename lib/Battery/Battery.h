@@ -7,8 +7,10 @@
 #ifdef ARDUINO
 #include "Arduino.h"
 #define LIPO1 A0
+#define LIPO2 A1
 #else
-#define LIPO1 99
+#define LIPO1 98
+#define LIPO2 99
 #endif
 
 #define MAX_ANALOG 1024.0  // default 10 bits
@@ -29,7 +31,7 @@ class Battery
   private:
     float to_volts(uint16_t reading);
     int (*readAnalogPin) (uint8_t);
-    uint16_t readings_buffer[SAMPLES];
+    uint16_t readings_buffer[2][SAMPLES];
     int buffer_index;
     unsigned long last_read;
     Timer *timer;
