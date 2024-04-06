@@ -21,18 +21,19 @@ float Battery::lipominv(uint8_t batt) {
 }
 
 uint16_t Battery::raw_min(uint8_t batt) {
-  int min = MAX_ANALOG;
+  uint16_t min = MAX_ANALOG;
   for (int i=0; i < SAMPLES; i++) {
-    int current = readings_buffer[batt][i];
+    int current = readings_buffer[constrain(batt,(uint8_t) 0,(uint8_t) 1)][i];
     min = (current < min && current > 0) ? current : min;
   }
   return min;
 }
 
 uint16_t Battery::raw_max(uint8_t batt) {
-  int max = 0;
+  uint16_t max = 0;
   for (int i=0; i < SAMPLES; i++) {
-    max = (readings_buffer[batt][i] > max) ? readings_buffer[batt][i] : max;
+    int current = readings_buffer[constrain(batt,(uint8_t)0,(uint8_t)1)][i];
+    max = (current > max) ? current : max;
   }
   return max;
 }

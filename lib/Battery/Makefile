@@ -1,4 +1,4 @@
-STUBS = Timer
+STUBS = Timer Arduino
 INCLUDES =
 SOURCES = 
 

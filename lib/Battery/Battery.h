@@ -3,15 +3,10 @@
 #define Battery_h
 
 #include "Timer.h"
-
-#ifdef ARDUINO
 #include "Arduino.h"
+
 #define LIPO1 A0
 #define LIPO2 A1
-#else
-#define LIPO1 98
-#define LIPO2 99
-#endif
 
 #define MAX_ANALOG 1024.0  // default 10 bits
 #define SAMPLES 20 // currently depends on being called - might be good to add this to the timer wait
