@@ -65,8 +65,10 @@ void SDLogger::print_line(const char *message, char *prefix) {
     int compasserr = compass->err_percent();
     long compass_resets = compass->resets_per_hour();
     int mem=dispFreeMemory();
-    float max_voltage = battery->lipo1maxv();
-    float min_voltage = battery->lipo1minv();
+    float max_voltage1 = battery->lipomaxv(0);
+    float min_voltage1 = battery->lipominv(0);
+    float max_voltage2 = battery->lipomaxv(1);
+    float min_voltage2 = battery->lipominv(1);
     time_t time_now = timer->now();
 
     calculate_filename(logfile, time_now);
@@ -82,8 +84,10 @@ void SDLogger::print_line(const char *message, char *prefix) {
       dataFile.print(gpsReading.pos.error); dataFile.print(",");
       dataFile.print(gpsReading.fix); dataFile.print(",");
       dataFile.print(gpsReading.mps); dataFile.print(",");
-      dataFile.print(max_voltage,2); dataFile.print(",");
-      dataFile.print(min_voltage,2); dataFile.print(",");
+      dataFile.print(max_voltage1,2); dataFile.print(",");
+      dataFile.print(min_voltage1,2); dataFile.print(",");
+      dataFile.print(max_voltage2,2); dataFile.print(",");
+      dataFile.print(min_voltage2,2); dataFile.print(",");
       dataFile.print(mem); dataFile.print(",");
       dataFile.print(wind); dataFile.print(",");
       dataFile.print(winderr); dataFile.print(",");
