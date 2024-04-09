@@ -81,18 +81,20 @@ class SatCommTest : public ::testing::Test {
         label = bin_data[18];
   }
 
-  void extractBattery(uint16_t *max, uint16_t *min, unsigned char *bin_data) {
-    *max = extractu16(19, bin_data);
-    *min = extractu16(21, bin_data);
+  void extractBattery(uint16_t *max1, uint16_t *min1, uint16_t *max2, uint16_t *min2, unsigned char *bin_data) {
+    *max1 = extractu16(19, bin_data);
+    *min1 = extractu16(21, bin_data);
+    *max2 = extractu16(23, bin_data);
+    *min2 = extractu16(25, bin_data);
   }
 
   void extractCompass(unsigned short *bearing, uint8_t *errors, unsigned char *bin_data) {
-    *bearing = extractu16(23, bin_data);
-    *errors = bin_data[25];
+    *bearing = extractu16(27, bin_data);
+    *errors = bin_data[29];
   }
 
   time_t extractRestart(unsigned char *bin_data) {
-    return extractTime(30,bin_data);
+    return extractTime(34,bin_data);
   }
 
 };
@@ -182,7 +184,7 @@ TEST_F(SatCommTest, steer_log_should_send_the_correct_data_in_binary) {
     satcomm.begin();
     position result_pos;
     char result_wp_label;
-    uint16_t result_batt_max, result_batt_min, result_bearing;
+    uint16_t result_batt_max1, result_batt_min1, result_batt_max2, result_batt_min2, result_bearing;
     uint8_t result_errors;
 
     // ** Setup **
@@ -201,7 +203,9 @@ TEST_F(SatCommTest, steer_log_should_send_the_correct_data_in_binary) {
     satcomm.set_dest(wp_label);
 
     // battery
-    stub_battery.setMaxMin(638,527);
+    stub_battery.setMaxMin(0, 638,527);
+    stub_battery.setMaxMin(1, 720,782);
+  
 
     // compass
     uangle bearing = 163;
@@ -232,9 +236,11 @@ TEST_F(SatCommTest, steer_log_should_send_the_correct_data_in_binary) {
     EXPECT_EQ(result_wp_label,wp_label);
 
     // battery
-    extractBattery(&result_batt_max,&result_batt_min, stub_modem.sent);
-    EXPECT_EQ(result_batt_max, 638);
-    EXPECT_EQ(result_batt_min, 527);
+    extractBattery(&result_batt_max1,&result_batt_min1, &result_batt_max2,&result_batt_min2, stub_modem.sent);
+    EXPECT_EQ(result_batt_max1, 638);
+    EXPECT_EQ(result_batt_min1, 527);
+    EXPECT_EQ(result_batt_max2, 720);
+    EXPECT_EQ(result_batt_min2, 782);
 
     //compass
     extractCompass(&result_bearing,&result_errors, stub_modem.sent);

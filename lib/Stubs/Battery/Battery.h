@@ -5,7 +5,7 @@
 
 class Battery
 {
-  public:0
+  public:
     Battery();
     float lipomaxv(uint8_t batt);
     float lipominv(uint8_t batt);

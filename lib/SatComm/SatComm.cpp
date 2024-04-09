@@ -84,12 +84,14 @@ void SatComm::insertLogDataIntoBuffer() {
         stuff((long) (gps_data.avg_mps * 1000),send_buffer,12,4); // scaled up as long, much easier to stuff
         stuff(gps_data.cog,send_buffer,16,2);
         send_buffer[18]=wp_label;
-        stuff(battery->raw_max(),send_buffer,19,2);
-        stuff(battery->raw_min(),send_buffer,21,2);
-        stuff(compass->bearing(),send_buffer,23,2);
-        send_buffer[25] = (uint8_t) constrain(compass->err_percent(),0,100);
-        stuff(dispFreeMemory(),send_buffer,26,4);
-        stuff(timer->lastRestart,send_buffer,30,4);
+        stuff(battery->raw_max(0),send_buffer,19,2);
+        stuff(battery->raw_min(0),send_buffer,21,2);
+        stuff(battery->raw_max(1),send_buffer,23,2);
+        stuff(battery->raw_min(1),send_buffer,25,2);
+        stuff(compass->bearing(),send_buffer,27,2);
+        send_buffer[29] = (uint8_t) constrain(compass->err_percent(),0,100);
+        stuff(dispFreeMemory(),send_buffer,30,4);
+        stuff(timer->lastRestart,send_buffer,34,4);
 }
 
 void SatComm::set_dest(char label) {
