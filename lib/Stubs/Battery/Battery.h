@@ -5,20 +5,20 @@
 
 class Battery
 {
-  public:
+  public:0
     Battery();
-    float lipo1maxv();
-    float lipo1minv();
-    uint16_t raw_max();
-    uint16_t raw_min();
+    float lipomaxv(uint8_t batt);
+    float lipominv(uint8_t batt);
+    uint16_t raw_max(uint8_t batt);
+    uint16_t raw_min(uint8_t batt);
     void add_reading();
 
     // sensible values are in the range 3.3v - 4.2v, which translates to 500-650
-    void setMaxMin(uint16_t max, uint16_t min);
+    void setMaxMin(uint8_t batt, uint16_t max, uint16_t min);
 
   private:
     float to_volts(uint16_t reading);
-    uint16_t rmax, rmin;
+    uint16_t rmax[2], rmin[2];
 
 };
 

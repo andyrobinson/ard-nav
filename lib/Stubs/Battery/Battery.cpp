@@ -2,27 +2,27 @@
 
 Battery::Battery() {}
 
-float Battery::lipo1maxv() {
-  return to_volts(raw_max());
+float Battery::lipomaxv(uint8_t batt) {
+  return to_volts(raw_max(batt));
 }
 
-float Battery::lipo1minv() {
-  return to_volts(raw_min());
+float Battery::lipominv(uint8_t batt) {
+  return to_volts(raw_min(batt));
 }
 
-uint16_t Battery::raw_min() {
-  return rmin;
+uint16_t Battery::raw_min(uint8_t batt) {
+  return rmin[batt];
 }
 
-uint16_t Battery::raw_max() {
-  return rmax;
+uint16_t Battery::raw_max(uint8_t batt) {
+  return rmax[batt];
 }
 
 void Battery::add_reading() {}
 
-void Battery::setMaxMin(uint16_t max, uint16_t min) {
-    rmax = max;
-    rmin = min;
+void Battery::setMaxMin(uint8_t batt, uint16_t max, uint16_t min) {
+    rmax[batt] = max;
+    rmin[batt] = min;
 }
 
 float Battery::to_volts(uint16_t reading) {
