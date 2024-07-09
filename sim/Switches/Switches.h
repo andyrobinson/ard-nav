@@ -1,6 +1,8 @@
 #ifndef SwitchesSim_h
 #define SwitchesSim_h
 
+#include <stdint.h>
+
 class Switches
 {
   public:

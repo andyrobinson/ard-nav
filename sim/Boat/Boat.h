@@ -1,6 +1,7 @@
 #ifndef Boat_h
 #define Boat_h
 
+#include <stdint.h>
 #include "Logger.h"
 #include "Position.h"
 #include "Angle.h"

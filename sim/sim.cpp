@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdint.h>
 // SIMULATION ONLY
 #include "Boat.h"
 #include "ConsoleLogger.h"
