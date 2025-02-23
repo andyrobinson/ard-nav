@@ -26,18 +26,25 @@
 #define PCLK_GPIO_NUM     22
 
 #define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
-#define TIME_TO_SLEEP  30          /* Time between shorts ESP32 will go to sleep (in seconds) */
+#define TIME_TO_SLEEP  30          /* seconds */
 #define SKIP_COUNT 30
 #define STABILISATION_WAIT 6000 /* for camera stablisation */
 #define WHITE_LED_GPIO 4
+#define SWITCH_GPIO 16
 
 camera_fb_t * fb = NULL;
 fs::FS &filesys = SD_MMC; 
 
 // TODO:
-// Next - 
-//   Use a GPIO pin to determine sleep frequency (1 hour or 12 hours)
-// 
+// Observations:
+//  - PSRAM appears to fail occasionally, which makes camera fail - need to reinstate code to check.  Also maybe pause a little after restart
+//  - seem to get a kernal panic occasionally after restart from sleep, documentation suggests something isn't initialised
+//  - this may all be down to serial port processing, not sure how much to read into this.
+//
+//  - the INPUT_PULLDOWN appears to have no effect - the pin is always read as a 1.  However if I then connect to ground we get a zero
+//    so probably not a big deal
+//  - power consumption is high when powering through the programming board, but then this has a LED on it
+//
 // turn off bluetooth and wifi
 // Test for 48 hours
 // Independent power supply and test for 48 hours, with switch, both positions
@@ -108,6 +115,7 @@ void initCamera() {
     config.pixel_format = PIXFORMAT_JPEG; 
     
     // assume we have PSRAM, because we do
+  
     config.frame_size = FRAMESIZE_UXGA; // FRAMESIZE_ + QVGA|CIF|VGA|SVGA|XGA|SXGA|UXGA
     config.jpeg_quality = 10;
     config.fb_count = 2;
@@ -146,8 +154,10 @@ void initSD() {
   }
 
   // Turns off the ESP32-CAM white on-board LED (flash) connected to GPIO 4
+  // isolate keeps it off in deep sleep
   pinMode(WHITE_LED_GPIO, OUTPUT);
   digitalWrite(WHITE_LED_GPIO, LOW);
+  rtc_gpio_isolate(GPIO_NUM_4);
 
   // Check for an SD card
   uint8_t cardType = SD_MMC.cardType();
@@ -221,8 +231,12 @@ void setup() {
   initCamera();
   initSD();
 
-  stabliseCamera();
+    // Turns off the ESP32-CAM white on-board LED (flash) connected to GPIO 4
+  pinMode(SWITCH_GPIO, INPUT_PULLDOWN);
+  int switchvalue = digitalRead(SWITCH_GPIO);
+  Serial.printf("Input value %d\n", switchvalue);
 
+  stabliseCamera();
   Serial.println("Click!");
   fb = esp_camera_fb_get();  
 
@@ -234,14 +248,8 @@ void setup() {
     Serial.println("Camera capture failed");
   }
 
-
   Serial.println("Going to sleep now");
   Serial.flush(); 
-
-  // Turns off the ESP32-CAM white on-board LED (flash) connected to GPIO 4
-  pinMode(WHITE_LED_GPIO, OUTPUT);
-  digitalWrite(WHITE_LED_GPIO, LOW);
-  rtc_gpio_isolate(GPIO_NUM_4);
 
   esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR - ((millis() - start) * 1000));
   esp_deep_sleep_start();
