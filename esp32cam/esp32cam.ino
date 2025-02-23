@@ -28,7 +28,7 @@
 #define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
 #define TIME_TO_SLEEP  30          /* Time between shorts ESP32 will go to sleep (in seconds) */
 #define SKIP_COUNT 30
-#define STABLISATION_WAIT 6000 /* for camera stablisation */
+#define STABILISATION_WAIT 6000 /* for camera stablisation */
 #define WHITE_LED_GPIO 4
 
 camera_fb_t * fb = NULL;
@@ -125,7 +125,7 @@ void initCamera() {
 void stabliseCamera() {
   // skip to allow auto balance
   Serial.println("Wait, then Camera read and skip to allow autoadjustment");
-  delay(STABLISATION_WAIT);
+  delay(STABILISATION_WAIT);
   for (int i=0;i<SKIP_COUNT;i++) {
     fb = esp_camera_fb_get();  
     if(fb) {
@@ -234,12 +234,14 @@ void setup() {
     Serial.println("Camera capture failed");
   }
 
-  // Turns off the ESP32-CAM white on-board LED (flash) connected to GPIO 4
-  pinMode(WHITE_LED_GPIO, OUTPUT);
-  digitalWrite(WHITE_LED_GPIO, LOW);
 
   Serial.println("Going to sleep now");
   Serial.flush(); 
+
+  // Turns off the ESP32-CAM white on-board LED (flash) connected to GPIO 4
+  pinMode(WHITE_LED_GPIO, OUTPUT);
+  digitalWrite(WHITE_LED_GPIO, LOW);
+  rtc_gpio_isolate(GPIO_NUM_4);
 
   esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR - ((millis() - start) * 1000));
   esp_deep_sleep_start();
