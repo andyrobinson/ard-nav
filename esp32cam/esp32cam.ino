@@ -2,8 +2,8 @@
 #include "Arduino.h"
 #include "FS.h"                // SD Card ESP32
 #include "SD_MMC.h"            // SD Card ESP32
-#include "soc/soc.h"           // Disable brownour problems
-#include "soc/rtc_cntl_reg.h"  // Disable brownour problems
+#include "soc/soc.h"           // Disable brownout problems
+#include "soc/rtc_cntl_reg.h"  // Disable brownout problems
 #include "driver/rtc_io.h"
 
 // Pin definition for CAMERA_MODEL_AI_THINKER
@@ -37,6 +37,13 @@
 camera_fb_t * fb = NULL;
 fs::FS &filesys = SD_MMC; 
 
+// Acknolwedgement
+//   This code is mainly copied from examples on the Internet, particularly
+//       https://www.instructables.com/ESP32-CAM-Take-Photo-and-Save-to-MicroSD-Card-With/
+//       https://randomnerdtutorials.com/esp32-cam-photo-microsd-card-timestamp/
+//
+// But with a few fixes from elsewhere
+// 
 // TODO:
 // Observations:
 // - used GPIO 13 in the end because it does not have an effect on boot
@@ -165,7 +172,7 @@ void stabliseCamera() {
 }
 
 // SD functions
-void initSD() {
+void initSD(bool flashLed) {
   // Initialize the SD card to not use GPIO4
 
   #ifdef SERIAL_LOGGING
@@ -181,6 +188,10 @@ void initSD() {
   // Turns off the ESP32-CAM white on-board LED (flash) connected to GPIO 4
   // isolate keeps it off in deep sleep
   pinMode(WHITE_LED_GPIO, OUTPUT);
+  if (flashLed) {
+    digitalWrite(WHITE_LED_GPIO, HIGH);
+    delay(1000);
+  }
   digitalWrite(WHITE_LED_GPIO, LOW);
   rtc_gpio_isolate(GPIO_NUM_4);
 
@@ -273,8 +284,9 @@ void setup() {
   printLocalTime();
   #endif
 
+
   initCamera();
-  initSD();
+  initSD(wakeup_reason != ESP_SLEEP_WAKEUP_TIMER);
 
   pinMode(SWITCH_GPIO, INPUT_PULLDOWN);
   int switchvalue = digitalRead(SWITCH_GPIO);
@@ -303,7 +315,12 @@ void setup() {
   Serial.flush(); 
   #endif
 
-  unsigned long timeToSleep = (switchvalue == 1) ? TIME_TO_SLEEP_LONG : TIME_TO_SLEEP_SHORT;
+  unsigned long timeToSleep;
+  if (switchvalue == 1)
+    timeToSleep = TIME_TO_SLEEP_LONG;
+  else
+    timeToSleep = TIME_TO_SLEEP_SHORT;
+  
   esp_sleep_enable_timer_wakeup(timeToSleep * uS_TO_S_FACTOR - ((millis() - start) * 1000));
   esp_deep_sleep_start();
 }
