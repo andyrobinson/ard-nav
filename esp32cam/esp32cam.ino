@@ -26,8 +26,9 @@
 #define PCLK_GPIO_NUM     22
 
 #define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
-#define TIME_TO_SLEEP_SHORT  1800        /* 0.5 hours */
-#define TIME_TO_SLEEP_LONG   3600        /* 1 hour */
+#define TIME_TO_SLEEP_SHORT  3600       /* 1 hours */
+#define TIME_TO_SLEEP_LONG   7200      /* 2 hours */
+#define BOOT_TIME_US 500000ULL
 #define SKIP_COUNT 15
 #define STABILISATION_WAIT 6000 /* for camera stablisation */
 #define WHITE_LED_GPIO 4
@@ -47,12 +48,6 @@ fs::FS &filesys = SD_MMC;
 // TODO:
 // Observations:
 // - used GPIO 13 in the end because it does not have an effect on boot
-//
-// turn off bluetooth and wifi - doesn't appear to be a thing, you have to turn it on
-//
-// Test for 48 hours
-// Independent power supply and test for 48 hours, with switch, both positions
-// Installation
 
 // TIME functions
 void setTimezone(String timezone){
@@ -68,7 +63,7 @@ void initTime(String timezone){
   #ifdef SERIAL_LOGGING
   Serial.println("Setting up time");
   #endif
-  setTime(2025,02,24,0,0,0,0); 
+  setTime(2025,3,8,0,0,0,0); 
   setTimezone(timezone);
 }
 
@@ -125,22 +120,32 @@ void initCamera() {
     config.pin_reset = RESET_GPIO_NUM;
     config.xclk_freq_hz = 20000000;
     config.pixel_format = PIXFORMAT_JPEG; 
-    
-    // assume we have PSRAM, because we do
-    if(psramFound()){
-      config.frame_size = FRAMESIZE_UXGA; // FRAMESIZE_ + QVGA|CIF|VGA|SVGA|XGA|SXGA|UXGA
-      config.jpeg_quality = 10;
-      config.fb_count = 2;
-    } else {
+ 
+    // if(psramFound()){
+    //   Serial.println("*** Psram found");
+    //   config.frame_size = FRAMESIZE_UXGA; // FRAMESIZE_ + QVGA|CIF|VGA|SVGA|XGA|SXGA|UXGA
+    //   config.jpeg_quality = 10;
+    //   config.fb_count = 2;
+    // } else {
+    #ifdef SERIAL_LOGGING
+      Serial.println("*** Psram NOT found");
+    #endif
       config.frame_size = FRAMESIZE_SVGA;
       config.jpeg_quality = 12;
       config.fb_count = 1;
-    }
+    // }
     
     // Init Camera
     #ifdef SERIAL_LOGGING
     Serial.println("Camera init");
     #endif
+
+    // turn on camera power
+    rtc_gpio_hold_dis(gpio_num_t(PWDN_GPIO_NUM));
+    pinMode(PWDN_GPIO_NUM, OUTPUT);
+    digitalWrite(PWDN_GPIO_NUM, LOW);
+    delay(10);
+
     esp_err_t err = esp_camera_init(&config);
     if (err != ESP_OK) {
       #ifdef SERIAL_LOGGING
@@ -265,6 +270,26 @@ void print_wakeup_reason(){
 }
 #endif
 
+void hibernate() {
+    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH,   ESP_PD_OPTION_ON);
+    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH,   ESP_PD_OPTION_OFF);
+
+    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_SLOW_MEM, ESP_PD_OPTION_ON);
+    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_SLOW_MEM, ESP_PD_OPTION_OFF);
+
+    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_FAST_MEM, ESP_PD_OPTION_ON);
+    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_FAST_MEM, ESP_PD_OPTION_OFF);
+
+    esp_sleep_pd_config(ESP_PD_DOMAIN_XTAL,         ESP_PD_OPTION_ON);
+    esp_sleep_pd_config(ESP_PD_DOMAIN_XTAL,         ESP_PD_OPTION_OFF);
+
+    // turn off camera power
+    esp_camera_deinit();
+    digitalWrite(PWDN_GPIO_NUM, HIGH);
+
+    esp_deep_sleep_start();
+}
+
 void setup() {
   unsigned long start = millis();
   
@@ -283,7 +308,6 @@ void setup() {
   #ifdef SERIAL_LOGGING
   printLocalTime();
   #endif
-
 
   initCamera();
   initSD(wakeup_reason != ESP_SLEEP_WAKEUP_TIMER);
@@ -314,15 +338,12 @@ void setup() {
   Serial.println("Going to sleep now");
   Serial.flush(); 
   #endif
-
-  unsigned long timeToSleep;
-  if (switchvalue == 1)
-    timeToSleep = TIME_TO_SLEEP_LONG;
-  else
-    timeToSleep = TIME_TO_SLEEP_SHORT;
   
-  esp_sleep_enable_timer_wakeup(timeToSleep * uS_TO_S_FACTOR - ((millis() - start) * 1000));
-  esp_deep_sleep_start();
+  unsigned long timeToSleep;
+  if(switchvalue == 0) timeToSleep = TIME_TO_SLEEP_LONG; else timeToSleep = TIME_TO_SLEEP_SHORT;
+
+  esp_sleep_enable_timer_wakeup((timeToSleep * uS_TO_S_FACTOR - ((millis() - start) * 1000)) - BOOT_TIME_US);
+  hibernate();
 }
 
 void loop() {}
