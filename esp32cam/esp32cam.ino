@@ -5,6 +5,7 @@
 #include "soc/soc.h"           // Disable brownout problems
 #include "soc/rtc_cntl_reg.h"  // Disable brownout problems
 #include "driver/rtc_io.h"
+#include <EEPROM.h>
 
 // Pin definition for CAMERA_MODEL_AI_THINKER
 #define PWDN_GPIO_NUM     32
@@ -25,15 +26,12 @@
 #define HREF_GPIO_NUM     23
 #define PCLK_GPIO_NUM     22
 
-#define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
-#define TIME_TO_SLEEP_SHORT  3600       /* 1 hours */
-#define TIME_TO_SLEEP_LONG   7200      /* 2 hours */
-#define BOOT_TIME_US 500000ULL
 #define SKIP_COUNT 15
 #define STABILISATION_WAIT 6000 /* for camera stablisation */
 #define WHITE_LED_GPIO 4
-#define SWITCH_GPIO 13
-//#define SERIAL_LOGGING 1
+#define DONE_PIN 13
+#define EEPROM_SIZE 4
+#define SERIAL_LOGGING 1
 
 camera_fb_t * fb = NULL;
 fs::FS &filesys = SD_MMC; 
@@ -48,53 +46,6 @@ fs::FS &filesys = SD_MMC;
 // TODO:
 // Observations:
 // - used GPIO 13 in the end because it does not have an effect on boot
-
-// TIME functions
-void setTimezone(String timezone){
-  #ifdef SERIAL_LOGGING
-  Serial.printf("  Setting Timezone to %s\n",timezone.c_str());
-  #endif
-  setenv("TZ",timezone.c_str(),1);  //  Now adjust the TZ.  Clock settings are adjusted to show the new local time
-  tzset();
-}
-
-void initTime(String timezone){
-  struct tm timeinfo;
-  #ifdef SERIAL_LOGGING
-  Serial.println("Setting up time");
-  #endif
-  setTime(2025,3,8,0,0,0,0); 
-  setTimezone(timezone);
-}
-
-#ifdef SERIAL_LOGGING
-void printLocalTime(){
-  struct tm timeinfo;
-  if(!getLocalTime(&timeinfo)){
-    Serial.println("Failed to obtain time 1");
-    return;
-  }
-  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S zone %Z %z ");
-}
-#endif
-
-void setTime(int yr, int month, int mday, int hr, int minute, int sec, int isDst){
-  struct tm tm;
-
-  tm.tm_year = yr - 1900;   // Set date
-  tm.tm_mon = month-1;
-  tm.tm_mday = mday;
-  tm.tm_hour = hr;      // Set time
-  tm.tm_min = minute;
-  tm.tm_sec = sec;
-  tm.tm_isdst = isDst;  // 1 or 0
-  time_t t = mktime(&tm);
-  #ifdef SERIAL_LOGGING
-  Serial.printf("Setting time: %s", asctime(&tm));
-  #endif
-  struct timeval now = { .tv_sec = t };
-  settimeofday(&now, NULL);
-}
 
 // CAMERA functions
 void initCamera() {
@@ -140,12 +91,6 @@ void initCamera() {
     Serial.println("Camera init");
     #endif
 
-    // turn on camera power
-    rtc_gpio_hold_dis(gpio_num_t(PWDN_GPIO_NUM));
-    pinMode(PWDN_GPIO_NUM, OUTPUT);
-    digitalWrite(PWDN_GPIO_NUM, LOW);
-    delay(10);
-
     esp_err_t err = esp_camera_init(&config);
     if (err != ESP_OK) {
       #ifdef SERIAL_LOGGING
@@ -177,7 +122,7 @@ void stabliseCamera() {
 }
 
 // SD functions
-void initSD(bool flashLed) {
+void initSD() {
   // Initialize the SD card to not use GPIO4
 
   #ifdef SERIAL_LOGGING
@@ -193,10 +138,8 @@ void initSD(bool flashLed) {
   // Turns off the ESP32-CAM white on-board LED (flash) connected to GPIO 4
   // isolate keeps it off in deep sleep
   pinMode(WHITE_LED_GPIO, OUTPUT);
-  if (flashLed) {
-    digitalWrite(WHITE_LED_GPIO, HIGH);
-    delay(1000);
-  }
+  digitalWrite(WHITE_LED_GPIO, HIGH);
+  delay(10);
   digitalWrite(WHITE_LED_GPIO, LOW);
   rtc_gpio_isolate(GPIO_NUM_4);
 
@@ -220,19 +163,10 @@ void initSD(bool flashLed) {
 
 }
 
-void writeImage(camera_fb_t * image,int suffix) {
+void writeImage(camera_fb_t * image, int pictureNumber) {
 
-  struct tm timeinfo;
-  if(!getLocalTime(&timeinfo)){
-    #ifdef SERIAL_LOGGING
-    Serial.println("Failed to obtain time");
-    #endif
-    return;
-  }
-
-  char timeString[20];
-  strftime(timeString, sizeof(timeString), "%Y-%m-%d_%H-%M-%S", &timeinfo);
-  String path = "/img-" + String(suffix) + "-" + String(timeString) +".jpg";
+  // Path where new picture will be saved in SD Card
+  String path = "/img-" + String(pictureNumber) +".jpg";
 
   #ifdef SERIAL_LOGGING
   Serial.printf("Picture file name: %s\n", path.c_str());
@@ -248,75 +182,26 @@ void writeImage(camera_fb_t * image,int suffix) {
     file.write(image->buf, image->len); // payload (image), payload length
   }
   file.close();
-
 }
 
-// SLEEP functions
-#ifdef SERIAL_LOGGING
-void print_wakeup_reason(){
-  esp_sleep_wakeup_cause_t wakeup_reason;
-
-  wakeup_reason = esp_sleep_get_wakeup_cause();
-
-  switch(wakeup_reason)
-  {
-    case ESP_SLEEP_WAKEUP_EXT0 : Serial.println("Wakeup caused by external signal using RTC_IO"); break;
-    case ESP_SLEEP_WAKEUP_EXT1 : Serial.println("Wakeup caused by external signal using RTC_CNTL"); break;
-    case ESP_SLEEP_WAKEUP_TIMER : Serial.println("Wakeup caused by timer"); break;
-    case ESP_SLEEP_WAKEUP_TOUCHPAD : Serial.println("Wakeup caused by touchpad"); break;
-    case ESP_SLEEP_WAKEUP_ULP : Serial.println("Wakeup caused by ULP program"); break;
-    default : Serial.printf("Wakeup was not caused by deep sleep: %d\n",wakeup_reason); break;
-  }
-}
-#endif
-
-void hibernate() {
-    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH,   ESP_PD_OPTION_ON);
-    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH,   ESP_PD_OPTION_OFF);
-
-    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_SLOW_MEM, ESP_PD_OPTION_ON);
-    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_SLOW_MEM, ESP_PD_OPTION_OFF);
-
-    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_FAST_MEM, ESP_PD_OPTION_ON);
-    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_FAST_MEM, ESP_PD_OPTION_OFF);
-
-    esp_sleep_pd_config(ESP_PD_DOMAIN_XTAL,         ESP_PD_OPTION_ON);
-    esp_sleep_pd_config(ESP_PD_DOMAIN_XTAL,         ESP_PD_OPTION_OFF);
-
-    // turn off camera power
-    esp_camera_deinit();
-    digitalWrite(PWDN_GPIO_NUM, HIGH);
-
-    esp_deep_sleep_start();
-}
-
-void setup() {
-  unsigned long start = millis();
-  
+void setup() {  
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
   
   #ifdef SERIAL_LOGGING
   Serial.begin(115200);
-  print_wakeup_reason();
   #endif
 
-  // don't init time if it's a timer wake up
-  esp_sleep_wakeup_cause_t wakeup_reason;
-  wakeup_reason = esp_sleep_get_wakeup_cause();
-  if (wakeup_reason != ESP_SLEEP_WAKEUP_TIMER) initTime("GMT0");
+  // read and increment pictureNumber
 
-  #ifdef SERIAL_LOGGING
-  printLocalTime();
-  #endif
+  int pictureNumber = 0;
+  EEPROM.begin(EEPROM_SIZE);
+  EEPROM.get(0, pictureNumber);
+  pictureNumber = pictureNumber + 1;
+  EEPROM.put(0, pictureNumber);
+  EEPROM.commit();
 
   initCamera();
-  initSD(wakeup_reason != ESP_SLEEP_WAKEUP_TIMER);
-
-  pinMode(SWITCH_GPIO, INPUT_PULLDOWN);
-  int switchvalue = digitalRead(SWITCH_GPIO);
-  #ifdef SERIAL_LOGGING
-  Serial.printf("Input value %d\n", switchvalue);
-  #endif
+  initSD();
 
   stabliseCamera();
 
@@ -327,7 +212,7 @@ void setup() {
   fb = esp_camera_fb_get();  
 
   if(fb) {
-    writeImage(fb,switchvalue);
+    writeImage(fb, pictureNumber);
     esp_camera_fb_return(fb);
   } 
   #ifdef SERIAL_LOGGING
@@ -338,12 +223,20 @@ void setup() {
   Serial.println("Going to sleep now");
   Serial.flush(); 
   #endif
-  
-  unsigned long timeToSleep;
-  if(switchvalue == 0) timeToSleep = TIME_TO_SLEEP_LONG; else timeToSleep = TIME_TO_SLEEP_SHORT;
 
-  esp_sleep_enable_timer_wakeup((timeToSleep * uS_TO_S_FACTOR - ((millis() - start) * 1000)) - BOOT_TIME_US);
-  hibernate();
+  pinMode(DONE_PIN, OUTPUT);
+
 }
 
-void loop() {}
+void loop() {
+  while (1) {
+  #ifdef SERIAL_LOGGING
+  Serial.println("Signalling sleep");
+  #endif
+    digitalWrite(DONE_PIN, HIGH);
+    delay(1);
+    digitalWrite(DONE_PIN, LOW);
+    delay(1);
+  }
+
+}
