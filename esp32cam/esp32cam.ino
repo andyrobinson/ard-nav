@@ -27,12 +27,11 @@
 #define PCLK_GPIO_NUM     22
 
 #define SKIP_COUNT 15
-#define STABILISATION_WAIT 6000 /* for camera stablisation */
+#define STABILISATION_WAIT 6000 
 #define WHITE_LED_GPIO 4
 #define DONE_PIN 12
 #define EEPROM_SIZE 4
-//#define SERIAL_LOGGING 1
-#define DEFAULT_WAKE_SKIP 4
+#define DEFAULT_WAKE_SKIP 6
 
 camera_fb_t * fb = NULL;
 fs::FS &filesys = SD_MMC; 
@@ -44,9 +43,6 @@ fs::FS &filesys = SD_MMC;
 //
 // But with a few fixes from elsewhere
 // 
-// TODO:
-// Observations:
-// - used GPIO 13 in the end because it does not have an effect on boot
 
 // CAMERA functions
 void initCamera() {
@@ -74,115 +70,60 @@ void initCamera() {
     config.pixel_format = PIXFORMAT_JPEG; 
  
     // if(psramFound()){
-    //   Serial.println("*** Psram found");
-    //   config.frame_size = FRAMESIZE_UXGA; // FRAMESIZE_ + QVGA|CIF|VGA|SVGA|XGA|SXGA|UXGA
+    //   config.frame_size = FRAMESIZE_UXGA; 
     //   config.jpeg_quality = 10;
     //   config.fb_count = 2;
     // } else {
-    #ifdef SERIAL_LOGGING
-      Serial.println("*** Psram NOT found");
-    #endif
       config.frame_size = FRAMESIZE_SVGA;
       config.jpeg_quality = 12;
       config.fb_count = 1;
     // }
     
-    // Init Camera
-    #ifdef SERIAL_LOGGING
-    Serial.println("Camera init");
-    #endif
-
     esp_err_t err = esp_camera_init(&config);
-    if (err != ESP_OK) {
-      #ifdef SERIAL_LOGGING
-      Serial.printf("Camera init failed with error 0x%x", err);
-      #endif
-      return;
+    if (err != ESP_OK && config.frame_size == FRAMESIZE_UXGA) {
+      // try without Psram
+      config.frame_size = FRAMESIZE_SVGA;
+      config.jpeg_quality = 12;
+      config.fb_count = 1;
+      esp_err_t err = esp_camera_init(&config);
     }
 
 }
 
 void stabliseCamera() {
   // skip to allow auto balance
-  #ifdef SERIAL_LOGGING
-  Serial.println("Wait, then Camera read and skip to allow autoadjustment");
-  #endif
-
   delay(STABILISATION_WAIT);
   for (int i=0;i<SKIP_COUNT;i++) {
     fb = esp_camera_fb_get();  
     if(fb) {
       esp_camera_fb_return(fb); 
-    } else {
-      #ifdef SERIAL_LOGGING
-      Serial.println("Camera capture failed during skip");
-      #endif
-    }
+    } 
   }
-
 }
 
 // SD functions
 void initSD() {
   // Initialize the SD card to not use GPIO4
-
-  #ifdef SERIAL_LOGGING
-  Serial.println("SD card init");
-  #endif
-
-  if (!SD_MMC.begin("/sdcard", true)){
-      #ifdef SERIAL_LOGGING
-      Serial.println("Failed to mount SD card");
-      #endif
-  }
+  SD_MMC.begin("/sdcard", true);
 
   // Turns off the ESP32-CAM white on-board LED (flash) connected to GPIO 4
-  // isolate keeps it off in deep sleep
   pinMode(WHITE_LED_GPIO, OUTPUT);
   digitalWrite(WHITE_LED_GPIO, LOW);
-  //rtc_gpio_isolate(GPIO_NUM_4);
-
-  // Check for an SD card
-  uint8_t cardType = SD_MMC.cardType();
-  if (cardType == CARD_NONE){
-      #ifdef SERIAL_LOGGING
-      Serial.println("No SD card attached");
-      #endif
-  }
-
-  #ifdef SERIAL_LOGGING
-  Serial.println("Starting SD Card");
-  #endif
-
-  if(!SD_MMC.begin()){
-    #ifdef SERIAL_LOGGING
-    Serial.println("SD Card Mount Failed");
-    #endif
-  }
-
 }
+
 //Read a file in SD card
-int readSkipFromFile(){
+int readSkipFromSDConfigFile(){
   String path = "/config.txt";
   int skip = DEFAULT_WAKE_SKIP;
 
   File file = filesys.open(path.c_str());
 
   if(file) {
-    Serial.print("Read from file: ");
     if (file.available()){
         String line = file.readString();
         skip = line.toInt();
-        #ifdef SERIAL_LOGGING
-        Serial.print(line);
-        #endif
     }
     file.close();
-  }
-  else {
-      #ifdef SERIAL_LOGGING
-      Serial.println("Failed to open file for reading");
-      #endif
   }
 
   return skip;
@@ -192,92 +133,65 @@ void writeImage(camera_fb_t * image, int pictureNumber) {
 
   // Path where new picture will be saved in SD Card
   String path = "/img-" + String(pictureNumber) +".jpg";
-
-  #ifdef SERIAL_LOGGING
-  Serial.printf("Picture file name: %s\n", path.c_str());
-  #endif
-
   File file = filesys.open(path.c_str(), FILE_WRITE);
-  if(!file){
-    #ifdef SERIAL_LOGGING
-    Serial.println("Failed to open file in writing mode");
-    #endif
-  } 
-  else {
+  if(file) {
     file.write(image->buf, image->len); // payload (image), payload length
   }
+
   file.close();
 }
 
-void setup() {  
-  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
+void disableBrownout() {
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
+}
 
-  pinMode(DONE_PIN, OUTPUT); // trying this really early because of issues with pin being high
-  digitalWrite(DONE_PIN, LOW); // may need to put after SD init
+void initDone() {
+  pinMode(DONE_PIN, OUTPUT);
+  digitalWrite(DONE_PIN, LOW); 
+}
 
-  #ifdef SERIAL_LOGGING
-  Serial.begin(115200);
-  #endif
+void signalDone(bool signal) {
+  if (signal) digitalWrite(DONE_PIN, HIGH);
+  else digitalWrite(DONE_PIN, LOW);
+}
 
-  initSD(); // because this defines IO pins and is needed for wake skip
-  int wakeskip = readSkipFromFile();
-
-  // read and increment pictureNumber
-
-  int pictureNumber = 0;
+int getPictureNumber() {
+  int p = 0;
   EEPROM.begin(EEPROM_SIZE);
-  EEPROM.get(0, pictureNumber);
-  pictureNumber = pictureNumber + 1;
-  EEPROM.put(0, pictureNumber);
+  EEPROM.get(0, p);
+  p = p + 1;
+  EEPROM.put(0, p);
   EEPROM.commit();
+  return p;
+}
 
+void setup() {
+  disableBrownout();
+  delay(10);
+  initDone();
+  initSD();
+  int wakeskip = readSkipFromSDConfigFile();
+  int pictureNumber = getPictureNumber();
+  
   if (pictureNumber % wakeskip == 0) {
     initCamera();
     stabliseCamera();
 
-    #ifdef SERIAL_LOGGING
-    Serial.println("Click!");
-    #endif
-
     fb = esp_camera_fb_get();  
-
+  
     if(fb) {
       writeImage(fb, pictureNumber);
       esp_camera_fb_return(fb);
     } 
-    #ifdef SERIAL_LOGGING
-    else {
-      Serial.println("Camera capture failed");
-    }
-    #endif
-  }
-  #ifdef SERIAL_LOGGING
-  else {
-    Serial.println("Skipping this time");
-  }
-  Serial.println("Going to sleep now");
-  Serial.flush(); 
-  #endif
 
+  }
 
 }
 
+// keep signalling done until we're turned off
 void loop() {
-  bool sent = false;
-  while (1) {
-    digitalWrite(WHITE_LED_GPIO, HIGH);
-
-  #ifdef SERIAL_LOGGING
-  if (!sent) {
-    Serial.println("Signalling sleep");
-    sent = true;
-  }
-  #endif
-    digitalWrite(DONE_PIN, HIGH);
-    delay(10);
-    digitalWrite(DONE_PIN, LOW);
-    digitalWrite(WHITE_LED_GPIO, LOW);
-    delay(50);
-  }
-
+    signalDone(true);
+    delay(1);
+    signalDone(false);
+    delay(1);
 }
