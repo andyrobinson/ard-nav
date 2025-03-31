@@ -35,6 +35,7 @@
 
 camera_fb_t * fb = NULL;
 fs::FS &filesys = SD_MMC; 
+String logstr = "";
 
 // Acknolwedgement
 //   This code is mainly copied from examples on the Internet, particularly
@@ -80,12 +81,21 @@ void initCamera() {
     // }
     
     esp_err_t err = esp_camera_init(&config);
+<<<<<<< Updated upstream
     if (err != ESP_OK && config.frame_size == FRAMESIZE_UXGA) {
       // try without Psram
       config.frame_size = FRAMESIZE_SVGA;
       config.jpeg_quality = 12;
       config.fb_count = 1;
       esp_err_t err = esp_camera_init(&config);
+=======
+    if (err != ESP_OK) {
+      #ifdef SERIAL_LOGGING
+      Serial.printf("Camera init failed with error 0x%x", err);
+      #endif
+      logstr = logstr + "|Camera Init err " + err;
+      return;
+>>>>>>> Stashed changes
     }
 
 }
@@ -104,11 +114,49 @@ void stabliseCamera() {
 // SD functions
 void initSD() {
   // Initialize the SD card to not use GPIO4
+<<<<<<< Updated upstream
   SD_MMC.begin("/sdcard", true);
+=======
+
+  #ifdef SERIAL_LOGGING
+  Serial.println("SD card init");
+  #endif
+
+  if (!SD_MMC.begin("/sdcard", true)){
+      #ifdef SERIAL_LOGGING
+      Serial.println("Failed to mount SD card");
+      #endif
+      logstr = logstr + "|SD begin fail";
+  }
+>>>>>>> Stashed changes
 
   // Turns off the ESP32-CAM white on-board LED (flash) connected to GPIO 4
   pinMode(WHITE_LED_GPIO, OUTPUT);
   digitalWrite(WHITE_LED_GPIO, LOW);
+<<<<<<< Updated upstream
+=======
+  //rtc_gpio_isolate(GPIO_NUM_4);
+
+  // Check for an SD card
+  uint8_t cardType = SD_MMC.cardType();
+  if (cardType == CARD_NONE){
+      #ifdef SERIAL_LOGGING
+      Serial.println("No SD card attached");
+      #endif
+  }
+
+  #ifdef SERIAL_LOGGING
+  Serial.println("Starting SD Card");
+  #endif
+
+  if(!SD_MMC.begin()){
+    #ifdef SERIAL_LOGGING
+    Serial.println("SD Card Mount Failed");
+    log = logstr + "|SD mount fail";
+    #endif
+  }
+
+>>>>>>> Stashed changes
 }
 
 //Read a file in SD card
@@ -125,6 +173,15 @@ int readSkipFromSDConfigFile(){
     }
     file.close();
   }
+<<<<<<< Updated upstream
+=======
+  else {
+      #ifdef SERIAL_LOGGING
+      Serial.println("Failed to open file for reading");
+      #endif
+      logstr = logstr + "|config fail";
+  }
+>>>>>>> Stashed changes
 
   return skip;
 }
@@ -145,6 +202,7 @@ void disableBrownout() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
 }
 
+<<<<<<< Updated upstream
 void initDone() {
   pinMode(DONE_PIN, OUTPUT);
   digitalWrite(DONE_PIN, LOW); 
@@ -157,6 +215,24 @@ void signalDone(bool signal) {
 
 int getPictureNumber() {
   int p = 0;
+=======
+  #ifdef SERIAL_LOGGING
+  Serial.begin(115200);
+  #endif
+
+  logstr = logstr + "|SD init";
+  initSD(); // because this defines IO pins and is needed for wake skip
+
+  pinMode(DONE_PIN, OUTPUT); // moving after SD init because it does NOT work in situ
+  digitalWrite(DONE_PIN, LOW);
+
+  logstr = logstr + "|read config";
+  int wakeskip = readSkipFromFile();
+
+  // read and increment pictureNumber
+
+  int pictureNumber = 0;
+>>>>>>> Stashed changes
   EEPROM.begin(EEPROM_SIZE);
   EEPROM.get(0, p);
   p = p + 1;
@@ -165,6 +241,7 @@ int getPictureNumber() {
   return p;
 }
 
+<<<<<<< Updated upstream
 void setup() {
   disableBrownout();
   delay(10);
@@ -173,18 +250,59 @@ void setup() {
   int wakeskip = readSkipFromSDConfigFile();
   int pictureNumber = getPictureNumber();
   
+=======
+  logstr = logstr + "|pic# " + pictureNumber;
+
+>>>>>>> Stashed changes
   if (pictureNumber % wakeskip == 0) {
     initCamera();
     stabliseCamera();
 
+<<<<<<< Updated upstream
+=======
+    #ifdef SERIAL_LOGGING
+    Serial.println("Click!");
+    #endif
+    logstr = logstr + "|click";
+
+>>>>>>> Stashed changes
     fb = esp_camera_fb_get();  
   
     if(fb) {
       writeImage(fb, pictureNumber);
       esp_camera_fb_return(fb);
     } 
+<<<<<<< Updated upstream
 
   }
+=======
+    #ifdef SERIAL_LOGGING
+    else {
+      Serial.println("Camera capture failed");
+      logstr = logstr + "|picture fail";
+    }
+    #endif
+  } else {
+      logstr = logstr + "|skip";
+  }
+  #ifdef SERIAL_LOGGING
+  else {
+    Serial.println("Skipping this time");
+  }
+  Serial.println("Going to sleep now");
+  Serial.flush(); 
+  #endif
+
+  // write log line to file
+  // Path where new picture will be saved in SD Card
+  String logpath = "/log.txt";
+
+  File logfile = filesys.open(logpath.c_str(), FILE_WRITE);
+  if(logfile){
+    logfile.println(logstr); // payload (image), payload length
+  }
+  logfile.close();
+>>>>>>> Stashed changes
 
 }
 
