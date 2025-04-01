@@ -173,6 +173,17 @@ void disableBrownout() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
 }
 
+int incPictureNumber() {
+  int p = 0;
+  EEPROM.begin(EEPROM_SIZE);
+  EEPROM.get(0, p);
+  p = p + 1;
+  EEPROM.put(0, p);
+  EEPROM.commit();
+  return p;
+}
+
+void setup() {
   #ifdef SERIAL_LOGGING
   Serial.begin(115200);
   #endif
@@ -184,18 +195,11 @@ void disableBrownout() {
   digitalWrite(DONE_PIN, LOW);
 
   logstr = logstr + "|read config";
-  int wakeskip = readSkipFromFile();
+  int wakeskip = readSkipFromSDConfigFile();
 
   // read and increment pictureNumber
 
-  int pictureNumber = 0;
-  EEPROM.begin(EEPROM_SIZE);
-  EEPROM.get(0, p);
-  p = p + 1;
-  EEPROM.put(0, p);
-  EEPROM.commit();
-  return p;
-}
+  int pictureNumber = incPictureNumber();
 
   logstr = logstr + "|pic# " + pictureNumber;
 
@@ -235,17 +239,19 @@ void disableBrownout() {
   String logpath = "/log.txt";
 
   File logfile = filesys.open(logpath.c_str(), FILE_WRITE);
-  if(logfile){
-    logfile.println(logstr); // payload (image), payload length
+  if (logfile){
+    logfile.println(logstr);
+    logfile.close();
   }
-  logfile.close();
-
 }
 
 // keep signalling done until we're turned off
 void loop() {
-    signalDone(true);
-    delay(1);
-    signalDone(false);
-    delay(1);
+    digitalWrite(DONE_PIN, HIGH);
+    digitalWrite(WHITE_LED_GPIO, HIGH);
+    delay(50);
+
+    digitalWrite(DONE_PIN, LOW);
+    digitalWrite(WHITE_LED_GPIO, LOW);
+    delay(50);
 }
