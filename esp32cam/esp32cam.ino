@@ -184,6 +184,12 @@ int incPictureNumber() {
 }
 
 void setup() {
+
+  // current behaviour is that when trying to initialise the camera it crashes, then restarts and skips
+  // meaning that we get one short period, and one longer period where the green power led cycles briefly
+
+  disableBrownout();
+
   #ifdef SERIAL_LOGGING
   Serial.begin(115200);
   #endif
@@ -238,7 +244,7 @@ void setup() {
   // write log line to file
   String logpath = "/log.txt";
 
-  File logfile = filesys.open(logpath.c_str(), FILE_WRITE);
+  File logfile = filesys.open(logpath.c_str(), FILE_APPEND);
   if (logfile){
     logfile.println(logstr);
     logfile.close();
