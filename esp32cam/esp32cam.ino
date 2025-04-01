@@ -81,21 +81,12 @@ void initCamera() {
     // }
     
     esp_err_t err = esp_camera_init(&config);
-<<<<<<< Updated upstream
-    if (err != ESP_OK && config.frame_size == FRAMESIZE_UXGA) {
-      // try without Psram
-      config.frame_size = FRAMESIZE_SVGA;
-      config.jpeg_quality = 12;
-      config.fb_count = 1;
-      esp_err_t err = esp_camera_init(&config);
-=======
     if (err != ESP_OK) {
       #ifdef SERIAL_LOGGING
       Serial.printf("Camera init failed with error 0x%x", err);
       #endif
       logstr = logstr + "|Camera Init err " + err;
       return;
->>>>>>> Stashed changes
     }
 
 }
@@ -114,27 +105,11 @@ void stabliseCamera() {
 // SD functions
 void initSD() {
   // Initialize the SD card to not use GPIO4
-<<<<<<< Updated upstream
   SD_MMC.begin("/sdcard", true);
-=======
-
-  #ifdef SERIAL_LOGGING
-  Serial.println("SD card init");
-  #endif
-
-  if (!SD_MMC.begin("/sdcard", true)){
-      #ifdef SERIAL_LOGGING
-      Serial.println("Failed to mount SD card");
-      #endif
-      logstr = logstr + "|SD begin fail";
-  }
->>>>>>> Stashed changes
 
   // Turns off the ESP32-CAM white on-board LED (flash) connected to GPIO 4
   pinMode(WHITE_LED_GPIO, OUTPUT);
   digitalWrite(WHITE_LED_GPIO, LOW);
-<<<<<<< Updated upstream
-=======
   //rtc_gpio_isolate(GPIO_NUM_4);
 
   // Check for an SD card
@@ -156,7 +131,6 @@ void initSD() {
     #endif
   }
 
->>>>>>> Stashed changes
 }
 
 //Read a file in SD card
@@ -173,15 +147,12 @@ int readSkipFromSDConfigFile(){
     }
     file.close();
   }
-<<<<<<< Updated upstream
-=======
   else {
       #ifdef SERIAL_LOGGING
       Serial.println("Failed to open file for reading");
       #endif
       logstr = logstr + "|config fail";
   }
->>>>>>> Stashed changes
 
   return skip;
 }
@@ -202,20 +173,6 @@ void disableBrownout() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
 }
 
-<<<<<<< Updated upstream
-void initDone() {
-  pinMode(DONE_PIN, OUTPUT);
-  digitalWrite(DONE_PIN, LOW); 
-}
-
-void signalDone(bool signal) {
-  if (signal) digitalWrite(DONE_PIN, HIGH);
-  else digitalWrite(DONE_PIN, LOW);
-}
-
-int getPictureNumber() {
-  int p = 0;
-=======
   #ifdef SERIAL_LOGGING
   Serial.begin(115200);
   #endif
@@ -232,7 +189,6 @@ int getPictureNumber() {
   // read and increment pictureNumber
 
   int pictureNumber = 0;
->>>>>>> Stashed changes
   EEPROM.begin(EEPROM_SIZE);
   EEPROM.get(0, p);
   p = p + 1;
@@ -241,41 +197,23 @@ int getPictureNumber() {
   return p;
 }
 
-<<<<<<< Updated upstream
-void setup() {
-  disableBrownout();
-  delay(10);
-  initDone();
-  initSD();
-  int wakeskip = readSkipFromSDConfigFile();
-  int pictureNumber = getPictureNumber();
-  
-=======
   logstr = logstr + "|pic# " + pictureNumber;
 
->>>>>>> Stashed changes
   if (pictureNumber % wakeskip == 0) {
     initCamera();
     stabliseCamera();
 
-<<<<<<< Updated upstream
-=======
     #ifdef SERIAL_LOGGING
     Serial.println("Click!");
     #endif
     logstr = logstr + "|click";
 
->>>>>>> Stashed changes
     fb = esp_camera_fb_get();  
   
     if(fb) {
       writeImage(fb, pictureNumber);
       esp_camera_fb_return(fb);
     } 
-<<<<<<< Updated upstream
-
-  }
-=======
     #ifdef SERIAL_LOGGING
     else {
       Serial.println("Camera capture failed");
@@ -294,7 +232,6 @@ void setup() {
   #endif
 
   // write log line to file
-  // Path where new picture will be saved in SD Card
   String logpath = "/log.txt";
 
   File logfile = filesys.open(logpath.c_str(), FILE_WRITE);
@@ -302,7 +239,6 @@ void setup() {
     logfile.println(logstr); // payload (image), payload length
   }
   logfile.close();
->>>>>>> Stashed changes
 
 }
 
