@@ -168,6 +168,16 @@ void setup() {
 
 }
 
+int incPictureNumber() {
+  int p = 0;
+  EEPROM.begin(EEPROM_SIZE);
+  EEPROM.get(0, p);
+  p = p + 1;
+  EEPROM.put(0, p);
+  EEPROM.commit();
+  return p;
+}
+
 // keep signalling done until we're turned off
 void loop() {
     digitalWrite(DONE_PIN, HIGH);
