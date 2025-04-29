@@ -31,7 +31,7 @@
 #define WHITE_LED_GPIO 4
 #define DONE_PIN 12
 #define EEPROM_SIZE 4
-#define DEFAULT_WAKE_SKIP 3
+#define WAKE_SKIP 6
 camera_fb_t * fb = NULL;
 fs::FS &filesys = SD_MMC; 
 
@@ -112,24 +112,6 @@ void initSD() {
 
 }
 
-//Read a file in SD card
-int readSkipFromSDConfigFile(){
-  String path = "/config.txt";
-  int skip = DEFAULT_WAKE_SKIP;
-
-  File file = filesys.open(path.c_str());
-
-  if(file) {
-    if (file.available()){
-        String line = file.readString();
-        skip = line.toInt();
-    }
-    file.close();
-  }
-
-  return skip;
-}
-
 void writeImage(camera_fb_t * image, int pictureNumber) {
 
   // Path where new picture will be saved in SD Card
@@ -143,18 +125,18 @@ void writeImage(camera_fb_t * image, int pictureNumber) {
 }
 
 void setup() {  
+  delay (10);
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
 
-  pinMode(DONE_PIN, OUTPUT); // trying this really early because of issues with pin being high
-  digitalWrite(DONE_PIN, LOW); // may need to put after SD init
-
   initSD(); // because this defines IO pins and is needed for wake skip
-  int wakeskip = readSkipFromSDConfigFile();
+
+  pinMode(DONE_PIN, OUTPUT); // trying this later
+  digitalWrite(DONE_PIN, LOW); // may need to put after SD init
 
   // read and increment pictureNumber
   int pictureNumber = incPictureNumber();
 
-  if (pictureNumber % wakeskip == 0) {
+  if (pictureNumber % WAKE_SKIP == 0) {
     initCamera();
     stabliseCamera();
 
@@ -181,10 +163,8 @@ int incPictureNumber() {
 // keep signalling done until we're turned off
 void loop() {
     digitalWrite(DONE_PIN, HIGH);
-    digitalWrite(WHITE_LED_GPIO, HIGH);
-    delay(50);
+    delay(5);
 
     digitalWrite(DONE_PIN, LOW);
-    digitalWrite(WHITE_LED_GPIO, LOW);
-    delay(50);
+    delay(5);
 }
