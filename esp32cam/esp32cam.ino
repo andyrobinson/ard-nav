@@ -68,19 +68,22 @@ void initCamera() {
     config.xclk_freq_hz = 20000000;
     config.pixel_format = PIXFORMAT_JPEG; 
  
-    // if(psramFound()){
-    //   config.frame_size = FRAMESIZE_UXGA; 
-    //   config.jpeg_quality = 10;
-    //   config.fb_count = 2;
-    // } else {
+    if(psramFound()){
+      config.frame_size = FRAMESIZE_UXGA; 
+      config.jpeg_quality = 10;
+      config.fb_count = 2;
+    } else {
       config.frame_size = FRAMESIZE_SVGA;
       config.jpeg_quality = 12;
       config.fb_count = 1;
-    // }
+    }
     
     esp_err_t err = esp_camera_init(&config);
     if (err != ESP_OK) {
-      // TODO: try lower values
+      config.frame_size = FRAMESIZE_SVGA;
+      config.jpeg_quality = 12;
+      config.fb_count = 1;
+      esp_camera_init(&config);
     }
 
 }
@@ -124,19 +127,27 @@ void writeImage(camera_fb_t * image, int pictureNumber) {
   file.close();
 }
 
+int incPictureNumber() {
+  int p = 0;
+  EEPROM.begin(EEPROM_SIZE);
+  EEPROM.get(0, p);
+  p = p + 1;
+  EEPROM.put(0, p);
+  EEPROM.commit();
+  return p;
+}
+
 void setup() {  
-  delay (10);
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
 
-  initSD(); // because this defines IO pins and is needed for wake skip
-
-  pinMode(DONE_PIN, OUTPUT); // trying this later
-  digitalWrite(DONE_PIN, LOW); // may need to put after SD init
+  pinMode(DONE_PIN, OUTPUT);
+  digitalWrite(DONE_PIN, LOW);
 
   // read and increment pictureNumber
   int pictureNumber = incPictureNumber();
 
   if (pictureNumber % WAKE_SKIP == 0) {
+    initSD();
     initCamera();
     stabliseCamera();
 
@@ -150,15 +161,6 @@ void setup() {
 
 }
 
-int incPictureNumber() {
-  int p = 0;
-  EEPROM.begin(EEPROM_SIZE);
-  EEPROM.get(0, p);
-  p = p + 1;
-  EEPROM.put(0, p);
-  EEPROM.commit();
-  return p;
-}
 
 // keep signalling done until we're turned off
 void loop() {
